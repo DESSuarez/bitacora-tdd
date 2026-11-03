@@ -1024,7 +1024,9 @@ async function start(){
 (async()=>{
   const cfg=window.BITACORA_CONFIG||{};
   if(!window.supabase||!cfg.supabaseUrl||!cfg.supabaseAnonKey||/TU-PROYECTO/.test(cfg.supabaseUrl)){loadedT=loadedL=true;setStatus("Falta configurar config.js con la URL y la llave pública de Supabase (ver README).",true);render();return}
-  sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
+  // Acepta la URL aunque la peguen con /rest/v1/ o con diagonal final
+  const url=cfg.supabaseUrl.trim().replace(/\/(rest|auth)\/v1\/?$/,"").replace(/\/+$/,"");
+  sb=window.supabase.createClient(url,cfg.supabaseAnonKey.trim());
   const h=location.hash;const isInvite=/type=(invite|recovery)/.test(h);
   sb.auth.onAuthStateChange(ev=>{if(ev==="PASSWORD_RECOVERY")showAuth("setpass")});
   if(isInvite){const {data:{session}}=await sb.auth.getSession();if(session){showAuth("setpass");return}}
