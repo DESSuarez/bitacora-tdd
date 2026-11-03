@@ -10,7 +10,8 @@ bitacora-tdd/
 │   ├── index.html            Toda la interfaz (HTML, estilos y lógica)
 │   └── config.example.js     Plantilla de configuración → cópiala como config.js
 ├── supabase/
-│   └── schema.sql            Base de datos, roles y permisos
+│   ├── schema.sql            Base de datos, roles y permisos
+│   └── functions/equipo/     Edge Function para invitar y quitar personas (solo PM)
 ├── prototipo/
 │   └── bitacora-prototipo-claude.html   Versión original hecha en Claude (referencia de diseño)
 ├── CLAUDE.md                 Contexto del proyecto para seguir trabajando en Claude Code
@@ -45,10 +46,18 @@ Sube el contenido de la carpeta `app/` (`index.html` y `config.js`) a cualquier 
 
 Para probar en tu computadora antes de subirla: `cd app && python3 -m http.server 8000` y abre http://localhost:8000. Para esta prueba, agrega `http://localhost:8000` en *Redirect URLs* de Supabase.
 
-### 4. Invitar al equipo
-1. En Supabase, ve a **Authentication → Users → Invite user** y escribe el correo de cada persona.
-2. Cada persona recibe un correo, toca el enlace y crea su contraseña en la app.
-3. Asigna rol y área a cada persona en **SQL Editor**. Al final de `schema.sql` hay ejemplos listos para copiar.
+### 4. Invitar al equipo (desde la app)
+La PM administra al equipo en **Project Manager → Equipo**: invita por correo, cambia nombre, rol y área, reenvía invitaciones y quita accesos.
+
+Para que funcione, despliega una sola vez la Edge Function `equipo`:
+1. En Supabase, ve a **Edge Functions → Deploy a new function → Via Editor**.
+2. Nómbrala exactamente `equipo`.
+3. Borra el código de ejemplo, pega todo `supabase/functions/equipo/index.ts` y toca **Deploy**.
+4. En **Authentication → URL Configuration → Redirect URLs**, agrega la URL de la app (por ejemplo `https://pm.tiempodedios.mx`). Ahí regresa el enlace de la invitación.
+
+La función usa la *service_role key* que Supabase le da por dentro; nunca sale al navegador. Solo responde a usuarios con rol `pm`.
+
+La primera PM se asigna a mano en **SQL Editor** (al final de `schema.sql` hay ejemplos). Desde ahí, todo lo demás se hace en la app.
 
 ## Seguridad
 - La *anon key* puede ir en el navegador. Lo que protege los datos son las reglas de `schema.sql`: sin sesión no se ve nada, y cada quien solo escribe en su área.
@@ -57,6 +66,5 @@ Para probar en tu computadora antes de subirla: `cd app && python3 -m http.serve
 ## Siguientes pasos sugeridos
 Están detallados en `CLAUDE.md`. En resumen:
 1. Que la PM pueda asignar tareas a una persona del equipo, y que cada quien vea una vista de **"Mis tareas"**.
-2. Una pantalla para administrar al equipo (invitar, cambiar rol y área) sin entrar a Supabase.
-3. Una opción para mover una tarea a otra área.
-4. Pasar el `index.html` único a un proyecto con componentes (por ejemplo, Vite + React) cuando la app crezca.
+2. Una opción para mover una tarea a otra área.
+3. Pasar el `index.html` único a un proyecto con componentes (por ejemplo, Vite + React) cuando la app crezca.

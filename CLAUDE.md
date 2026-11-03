@@ -18,6 +18,8 @@ Dueña del proyecto: Ceci (líder de Formación).
   - `jspdf@2.5.1` (UMD) para generar los PDF en el navegador
 - `app/config.js` (no versionado): `window.BITACORA_CONFIG = {supabaseUrl, supabaseAnonKey}`.
 - `supabase/schema.sql`: tablas `perfiles`, `tareas` y `logros`, con RLS, triggers y realtime.
+- `supabase/functions/equipo/index.ts`: Edge Function (solo PM) con las acciones `listar`, `invitar`, `reenviar` y `quitar`. Usa la service_role key del entorno de Supabase. Nombre, rol y área se editan directo en `perfiles` (la RLS ya lo permite a la PM).
+- `.htaccess`: Hostinger clona el repo completo en `public_html/pm`; esto sirve solo `app/`.
 - `prototipo/`: la versión original como artifact de Claude. Es la referencia visual: no se despliega.
 
 ### Capa de datos
@@ -49,7 +51,7 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 ### Rutas (hash)
 `#formacion`, `#musica`, `#audiovisual` y `#pm`.
 - Cada área tiene las pestañas Pendientes, Reporte diario, Mes y Logros.
-- El panel de la PM tiene las pestañas Semana, Mes y Año.
+- El panel de la PM tiene las pestañas Semana, Mes, Año y Equipo (administración del equipo).
 
 ### Roles (RLS)
 - `pm`: lee y escribe todo.
@@ -73,7 +75,7 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
    - La PM asigna tareas a cualquier persona.
    - Agregar una vista "Mis tareas" por usuario.
    - Opcional: notificación por correo al asignar.
-2. **Administración del equipo** desde la app (solo PM): invitar y cambiar rol o área. Requiere una Edge Function con la service_role key; nunca exponerla en el cliente.
+2. ~~**Administración del equipo**~~ ✅ Hecho: pestaña Equipo + Edge Function `equipo`.
 3. **Mover tareas entre áreas.**
 4. **Historial:** guardar quién completó cada cosa (`completada_por`).
 5. **Normalizar datos** cuando haya volumen: tablas `subtareas` y `testimonios`, índices por `semana` y `fecha`. Hoy la carga inicial trae todo (límite de 10 000 filas).
@@ -83,3 +85,9 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 ## Cómo probar
 - `cd app && python3 -m http.server 8000`, con `config.js` apuntando a un proyecto de Supabase de prueba.
 - Crea usuarios de prueba con distintos roles y verifica que un colaborador de Música no pueda escribir en Formación.
+
+## Despliegue
+- Producción: https://pm.tiempodedios.mx (Hostinger, carpeta `public_html/pm`).
+- Repo: github.com/DESSuarez/bitacora-tdd, rama `main`. Hostinger está conectado por su integración con GitHub: cada push a `main` se despliega.
+- `app/config.js` existe solo en el servidor (`public_html/pm/app/config.js`).
+- La Edge Function `equipo` se despliega aparte, en Supabase (ver README).

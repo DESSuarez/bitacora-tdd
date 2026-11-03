@@ -30,6 +30,7 @@ body[data-area="audiovisual"]{--area:var(--baby);--area-ink:var(--baby-ink);--ar
 body[data-area="pm"]{--area:var(--flame);--area-ink:var(--flame);--area-soft:var(--flame-soft);--on-area:#FFFFFF}
 
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;margin:0}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
@@ -222,6 +223,17 @@ main .wrap{padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
 .star{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--fg);cursor:pointer}
 .star input{width:18px;height:18px;accent-color:var(--flame)}
 @media (max-width:640px){.lform{grid-template-columns:1fr 1fr}.lform .c2,.lform .c3,.lform .c4{grid-column:1/-1}}
+/* Equipo */
+.team{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.member{border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:minmax(0,1fr) 150px 150px 220px;gap:10px;align-items:center;background:var(--bg)}
+.member .who{display:flex;flex-direction:column;gap:2px;min-width:0}
+.member .who input{height:34px;border:1.5px solid transparent;border-radius:8px;padding:0 8px;margin-left:-9px;background:transparent;font-weight:800;font-size:15px;min-width:0}
+.member .who input:hover{border-color:var(--line)}.member .who input:focus{border-color:var(--area-ink);outline:none;background:var(--bg)}
+.member .mail{font-family:var(--mono);font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.member select{height:38px;border:1.5px solid var(--line);border-radius:8px;padding:0 8px;background:var(--bg);font-size:13px;min-width:0;width:100%}
+.member .acts{display:flex;gap:6px;align-items:center;justify-content:flex-end}
+.chip.pend{background:var(--flame-soft);color:var(--flame);border-color:transparent}
+@media (max-width:640px){.member{grid-template-columns:1fr 1fr}.member .who{grid-column:1/-1}.member .acts{grid-column:1/-1;justify-content:flex-start}}
 .counts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .count-tile{border-radius:14px;padding:14px 16px;background:var(--area-soft);color:var(--area-ink);display:flex;flex-direction:column;gap:2px;min-width:0}
 .count-tile b{font-family:var(--display);font-weight:900;font-size:34px;line-height:1;font-stretch:112%;color:var(--fg)}
@@ -453,6 +465,30 @@ table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:52
       <div class="areas3" id="pAreas"></div>
       <div class="panel" id="pExtra"></div>
     </section>
+
+    <!-- Equipo (solo PM) -->
+    <section class="view" id="vTeam" hidden>
+      <div class="rhead">
+        <div><h2>Equipo</h2><p>Invita personas y define qué área puede editar cada una.</p></div>
+      </div>
+      <form class="lform" id="inviteForm" autocomplete="off">
+        <h3>Invitar a alguien</h3>
+        <label class="c3" for="iEmail">Correo<input class="field" type="email" id="iEmail" placeholder="nombre@tiempodedios.mx" maxlength="120" required></label>
+        <label class="c3" for="iNombre">Nombre<input class="field" id="iNombre" placeholder="Como aparecerá en la bitácora" maxlength="60"></label>
+        <label class="c3" for="iRol">Rol<select class="field" id="iRol"></select></label>
+        <label class="c3" for="iArea">Área<select class="field" id="iArea"></select></label>
+        <div class="row">
+          <span class="dlnote">Le llega un correo con un enlace para crear su contraseña.</span>
+          <button class="btn" type="submit" id="iBtn">Enviar invitación</button>
+        </div>
+      </form>
+      <div class="panel">
+        <h3 class="section-h" style="margin:0" id="teamH">Personas</h3>
+        <div class="readonly" id="teamNote" hidden></div>
+        <ul class="team" id="teamList"></ul>
+      </div>
+      <p class="dlnote">Roles: <b>Project Manager</b> ve y edita todo y administra el equipo. <b>Líder</b> y <b>Colaborador</b> ven todo y editan solo su área.</p>
+    </section>
   </div>
 </main>
 
@@ -476,7 +512,8 @@ const AREA_ICON={
  audiovisual:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="M15.5 10.5l6-3.5v10l-6-3.5z"/></svg>',
  pm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>'};
 const AREA_TABS=[["tasks","Pendientes"],["report","Reporte diario"],["month","Mes"],["logros","Logros"]];
-const PM_TABS=[["week","Semana"],["month","Mes"],["year","Año"]];
+const PM_TABS=[["week","Semana"],["month","Mes"],["year","Año"],["team","Equipo"]];
+const ROLES={pm:"Project Manager",lider:"Líder",colaborador:"Colaborador"};
 const $=id=>document.getElementById(id);
 const CHECK='<svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.2 3L13 4.5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const ICON_DEL='<svg viewBox="0 0 20 20" fill="none"><path d="M5 6h10M8 6V4h4v2M6.5 6l.7 10h5.6l.7-10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -488,6 +525,7 @@ const DOT_STAR='<svg viewBox="0 0 18 18"><path d="M9 1.8l2.1 4.3 4.7.6-3.4 3.3.8
 let sb=null,perfil=null,perfiles=[],db=null,tasksCol=null,logrosCol=null,tasks=[],logros=[],loadedT=false,loadedL=false;
 let route="formacion",areaView={formacion:"tasks",musica:"tasks",audiovisual:"tasks"},pmView="week";
 let anchor=new Date(),open=new Set(),openTesti=new Set(),pendingDel=null;
+let cuentas=null,cuentasErr="",cuentasCargando=false;
 
 /* Fechas */
 function mondayOf(d){const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()-((x.getDay()+6)%7));return x}
@@ -514,6 +552,7 @@ function toast(msg){const t=document.createElement("div");t.className="toast";t.
 function setStatus(msg,warn){const s=$("status");s.textContent=msg||"";s.className="status"+(warn?" warn":"");s.hidden=!msg}
 function whoChip(n){if(!n)return"";return `<span class="chip who" data-i="${esc((n.trim()[0]||"").toUpperCase())}">${esc(n)}</span>`}
 function canEdit(a){return !!perfil&&(perfil.rol==="pm"||perfil.area===a)}
+function esPM(){return !!perfil&&perfil.rol==="pm"}
 function areaOf(x){return AREAS[x.area]?x.area:"formacion"}
 function safeUrl(u){if(!u)return"";u=u.trim();if(!/^https?:\/\//i.test(u))u="https://"+u;try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:""}catch(e){return""}}
 function hostOf(u){try{return new URL(u).hostname.replace(/^www\./,"")}catch(e){return"liga"}}
@@ -579,7 +618,8 @@ function render(){
   $("h1").innerHTML=isPM?`Las áreas <em>en orden</em>`:`La semana <em>en orden</em>`;
   document.title=(isPM?"Project Manager":AREAS[route].n)+" · Bitácora Tiempo de Dios";
   // pestañas
-  const tabs=isPM?PM_TABS:AREA_TABS;const cur=isPM?pmView:areaView[route];
+  if(pmView==="team"&&!esPM())pmView="week";
+  const tabs=isPM?PM_TABS.filter(([k])=>k!=="team"||esPM()):AREA_TABS;const cur=isPM?pmView:areaView[route];
   const counts=isPM?{}:tabCounts(route);
   $("tabs").innerHTML=tabs.map(([k,l])=>`<button class="tab" role="tab" data-tab="${k}" aria-selected="${k===cur}">${l}${counts[k]?`<span class="count">${counts[k]}</span>`:""}</button>`).join("");
   // periodo
@@ -588,17 +628,18 @@ function render(){
   const same=sc==="week"?key(weekStart())===key(mondayOf(now)):sc==="month"?(anchor.getFullYear()===now.getFullYear()&&anchor.getMonth()===now.getMonth()):anchor.getFullYear()===now.getFullYear();
   $("todayP").textContent=sc==="week"?"Esta semana":sc==="month"?"Este mes":"Este año";
   $("todayP").disabled=same;$("todayP").style.opacity=same?.45:1;
+  $("todayP").parentElement.style.display=sc==="team"?"none":"";if(sc==="team")$("periodLabel").textContent="Administración del equipo";
   // datalists
   const projs=[...new Set(tasks.map(t=>t.proyecto).filter(Boolean))];
   $("projList").innerHTML=projs.map(p=>`<option value="${esc(p)}">`).join("");
   const people=[...new Set(tasks.flatMap(t=>[t.responsable,...t.subtareas.map(s=>s.responsable)]).concat(logros.map(l=>l.responsable)).concat(perfiles.map(p=>p.nombre)).filter(Boolean))];
   $("whoList").innerHTML=people.map(p=>`<option value="${esc(p)}">`).join("");
   // vistas
-  const show={vTasks:!isPM&&cur==="tasks",vReport:!isPM&&cur==="report",vMonth:!isPM&&cur==="month",vLogros:!isPM&&cur==="logros",vPM:isPM};
+  const show={vTasks:!isPM&&cur==="tasks",vReport:!isPM&&cur==="report",vMonth:!isPM&&cur==="month",vLogros:!isPM&&cur==="logros",vPM:isPM&&cur!=="team",vTeam:isPM&&cur==="team"};
   Object.entries(show).forEach(([id,v])=>{$(id).hidden=!v});
   if(!isPM){const ro=!canEdit(route);const msg=ro?`Vista de solo lectura. Solo el equipo de ${AREAS[route].n} y la project manager pueden registrar aquí.`:"";
     $("roTasks").hidden=$("roLogros").hidden=!ro;$("roTasks").textContent=$("roLogros").textContent=msg;$("addForm").hidden=ro;$("logroForm").hidden=ro}
-  if(isPM)renderPM();else if(cur==="tasks")renderTasks();else if(cur==="report")renderReport();else if(cur==="month")renderMonth();else renderLogros();
+  if(isPM&&cur==="team")renderTeam();else if(isPM)renderPM();else if(cur==="tasks")renderTasks();else if(cur==="report")renderReport();else if(cur==="month")renderMonth();else renderLogros();
 }
 function tabCounts(a){const ws=weekStart(),ms=monthStart(),r=monthRange(ms);
   return {tasks:weekTasksOf(a,ws).filter(t=>!t.hecha).length,report:logRange(key(ws),key(addDays(ws,6)),a).length,month:logRange(r.s,r.e,a).length,logros:logrosRange(r.s,r.e,a).length}}
@@ -696,6 +737,42 @@ function renderLogros(){
   if(!lm.length){L.innerHTML=`<li class="empty"><strong>Aún no hay logros este mes</strong><p>Registra aquí lo que concluya el área (${esc(AREAS[a].tipos.join(", ").toLowerCase())}), con su liga y testimonios si los hay. Cada logro que registres aparecerá en los resúmenes del mes y del año.</p></li>`;return}
   L.innerHTML=lm.slice().reverse().map(l=>{const u=safeUrl(l.liga);return `<li class="litem"><time>${shortDate(l.fecha)}</time><div class="lt"><strong>${esc(l.titulo)}</strong><div class="tmeta"><span class="chip tipo">${esc(l.tipo)}</span>${whoChip(l.responsable)}${u?`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(hostOf(u))} ↗</a>`:""}</div>${l.nota?`<p>${esc(l.nota)}</p>`:""}${testiBlock(l)}</div><div class="tactions"><button class="icon del" data-ldel="${l.id}" aria-label="Borrar logro">${ICON_DEL}</button></div></li>`}).join("");
 }
+
+/* ---------- Equipo (solo PM) ---------- */
+/* Invitar y quitar usa la Edge Function "equipo" (supabase/functions/equipo).
+   Cambiar nombre, rol y área se escribe directo en perfiles (RLS: solo la PM). */
+async function equipoFn(body){
+  const {data,error}=await sb.functions.invoke("equipo",{body});
+  if(error){let msg="";try{msg=(await error.context.json()).error}catch(e){}
+    if(!msg&&/send a request|fetch/i.test(error.message||""))msg="No se encontró la función «equipo» en Supabase. Revisa que esté desplegada (ver README).";
+    throw new Error(msg||error.message||"Error desconocido")}
+  return data}
+async function cargarCuentas(){if(cuentasCargando||!sb)return;cuentasCargando=true;
+  try{const d=await equipoFn({accion:"listar"});cuentas=new Map(d.usuarios.map(u=>[u.id,u]));cuentasErr=""}
+  catch(e){cuentasErr=e.message}
+  finally{cuentasCargando=false}
+  const {data}=await sb.from("perfiles").select("id,nombre,rol,area");if(data)perfiles=data;
+  render()}
+function renderTeam(){
+  if(cuentas===null&&!cuentasErr&&!cuentasCargando)cargarCuentas();
+  $("teamNote").hidden=!cuentasErr&&!cuentasCargando;
+  $("teamNote").textContent=cuentasErr?`No se pudieron cargar los correos: ${cuentasErr}`:"Cargando el equipo…";
+  const orden={pm:0,lider:1,colaborador:2};
+  const rows=perfiles.slice().sort((a,b)=>(orden[a.rol]-orden[b.rol])||(a.area||"").localeCompare(b.area||"")||(a.nombre||"").localeCompare(b.nombre||""));
+  $("teamH").textContent=`Personas · ${rows.length}`;
+  $("teamList").innerHTML=rows.length?rows.map(p=>{const c=cuentas&&cuentas.get(p.id),self=perfil&&p.id===perfil.id;
+    const estado=self?`<span class="chip">Tú</span>`:c&&!c.activo?`<span class="chip pend" title="Aún no acepta la invitación">Pendiente</span>`:"";
+    return `<li class="member">
+      <div class="who"><input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre"><span class="mail">${esc(c?c.email:"")}</span></div>
+      <select data-prol="${p.id}" aria-label="Rol" ${self?'disabled title="No puedes cambiar tu propio rol"':""}>${Object.entries(ROLES).map(([k,l])=>`<option value="${k}" ${p.rol===k?"selected":""}>${l}</option>`).join("")}</select>
+      <select data-parea="${p.id}" aria-label="Área" ${p.rol==="pm"?"disabled":""}>${p.rol==="pm"?`<option>Todas</option>`:`<option value="" ${p.area?"":"selected"}>Sin área</option>${AREA_IDS.map(a=>`<option value="${a}" ${p.area===a?"selected":""}>${AREAS[a].n}</option>`).join("")}`}</select>
+      <div class="acts">${estado}${c&&!c.activo&&!self?`<button class="btn ghost sm" data-reenviar="${p.id}">Reenviar</button>`:""}${self?"":`<button class="icon" data-quitar="${p.id}" aria-label="Quitar acceso a ${esc(p.nombre)}">${ICON_DEL}</button>`}</div>
+    </li>`}).join(""):`<li class="none">Aún no hay nadie en el equipo.</li>`}
+async function actualizarPerfil(id,cambios){const p=perfiles.find(x=>x.id===id);if(!p)return;const antes={...p};Object.assign(p,cambios);render();
+  const {data,error}=await sb.from("perfiles").update(cambios).eq("id",id).select("id");
+  if(error||!data||!data.length){Object.assign(p,antes);render();toast("No se pudo guardar el cambio.");return}
+  if(perfil&&id===perfil.id){Object.assign(perfil,cambios);$("userName").querySelector("b").textContent=perfil.nombre}
+  toast("Cambio guardado.")}
 
 /* ---------- Panel PM ---------- */
 function areaCardTop(a,nums){const A=AREAS[a];return `<div class="top"><h3>${A.n}</h3><div class="nums">${nums.map(([v,l])=>`<span><b>${v}</b>${l}</span>`).join("")}</div></div>`}
@@ -845,6 +922,10 @@ document.addEventListener("click",e=>{
   if(b.dataset.tab){if(route==="pm"){pmView=b.dataset.tab}else{const prev=scope();areaView[route]=b.dataset.tab}render();return}
   if(b.dataset.goweek){anchor=fromKey(b.dataset.goweek);areaView[route]="report";render();window.scrollTo({top:0,behavior:"smooth"});return}
   if(b.dataset.goarea){const [a,v]=b.dataset.goarea.split("|");areaView[a]=v;location.hash=a;return}
+  if(b.dataset.reenviar){const c=cuentas&&cuentas.get(b.dataset.reenviar);if(!c)return;b.disabled=true;
+    equipoFn({accion:"reenviar",email:c.email,redirectTo:location.origin+location.pathname}).then(()=>toast("Invitación reenviada a "+c.email),e=>toast(e.message)).finally(()=>{b.disabled=false});return}
+  if(b.dataset.quitar){const id=b.dataset.quitar;confirmDel(b,id,()=>{const p=perfiles.find(x=>x.id===id);
+    equipoFn({accion:"quitar",id}).then(()=>{perfiles=perfiles.filter(x=>x.id!==id);if(cuentas)cuentas.delete(id);render();toast(`${p?p.nombre:"La persona"} ya no tiene acceso.`)},e=>toast(e.message))});return}
   if(!tasksCol)return;
   if(b.dataset.tt)toggleTask(b.dataset.tt);
   else if(b.dataset.st){const [a,s]=b.dataset.st.split("|");toggleSub(a,s)}
@@ -859,6 +940,21 @@ document.addEventListener("click",e=>{
 document.addEventListener("submit",e=>{const f=e.target.closest("[data-subform]");if(!f)return;e.preventDefault();const id=f.dataset.subform;const v=$("sub-"+id).value.trim();if(!v)return;addSub(id,v,$("subwho-"+id).value.trim());setTimeout(()=>{const i=$("sub-"+id);if(i)i.focus()},0)});
 document.addEventListener("submit",e=>{const f=e.target.closest("[data-testiform]");if(!f)return;e.preventDefault();const id=f.dataset.testiform;const tx=$("tt-"+id).value.trim();if(!tx){$("tt-"+id).focus();return}const l=logros.find(x=>x.id===id);if(!l||!logrosCol)return;l.testimonios=[...(l.testimonios||[]),{id:uid(),texto:tx,autor:$("ta-"+id).value.trim(),creado:new Date().toISOString()}];openTesti.delete(id);render();saveLogro(l);toast("Testimonio guardado.")});
 document.addEventListener("change",e=>{const i=e.target.closest("[data-owner]");if(i&&tasksCol)setOwner(i.dataset.owner,i.value.trim())});
+document.addEventListener("change",e=>{const t=e.target;if(!sb)return;
+  if(t.dataset.prol){const rol=t.value;actualizarPerfil(t.dataset.prol,rol==="pm"?{rol,area:null}:{rol})}
+  else if(t.dataset.parea)actualizarPerfil(t.dataset.parea,{area:t.value||null});
+  else if(t.dataset.pnombre){const v=t.value.trim();const p=perfiles.find(x=>x.id===t.dataset.pnombre);if(!v||!p||v===p.nombre){if(p)t.value=p.nombre;return}actualizarPerfil(p.id,{nombre:v})}});
+$("iRol").innerHTML=["colaborador","lider","pm"].map(k=>`<option value="${k}">${ROLES[k]}</option>`).join("");
+$("iArea").innerHTML=`<option value="">Elige un área…</option>`+AREA_IDS.map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("");
+$("iRol").addEventListener("change",()=>{$("iArea").disabled=$("iRol").value==="pm";if($("iArea").disabled)$("iArea").value=""});
+$("inviteForm").addEventListener("submit",async e=>{e.preventDefault();if(!sb)return;
+  const email=$("iEmail").value.trim(),rol=$("iRol").value,area=rol==="pm"?null:$("iArea").value;
+  if(rol!=="pm"&&!area){$("iArea").focus();toast("Elige el área de la persona.");return}
+  $("iBtn").disabled=true;
+  try{await equipoFn({accion:"invitar",email,nombre:$("iNombre").value.trim(),rol,area,redirectTo:location.origin+location.pathname});
+    $("iEmail").value=$("iNombre").value="";toast("Invitación enviada a "+email);cuentas=null;cuentasErr="";await cargarCuentas()}
+  catch(err){toast(err.message)}
+  finally{$("iBtn").disabled=false}});
 
 readHash();render();
 

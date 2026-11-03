@@ -93,8 +93,16 @@ create policy logros_escribir on public.logros for all to authenticated
 
 -- ============ Tiempo real ============
 -- Para que los cambios aparezcan en vivo en todas las pantallas
-alter publication supabase_realtime add table public.tareas;
-alter publication supabase_realtime add table public.logros;
+-- (con "if not exists" para poder volver a correr este archivo sin error)
+do $$
+begin
+  if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and tablename = 'tareas') then
+    alter publication supabase_realtime add table public.tareas;
+  end if;
+  if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and tablename = 'logros') then
+    alter publication supabase_realtime add table public.logros;
+  end if;
+end $$;
 
 -- ============ Después de invitar a cada persona ============
 -- Asigna su rol y área (cambia el correo):
