@@ -4,3 +4,10 @@
 RewriteEngine On
 RewriteCond %{REQUEST_URI} !^/app/
 RewriteRule ^(.*)$ app/$1 [L]
+
+# Que el navegador siempre pregunte por la versión nueva de la app después de cada despliegue
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|js)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
