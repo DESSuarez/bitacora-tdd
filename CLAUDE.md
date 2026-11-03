@@ -1,0 +1,85 @@
+# CLAUDE.md · Bitácora Tiempo de Dios
+
+Contexto para Claude Code. Todo en español: interfaz, textos, commits y comentarios.
+
+## Propósito
+Plataforma sencilla para que las áreas de **Formación**, **Música** y **Audiovisual** de Tiempo de Dios registren su trabajo:
+- Pendientes semanales con tareas y subtareas.
+- La hora exacta en que se completa cada cosa.
+- Logros con liga y testimonios.
+
+La **Project Manager** ve todo, desde lo que se hizo cada día hasta lo que se logró en el mes y en el año. También descarga PDFs semanales, mensuales y anuales.
+
+Dueña del proyecto: Ceci (líder de Formación).
+
+## Arquitectura actual
+- `app/index.html`: una sola página con HTML, CSS y JS sin framework ni build. Usa estas librerías desde CDN:
+  - `@supabase/supabase-js@2.45.4` (UMD)
+  - `jspdf@2.5.1` (UMD) para generar los PDF en el navegador
+- `app/config.js` (no versionado): `window.BITACORA_CONFIG = {supabaseUrl, supabaseAnonKey}`.
+- `supabase/schema.sql`: tablas `perfiles`, `tareas` y `logros`, con RLS, triggers y realtime.
+- `prototipo/`: la versión original como artifact de Claude. Es la referencia visual: no se despliega.
+
+### Capa de datos
+La UI se escribió sobre una API de colecciones estilo Firestore: `col.doc(id).set(body)`, `col.doc(id).delete()` y `col.onSnapshot(next, fail)`.
+
+`makeCol(table)` en `index.html` adapta esa API a Supabase:
+- `upsert({id, area, data})` sobre una columna `data jsonb`.
+- Una carga inicial con `select`.
+- Una suscripción a `postgres_changes`.
+
+Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir la UI completa a la vez.
+
+### Modelo (contenido de `data`)
+- **Tarea:**
+  `{area, titulo, proyecto, responsable, semana:"YYYY-MM-DD" (lunes), creada:ISO, hecha:ISO|null, orden:number, subtareas:[{id, titulo, responsable, hecha:ISO|null}]}`
+  - Al marcar la tarea padre se completan todas sus subtareas abiertas.
+  - Al completar todas las subtareas, la tarea se marca sola.
+- **Logro:**
+  `{area, tipo, titulo, fecha:"YYYY-MM-DD", liga, responsable, nota, testimonios:[{id, texto, autor, creado}], creado}`
+  - Todos los logros entran a los resúmenes del mes y del año.
+- `responsable` hoy es texto libre. Se sugieren nombres de `perfiles`.
+
+### Tipos de logro por área (`AREAS` en index.html)
+- **Formación:** Curso, Taller, Retiros / camps, Material creado
+- **Música:** Canciones publicadas, Presentaciones en vivo, Eventos, Colaboraciones
+- **Audiovisual:** Video en vivo, Podcast, Video musical, Reels, Videos de formación
+- Siempre se puede agregar uno nuevo con "Otro…".
+
+### Rutas (hash)
+`#formacion`, `#musica`, `#audiovisual` y `#pm`.
+- Cada área tiene las pestañas Pendientes, Reporte diario, Mes y Logros.
+- El panel de la PM tiene las pestañas Semana, Mes y Año.
+
+### Roles (RLS)
+- `pm`: lee y escribe todo.
+- `lider` y `colaborador`: leen todo y escriben solo filas de su `area`.
+- La UI oculta los formularios cuando no hay permiso (`canEdit`).
+
+## Identidad visual
+- **Colores:**
+  - Night `#1B1C1A`
+  - White `#FFFFFF`
+  - Flame `#FF3D1A` (Música, PM)
+  - Baby blue `#98D5E0` (Audiovisual)
+  - Deep sea green `#457A7F` (Formación)
+- **Tipografía:** Archivo (display y texto, pesos 800–900, ligeramente expandida) e IBM Plex Mono (fechas y horas).
+- **Encabezado:** banda Night con una franja inferior del color del área y una etiqueta pequeña del área sobre el título "La semana en orden".
+- Soporta modo claro y oscuro mediante tokens CSS.
+
+## Roadmap acordado / sugerido
+1. **Asignación de tareas:**
+   - Cambiar `responsable` de texto a `responsable_id` (uuid de `perfiles`).
+   - La PM asigna tareas a cualquier persona.
+   - Agregar una vista "Mis tareas" por usuario.
+   - Opcional: notificación por correo al asignar.
+2. **Administración del equipo** desde la app (solo PM): invitar y cambiar rol o área. Requiere una Edge Function con la service_role key; nunca exponerla en el cliente.
+3. **Mover tareas entre áreas.**
+4. **Historial:** guardar quién completó cada cosa (`completada_por`).
+5. **Normalizar datos** cuando haya volumen: tablas `subtareas` y `testimonios`, índices por `semana` y `fecha`. Hoy la carga inicial trae todo (límite de 10 000 filas).
+6. Migrar a **Vite + React** (o similar) si el `index.html` se vuelve difícil de mantener. Conservar el diseño del prototipo.
+7. **PWA** para usarla como app en el celular.
+
+## Cómo probar
+- `cd app && python3 -m http.server 8000`, con `config.js` apuntando a un proyecto de Supabase de prueba.
+- Crea usuarios de prueba con distintos roles y verifica que un colaborador de Música no pueda escribir en Formación.

@@ -1,0 +1,10 @@
+---
+# Despliegue en cPanel (Git Version Control → Deploy HEAD Commit).
+# Copia solo la carpeta app/ a la carpeta del subdominio.
+# config.js no está en Git: créalo una vez a mano en DEPLOYPATH; este despliegue no lo borra.
+deployment:
+  tasks:
+    # Cambia esta ruta por la "Document Root" de tu subdominio (cPanel → Domains).
+    - export DEPLOYPATH=/home/USUARIO-CPANEL/bitacora.tiempodedios.mx/
+    - /bin/mkdir -p $DEPLOYPATH
+    - /bin/cp -R app/. $DEPLOYPATH

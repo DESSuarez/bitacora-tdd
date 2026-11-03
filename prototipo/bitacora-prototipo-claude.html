@@ -1,0 +1,838 @@
+<title>Bitácora Tiempo de Dios</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: banda Night con navegación entre áreas; cada área toma su color de marca; el panel del PM resume las tres. */
+:root{
+  --night:#1B1C1A; --flame:#FF3D1A; --baby:#98D5E0; --sea:#457A7F;
+  --bg:#FFFFFF; --surface:#F4F7F7; --fg:#1B1C1A; --muted:#5E6766; --line:#DDE5E5;
+  --sea-text:#3A6A6F; --baby-ink:#2B7B8A; --baby-soft:#E3F3F6; --flame-soft:#FFE7E1; --sea-soft:#E2EEEF;
+  --band:#1B1C1A;
+  --area:var(--sea); --area-ink:var(--sea-text); --area-soft:var(--sea-soft); --on-area:#FFFFFF;
+  --display:"Archivo","Arial Black","Helvetica Neue",Arial,sans-serif;
+  --body:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1B1C1A; --surface:#242623; --fg:#F5F7F6; --muted:#A3ADAC; --line:#353835;
+  --sea-text:#8CC3C8; --baby-ink:#98D5E0; --baby-soft:#203033; --flame-soft:#3A2019; --sea-soft:#1F3133; --band:#121311; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1B1C1A; --surface:#242623; --fg:#F5F7F6; --muted:#A3ADAC; --line:#353835;
+  --sea-text:#8CC3C8; --baby-ink:#98D5E0; --baby-soft:#203033; --flame-soft:#3A2019; --sea-soft:#1F3133; --band:#121311; color-scheme:dark}
+body[data-area="formacion"]{--area:var(--sea);--area-ink:var(--sea-text);--area-soft:var(--sea-soft);--on-area:#FFFFFF}
+body[data-area="musica"]{--area:var(--flame);--area-ink:var(--flame);--area-soft:var(--flame-soft);--on-area:#FFFFFF}
+body[data-area="audiovisual"]{--area:var(--baby);--area-ink:var(--baby-ink);--area-soft:var(--baby-soft);--on-area:#1B1C1A}
+body[data-area="pm"]{--area:var(--flame);--area-ink:var(--flame);--area-soft:var(--flame-soft);--on-area:#FFFFFF}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--area-ink)}
+:focus-visible{outline:3px solid var(--baby);outline-offset:2px;border-radius:6px}
+.wrap{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* Banda */
+.band{background:var(--band);color:#fff}
+.band .wrap{padding-block:22px 0;display:flex;flex-direction:column;gap:16px}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brandrow{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#C9D2D1}
+.dots{display:flex;gap:4px}.dots i{width:10px;height:10px;border-radius:50%;display:block}
+.areanav{display:flex;gap:6px;flex-wrap:wrap}
+.areanav a{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 13px;border-radius:999px;border:1.5px solid #3C3F3B;color:#D7DEDD;text-decoration:none;font-weight:700;font-size:13.5px}
+.areanav a i{width:9px;height:9px;border-radius:50%;display:block}
+.areanav a:hover{border-color:#6E7470;color:#fff}
+.areanav a[aria-current="page"]{background:var(--area);color:var(--on-area);border-color:var(--area)}
+.areanav a[aria-current="page"] i{background:var(--on-area)!important;border:0!important}
+.band{border-bottom:8px solid var(--area)}
+.areatag{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;background:var(--area);color:var(--on-area);font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px 4px 8px;border-radius:6px;line-height:1.2}
+.areatag svg{width:14px;height:14px;flex:none}
+.titleblock{display:flex;flex-direction:column;gap:10px}
+h1{font-family:var(--display);font-weight:900;font-stretch:112%;font-size:clamp(30px,6vw,48px);line-height:1;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h1 em{font-style:normal;color:var(--area)}
+.weekrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.weeklabel{font-family:var(--display);font-weight:700;font-size:18px}
+.weeknav{display:flex;gap:6px;margin-left:auto}
+.navbtn{background:transparent;border:1.5px solid #4A4D49;color:#fff;border-radius:999px;height:36px;min-width:36px;padding:0 14px;font-weight:600;font-size:14px}
+.navbtn:hover{border-color:var(--baby);color:var(--baby)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{background:transparent;border:0;color:#B9C3C2;padding:12px 14px 14px;font-family:var(--display);font-weight:800;font-size:15px;border-bottom:4px solid transparent;white-space:nowrap}
+.tab[aria-selected="true"]{color:#fff;border-bottom-color:var(--area)}
+.tab .count{font-family:var(--mono);font-weight:500;font-size:12px;margin-left:6px;color:var(--baby)}
+
+main .wrap{padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
+.view{display:flex;flex-direction:column;gap:28px}
+.status{font-size:13px;color:var(--muted);font-family:var(--mono)}
+.status.warn{color:var(--flame)}
+
+/* Formularios */
+.adder{display:grid;grid-template-columns:1fr minmax(110px,160px) minmax(110px,160px) auto;gap:8px}
+.field{height:46px;border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:0 14px;min-width:0;width:100%}
+.field:focus{border-color:var(--area-ink);outline:none}
+@media (max-width:640px){.adder{grid-template-columns:1fr 1fr}.adder .wide,.adder .btn{grid-column:1/-1}}
+.btn{height:46px;border:0;border-radius:10px;padding:0 20px;font-family:var(--display);font-weight:800;font-size:15px;background:var(--area);color:var(--on-area);white-space:nowrap}
+.btn:hover{filter:brightness(.94)}
+.btn.ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line);font-weight:700}
+.btn.ghost:hover{border-color:var(--area-ink)}
+.btn.sm{height:34px;padding:0 14px;font-size:13px;border-radius:8px}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* Progreso */
+.progress{display:flex;flex-direction:column;gap:8px}
+.progress .meta{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.big{font-family:var(--display);font-weight:900;font-size:28px;font-stretch:110%;font-variant-numeric:tabular-nums}
+.big small{font-size:15px;color:var(--muted);font-weight:600;font-stretch:100%}
+.bar{height:10px;border-radius:99px;background:var(--surface);overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;background:var(--area);border-radius:99px;transition:width .3s}
+.section-h{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:0 0 10px;display:flex;align-items:center;gap:10px}
+.section-h::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* Tareas */
+.list{display:flex;flex-direction:column;gap:10px;list-style:none;margin:0;padding:0}
+.task{border:1.5px solid var(--line);border-radius:14px;background:var(--bg)}
+.task.done{background:var(--surface)}
+.trow{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;padding:14px 14px 14px 16px}
+.check{width:26px;height:26px;border-radius:8px;border:2px solid var(--area);background:transparent;display:grid;place-items:center;padding:0;flex:none;margin-top:1px}
+.check svg{width:16px;height:16px;opacity:0}
+.check svg path{stroke:var(--on-area)}
+.check[aria-checked="true"]{background:var(--area)}
+.check[aria-checked="true"] svg{opacity:1}
+.check.sub{width:20px;height:20px;border-radius:6px;border-color:var(--line)}
+.check.sub[aria-checked="true"]{background:var(--area);border-color:var(--area)}
+.tbody{min-width:0;display:flex;flex-direction:column;gap:4px}
+.ttitle{font-weight:700;font-size:16px;line-height:1.35;overflow-wrap:anywhere;background:none;border:0;padding:0;text-align:left}
+.done .ttitle{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--area);text-decoration-thickness:2px}
+.tmeta{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:13px;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:99px;background:var(--surface);color:var(--muted);font-weight:700;font-size:12px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid var(--line);vertical-align:middle}
+.chip.tipo{background:var(--area-soft);color:var(--area-ink);border-color:transparent}
+.chip.who{background:var(--flame-soft);color:var(--flame);gap:5px;padding-left:3px;border-color:transparent}
+.chip.who::before{content:attr(data-i);width:16px;height:16px;border-radius:50%;background:var(--flame);color:#fff;font-size:9.5px;display:grid;place-items:center;font-weight:800}
+.when{font-family:var(--mono);font-size:12px}
+.tactions{display:flex;gap:2px}
+.icon{width:34px;height:34px;border:0;border-radius:8px;background:transparent;color:var(--muted);display:grid;place-items:center;padding:0;flex:none}
+.icon:hover{background:var(--surface);color:var(--fg)}
+.icon.del:hover{color:var(--flame)}
+.icon svg{width:18px;height:18px}
+.subs{border-top:1px dashed var(--line);padding:10px 14px 14px 54px;display:flex;flex-direction:column;gap:8px}
+.sub-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+.sub-item span{overflow-wrap:anywhere;min-width:0}
+.sub-item.done>span{color:var(--muted);text-decoration:line-through}
+.sub-item .icon{width:28px;height:28px}
+.ownerrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.ownerrow input{height:32px;border:1.5px solid var(--line);border-radius:8px;padding:0 10px;background:var(--bg);font-size:13px;min-width:0;flex:1;max-width:240px}
+.subadd{display:flex;gap:8px}
+.subadd input{flex:1;min-width:0;height:36px;border:1.5px solid var(--line);border-radius:8px;padding:0 12px;background:var(--bg);font-size:14px}
+.subadd input.who-in{flex:0 1 150px}
+.subadd input:focus,.ownerrow input:focus{border-color:var(--area-ink);outline:none}
+@media (max-width:480px){.subs{padding-left:16px}.subadd{flex-wrap:wrap}.subadd input{flex:1 1 100%}.subadd input.who-in{flex:1 1 auto}}
+.carry{border:1.5px dashed var(--flame);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:var(--flame-soft)}
+.carry .row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.carry .row span{min-width:0;overflow-wrap:anywhere;font-weight:600}
+.empty{border:1.5px dashed var(--line);border-radius:14px;padding:26px 22px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;list-style:none}
+.empty strong{font-family:var(--display);font-size:18px;font-weight:800}
+.empty p{margin:0;color:var(--muted);max-width:56ch}
+
+/* Reportes */
+.rhead{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between}
+.rhead h2{font-family:var(--display);font-weight:900;font-size:26px;font-stretch:108%;margin:0;line-height:1.1;text-wrap:balance}
+.rhead p{margin:4px 0 0;color:var(--muted)}
+.rbtns{display:flex;gap:8px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stats.three{grid-template-columns:repeat(3,1fr)}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}.stats.three{grid-template-columns:repeat(3,1fr)}}
+.stat{border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat b{font-family:var(--display);font-weight:900;font-size:30px;font-stretch:112%;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;font-weight:600}
+.stat.s1{background:var(--area);color:var(--on-area)}
+.stat.s2{background:var(--area-soft);color:var(--area-ink)}
+.stat.s3{background:var(--night);color:#fff;border:1.5px solid var(--line)}
+.stat.s4{background:var(--surface);color:var(--fg);border:1.5px solid var(--line)}
+@media (max-width:480px){.stat b{font-size:24px}.stat{padding:12px}}
+.days{display:flex;flex-direction:column}
+.day{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:18px 0;border-top:1.5px solid var(--line)}
+.day:last-child{border-bottom:1.5px solid var(--line)}
+.dlabel{display:flex;flex-direction:column}
+.dlabel b{font-family:var(--display);font-weight:900;font-size:20px;text-transform:capitalize;line-height:1.1}
+.dlabel span{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.dlabel .n{margin-top:6px;align-self:flex-start}
+.day.today .dlabel b{color:var(--area-ink)}
+.ditems{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+.ditem{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:baseline}
+.ditem time{font-family:var(--mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.ditem div{min-width:0;overflow-wrap:anywhere}
+.ditem .parent{font-size:13px;color:var(--muted)}
+.k{display:inline-block;font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;padding:1px 6px;border-radius:4px;margin-right:6px;vertical-align:1px}
+.k.t{background:var(--area);color:var(--on-area)}
+.k.s{background:var(--area-soft);color:var(--area-ink)}
+.k.l{background:var(--night);color:#fff}
+.none{color:var(--muted);font-size:14px;font-style:italic}
+@media (max-width:560px){.day{grid-template-columns:1fr;gap:8px}.dlabel{flex-direction:row;align-items:baseline;gap:10px;flex-wrap:wrap}.dlabel .n{margin:0}}
+.pending-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.pending-list li{display:flex;gap:8px;align-items:baseline}
+.pending-list li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--flame);flex:none;transform:translateY(-1px)}
+
+/* Mes */
+.mgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px}
+@media (max-width:720px){.mgrid{grid-template-columns:1fr}}
+.panel{display:flex;flex-direction:column;gap:12px;min-width:0}
+.hbars{display:flex;flex-direction:column;gap:10px}
+.hbar{display:grid;grid-template-columns:120px 1fr 34px;gap:10px;align-items:center;font-size:13px}
+.hbar .lbl{color:var(--muted);font-family:var(--mono);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbar .trk{height:22px;background:var(--surface);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.hbar .trk i{display:block;height:100%;background:var(--area);border-radius:5px 0 0 5px}
+.hbar.alt .trk i{background:var(--area-soft);border-right:2px solid var(--area)}
+.hbar .val{font-family:var(--display);font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+.weeks{display:flex;flex-direction:column;gap:14px}
+.wk{border:1.5px solid var(--line);border-radius:16px;padding:16px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 22px}
+.wk.current{border-color:var(--area)}
+@media (max-width:640px){.wk{grid-template-columns:1fr}}
+.wk-h{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.wk-h h4{margin:0;font-family:var(--display);font-weight:900;font-size:18px}
+.wk-h h4 span{font-family:var(--mono);font-weight:400;font-size:12px;color:var(--muted);margin-left:8px}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;align-content:start}
+.cal .dh{font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:center;text-transform:uppercase}
+.cell{aspect-ratio:1;max-width:100%;border-radius:9px;background:var(--surface);padding:5px 6px;display:flex;flex-direction:column;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);min-width:0}
+.cell b{font-family:var(--display);font-weight:900;font-size:16px;line-height:1;align-self:flex-end}
+.cell.h1{background:var(--area-soft);color:var(--area-ink)}
+.cell.h2{background:color-mix(in srgb,var(--area) 55%,var(--bg));color:var(--fg)}
+.cell.h3{background:var(--area);color:var(--on-area)}
+.cell.out{background:transparent;border:1px dashed var(--line);opacity:.5}
+.cell.today{box-shadow:inset 0 0 0 2.5px var(--flame)}
+.wins{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;min-width:0}
+.wins li{display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:start;font-size:14px;line-height:1.35}
+.wins li svg{width:18px;height:18px;margin-top:1px}
+.wins li div{min-width:0;overflow-wrap:anywhere}
+.more{color:var(--muted);font-size:13px;display:block;margin-top:4px}
+.legend{display:flex;gap:6px;align-items:center;font-family:var(--mono);font-size:11px;color:var(--muted);flex-wrap:wrap}
+.legend i{width:14px;height:14px;border-radius:4px;display:inline-block;background:var(--surface)}
+
+/* Logros */
+.lform{border:1.5px solid var(--line);border-radius:16px;padding:18px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;background:var(--surface)}
+.lform h3{grid-column:1/-1;margin:0;font-family:var(--display);font-weight:900;font-size:18px}
+.lform label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--muted);min-width:0}
+.lform .c2{grid-column:span 2}.lform .c3{grid-column:span 3}.lform .c4{grid-column:span 4}.lform .c6{grid-column:1/-1}
+.lform .field{height:42px;background:var(--bg)}
+.lform .row{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.star{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--fg);cursor:pointer}
+.star input{width:18px;height:18px;accent-color:var(--flame)}
+@media (max-width:640px){.lform{grid-template-columns:1fr 1fr}.lform .c2,.lform .c3,.lform .c4{grid-column:1/-1}}
+.counts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.count-tile{border-radius:14px;padding:14px 16px;background:var(--area-soft);color:var(--area-ink);display:flex;flex-direction:column;gap:2px;min-width:0}
+.count-tile b{font-family:var(--display);font-weight:900;font-size:34px;line-height:1;font-stretch:112%;color:var(--fg)}
+.count-tile span{font-weight:700;font-size:13px}
+.count-tile small{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.count-tile.zero b{color:var(--muted)}
+.llist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.litem{display:grid;grid-template-columns:62px 1fr auto;gap:12px;align-items:start;padding:12px 0;border-top:1px solid var(--line)}
+.litem:last-child{border-bottom:1px solid var(--line)}
+.litem time{font-family:var(--mono);font-size:12px;color:var(--muted);padding-top:3px}
+.litem .lt{min-width:0;display:flex;flex-direction:column;gap:4px}
+.litem .lt strong{overflow-wrap:anywhere}
+.litem .lt .tmeta a{font-weight:700;text-decoration:none;overflow-wrap:anywhere}
+.litem .lt .tmeta a:hover{text-decoration:underline}
+.litem .lt p{margin:0;color:var(--muted);font-size:13.5px;overflow-wrap:anywhere}
+.testis{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.testi{margin:0;padding:2px 0 2px 12px;border-left:3px solid var(--area);display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start}
+.testi q{font-style:italic;color:var(--fg);font-size:14px;overflow-wrap:anywhere}
+.testi cite{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:2px;font-weight:700}
+.testi .icon{width:26px;height:26px}
+.addtesti{background:none;border:0;padding:0;color:var(--area-ink);font-weight:700;font-size:13px;align-self:flex-start}
+.addtesti:hover{text-decoration:underline}
+.tform{display:flex;flex-direction:column;gap:6px;margin-top:2px}
+.tform textarea,.lform textarea{width:100%;min-height:64px;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg);resize:vertical;font-size:14px}
+.tform textarea:focus,.lform textarea:focus{border-color:var(--area-ink);outline:none}
+.tform .r{display:flex;gap:6px;flex-wrap:wrap}
+.tform input{flex:1 1 160px;min-width:0;height:34px;border:1.5px solid var(--line);border-radius:8px;padding:0 10px;background:var(--bg);font-size:13px}
+.starbtn{color:var(--muted);width:auto!important;padding:0 10px!important;gap:5px;display:inline-flex!important;border:1.5px solid var(--line)!important;font-size:12px;font-weight:700}
+.starbtn svg path{fill:none;stroke:currentColor;stroke-width:1.6}
+.starbtn:hover{color:var(--flame)}
+.starbtn[aria-pressed="true"]{color:var(--flame);border-color:var(--flame)!important;background:var(--flame-soft)}
+.starbtn[aria-pressed="true"] svg path{fill:currentColor}
+.starbtn svg{width:20px;height:20px}
+
+/* Panel PM */
+.areas3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.areas3{grid-template-columns:1fr}}
+.acard{border:1.5px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.acard .top{background:var(--c);color:var(--on);padding:16px;display:flex;flex-direction:column;gap:4px}
+.acard .top h3{margin:0;font-family:var(--display);font-weight:900;font-size:22px;font-stretch:108%}
+.acard .top .nums{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;font-weight:600}
+.acard .top .nums b{font-family:var(--display);font-size:26px;font-weight:900;display:block;line-height:1;font-variant-numeric:tabular-nums}
+.acard .inner{padding:14px 16px 16px;display:flex;flex-direction:column;gap:12px;flex:1}
+.acard .bar i{background:var(--c)}
+.acard h5{margin:0;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.acard ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.acard li{overflow-wrap:anywhere;line-height:1.35}
+.acard li .when{color:var(--muted);margin-right:6px}
+.acard .foot{margin-top:auto}
+.acard .tiles{display:flex;flex-wrap:wrap;gap:6px}
+.acard .tiles span{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:4px 9px;font-size:12.5px;font-weight:600}
+.acard .tiles span b{font-family:var(--display);font-weight:900;margin-right:4px}
+.matrix-wrap{overflow-x:auto}
+table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:520px}
+.matrix th{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;text-align:center}
+.matrix th.an{text-align:left;font-family:var(--body);font-size:13px;font-weight:800;color:var(--fg);text-transform:none;white-space:nowrap}
+.matrix th.an i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--c)}
+.matrix td{height:42px;border-radius:8px;background:var(--surface);text-align:center;font-family:var(--display);font-weight:900;font-size:16px;font-variant-numeric:tabular-nums}
+.matrix td.m1{background:color-mix(in srgb,var(--c) 25%,var(--bg))}
+.matrix td.m2{background:color-mix(in srgb,var(--c) 55%,var(--bg))}
+.matrix td.m3{background:var(--c);color:var(--on)}
+.matrix td.z{color:transparent}
+.ychart{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px;align-items:end;height:170px;padding-top:10px}
+.ycol{display:flex;flex-direction:column;align-items:stretch;gap:6px;height:100%;justify-content:flex-end;min-width:0}
+.ystack{display:flex;flex-direction:column-reverse;border-radius:6px;overflow:hidden;background:var(--surface);min-height:4px}
+.ystack i{display:block}
+.ycol span{font-family:var(--mono);font-size:10.5px;color:var(--muted);text-align:center}
+.ycol b{font-family:var(--display);font-size:12px;text-align:center;font-weight:800}
+.keyrow{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;font-weight:600;color:var(--muted)}
+.keyrow i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.grouped{display:flex;flex-direction:column;gap:14px}
+.grow{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center}
+.grow .lbl{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.gbars{display:flex;flex-direction:column;gap:3px}
+.gbars div{display:flex;align-items:center;gap:6px;font-size:11px;font-family:var(--mono);color:var(--muted)}
+.gbars i{display:block;height:9px;border-radius:3px;background:var(--c);min-width:2px}
+.dlnote{font-size:13px;color:var(--muted)}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--night);color:#fff;padding:10px 18px;border-radius:99px;font-weight:600;font-size:14px;border:1.5px solid var(--sea);z-index:20;max-width:calc(100% - 32px);text-align:center}
+.copyfallback{width:100%;min-height:180px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-family:var(--mono);font-size:12.5px;background:var(--surface)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div class="toprow">
+      <div class="brandrow"><span class="dots"><i style="background:#FF3D1A"></i><i style="background:#98D5E0"></i><i style="background:#457A7F"></i></span>Tiempo de Dios · Bitácora</div>
+      <nav class="areanav" aria-label="Áreas">
+        <a href="#formacion" data-route="formacion"><i style="background:#457A7F"></i>Formación</a>
+        <a href="#musica" data-route="musica"><i style="background:#FF3D1A"></i>Música</a>
+        <a href="#audiovisual" data-route="audiovisual"><i style="background:#98D5E0"></i>Audiovisual</a>
+        <a href="#pm" data-route="pm"><i style="background:#fff;border:1px solid #888"></i>Project Manager</a>
+      </nav>
+    </div>
+    <div class="titleblock"><div class="areatag" id="areaTag">Formación</div><h1 id="h1">La semana <em>en orden</em></h1></div>
+    <div class="weekrow">
+      <div class="weeklabel" id="periodLabel">Semana</div>
+      <div class="weeknav">
+        <button class="navbtn" id="prevP" aria-label="Anterior">←</button>
+        <button class="navbtn" id="todayP">Hoy</button>
+        <button class="navbtn" id="nextP" aria-label="Siguiente">→</button>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="status" id="status">Cargando la bitácora…</div>
+
+    <!-- Pendientes -->
+    <section class="view" id="vTasks" hidden>
+      <form class="adder" id="addForm" autocomplete="off">
+        <input class="field wide" id="newTitle" placeholder="Nueva tarea de la semana…" aria-label="Nueva tarea" maxlength="200">
+        <input class="field" id="newProj" placeholder="Proyecto" aria-label="Proyecto" maxlength="40" list="projList">
+        <input class="field" id="newWho" placeholder="Responsable" aria-label="Responsable" maxlength="40" list="whoList">
+        <button class="btn" type="submit">Agregar</button>
+      </form>
+      <datalist id="projList"></datalist><datalist id="whoList"></datalist>
+      <div class="progress" id="progress"></div>
+      <div id="carry"></div>
+      <div><h3 class="section-h">Tareas de la semana</h3><ul class="list" id="taskList"></ul></div>
+    </section>
+
+    <!-- Reporte diario -->
+    <section class="view" id="vReport" hidden>
+      <div class="rhead">
+        <div><h2 id="rTitle">Reporte semanal</h2><p>Lo que se completó cada día, con la hora en que se marcó.</p></div>
+        <button class="btn" id="copyWeek">Copiar reporte</button>
+      </div>
+      <div class="stats" id="rStats"></div>
+      <div class="days" id="rDays"></div>
+      <div id="rLogros"></div>
+      <div id="rPending"></div>
+      <div id="copyWeekBox"></div>
+    </section>
+
+    <!-- Mes -->
+    <section class="view" id="vMonth" hidden>
+      <div class="rhead">
+        <div><h2 id="mTitle">Reporte mensual</h2><p>Logros de cada semana y avance del mes.</p></div>
+        <button class="btn" id="copyMonth">Copiar reporte del mes</button>
+      </div>
+      <div class="stats" id="mStats"></div>
+      <div class="mgrid">
+        <div class="panel"><h3 class="section-h" style="margin:0">Avance por semana</h3><div class="hbars" id="mWeekBars"></div></div>
+        <div class="panel"><h3 class="section-h" style="margin:0">Por responsable</h3><div class="hbars" id="mWhoBars"></div><h3 class="section-h" style="margin:8px 0 0">Por proyecto</h3><div class="hbars" id="mProjBars"></div></div>
+      </div>
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <h3 class="section-h" style="margin:0;flex:1">Semana por semana</h3>
+          <div class="legend">Menos <i></i><i style="background:var(--area-soft)"></i><i style="background:color-mix(in srgb,var(--area) 55%,var(--bg))"></i><i style="background:var(--area)"></i> Más</div>
+        </div>
+        <div class="weeks" id="mWeeks"></div>
+      </div>
+      <div id="copyMonthBox"></div>
+    </section>
+
+    <!-- Logros -->
+    <section class="view" id="vLogros" hidden>
+      <form class="lform" id="logroForm" autocomplete="off">
+        <h3>Registrar un logro</h3>
+        <label class="c2" for="lTipo">Tipo<select class="field" id="lTipo"></select></label>
+        <label class="c4" for="lTitulo">Nombre<input class="field" id="lTitulo" placeholder="Ej. nombre de la canción, curso o video" maxlength="160"></label>
+        <label class="c2" for="lOtro" id="lOtroWrap" hidden>¿Qué tipo?<input class="field" id="lOtro" placeholder="Nuevo tipo de logro" maxlength="40"></label>
+        <label class="c2" for="lFecha">Fecha<input class="field" type="date" id="lFecha"></label>
+        <label class="c2" for="lQuien">Responsable<input class="field" id="lQuien" maxlength="40" list="whoList" placeholder="Opcional"></label>
+        <label class="c2" for="lLiga">Liga<input class="field" id="lLiga" placeholder="https://…" maxlength="500" inputmode="url"></label>
+        <label class="c6" for="lNota">Nota o cifra (opcional)<input class="field" id="lNota" placeholder="Ej. 35 asistentes, 1.2 mil vistas, 4 sesiones" maxlength="200"></label>
+        <label class="c4" for="lTesti">Testimonio (opcional)<textarea id="lTesti" placeholder="Lo que alguien compartió sobre este curso, taller o canción. Después puedes agregar más." maxlength="1500"></textarea></label>
+        <label class="c2" for="lTestiQuien">¿Quién lo dijo?<input class="field" id="lTestiQuien" placeholder="Nombre o «Anónimo»" maxlength="60"></label>
+        <div class="row">
+          <span class="dlnote">Todos los logros entran a los resúmenes del mes y del año.</span>
+          <button class="btn" type="submit">Guardar logro</button>
+        </div>
+      </form>
+      <div class="panel">
+        <h3 class="section-h" style="margin:0" id="lMonthH">Este mes</h3>
+        <div class="counts" id="lCounts"></div>
+      </div>
+      <div class="panel">
+        <h3 class="section-h" style="margin:0" id="lListH">Logros del mes</h3>
+        <ul class="llist" id="lList"></ul>
+      </div>
+    </section>
+
+    <!-- Panel PM -->
+    <section class="view" id="vPM" hidden>
+      <div class="rhead">
+        <div><h2 id="pTitle">Resumen</h2><p id="pSub"></p></div>
+        <div class="rbtns"><button class="btn" id="pdfBtn">Descargar PDF</button></div>
+      </div>
+      <div class="stats" id="pStats"></div>
+      <div class="areas3" id="pAreas"></div>
+      <div class="panel" id="pExtra"></div>
+    </section>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+(function(){
+const DIAS=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+const MESES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const MESES_L=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const AREAS={
+  formacion:{n:"Formación",c:"var(--sea)",on:"#fff",rgb:[69,122,127],tipos:["Curso","Taller","Retiros / camps","Material creado"],ph:{titulo:"Ej. nombre del curso, taller o retiro",nota:"Ej. 35 asistentes, 4 sesiones, sede",testi:"Lo que alguien compartió sobre el curso, taller o retiro. Después puedes agregar más."}},
+  musica:{n:"Música",c:"var(--flame)",on:"#fff",rgb:[255,61,26],tipos:["Canciones publicadas","Presentaciones en vivo","Eventos","Colaboraciones"],ph:{titulo:"Ej. nombre de la canción, presentación o evento",nota:"Ej. plataformas donde salió, reproducciones, lugar del evento",testi:"Lo que alguien compartió sobre la canción o la presentación. Después puedes agregar más."}},
+  audiovisual:{n:"Audiovisual",c:"var(--baby)",on:"#1B1C1A",rgb:[120,196,210],tipos:["Video en vivo","Podcast","Video musical","Reels","Videos de formación"],ph:{titulo:"Ej. título del video, episodio o reel",nota:"Ej. vistas, duración, plataforma",testi:"Lo que alguien compartió sobre el video o comentarios importantes que dejaron. Después puedes agregar más."}}
+};
+const AREA_IDS=Object.keys(AREAS);
+const AREA_ICON={
+ formacion:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5c3-1.5 6-1.5 9 0v12c-3-1.5-6-1.5-9 0zM21 6.5c-3-1.5-6-1.5-9 0v12c3-1.5 6-1.5 9 0z"/></svg>',
+ musica:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>',
+ audiovisual:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="M15.5 10.5l6-3.5v10l-6-3.5z"/></svg>',
+ pm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>'};
+const AREA_TABS=[["tasks","Pendientes"],["report","Reporte diario"],["month","Mes"],["logros","Logros"]];
+const PM_TABS=[["week","Semana"],["month","Mes"],["year","Año"]];
+const $=id=>document.getElementById(id);
+const CHECK='<svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.2 3L13 4.5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_DEL='<svg viewBox="0 0 20 20" fill="none"><path d="M5 6h10M8 6V4h4v2M6.5 6l.7 10h5.6l.7-10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_SUB='<svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+const ICON_STAR='<svg viewBox="0 0 20 20"><path d="M10 2.5l2.3 4.8 5.2.7-3.8 3.6.9 5.2L10 14.3l-4.6 2.5.9-5.2L2.5 8l5.2-.7z" fill="currentColor"/></svg>';
+const DOT_CHECK='<svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" fill="var(--area)"/><path d="M5.2 9.3l2.4 2.3 5-5" stroke="var(--on-area)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const DOT_STAR='<svg viewBox="0 0 18 18"><path d="M9 1.8l2.1 4.3 4.7.6-3.4 3.3.8 4.7L9 12.4l-4.2 2.3.8-4.7L2.2 6.7l4.7-.6z" fill="var(--flame)"/></svg>';
+
+let db=null,tasksCol=null,logrosCol=null,tasks=[],logros=[],loadedT=false,loadedL=false;
+let route="formacion",areaView={formacion:"tasks",musica:"tasks",audiovisual:"tasks"},pmView="week";
+let anchor=new Date(),open=new Set(),openTesti=new Set(),pendingDel=null;
+
+/* Fechas */
+function mondayOf(d){const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()-((x.getDay()+6)%7));return x}
+function key(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
+function fromKey(k){const [y,m,dd]=k.split("-").map(Number);return new Date(y,m-1,dd)}
+function hhmm(iso){const d=new Date(iso);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")}
+function dayKeyOf(iso){return key(new Date(iso))}
+function weekStart(){return mondayOf(anchor)}
+function monthStart(){return new Date(anchor.getFullYear(),anchor.getMonth(),1)}
+function monthRange(ms){return {s:key(ms),e:key(new Date(ms.getFullYear(),ms.getMonth()+1,0))}}
+function yearRange(y){return {s:y+"-01-01",e:y+"-12-31"}}
+function weekLabel(ws){const we=addDays(ws,6);
+  if(ws.getMonth()===we.getMonth())return `Semana del ${ws.getDate()} al ${we.getDate()} de ${MESES_L[we.getMonth()]} ${we.getFullYear()}`;
+  return `Semana del ${ws.getDate()} ${MESES[ws.getMonth()]} al ${we.getDate()} ${MESES[we.getMonth()]} ${we.getFullYear()}`}
+function monthLabel(d){const s=MESES_L[d.getMonth()];return s[0].toUpperCase()+s.slice(1)+" "+d.getFullYear()}
+function shortDate(k){const d=fromKey(k);return `${String(d.getDate()).padStart(2,"0")} ${MESES[d.getMonth()]}`}
+function cap(s){return s?s[0].toUpperCase()+s.slice(1):s}
+
+/* Utilidades */
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function uid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4)}
+function toast(msg){const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
+function setStatus(msg,warn){const s=$("status");s.textContent=msg||"";s.className="status"+(warn?" warn":"");s.hidden=!msg}
+function whoChip(n){if(!n)return"";return `<span class="chip who" data-i="${esc((n.trim()[0]||"").toUpperCase())}">${esc(n)}</span>`}
+function areaOf(x){return AREAS[x.area]?x.area:"formacion"}
+function safeUrl(u){if(!u)return"";u=u.trim();if(!/^https?:\/\//i.test(u))u="https://"+u;try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:""}catch(e){return""}}
+function hostOf(u){try{return new URL(u).hostname.replace(/^www\./,"")}catch(e){return"liga"}}
+
+/* Escrituras: una a la vez por documento */
+const queues={};
+function write(id,fn){const p=(queues[id]||Promise.resolve()).then(fn).catch(e=>{
+  if(e&&e.code==="invalid_argument")setStatus("Tienes acceso de solo lectura: puedes ver todo, pero no editar.",true);
+  else if(e&&e.code==="quota_exceeded")setStatus("La bitácora llegó a su límite de registros. Borra registros antiguos para agregar nuevos.",true);
+  else setStatus("No se pudo guardar el cambio. Revisa tu conexión e inténtalo de nuevo.",true)});
+  queues[id]=p;return p}
+function saveTask(t){const {id,...b}=t;return write(id,()=>tasksCol.doc(id).set(b))}
+function saveLogro(l){const {id,...b}=l;return write(id,()=>logrosCol.doc(id).set(b))}
+
+/* Datos derivados */
+function areaTasks(a){return tasks.filter(t=>areaOf(t)===a)}
+function weekTasksOf(a,ws){const wk=key(ws);return areaTasks(a).filter(t=>t.semana===wk).sort((x,y)=>(x.orden||0)-(y.orden||0))}
+function logRange(start,end,a){const out=[];
+  tasks.forEach(t=>{const ar=areaOf(t);if(a&&ar!==a)return;
+    t.subtareas.forEach(s=>{if(s.hecha){const k=dayKeyOf(s.hecha);if(k>=start&&k<=end)out.push({tipo:"s",area:ar,titulo:s.titulo,padre:t.titulo,proyecto:t.proyecto,responsable:s.responsable||t.responsable||"",hecha:s.hecha,dia:k})}});
+    if(t.hecha){const k=dayKeyOf(t.hecha);if(k>=start&&k<=end)out.push({tipo:"t",area:ar,titulo:t.titulo,proyecto:t.proyecto,responsable:t.responsable||"",hecha:t.hecha,dia:k})}});
+  return out.sort((x,y)=>x.hecha<y.hecha?-1:x.hecha>y.hecha?1:(x.tipo==="s"?-1:1))}
+function logrosRange(start,end,a){return logros.filter(l=>(!a||areaOf(l)===a)&&l.fecha>=start&&l.fecha<=end).sort((x,y)=>x.fecha<y.fecha?-1:x.fecha>y.fecha?1:0)}
+function tiposOf(a){const base=AREAS[a].tipos.slice();logros.filter(l=>areaOf(l)===a).forEach(l=>{if(l.tipo&&!base.includes(l.tipo))base.push(l.tipo)});return base}
+function countBy(arr,f,empty){const m={};arr.forEach(x=>{const k=x[f]||empty;m[k]=(m[k]||0)+1});return Object.entries(m).sort((a,b)=>b[1]-a[1])}
+function plannedPct(a,weekKeys){const p=areaTasks(a).filter(t=>weekKeys.includes(t.semana));return {n:p.length,d:p.filter(t=>t.hecha).length,pct:p.length?Math.round(p.filter(t=>t.hecha).length/p.length*100):0}}
+function monthWeeks(ms){const last=new Date(ms.getFullYear(),ms.getMonth()+1,0);const out=[];let w=mondayOf(ms);while(w<=last){out.push(w);w=addDays(w,7)}return out}
+function shortRange(ws,ms){const r=monthRange(ms);let a=ws,b=addDays(ws,6);if(key(a)<r.s)a=fromKey(r.s);if(key(b)>r.e)b=fromKey(r.e);return `${a.getDate()}–${b.getDate()} ${MESES[b.getMonth()]}`}
+function heat(n){return n<=0?"":n<=2?"h1":n<=4?"h2":"h3"}
+
+/* Navegación */
+function scope(){if(route==="pm")return pmView;const v=areaView[route];return v==="tasks"||v==="report"?"week":"month"}
+function readHash(){const h=(location.hash||"").replace("#","");route=(AREAS[h]||h==="pm")?h:"formacion"}
+window.addEventListener("hashchange",()=>{readHash();render();window.scrollTo(0,0)});
+
+/* Acciones de tareas */
+function addTask(titulo,proyecto,responsable){
+  const ws=weekStart(),wk=key(ws);const ord=Math.max(0,...weekTasksOf(route,ws).map(t=>t.orden||0))+1;
+  const t={id:uid(),area:route,titulo,proyecto:proyecto||"",responsable:responsable||"",semana:wk,creada:new Date().toISOString(),hecha:null,orden:ord,subtareas:[]};
+  tasks.push(t);render();saveTask(t)}
+function findT(id){return tasks.find(x=>x.id===id)}
+function toggleTask(id){const t=findT(id);if(!t)return;const now=new Date().toISOString();
+  if(t.hecha)t.hecha=null;else{t.hecha=now;t.subtareas=t.subtareas.map(s=>s.hecha?s:{...s,hecha:now})}
+  render();saveTask(t)}
+function toggleSub(id,sid){const t=findT(id);if(!t)return;const now=new Date().toISOString();
+  t.subtareas=t.subtareas.map(s=>s.id===sid?{...s,hecha:s.hecha?null:now}:s);
+  const all=t.subtareas.length&&t.subtareas.every(s=>s.hecha);
+  if(all&&!t.hecha)t.hecha=now;if(!all&&t.hecha)t.hecha=null;render();saveTask(t)}
+function addSub(id,titulo,responsable){const t=findT(id);if(!t)return;t.subtareas=[...t.subtareas,{id:uid(),titulo,responsable:responsable||"",hecha:null}];if(t.hecha)t.hecha=null;open.add(id);render();saveTask(t)}
+function delSub(id,sid){const t=findT(id);if(!t)return;t.subtareas=t.subtareas.filter(s=>s.id!==sid);render();saveTask(t)}
+function setOwner(id,val){const t=findT(id);if(!t||(t.responsable||"")===val)return;t.responsable=val;render();saveTask(t)}
+function moveHere(id){const t=findT(id);if(!t)return;t.semana=key(weekStart());render();saveTask(t)}
+function confirmDel(btn,id,fn){
+  if(pendingDel!==id){pendingDel=id;btn.innerHTML='<span style="font-size:11px;font-weight:700;color:var(--flame)">¿Borrar?</span>';btn.style.width="auto";btn.style.padding="0 8px";setTimeout(()=>{if(pendingDel===id){pendingDel=null;render()}},3000);return}
+  pendingDel=null;fn()}
+
+/* ---------- Render ---------- */
+function render(){
+  document.body.dataset.area=route;
+  document.querySelectorAll(".areanav a").forEach(a=>a.setAttribute("aria-current",a.dataset.route===route?"page":"false"));
+  const isPM=route==="pm";
+  $("areaTag").innerHTML=(AREA_ICON[route]||"")+(isPM?"Project Manager":esc(AREAS[route].n));
+  $("h1").innerHTML=isPM?`Las áreas <em>en orden</em>`:`La semana <em>en orden</em>`;
+  document.title=(isPM?"Project Manager":AREAS[route].n)+" · Bitácora Tiempo de Dios";
+  // pestañas
+  const tabs=isPM?PM_TABS:AREA_TABS;const cur=isPM?pmView:areaView[route];
+  const counts=isPM?{}:tabCounts(route);
+  $("tabs").innerHTML=tabs.map(([k,l])=>`<button class="tab" role="tab" data-tab="${k}" aria-selected="${k===cur}">${l}${counts[k]?`<span class="count">${counts[k]}</span>`:""}</button>`).join("");
+  // periodo
+  const sc=scope(),now=new Date();
+  $("periodLabel").textContent=sc==="week"?weekLabel(weekStart()):sc==="month"?monthLabel(monthStart()):`Año ${anchor.getFullYear()}`;
+  const same=sc==="week"?key(weekStart())===key(mondayOf(now)):sc==="month"?(anchor.getFullYear()===now.getFullYear()&&anchor.getMonth()===now.getMonth()):anchor.getFullYear()===now.getFullYear();
+  $("todayP").textContent=sc==="week"?"Esta semana":sc==="month"?"Este mes":"Este año";
+  $("todayP").disabled=same;$("todayP").style.opacity=same?.45:1;
+  // datalists
+  const projs=[...new Set(tasks.map(t=>t.proyecto).filter(Boolean))];
+  $("projList").innerHTML=projs.map(p=>`<option value="${esc(p)}">`).join("");
+  const people=[...new Set(tasks.flatMap(t=>[t.responsable,...t.subtareas.map(s=>s.responsable)]).concat(logros.map(l=>l.responsable)).filter(Boolean))];
+  $("whoList").innerHTML=people.map(p=>`<option value="${esc(p)}">`).join("");
+  // vistas
+  const show={vTasks:!isPM&&cur==="tasks",vReport:!isPM&&cur==="report",vMonth:!isPM&&cur==="month",vLogros:!isPM&&cur==="logros",vPM:isPM};
+  Object.entries(show).forEach(([id,v])=>{$(id).hidden=!v});
+  if(isPM)renderPM();else if(cur==="tasks")renderTasks();else if(cur==="report")renderReport();else if(cur==="month")renderMonth();else renderLogros();
+}
+function tabCounts(a){const ws=weekStart(),ms=monthStart(),r=monthRange(ms);
+  return {tasks:weekTasksOf(a,ws).filter(t=>!t.hecha).length,report:logRange(key(ws),key(addDays(ws,6)),a).length,month:logRange(r.s,r.e,a).length,logros:logrosRange(r.s,r.e,a).length}}
+
+/* Pendientes */
+function renderTasks(){
+  const a=route,ws=weekStart(),wt=weekTasksOf(a,ws);
+  const items=wt.reduce((n,t)=>n+(t.subtareas.length||1),0);
+  const doneItems=wt.reduce((n,t)=>n+(t.subtareas.length?t.subtareas.filter(s=>s.hecha).length:(t.hecha?1:0)),0);
+  const pct=items?Math.round(doneItems/items*100):0;
+  $("progress").innerHTML=wt.length?`<div class="meta"><div class="big">${wt.filter(t=>t.hecha).length}<small> de ${wt.length} tareas listas</small></div><div class="status">${doneItems}/${items} pasos · ${pct}%</div></div><div class="bar"><i style="width:${pct}%"></i></div>`:"";
+  const wk=key(ws);const old=areaTasks(a).filter(t=>!t.hecha&&t.semana<wk);
+  $("carry").innerHTML=old.length&&loadedT?`<div class="carry"><h3 class="section-h" style="margin:0;color:var(--flame)">Quedaron pendientes de semanas anteriores</h3>${old.map(t=>`<div class="row"><span>${esc(t.titulo)} ${whoChip(t.responsable)}</span><button class="btn ghost sm" data-move="${t.id}">Pasar a esta semana</button></div>`).join("")}</div>`:"";
+  const L=$("taskList");
+  if(!loadedT){L.innerHTML="";return}
+  if(!wt.length){L.innerHTML=`<li class="empty"><strong>Sin pendientes esta semana</strong><p>Escribe la primera tarea arriba y agrégale subtareas con el botón +. Cada vez que palomees algo, quedará en el Reporte diario con el día y la hora exactos.</p></li>`;return}
+  L.innerHTML=wt.map(t=>{const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen=open.has(t.id);
+    return `<li class="task ${t.hecha?"done":""}">
+      <div class="trow">
+        <button class="check" role="checkbox" aria-checked="${!!t.hecha}" aria-label="Marcar ${esc(t.titulo)}" data-tt="${t.id}">${CHECK}</button>
+        <div class="tbody">
+          <button class="ttitle" data-open="${t.id}" aria-expanded="${isOpen}">${esc(t.titulo)}</button>
+          <div class="tmeta">${whoChip(t.responsable)}${t.proyecto?`<span class="chip">${esc(t.proyecto)}</span>`:""}${t.subtareas.length?`<span>${subsDone}/${t.subtareas.length} subtareas</span>`:""}${t.hecha?`<span class="when">✓ ${DIAS[new Date(t.hecha).getDay()]} ${hhmm(t.hecha)}</span>`:""}</div>
+        </div>
+        <div class="tactions">
+          <button class="icon" data-open="${t.id}" aria-label="Subtareas y responsable" title="Subtareas">${ICON_SUB}</button>
+          <button class="icon del" data-del="${t.id}" aria-label="Borrar tarea" title="Borrar">${ICON_DEL}</button>
+        </div>
+      </div>
+      ${(isOpen||t.subtareas.length)?`<div class="subs">
+        ${t.subtareas.map(s=>`<div class="sub-item ${s.hecha?"done":""}">
+          <button class="check sub" role="checkbox" aria-checked="${!!s.hecha}" aria-label="Marcar ${esc(s.titulo)}" data-st="${t.id}|${s.id}">${CHECK}</button>
+          <span>${esc(s.titulo)} ${whoChip(s.responsable)}${s.hecha?` <span class="when" style="color:var(--muted)">· ${DIAS[new Date(s.hecha).getDay()].slice(0,3)} ${hhmm(s.hecha)}</span>`:""}</span>
+          <button class="icon del" data-sdel="${t.id}|${s.id}" aria-label="Borrar subtarea">${ICON_DEL}</button></div>`).join("")}
+        ${isOpen?`<label class="ownerrow" for="own-${t.id}">Responsable de la tarea <input id="own-${t.id}" data-owner="${t.id}" value="${esc(t.responsable||"")}" placeholder="¿Quién la lleva?" maxlength="40" list="whoList"></label>
+        <form class="subadd" data-subform="${t.id}"><input id="sub-${t.id}" placeholder="Nueva subtarea…" aria-label="Nueva subtarea" maxlength="200"><input class="who-in" id="subwho-${t.id}" placeholder="Responsable" aria-label="Responsable de la subtarea" maxlength="40" list="whoList"><button class="btn sm" type="submit">Añadir</button></form>`:""}
+      </div>`:""}
+    </li>`}).join("")}
+
+/* Reporte diario */
+function dayRows(log,ws,withArea){const today=key(new Date());let html="";
+  for(let i=0;i<7;i++){const d=addDays(ws,i),k=key(d),items=log.filter(x=>x.dia===k);if(i>=5&&!items.length)continue;
+    html+=`<div class="day ${k===today?"today":""}"><div class="dlabel"><b>${DIAS[d.getDay()]}</b><span>${d.getDate()} ${MESES[d.getMonth()]}</span>${items.length?`<span class="chip tipo n">${items.length} hecho${items.length>1?"s":""}</span>`:""}</div>
+    ${items.length?`<ul class="ditems">${items.map(x=>`<li class="ditem"><time datetime="${x.hecha}">${hhmm(x.hecha)}</time><div>${x.tipo==="t"?`<span class="k t">Tarea</span><strong>${esc(x.titulo)}</strong>`:`<span class="k s">Sub</span>${esc(x.titulo)} <span class="parent">› ${esc(x.padre)}</span>`} ${whoChip(x.responsable)}${x.proyecto?` <span class="chip">${esc(x.proyecto)}</span>`:""}</div></li>`).join("")}</ul>`:`<div class="none">${k>today?"Aún no llega":"Sin registros este día"}</div>`}</div>`}
+  return html}
+function renderReport(){
+  const a=route,ws=weekStart(),s=key(ws),e=key(addDays(ws,6)),log=logRange(s,e,a),lg=logrosRange(s,e,a);
+  $("rTitle").textContent=`${AREAS[a].n} · ${weekLabel(ws).replace("Semana del","semana del")}`;
+  $("rStats").innerHTML=`<div class="stat s1"><b>${log.filter(x=>x.tipo==="t").length}</b><span>tareas completadas</span></div><div class="stat s2"><b>${log.filter(x=>x.tipo==="s").length}</b><span>subtareas completadas</span></div><div class="stat s3"><b>${new Set(log.map(x=>x.dia)).size}</b><span>días con avance</span></div><div class="stat s4"><b>${lg.length}</b><span>logros registrados</span></div>`;
+  $("rDays").innerHTML=loadedT?dayRows(log,ws):"";
+  $("rLogros").innerHTML=lg.length?`<h3 class="section-h">Logros de la semana</h3><ul class="wins">${lg.map(l=>logroLi(l)).join("")}</ul>`:"";
+  const pend=weekTasksOf(a,ws).filter(t=>!t.hecha);
+  $("rPending").innerHTML=pend.length?`<h3 class="section-h">Sigue en curso</h3><ul class="pending-list">${pend.map(t=>`<li><span>${esc(t.titulo)}${t.subtareas.length?` <span class="when" style="color:var(--muted)">(${t.subtareas.filter(s=>s.hecha).length}/${t.subtareas.length})</span>`:""} ${whoChip(t.responsable)}</span></li>`).join("")}</ul>`:"";
+}
+function logroLi(l){const u=safeUrl(l.liga);return `<li>${DOT_CHECK}<div><strong>${esc(l.titulo)}</strong> <span class="chip tipo">${esc(l.tipo)}</span> <span class="when" style="color:var(--muted)">${shortDate(l.fecha)}</span>${u?` · <a href="${esc(u)}" target="_blank" rel="noopener">${esc(hostOf(u))} ↗</a>`:""}${l.nota?` <span style="color:var(--muted);font-size:13px">· ${esc(l.nota)}</span>`:""}${(l.testimonios||[]).length?` <span style="color:var(--muted);font-size:13px">· ${l.testimonios.length} testimonio${l.testimonios.length>1?"s":""}</span>`:""}</div></li>`}
+function testiBlock(l){const ts=l.testimonios||[];return `<div class="testis">${ts.map(t=>`<blockquote class="testi"><div><q>${esc(t.texto)}</q>${t.autor?`<cite>${esc(t.autor)}</cite>`:""}</div><button class="icon del" data-tdel="${l.id}|${t.id}" aria-label="Borrar testimonio">${ICON_DEL}</button></blockquote>`).join("")}${openTesti.has(l.id)?`<form class="tform" data-testiform="${l.id}"><textarea id="tt-${l.id}" placeholder="${route==="audiovisual"?"Testimonio o comentario importante sobre el video…":route==="musica"?"Testimonio sobre la canción…":"Testimonio sobre el curso o taller…"}" maxlength="1500" aria-label="Testimonio"></textarea><div class="r"><input id="ta-${l.id}" placeholder="¿Quién lo dijo?" maxlength="60" aria-label="Quién lo dijo"><button class="btn sm" type="submit">Guardar testimonio</button><button class="btn ghost sm" type="button" data-testiopen="${l.id}">Cancelar</button></div></form>`:`<button class="addtesti" data-testiopen="${l.id}">+ Agregar testimonio</button>`}</div>`}
+
+/* Mes por área */
+function bars(el,rows,cls){const max=Math.max(1,...rows.map(r=>r[1]));
+  el.innerHTML=rows.length?rows.map(r=>`<div class="hbar ${cls||""}"><span class="lbl" title="${esc(r[0])}">${esc(r[0])}</span><span class="trk"><i style="width:${r[1]/max*100}%"></i></span><span class="val">${r[1]}</span></div>`).join(""):`<div class="none">Aún sin registros este mes</div>`}
+function renderMonth(){
+  const a=route,ms=monthStart(),r=monthRange(ms),log=logRange(r.s,r.e,a),lg=logrosRange(r.s,r.e,a),weeks=monthWeeks(ms),today=key(new Date());
+  $("mTitle").textContent=`${AREAS[a].n} · ${monthLabel(ms)}`;
+  const pp=plannedPct(a,weeks.map(key));
+  $("mStats").innerHTML=`<div class="stat s1"><b>${log.filter(x=>x.tipo==="t").length}</b><span>tareas completadas</span></div><div class="stat s2"><b>${lg.length}</b><span>logros del mes</span></div><div class="stat s3"><b>${new Set(log.map(x=>x.dia)).size}</b><span>días con avance</span></div><div class="stat s4"><b>${pp.pct}%</b><span>de lo planeado, listo</span></div>`;
+  bars($("mWeekBars"),weeks.map((w,i)=>[`Sem ${i+1} · ${shortRange(w,ms)}`,log.filter(x=>x.dia>=key(w)&&x.dia<=key(addDays(w,6))).length]));
+  bars($("mWhoBars"),countBy(log,"responsable","Sin responsable").slice(0,6),"alt");
+  bars($("mProjBars"),countBy(log,"proyecto","Sin proyecto").slice(0,6),"alt");
+  const curW=key(mondayOf(new Date()));
+  $("mWeeks").innerHTML=loadedT?weeks.map((w,i)=>{const s=key(w),e=key(addDays(w,6));
+    const wl=log.filter(x=>x.dia>=s&&x.dia<=e),done=wl.filter(x=>x.tipo==="t"),subs=wl.filter(x=>x.tipo==="s"),wlg=lg.filter(l=>l.fecha>=s&&l.fecha<=e);
+    const cells=["L","M","M","J","V","S","D"].map(d=>`<span class="dh">${d}</span>`).join("")+[0,1,2,3,4,5,6].map(j=>{const d=addDays(w,j),k=key(d),inM=k>=r.s&&k<=r.e;const n=inM?wl.filter(x=>x.dia===k).length:0;
+      return `<div class="cell ${inM?heat(n):"out"} ${k===today?"today":""}" title="${DIAS[d.getDay()]} ${d.getDate()}: ${n} hecho${n===1?"":"s"}"><span>${d.getDate()}</span>${n?`<b>${n}</b>`:""}</div>`}).join("");
+    const shown=done.slice(0,6);
+    const body=(done.length||subs.length||wlg.length)?`<ul class="wins">${wlg.map(logroLi).join("")}${shown.map(x=>`<li>${DOT_CHECK}<div><strong>${esc(x.titulo)}</strong> ${whoChip(x.responsable)}</div></li>`).join("")}</ul>${done.length>6?`<span class="more">+${done.length-6} tareas más</span>`:""}${subs.length?`<span class="more">${subs.length} subtarea${subs.length>1?"s":""} completada${subs.length>1?"s":""}</span>`:""}`:`<div class="none">${s>today?"Semana por venir":"Sin logros registrados"}</div>`;
+    return `<article class="wk ${s===curW?"current":""}"><div class="wk-h"><h4>Semana ${i+1}<span>${shortRange(w,ms)}</span></h4><button class="btn ghost sm" data-goweek="${s}">Ver detalle →</button></div><div class="cal">${cells}</div><div>${body}</div></article>`}).join(""):"";
+}
+
+/* Logros */
+function fillTipoSelect(){const a=route,sel=$("lTipo"),prev=sel.value;const ts=tiposOf(a);
+  sel.innerHTML=ts.map(t=>`<option>${esc(t)}</option>`).join("")+`<option value="__otro">Otro…</option>`;
+  if(prev&&(ts.includes(prev)||prev==="__otro"))sel.value=prev;$("lOtroWrap").hidden=sel.value!=="__otro"}
+function renderLogros(){
+  const a=route;if($("lTipo").dataset.area!==a){$("lTipo").dataset.area=a;$("lTipo").value="";}
+  fillTipoSelect();
+  const ph=AREAS[a].ph;$("lTitulo").placeholder=ph.titulo;$("lNota").placeholder=ph.nota;$("lTesti").placeholder=ph.testi;
+  if(!$("lFecha").value)$("lFecha").value=key(new Date());
+  const ms=monthStart(),r=monthRange(ms),yr=yearRange(ms.getFullYear()),lm=logrosRange(r.s,r.e,a),ly=logrosRange(yr.s,yr.e,a);
+  $("lMonthH").textContent=`${monthLabel(ms)} · total del año entre paréntesis`;
+  const ts=tiposOf(a);
+  $("lCounts").innerHTML=ts.map(t=>{const n=lm.filter(l=>l.tipo===t).length,ny=ly.filter(l=>l.tipo===t).length;return `<div class="count-tile ${n?"":"zero"}"><b>${n}</b><span>${esc(t)}</span><small>${ny} en ${ms.getFullYear()}</small></div>`}).join("");
+  $("lListH").textContent=`Logros de ${MESES_L[ms.getMonth()]}`;
+  const L=$("lList");
+  if(!loadedL){L.innerHTML="";return}
+  if(!lm.length){L.innerHTML=`<li class="empty"><strong>Aún no hay logros este mes</strong><p>Registra aquí lo que concluya el área (${esc(AREAS[a].tipos.join(", ").toLowerCase())}), con su liga y testimonios si los hay. Cada logro que registres aparecerá en los resúmenes del mes y del año.</p></li>`;return}
+  L.innerHTML=lm.slice().reverse().map(l=>{const u=safeUrl(l.liga);return `<li class="litem"><time>${shortDate(l.fecha)}</time><div class="lt"><strong>${esc(l.titulo)}</strong><div class="tmeta"><span class="chip tipo">${esc(l.tipo)}</span>${whoChip(l.responsable)}${u?`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(hostOf(u))} ↗</a>`:""}</div>${l.nota?`<p>${esc(l.nota)}</p>`:""}${testiBlock(l)}</div><div class="tactions"><button class="icon del" data-ldel="${l.id}" aria-label="Borrar logro">${ICON_DEL}</button></div></li>`}).join("");
+}
+
+/* ---------- Panel PM ---------- */
+function areaCardTop(a,nums){const A=AREAS[a];return `<div class="top"><h3>${A.n}</h3><div class="nums">${nums.map(([v,l])=>`<span><b>${v}</b>${l}</span>`).join("")}</div></div>`}
+function renderPM(){
+  const v=pmView,y=anchor.getFullYear();let s,e,label,ws=weekStart(),ms=monthStart();
+  if(v==="week"){s=key(ws);e=key(addDays(ws,6));label=weekLabel(ws)}
+  else if(v==="month"){const r=monthRange(ms);s=r.s;e=r.e;label=monthLabel(ms)}
+  else{const r=yearRange(y);s=r.s;e=r.e;label=`Año ${y}`}
+  const log=logRange(s,e),lg=logrosRange(s,e);
+  $("pTitle").textContent=v==="week"?"Resumen semanal":v==="month"?"Resumen mensual":"Resumen anual";
+  $("pSub").textContent=v==="year"?`${label}. Todos los logros que registró cada área.`:`${label}. Todo lo que registró cada área.`;
+  $("pdfBtn").textContent=v==="week"?"Descargar PDF semanal":v==="month"?"Descargar PDF mensual":"Descargar PDF anual";
+  $("pStats").className="stats";
+  $("pStats").innerHTML=`<div class="stat s1"><b>${log.filter(x=>x.tipo==="t").length}</b><span>tareas completadas</span></div><div class="stat s2"><b>${log.filter(x=>x.tipo==="s").length}</b><span>subtareas completadas</span></div><div class="stat s3"><b>${lg.length}</b><span>logros registrados</span></div><div class="stat s4"><b>${new Set(log.map(x=>x.dia)).size}</b><span>días con avance</span></div>`;
+  const wkKeys=v==="week"?[key(ws)]:v==="month"?monthWeeks(ms).map(key):null;
+  $("pAreas").innerHTML=AREA_IDS.map(a=>{const A=AREAS[a];const al=log.filter(x=>x.area===a),alg=lg.filter(l=>areaOf(l)===a);
+    const tDone=al.filter(x=>x.tipo==="t");let inner="";
+    if(v!=="year"){const pp=plannedPct(a,wkKeys);
+      inner+=`<div><h5>Plan ${v==="week"?"de la semana":"del mes"} · ${pp.d}/${pp.n}</h5><div class="bar" style="margin-top:6px"><i style="width:${pp.pct}%"></i></div></div>`;
+      inner+=`<div><h5>Tareas completadas</h5>${tDone.length?`<ul style="margin-top:6px">${tDone.slice(-5).reverse().map(x=>`<li><span class="when">${shortDate(x.dia)}</span>${esc(x.titulo)}</li>`).join("")}</ul>${tDone.length>5?`<span class="more">+${tDone.length-5} más</span>`:""}`:`<div class="none" style="margin-top:4px">Nada completado aún</div>`}</div>`;
+      const cb=countBy(alg,"tipo","Otro");
+      inner+=`<div><h5>Logros</h5>${cb.length?`<div class="tiles" style="margin-top:6px">${cb.map(([t,n])=>`<span><b>${n}</b>${esc(t)}</span>`).join("")}</div>`:`<div class="none" style="margin-top:4px">Sin logros registrados</div>`}</div>`;
+    }else{const cb=countBy(alg,"tipo","Otro"),st=alg.slice().reverse();
+      inner+=`<div><h5>Logros del año</h5>${cb.length?`<div class="tiles" style="margin-top:6px">${cb.map(([t,n])=>`<span><b>${n}</b>${esc(t)}</span>`).join("")}</div>`:`<div class="none" style="margin-top:4px">Sin logros registrados</div>`}</div>`;
+      inner+=`<div><h5>Logros más recientes</h5>${st.length?`<ul class="wins" style="margin-top:6px">${st.slice(0,8).map(logroLi).join("")}</ul>${st.length>8?`<span class="more">+${st.length-8} logros más en el PDF anual</span>`:""}`:`<div class="none" style="margin-top:4px">Aún no hay logros este año</div>`}</div>`}
+    const goto=v==="week"?`data-goarea="${a}|report"`:v==="month"?`data-goarea="${a}|month"`:`data-goarea="${a}|logros"`;
+    inner+=`<div class="foot"><button class="btn ghost sm" ${goto}>Ver ${v==="week"?"día por día":v==="month"?"semana por semana":"logros"} →</button></div>`;
+    const nums=v==="year"?[[alg.length,"logros"],[tDone.length,"tareas"]]:[[tDone.length,"tareas"],[al.filter(x=>x.tipo==="s").length,"subtareas"],[alg.length,"logros"]];
+    return `<article class="acard" style="--c:${A.c};--on:${A.on}">${areaCardTop(a,nums)}<div class="inner">${inner}</div></article>`}).join("");
+  // gráfica extra
+  const X=$("pExtra");const key3=`<div class="keyrow">${AREA_IDS.map(a=>`<span><i style="background:${AREAS[a].c}"></i>${AREAS[a].n}</span>`).join("")}</div>`;
+  if(v==="week"){
+    const today=key(new Date());
+    X.innerHTML=`<h3 class="section-h" style="margin:0">Actividad por día · tareas y subtareas completadas</h3><div class="matrix-wrap"><table class="matrix"><thead><tr><th></th>${[0,1,2,3,4,5,6].map(i=>{const d=addDays(ws,i);return `<th${key(d)===today?' style="color:var(--flame)"':""}>${DIAS[d.getDay()].slice(0,3)} ${d.getDate()}</th>`}).join("")}</tr></thead><tbody>${AREA_IDS.map(a=>`<tr style="--c:${AREAS[a].c};--on:${AREAS[a].on}"><th class="an"><i></i>${AREAS[a].n}</th>${[0,1,2,3,4,5,6].map(i=>{const k=key(addDays(ws,i)),n=log.filter(x=>x.area===a&&x.dia===k).length;return `<td class="${n===0?"z":n<=2?"m1":n<=4?"m2":"m3"}">${n}</td>`}).join("")}</tr>`).join("")}</tbody></table></div>`;
+  }else if(v==="month"){
+    const weeks=monthWeeks(ms);const rows=weeks.map((w,i)=>{const s2=key(w),e2=key(addDays(w,6));return [`Sem ${i+1} · ${shortRange(w,ms)}`,AREA_IDS.map(a=>log.filter(x=>x.area===a&&x.dia>=s2&&x.dia<=e2).length)]});
+    const max=Math.max(1,...rows.flatMap(r=>r[1]));
+    X.innerHTML=`<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><h3 class="section-h" style="margin:0;flex:1">Avance por semana · tareas y subtareas</h3>${key3}</div><div class="grouped">${rows.map(([l,ns])=>`<div class="grow"><span class="lbl">${l}</span><div class="gbars">${ns.map((n,j)=>`<div style="--c:${AREAS[AREA_IDS[j]].c}"><i style="width:${Math.max(1,n/max*100)}%"></i>${n}</div>`).join("")}</div></div>`).join("")}</div>`;
+  }else{
+    const months=[...Array(12)].map((_,m)=>{const r=monthRange(new Date(y,m,1));return AREA_IDS.map(a=>logrosRange(r.s,r.e,a).length)});
+    const max=Math.max(1,...months.map(ns=>ns.reduce((p,q)=>p+q,0)));
+    X.innerHTML=`<div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><h3 class="section-h" style="margin:0;flex:1">Logros por mes</h3>${key3}</div><div class="ychart">${months.map((ns,m)=>{const tot=ns.reduce((p,q)=>p+q,0);return `<div class="ycol"><b>${tot||""}</b><div class="ystack" style="height:${tot/max*100}%">${ns.map((n,j)=>n?`<i style="height:${n/tot*100}%;background:${AREAS[AREA_IDS[j]].c}"></i>`:"").join("")}</div><span>${MESES[m]}</span></div>`}).join("")}</div>`;
+  }
+}
+
+/* ---------- Textos para copiar ---------- */
+function weekText(a){const ws=weekStart(),s=key(ws),e=key(addDays(ws,6)),log=logRange(s,e,a),lg=logrosRange(s,e,a),L=[];
+  L.push(`REPORTE SEMANAL · ${AREAS[a].n} · Tiempo de Dios`);L.push(weekLabel(ws));L.push("");
+  L.push(`Completado: ${log.filter(x=>x.tipo==="t").length} tareas y ${log.filter(x=>x.tipo==="s").length} subtareas`);L.push("");
+  for(let i=0;i<7;i++){const d=addDays(ws,i),k=key(d),items=log.filter(x=>x.dia===k);if(!items.length&&i>=5)continue;
+    L.push(`${cap(DIAS[d.getDay()])} ${d.getDate()} ${MESES[d.getMonth()]}`);if(!items.length)L.push("  · Sin registros");
+    items.forEach(x=>L.push(`  ${hhmm(x.hecha)}  ${x.tipo==="t"?"✔ "+x.titulo:"– "+x.titulo+" (de: "+x.padre+")"}${x.responsable?" · "+x.responsable:""}${x.proyecto?" ["+x.proyecto+"]":""}`));L.push("")}
+  if(lg.length){L.push("Logros:");lg.forEach(l=>L.push(`  ★ ${l.tipo}: ${l.titulo}${l.liga?" "+safeUrl(l.liga):""}`));L.push("")}
+  const pend=weekTasksOf(a,ws).filter(t=>!t.hecha);if(pend.length){L.push("En curso:");pend.forEach(t=>L.push(`  · ${t.titulo}${t.responsable?" · "+t.responsable:""}`))}
+  return L.join("\n")}
+function monthText(a){const ms=monthStart(),r=monthRange(ms),log=logRange(r.s,r.e,a),lg=logrosRange(r.s,r.e,a),weeks=monthWeeks(ms),L=[];
+  L.push(`REPORTE MENSUAL · ${AREAS[a].n} · Tiempo de Dios`);L.push(monthLabel(ms));L.push("");
+  L.push(`Completado: ${log.filter(x=>x.tipo==="t").length} tareas, ${log.filter(x=>x.tipo==="s").length} subtareas y ${lg.length} logros`);L.push("");
+  if(lg.length){L.push("Logros del mes:");countBy(lg,"tipo","Otro").forEach(([t,n])=>L.push(`  ${t}: ${n}`));lg.forEach(l=>{L.push(`  ★ ${shortDate(l.fecha)} · ${l.titulo}${l.liga?" "+safeUrl(l.liga):""}`);(l.testimonios||[]).forEach(t=>L.push(`      “${t.texto}”${t.autor?" — "+t.autor:""}`))});L.push("")}
+  weeks.forEach((w,i)=>{const s=key(w),e=key(addDays(w,6)),wl=log.filter(x=>x.dia>=s&&x.dia<=e),done=wl.filter(x=>x.tipo==="t");
+    L.push(`Semana ${i+1} (${shortRange(w,ms)}): ${done.length} tareas, ${wl.length-done.length} subtareas`);done.forEach(x=>L.push(`  ✔ ${x.titulo}${x.responsable?" · "+x.responsable:""}`));if(!wl.length)L.push("  · Sin registros");L.push("")});
+  return L.join("\n")}
+function copyText(txt,box){const fb=()=>{$(box).innerHTML=`<p class="status">Selecciona el texto y cópialo:</p><textarea class="copyfallback" id="${box}-ta" readonly></textarea>`;const t=$(box+"-ta");t.value=txt;t.focus();t.select()};
+  try{navigator.clipboard.writeText(txt).then(()=>toast("Reporte copiado. Pégalo en tu correo o chat."),fb)}catch(e){fb()}}
+
+/* ---------- PDF ---------- */
+function pdfWriter(title,sub){
+  const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:"pt",format:"letter"});
+  const W=612,H=792,M=48,CW=W-2*M;let y=0;
+  const band=()=>{doc.setFillColor(27,28,26);doc.rect(0,0,W,96,"F");doc.setFillColor(255,61,26);doc.circle(M+5,30,5,"F");doc.setFillColor(152,213,224);doc.circle(M+19,30,5,"F");doc.setFillColor(69,122,127);doc.circle(M+33,30,5,"F");
+    doc.setTextColor(201,210,209);doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text("TIEMPO DE DIOS · BITÁCORA",M+46,33);
+    doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(22);doc.text(title,M,64);
+    doc.setFont("helvetica","normal");doc.setFontSize(11);doc.setTextColor(152,213,224);doc.text(sub,M,82);y=124};
+  band();
+  const need=h=>{if(y+h>H-56){doc.addPage();y=56}};
+  const api={
+    area(a){need(60);const c=AREAS[a].rgb;doc.setFillColor(c[0],c[1],c[2]);doc.roundedRect(M,y-14,CW,26,5,5,"F");doc.setTextColor(...(a==="audiovisual"?[27,28,26]:[255,255,255]));doc.setFont("helvetica","bold");doc.setFontSize(14);doc.text(AREAS[a].n,M+12,y+4);y+=30},
+    h(t){need(34);y+=4;doc.setTextColor(94,103,102);doc.setFont("helvetica","bold");doc.setFontSize(9);doc.text(t.toUpperCase(),M,y);doc.setDrawColor(221,229,229);doc.line(M+doc.getTextWidth(t.toUpperCase())+8,y-3,M+CW,y-3);y+=14},
+    p(t,o={}){const sz=o.size||10.5,ind=o.indent||0,lh=sz*1.38;doc.setFont("helvetica",o.bold?"bold":"normal");doc.setFontSize(sz);doc.setTextColor(...(o.color||[27,28,26]));
+      const lines=doc.splitTextToSize(String(t),CW-ind);lines.forEach(l=>{need(lh);doc.text(l,M+ind,y);y+=lh})},
+    link(label,url,o={}){const ind=o.indent||0;need(14);doc.setFont("helvetica","normal");doc.setFontSize(9.5);doc.setTextColor(43,123,138);const short=url.length>80?url.slice(0,77)+"...":url;doc.textWithLink(short,M+ind,y,{url});y+=13},
+    gap(n){y+=n||8},
+    save(){const n=doc.getNumberOfPages();for(let i=1;i<=n;i++){doc.setPage(i);doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(140,148,147);doc.text(`Generado el ${new Date().toLocaleDateString("es-MX",{day:"numeric",month:"long",year:"numeric"})}`,M,H-28);doc.text(`${i} / ${n}`,W-M,H-28,{align:"right"})}return doc.output("blob")}
+  };return api}
+function clean(s){return String(s||"").replace(/[^\u0000-ÿ–—‘’“”…•]/g,"").trim()}
+function pdfLogros(P,lg,ind){lg.forEach(l=>{P.p(`- ${shortDate(l.fecha)} · ${clean(l.tipo)}: ${clean(l.titulo)}${l.responsable?" · "+clean(l.responsable):""}${l.nota?" ("+clean(l.nota)+")":""}`,{indent:ind||8});const u=safeUrl(l.liga);if(u)P.link("",u,{indent:(ind||8)+10});(l.testimonios||[]).forEach(t=>P.p(`"${clean(t.texto)}"${t.autor?" — "+clean(t.autor):""}`,{indent:(ind||8)+10,size:9.5,color:[69,122,127]}));P.gap(2)})}
+function buildPDF(){
+  const v=pmView,y=anchor.getFullYear(),ws=weekStart(),ms=monthStart();let P,fname;
+  if(v==="week"){const s=key(ws),e=key(addDays(ws,6)),log=logRange(s,e),lg=logrosRange(s,e);
+    P=pdfWriter("Reporte semanal",weekLabel(ws));fname=`TdD-reporte-semanal-${s}.pdf`;
+    P.p(`En total: ${log.filter(x=>x.tipo==="t").length} tareas, ${log.filter(x=>x.tipo==="s").length} subtareas y ${lg.length} logros.`,{bold:true});P.gap(10);
+    AREA_IDS.forEach(a=>{const al=log.filter(x=>x.area===a),alg=lg.filter(l=>areaOf(l)===a),pp=plannedPct(a,[s]);
+      P.area(a);P.p(`${al.filter(x=>x.tipo==="t").length} tareas y ${al.filter(x=>x.tipo==="s").length} subtareas completadas · ${pp.d} de ${pp.n} tareas planeadas (${pp.pct}%) · ${alg.length} logros`,{color:[94,103,102],size:10});
+      P.h("Día por día");let any=false;
+      for(let i=0;i<7;i++){const d=addDays(ws,i),k=key(d),it=al.filter(x=>x.dia===k);if(!it.length)continue;any=true;
+        P.p(`${cap(DIAS[d.getDay()])} ${d.getDate()} ${MESES[d.getMonth()]}`,{bold:true,size:10.5});
+        it.forEach(x=>P.p(`${hhmm(x.hecha)}   ${x.tipo==="t"?"Tarea: "+clean(x.titulo):"Subtarea: "+clean(x.titulo)+" (de "+clean(x.padre)+")"}${x.responsable?" · "+clean(x.responsable):""}`,{indent:12,size:10}));P.gap(3)}
+      if(!any)P.p("Sin tareas completadas esta semana.",{color:[94,103,102],size:10});
+      if(alg.length){P.h("Logros");pdfLogros(P,alg)}
+      const pend=weekTasksOf(a,ws).filter(t=>!t.hecha);if(pend.length){P.h("Sigue en curso");pend.forEach(t=>P.p(`- ${clean(t.titulo)}${t.responsable?" · "+clean(t.responsable):""}`,{indent:8,size:10}))}
+      P.gap(14)});
+  }else if(v==="month"){const r=monthRange(ms),log=logRange(r.s,r.e),lg=logrosRange(r.s,r.e),weeks=monthWeeks(ms);
+    P=pdfWriter("Reporte mensual",monthLabel(ms));fname=`TdD-reporte-mensual-${r.s.slice(0,7)}.pdf`;
+    P.p(`En total: ${log.filter(x=>x.tipo==="t").length} tareas, ${log.filter(x=>x.tipo==="s").length} subtareas y ${lg.length} logros.`,{bold:true});P.gap(10);
+    AREA_IDS.forEach(a=>{const al=log.filter(x=>x.area===a),alg=lg.filter(l=>areaOf(l)===a),pp=plannedPct(a,weeks.map(key));
+      P.area(a);P.p(`${al.filter(x=>x.tipo==="t").length} tareas y ${al.filter(x=>x.tipo==="s").length} subtareas completadas · ${pp.pct}% de lo planeado · ${new Set(al.map(x=>x.dia)).size} días con avance`,{color:[94,103,102],size:10});
+      P.h("Logros del mes");if(alg.length){P.p(countBy(alg,"tipo","Otro").map(([t,n])=>`${clean(t)}: ${n}`).join("   ·   "),{bold:true,size:10});P.gap(4);pdfLogros(P,alg)}else P.p("Sin logros registrados.",{color:[94,103,102],size:10});
+      P.h("Semana por semana");weeks.forEach((w,i)=>{const s=key(w),e=key(addDays(w,6)),wl=al.filter(x=>x.dia>=s&&x.dia<=e),done=wl.filter(x=>x.tipo==="t");
+        P.p(`Semana ${i+1} (${shortRange(w,ms)}): ${done.length} tareas, ${wl.length-done.length} subtareas`,{bold:true,size:10});done.forEach(x=>P.p(`- ${clean(x.titulo)}${x.responsable?" · "+clean(x.responsable):""}`,{indent:12,size:10}));P.gap(3)});
+      P.gap(14)});
+  }else{const r=yearRange(y),log=logRange(r.s,r.e),lg=logrosRange(r.s,r.e);
+    P=pdfWriter("Resumen anual · logros",`Año ${y}`);fname=`TdD-resumen-anual-${y}.pdf`;
+    P.p(`En ${y} se registraron ${lg.length} logros y se completaron ${log.filter(x=>x.tipo==="t").length} tareas en las tres áreas.`,{bold:true});P.gap(10);
+    AREA_IDS.forEach(a=>{const alg=lg.filter(l=>areaOf(l)===a);
+      P.area(a);P.h("Logros del año");P.p(alg.length?countBy(alg,"tipo","Otro").map(([t,n])=>`${clean(t)}: ${n}`).join("   ·   "):"Sin logros registrados.",{bold:!!alg.length,size:10.5});
+      if(alg.length){countBy(alg,"tipo","Otro").forEach(([t,n])=>{P.h(`${t} (${n})`);pdfLogros(P,alg.filter(l=>(l.tipo||"Otro")===t))})}P.gap(14)});
+  }
+  return {blob:P.save(),fname}}
+let dlNS;
+async function downloadPDF(){
+  if(!window.jspdf){toast("El generador de PDF no cargó. Recarga la página e inténtalo de nuevo.");return}
+  const btn=$("pdfBtn");btn.disabled=true;
+  try{if(dlNS===undefined){try{dlNS=await window.claude?.use?.("downloads")}catch(e){dlNS=null}}
+    if(!dlNS){toast("La descarga no está disponible en esta vista. Ábrela desde claude.ai.");return}
+    const {blob,fname}=buildPDF();await dlNS.save({filename:fname,data:blob});toast("PDF listo.")}
+  catch(e){if(e&&e.code==="declined"){}else if(e&&e.code==="rate_limited")toast("Ya hay una descarga esperando tu confirmación.");else toast("No se pudo generar el PDF. Inténtalo de nuevo.")}
+  finally{btn.disabled=false}}
+
+/* ---------- Eventos ---------- */
+$("addForm").addEventListener("submit",e=>{e.preventDefault();const t=$("newTitle").value.trim();if(!t)return;if(!tasksCol){toast("La bitácora aún no se conecta");return}addTask(t,$("newProj").value.trim(),$("newWho").value.trim());$("newTitle").value="";$("newTitle").focus()});
+function shift(n){const sc=scope();if(sc==="week")anchor=addDays(anchor,7*n);else if(sc==="month")anchor=new Date(anchor.getFullYear(),anchor.getMonth()+n,1);else anchor=new Date(anchor.getFullYear()+n,0,1);
+  ["copyWeekBox","copyMonthBox"].forEach(b=>$(b).innerHTML="");render()}
+$("prevP").onclick=()=>shift(-1);$("nextP").onclick=()=>shift(1);
+$("todayP").onclick=()=>{anchor=new Date();render()};
+$("copyWeek").onclick=()=>copyText(weekText(route),"copyWeekBox");
+$("copyMonth").onclick=()=>copyText(monthText(route),"copyMonthBox");
+$("pdfBtn").onclick=downloadPDF;
+$("lTipo").addEventListener("change",()=>{$("lOtroWrap").hidden=$("lTipo").value!=="__otro";if(!$("lOtroWrap").hidden)$("lOtro").focus()});
+$("logroForm").addEventListener("submit",e=>{e.preventDefault();if(!logrosCol){toast("La bitácora aún no se conecta");return}
+  const titulo=$("lTitulo").value.trim();let tipo=$("lTipo").value;if(tipo==="__otro")tipo=$("lOtro").value.trim();
+  if(!titulo){$("lTitulo").focus();toast("Escribe el nombre del logro.");return}if(!tipo){$("lOtro").focus();toast("Escribe el tipo de logro.");return}
+  const fecha=$("lFecha").value||key(new Date());const liga=$("lLiga").value.trim();
+  if(liga&&!safeUrl(liga)){$("lLiga").focus();toast("La liga no parece válida. Revisa que esté completa.");return}
+  const l={id:uid(),area:route,tipo,titulo,fecha,liga:liga?safeUrl(liga):"",responsable:$("lQuien").value.trim(),nota:$("lNota").value.trim(),testimonios:$("lTesti").value.trim()?[{id:uid(),texto:$("lTesti").value.trim(),autor:$("lTestiQuien").value.trim(),creado:new Date().toISOString()}]:[],creado:new Date().toISOString()};
+  logros.push(l);["lTitulo","lLiga","lNota","lOtro","lTesti","lTestiQuien"].forEach(i=>$(i).value="");  if($("lTipo").value==="__otro"){$("lTipo").value="";}
+  const f=fromKey(fecha);if(f.getMonth()!==anchor.getMonth()||f.getFullYear()!==anchor.getFullYear())anchor=f;
+  render();saveLogro(l);toast("Logro guardado.")});
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.tab){if(route==="pm"){pmView=b.dataset.tab}else{const prev=scope();areaView[route]=b.dataset.tab}render();return}
+  if(b.dataset.goweek){anchor=fromKey(b.dataset.goweek);areaView[route]="report";render();window.scrollTo({top:0,behavior:"smooth"});return}
+  if(b.dataset.goarea){const [a,v]=b.dataset.goarea.split("|");areaView[a]=v;location.hash=a;return}
+  if(!tasksCol)return;
+  if(b.dataset.tt)toggleTask(b.dataset.tt);
+  else if(b.dataset.st){const [a,s]=b.dataset.st.split("|");toggleSub(a,s)}
+  else if(b.dataset.open){const id=b.dataset.open;if(open.has(id)&&b.classList.contains("ttitle"))open.delete(id);else open.add(id);render();const i=$("sub-"+id);if(i)i.focus()}
+  else if(b.dataset.del){const id=b.dataset.del;confirmDel(b,id,()=>{tasks=tasks.filter(t=>t.id!==id);render();write(id,()=>tasksCol.doc(id).delete())})}
+  else if(b.dataset.sdel){const [a,s]=b.dataset.sdel.split("|");delSub(a,s)}
+  else if(b.dataset.move)moveHere(b.dataset.move);
+  else if(b.dataset.testiopen){const id=b.dataset.testiopen;if(openTesti.has(id))openTesti.delete(id);else openTesti.add(id);render();const t=$("tt-"+id);if(t)t.focus()}
+  else if(b.dataset.tdel){const [lid,tid]=b.dataset.tdel.split("|");confirmDel(b,tid,()=>{const l=logros.find(x=>x.id===lid);if(l){l.testimonios=(l.testimonios||[]).filter(t=>t.id!==tid);render();saveLogro(l)}})}
+  else if(b.dataset.ldel){const id=b.dataset.ldel;confirmDel(b,id,()=>{logros=logros.filter(l=>l.id!==id);render();write(id,()=>logrosCol.doc(id).delete())})}
+});
+document.addEventListener("submit",e=>{const f=e.target.closest("[data-subform]");if(!f)return;e.preventDefault();const id=f.dataset.subform;const v=$("sub-"+id).value.trim();if(!v)return;addSub(id,v,$("subwho-"+id).value.trim());setTimeout(()=>{const i=$("sub-"+id);if(i)i.focus()},0)});
+document.addEventListener("submit",e=>{const f=e.target.closest("[data-testiform]");if(!f)return;e.preventDefault();const id=f.dataset.testiform;const tx=$("tt-"+id).value.trim();if(!tx){$("tt-"+id).focus();return}const l=logros.find(x=>x.id===id);if(!l||!logrosCol)return;l.testimonios=[...(l.testimonios||[]),{id:uid(),texto:tx,autor:$("ta-"+id).value.trim(),creado:new Date().toISOString()}];openTesti.delete(id);render();saveLogro(l);toast("Testimonio guardado.")});
+document.addEventListener("change",e=>{const i=e.target.closest("[data-owner]");if(i&&tasksCol)setOwner(i.dataset.owner,i.value.trim())});
+
+readHash();render();
+
+/* ---------- Conexión ---------- */
+(async()=>{
+  try{db=await window.claude?.use?.("db")}catch(e){db=null}
+  if(!db){loadedT=loadedL=true;setStatus("Abre la bitácora desde claude.ai con tu cuenta para ver y guardar los registros.",true);render();return}
+  tasksCol=db.collection("tareas");logrosCol=db.collection("logros");
+  let gotT=false,gotL=false;
+  const timer=setTimeout(()=>setStatus("No se pudo conectar todavía; los cambios se guardarán en cuanto haya conexión.",true),10000);
+  const done=()=>{if(gotT&&gotL){clearTimeout(timer);setStatus("")}};
+  const fail=err=>{clearTimeout(timer);loadedT=loadedL=true;setStatus(err&&err.code==="revoked"?"":"Se perdió la conexión con la bitácora. Recarga la página para continuar.",true);render()};
+  tasksCol.onSnapshot(snap=>{tasks=snap.docs.map(d=>{const b=d.data()||{};return {...b,id:d.id,subtareas:(b.subtareas||[]).slice()}});loadedT=true;if(!snap.metadata.fromCache){gotT=true;done()}render()},fail);
+  logrosCol.onSnapshot(snap=>{logros=snap.docs.map(d=>({...(d.data()||{}),id:d.id}));loadedL=true;if(!snap.metadata.fromCache){gotL=true;done()}render()},fail);
+})();
+})();
+</script>
