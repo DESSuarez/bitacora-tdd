@@ -1,0 +1,6 @@
+# Hostinger clona el repositorio completo en la carpeta del subdominio.
+# Esto hace que el subdominio sirva solo lo que está en app/
+# y que no se puedan abrir los demás archivos (schema.sql, CLAUDE.md, .git, etc.).
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !^/app/
+RewriteRule ^(.*)$ app/$1 [L]
