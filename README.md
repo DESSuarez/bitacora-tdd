@@ -59,12 +59,13 @@ La función usa la *service_role key* que Supabase le da por dentro; nunca sale 
 
 La primera PM se asigna a mano en **SQL Editor** (al final de `schema.sql` hay ejemplos). Desde ahí, todo lo demás se hace en la app.
 
+### 5. Fotos de perfil (proyectos creados antes de noviembre 2026)
+Si tu base de datos se creó con una versión anterior de `schema.sql`, corre una vez `supabase/migraciones/002_perfil_y_fotos.sql` en **SQL Editor**. Crea el espacio para las fotos y deja que cada persona edite su nombre y foto (pero no su rol ni su área).
+
 ## Seguridad
 - La *anon key* puede ir en el navegador. Lo que protege los datos son las reglas de `schema.sql`: sin sesión no se ve nada, y cada quien solo escribe en su área.
 - Nunca subas la *service_role key* a la app.
 
 ## Siguientes pasos sugeridos
 Están detallados en `CLAUDE.md`. En resumen:
-1. Que la PM pueda asignar tareas a una persona del equipo, y que cada quien vea una vista de **"Mis tareas"**.
-2. Una opción para mover una tarea a otra área.
-3. Pasar el `index.html` único a un proyecto con componentes (por ejemplo, Vite + React) cuando la app crezca.
+1. Pasar el `index.html` único a un proyecto con componentes (por ejemplo, Vite + React) cuando la app crezca.

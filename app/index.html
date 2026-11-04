@@ -223,12 +223,52 @@ main .wrap{padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
 .star{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--fg);cursor:pointer}
 .star input{width:18px;height:18px;accent-color:var(--flame)}
 @media (max-width:640px){.lform{grid-template-columns:1fr 1fr}.lform .c2,.lform .c3,.lform .c4{grid-column:1/-1}}
+/* Personas, fotos y perfil */
+.av{width:22px;height:22px;border-radius:50%;object-fit:cover;background:var(--flame);color:#fff;display:inline-grid;place-items:center;font-weight:800;font-size:10px;flex:none;overflow:hidden;font-style:normal}
+.av.md{width:36px;height:36px;font-size:14px}.av.lg{width:72px;height:72px;font-size:26px}.av.xl{width:128px;height:128px;font-size:44px}
+.av[data-a="formacion"]{background:var(--sea)}.av[data-a="audiovisual"]{background:var(--baby);color:#1B1C1A}
+a.chip.who{text-decoration:none}a.chip.who:hover{filter:brightness(.95)}
+.chip.who.has-av::before{display:none}
+.chip.who .av{width:16px;height:16px;font-size:9px}
+.people{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.pcard{border:1.5px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;text-decoration:none;color:var(--fg);background:var(--bg);border-top:6px solid var(--c,var(--line))}
+.pcard:hover{border-color:var(--c,var(--area-ink))}
+.pcard b{font-size:16px}.pcard span{font-size:13px;color:var(--muted)}
+.pcard .n{font-family:var(--mono);font-size:12px}
+.profile{display:flex;gap:24px;align-items:center;flex-wrap:wrap;border:1.5px solid var(--line);border-radius:18px;padding:22px;background:var(--surface)}
+.profile .pfoto{display:flex;flex-direction:column;align-items:center;gap:10px}
+.profile .pinfo{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+.profile .pinfo input{font-family:var(--display);font-weight:900;font-size:28px;font-stretch:108%;border:1.5px solid transparent;border-radius:10px;background:transparent;padding:2px 8px;margin-left:-10px;min-width:0;width:100%;max-width:480px}
+.profile .pinfo input:hover{border-color:var(--line)}.profile .pinfo input:focus{border-color:var(--area-ink);outline:none;background:var(--bg)}
+.profile .pinfo h2{margin:0;font-family:var(--display);font-weight:900;font-size:28px;font-stretch:108%}
+.profile .pinfo .mail{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.btn.file{display:inline-flex;align-items:center;cursor:pointer}
+.plist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.pitem{display:flex;gap:12px;align-items:center;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg)}
+.pitem .txt{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.pitem .txt small{color:var(--muted);font-size:12.5px}
+.pitem time{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.chip.area{border-color:transparent;color:#fff}
+.filters{display:flex;gap:10px;flex-wrap:wrap}
+.filters label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:var(--muted);flex:1 1 160px;max-width:240px}
+.filters .field{height:40px}
+.agroup{display:flex;flex-direction:column;gap:10px}
+.agroup h3{display:flex;align-items:center;gap:8px;margin:8px 0 0;font-family:var(--display);font-weight:900;font-size:18px}
+.agroup h3 i{width:12px;height:12px;border-radius:50%}
+.agroup h3 span{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400}
+.editrow{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.editrow label{display:flex;flex-direction:column;gap:3px;font-size:12px;font-weight:700;color:var(--muted);min-width:0}
+.editrow input,.editrow select,.subadd select{height:36px;border:1.5px solid var(--line);border-radius:8px;padding:0 10px;background:var(--bg);font-size:14px;min-width:0;width:100%}
+.subadd select{width:auto;max-width:180px}
+@media (max-width:480px){.subadd select{flex:1 1 auto;max-width:none}.profile{padding:16px;gap:16px}.profile .pinfo input,.profile .pinfo h2{font-size:22px}}
 /* Equipo */
 .team{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .member{border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:minmax(0,1fr) 150px 150px 220px;gap:10px;align-items:center;background:var(--bg)}
 .member .who{display:flex;flex-direction:column;gap:2px;min-width:0}
 .member .who input{height:34px;border:1.5px solid transparent;border-radius:8px;padding:0 8px;margin-left:-9px;background:transparent;font-weight:800;font-size:15px;min-width:0}
+.check:disabled{opacity:.45;cursor:default}
 .member .who input:hover{border-color:var(--line)}.member .who input:focus{border-color:var(--area-ink);outline:none;background:var(--bg)}
+.member .wl{display:flex;align-items:center;gap:8px;min-width:0}.member .wl input{margin-left:0;flex:1}
 .member .mail{font-family:var(--mono);font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .member select{height:38px;border:1.5px solid var(--line);border-radius:8px;padding:0 8px;background:var(--bg);font-size:13px;min-width:0;width:100%}
 .member .acts{display:flex;gap:6px;align-items:center;justify-content:flex-end}
@@ -322,7 +362,8 @@ table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:52
 .userbar{position:relative;margin-left:auto}
 .acct{display:inline-flex;align-items:center;gap:8px;background:transparent;border:1.5px solid #4A4D49;color:#C9D2D1;border-radius:999px;height:36px;padding:0 10px 0 4px;font-size:13px}
 .acct:hover,.acct[aria-expanded="true"]{border-color:var(--baby)}
-.acct .avatar{width:26px;height:26px;border-radius:50%;background:var(--flame);color:#fff;display:grid;place-items:center;font-weight:800;font-size:12px}
+.acct .avatar img{width:100%;height:100%;object-fit:cover}
+.acct .avatar{overflow:hidden;width:26px;height:26px;border-radius:50%;background:var(--flame);color:#fff;display:grid;place-items:center;font-weight:800;font-size:12px}
 .acct .caret{width:12px;height:12px}
 .acctmenu{position:absolute;right:0;top:calc(100% + 8px);z-index:30;min-width:240px;max-width:calc(100vw - 32px);background:var(--bg);color:var(--fg);border:1.5px solid var(--line);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.35);padding:6px;display:flex;flex-direction:column}
 .acctinfo{display:flex;flex-direction:column;gap:2px;padding:10px 12px 12px;border-bottom:1px solid var(--line);margin-bottom:6px;min-width:0}
@@ -374,6 +415,7 @@ table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:52
         <button type="button" class="acct" id="acctBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="acctMenu"><span class="avatar" id="acctAvatar"></span><span id="userName"></span><svg class="caret" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div class="acctmenu" id="acctMenu" role="menu" hidden>
           <div class="acctinfo"><b id="acctNombre"></b><span id="acctRol"></span><span class="mail" id="acctEmail"></span></div>
+          <button type="button" role="menuitem" id="meBtn">Mi perfil</button>
           <button type="button" role="menuitem" id="pwBtn">Cambiar contraseña</button>
           <button type="button" role="menuitem" id="logoutBtn" class="out">Cerrar sesión</button>
         </div>
@@ -382,6 +424,7 @@ table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:52
         <a href="#formacion" data-route="formacion"><i style="background:#457A7F"></i>Formación</a>
         <a href="#musica" data-route="musica"><i style="background:#FF3D1A"></i>Música</a>
         <a href="#audiovisual" data-route="audiovisual"><i style="background:#98D5E0"></i>Audiovisual</a>
+        <a href="#equipo" data-route="equipo"><i style="background:#C9D2D1"></i>Equipo</a>
         <a href="#pm" data-route="pm"><i style="background:#fff;border:1px solid #888"></i>Project Manager</a>
       </nav>
     </div>
@@ -408,7 +451,7 @@ table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:52
       <form class="adder" id="addForm" autocomplete="off">
         <input class="field wide" id="newTitle" placeholder="Nueva tarea de la semana…" aria-label="Nueva tarea" maxlength="200">
         <input class="field" id="newProj" placeholder="Proyecto" aria-label="Proyecto" maxlength="40" list="projList">
-        <input class="field" id="newWho" placeholder="Responsable" aria-label="Responsable" maxlength="40" list="whoList">
+        <select class="field" id="newWho" aria-label="Responsable"></select>
         <button class="btn" type="submit">Agregar</button>
       </form>
       <datalist id="projList"></datalist><datalist id="whoList"></datalist>
@@ -491,6 +534,46 @@ table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:52
       <div class="panel" id="pExtra"></div>
     </section>
 
+    <!-- Tareas de todas las áreas (PM) -->
+    <section class="view" id="vPMTasks" hidden>
+      <div class="rhead">
+        <div><h2>Tareas de la semana</h2><p>Asigna tareas a cualquier área y persona, y edítalas desde aquí.</p></div>
+      </div>
+      <form class="lform" id="ptForm" autocomplete="off">
+        <h3>Asignar una tarea</h3>
+        <label class="c4" for="ptTitulo">Tarea<input class="field" id="ptTitulo" placeholder="¿Qué hay que hacer?" maxlength="200" required></label>
+        <label class="c2" for="ptArea">Área<select class="field" id="ptArea"></select></label>
+        <label class="c2" for="ptWho">Responsable<select class="field" id="ptWho"></select></label>
+        <label class="c2" for="ptProyecto">Proyecto<input class="field" id="ptProyecto" placeholder="Opcional" maxlength="40" list="projList"></label>
+        <label class="c2" for="ptSemana">Semana<input class="field" type="date" id="ptSemana"></label>
+        <div class="row">
+          <span class="dlnote">La tarea aparece en los Pendientes del área y en el perfil de la persona.</span>
+          <button class="btn" type="submit">Asignar tarea</button>
+        </div>
+      </form>
+      <div class="filters">
+        <label for="pfArea">Área<select class="field" id="pfArea"></select></label>
+        <label for="pfWho">Persona<select class="field" id="pfWho"></select></label>
+        <label for="pfEstado">Mostrar<select class="field" id="pfEstado"><option value="abiertas">Pendientes</option><option value="todas">Todas</option></select></label>
+      </div>
+      <div id="ptCarry"></div>
+      <div id="ptList"></div>
+    </section>
+
+    <!-- Directorio del equipo (todos) -->
+    <section class="view" id="vPeople" hidden>
+      <div class="rhead"><div><h2>Quién es quién</h2><p>Toca a una persona para ver su perfil y sus pendientes.</p></div></div>
+      <div class="people" id="peopleGrid"></div>
+    </section>
+
+    <!-- Perfil de una persona -->
+    <section class="view" id="vPerson" hidden>
+      <div id="personCard"></div>
+      <div class="stats three" id="personStats"></div>
+      <div class="panel"><h3 class="section-h" style="margin:0" id="personPendH">Pendientes</h3><ul class="plist" id="personPend"></ul></div>
+      <div class="panel"><h3 class="section-h" style="margin:0" id="personDoneH">Completado esta semana</h3><ul class="plist" id="personDone"></ul></div>
+    </section>
+
     <!-- Equipo (solo PM) -->
     <section class="view" id="vTeam" hidden>
       <div class="rhead">
@@ -535,9 +618,12 @@ const AREA_ICON={
  formacion:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5c3-1.5 6-1.5 9 0v12c-3-1.5-6-1.5-9 0zM21 6.5c-3-1.5-6-1.5-9 0v12c3-1.5 6-1.5 9 0z"/></svg>',
  musica:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>',
  audiovisual:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="M15.5 10.5l6-3.5v10l-6-3.5z"/></svg>',
- pm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>'};
+ pm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+ equipo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14.5c2.4 0 4 1.5 4.5 4"/></svg>'};
+AREA_ICON.persona=AREA_ICON.equipo;
 const AREA_TABS=[["tasks","Pendientes"],["report","Reporte diario"],["month","Mes"],["logros","Logros"]];
-const PM_TABS=[["week","Semana"],["month","Mes"],["year","Año"],["team","Equipo"]];
+const PM_TABS=[["week","Semana"],["month","Mes"],["year","Año"],["tasks","Tareas"],["team","Equipo"]];
+const PM_SOLO=["tasks","team"];
 const ROLES={pm:"Project Manager",lider:"Líder",colaborador:"Colaborador"};
 const $=id=>document.getElementById(id);
 const CHECK='<svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.2 3L13 4.5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -549,7 +635,7 @@ const DOT_STAR='<svg viewBox="0 0 18 18"><path d="M9 1.8l2.1 4.3 4.7.6-3.4 3.3.8
 
 let sb=null,perfil=null,perfiles=[],db=null,tasksCol=null,logrosCol=null,tasks=[],logros=[],loadedT=false,loadedL=false;
 let route="formacion",areaView={formacion:"tasks",musica:"tasks",audiovisual:"tasks"},pmView="week";
-let anchor=new Date(),open=new Set(),openTesti=new Set(),pendingDel=null;
+let anchor=new Date(),open=new Set(),openTesti=new Set(),pendingDel=null,personaId=null;
 let cuentas=null,cuentasErr="",cuentasCargando=false;
 
 /* Fechas */
@@ -575,7 +661,28 @@ function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&l
 function uid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4)}
 function toast(msg){const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
 function setStatus(msg,warn){const s=$("status");s.textContent=msg||"";s.className="status"+(warn?" warn":"");s.hidden=!msg}
-function whoChip(n){if(!n)return"";return `<span class="chip who" data-i="${esc((n.trim()[0]||"").toUpperCase())}">${esc(n)}</span>`}
+/* Personas: el responsable se guarda con id (responsable_id) y con nombre (responsable) para reportes y PDF.
+   Las tareas viejas solo traen el nombre: se relacionan con perfiles por nombre. */
+function personaDe(id,n){if(id){const p=perfiles.find(x=>x.id===id);if(p)return p}
+  if(n){const k=n.trim().toLowerCase();return perfiles.find(x=>(x.nombre||"").trim().toLowerCase()===k)||null}return null}
+function asignadoA(x,pid){if(x.responsable_id)return x.responsable_id===pid;const p=perfiles.find(y=>y.id===pid);
+  return !!p&&!!x.responsable&&x.responsable.trim().toLowerCase()===(p.nombre||"").trim().toLowerCase()}
+function av(p,size){const ini=esc(((p&&p.nombre||"?").trim()[0]||"?").toUpperCase()),a=p&&p.area?` data-a="${p.area}"`:"";
+  return p&&p.foto?`<img class="av ${size||""}" src="${esc(p.foto)}" alt=""${a} loading="lazy">`:`<i class="av ${size||""}"${a} aria-hidden="true">${ini}</i>`}
+function whoChip(n,id){const p=personaDe(id,n);
+  if(p)return `<a class="chip who has-av" href="#persona/${p.id}">${av(p)}${esc(p.nombre)}</a>`;
+  if(!n)return"";return `<span class="chip who" data-i="${esc((n.trim()[0]||"").toUpperCase())}">${esc(n)}</span>`}
+function rolDe(p){return p.rol==="pm"?"Project Manager":`${ROLES[p.rol]||"Colaborador"} · ${p.area&&AREAS[p.area]?AREAS[p.area].n:"Sin área asignada"}`}
+function opcionesPersona(area,sel,legacy){const ord=(a,b)=>(a.nombre||"").localeCompare(b.nombre||"");
+  const de=perfiles.filter(p=>p.area===area).sort(ord),otros=perfiles.filter(p=>p.area!==area).sort(ord);
+  const o=p=>`<option value="${p.id}" ${p.id===sel?"selected":""}>${esc(p.nombre)}</option>`;
+  return `<option value="">Sin asignar</option>${legacy?`<option value="__txt" selected>${esc(legacy)}</option>`:""}`+
+    (de.length?`<optgroup label="${AREAS[area]?AREAS[area].n:"Área"}">${de.map(o).join("")}</optgroup>`:"")+
+    (otros.length?`<optgroup label="Otras personas">${otros.map(o).join("")}</optgroup>`:"")}
+function fillSelect(el,html){const v=el.value;el.innerHTML=html;if(v&&[...el.options].some(o=>o.value===v))el.value=v}
+function pendientesDe(pid){const out=[];
+  tasks.forEach(t=>{if(!t.hecha&&asignadoA(t,pid))out.push({t});t.subtareas.forEach(s=>{if(!s.hecha&&asignadoA(s,pid))out.push({t,s})})});
+  return out.sort((a,b)=>a.t.semana<b.t.semana?-1:a.t.semana>b.t.semana?1:0)}
 function canEdit(a){return !!perfil&&(perfil.rol==="pm"||perfil.area===a)}
 function esPM(){return !!perfil&&perfil.rol==="pm"}
 function areaOf(x){return AREAS[x.area]?x.area:"formacion"}
@@ -597,8 +704,8 @@ function areaTasks(a){return tasks.filter(t=>areaOf(t)===a)}
 function weekTasksOf(a,ws){const wk=key(ws);return areaTasks(a).filter(t=>t.semana===wk).sort((x,y)=>(x.orden||0)-(y.orden||0))}
 function logRange(start,end,a){const out=[];
   tasks.forEach(t=>{const ar=areaOf(t);if(a&&ar!==a)return;
-    t.subtareas.forEach(s=>{if(s.hecha){const k=dayKeyOf(s.hecha);if(k>=start&&k<=end)out.push({tipo:"s",area:ar,titulo:s.titulo,padre:t.titulo,proyecto:t.proyecto,responsable:s.responsable||t.responsable||"",hecha:s.hecha,dia:k})}});
-    if(t.hecha){const k=dayKeyOf(t.hecha);if(k>=start&&k<=end)out.push({tipo:"t",area:ar,titulo:t.titulo,proyecto:t.proyecto,responsable:t.responsable||"",hecha:t.hecha,dia:k})}});
+    t.subtareas.forEach(s=>{if(s.hecha){const k=dayKeyOf(s.hecha);if(k>=start&&k<=end)out.push({tipo:"s",area:ar,titulo:s.titulo,padre:t.titulo,proyecto:t.proyecto,responsable:s.responsable||t.responsable||"",rid:s.responsable?(s.responsable_id||null):(t.responsable_id||null),hecha:s.hecha,dia:k})}});
+    if(t.hecha){const k=dayKeyOf(t.hecha);if(k>=start&&k<=end)out.push({tipo:"t",area:ar,titulo:t.titulo,proyecto:t.proyecto,responsable:t.responsable||"",rid:t.responsable_id||null,hecha:t.hecha,dia:k})}});
   return out.sort((x,y)=>x.hecha<y.hecha?-1:x.hecha>y.hecha?1:(x.tipo==="s"?-1:1))}
 function logrosRange(start,end,a){return logros.filter(l=>(!a||areaOf(l)===a)&&l.fecha>=start&&l.fecha<=end).sort((x,y)=>x.fecha<y.fecha?-1:x.fecha>y.fecha?1:0)}
 function tiposOf(a){const base=AREAS[a].tipos.slice();logros.filter(l=>areaOf(l)===a).forEach(l=>{if(l.tipo&&!base.includes(l.tipo))base.push(l.tipo)});return base}
@@ -609,14 +716,16 @@ function shortRange(ws,ms){const r=monthRange(ms);let a=ws,b=addDays(ws,6);if(ke
 function heat(n){return n<=0?"":n<=2?"h1":n<=4?"h2":"h3"}
 
 /* Navegación */
-function scope(){if(route==="pm")return pmView;const v=areaView[route];return v==="tasks"||v==="report"?"week":"month"}
-function readHash(){const h=(location.hash||"").replace("#","").split("&")[0];route=(AREAS[h]||h==="pm")?h:"formacion"}
+function scope(){if(route==="equipo")return "team";if(route==="persona")return "week";if(route==="pm")return pmView==="tasks"?"week":pmView;const v=areaView[route];return v==="tasks"||v==="report"?"week":"month"}
+function readHash(){const h=decodeURIComponent((location.hash||"").replace("#","").split("&")[0]);
+  if(h.startsWith("persona/")){route="persona";personaId=h.slice(8);return}
+  route=(AREAS[h]||h==="pm"||h==="equipo")?h:"formacion"}
 window.addEventListener("hashchange",()=>{readHash();render();window.scrollTo(0,0)});
 
 /* Acciones de tareas */
-function addTask(titulo,proyecto,responsable){
-  const ws=weekStart(),wk=key(ws);const ord=Math.max(0,...weekTasksOf(route,ws).map(t=>t.orden||0))+1;
-  const t={id:uid(),area:route,titulo,proyecto:proyecto||"",responsable:responsable||"",semana:wk,creada:new Date().toISOString(),hecha:null,orden:ord,subtareas:[]};
+function addTask(titulo,proyecto,respId,area,semana){area=area||route;const wk=semana||key(weekStart()),p=perfiles.find(x=>x.id===respId);
+  const ord=Math.max(0,...areaTasks(area).filter(t=>t.semana===wk).map(t=>t.orden||0))+1;
+  const t={id:uid(),area,titulo,proyecto:proyecto||"",responsable:p?p.nombre:"",responsable_id:p?p.id:null,semana:wk,creada:new Date().toISOString(),creada_por:perfil?perfil.id:null,hecha:null,orden:ord,subtareas:[]};
   tasks.push(t);render();saveTask(t)}
 function findT(id){return tasks.find(x=>x.id===id)}
 function toggleTask(id){const t=findT(id);if(!t)return;const now=new Date().toISOString();
@@ -626,9 +735,16 @@ function toggleSub(id,sid){const t=findT(id);if(!t)return;const now=new Date().t
   t.subtareas=t.subtareas.map(s=>s.id===sid?{...s,hecha:s.hecha?null:now}:s);
   const all=t.subtareas.length&&t.subtareas.every(s=>s.hecha);
   if(all&&!t.hecha)t.hecha=now;if(!all&&t.hecha)t.hecha=null;render();saveTask(t)}
-function addSub(id,titulo,responsable){const t=findT(id);if(!t)return;t.subtareas=[...t.subtareas,{id:uid(),titulo,responsable:responsable||"",hecha:null}];if(t.hecha)t.hecha=null;open.add(id);render();saveTask(t)}
+function addSub(id,titulo,respId){const t=findT(id);if(!t)return;const p=perfiles.find(x=>x.id===respId);t.subtareas=[...t.subtareas,{id:uid(),titulo,responsable:p?p.nombre:"",responsable_id:p?p.id:null,hecha:null}];if(t.hecha)t.hecha=null;open.add(id);render();saveTask(t)}
 function delSub(id,sid){const t=findT(id);if(!t)return;t.subtareas=t.subtareas.filter(s=>s.id!==sid);render();saveTask(t)}
-function setOwner(id,val){const t=findT(id);if(!t||(t.responsable||"")===val)return;t.responsable=val;render();saveTask(t)}
+function setOwner(id,val){const t=findT(id);if(!t||val==="__txt")return;const p=perfiles.find(x=>x.id===val);
+  t.responsable_id=p?p.id:null;t.responsable=p?p.nombre:"";render();saveTask(t)}
+function editTask(id,f,val){const t=findT(id);if(!t)return;val=(val||"").trim();
+  if(f==="titulo"){if(!val||val===t.titulo){render();return}t.titulo=val}
+  else if(f==="proyecto"){if(val===(t.proyecto||""))return;t.proyecto=val}
+  else if(f==="area"){if(!esPM()||!AREAS[val]||val===t.area)return;t.area=val;toast(`Tarea movida a ${AREAS[val].n}.`)}
+  else if(f==="semana"){if(!val)return;const wk=key(mondayOf(fromKey(val)));if(wk===t.semana){render();return}t.semana=wk;toast(`Tarea movida a la ${weekLabel(fromKey(wk)).toLowerCase()}.`)}
+  else return;render();saveTask(t)}
 function moveHere(id){const t=findT(id);if(!t)return;t.semana=key(weekStart());render();saveTask(t)}
 function confirmDel(btn,id,fn){
   if(pendingDel!==id){pendingDel=id;btn.innerHTML='<span style="font-size:11px;font-weight:700;color:var(--flame)">¿Borrar?</span>';btn.style.width="auto";btn.style.padding="0 8px";setTimeout(()=>{if(pendingDel===id){pendingDel=null;render()}},3000);return}
@@ -636,16 +752,18 @@ function confirmDel(btn,id,fn){
 
 /* ---------- Render ---------- */
 function render(){
-  document.body.dataset.area=route;
-  document.querySelectorAll(".areanav a").forEach(a=>a.setAttribute("aria-current",a.dataset.route===route?"page":"false"));
-  const isPM=route==="pm";
-  $("areaTag").innerHTML=(AREA_ICON[route]||"")+(isPM?"Project Manager":esc(AREAS[route].n));
-  $("h1").innerHTML=isPM?`Las áreas <em>en orden</em>`:`La semana <em>en orden</em>`;
-  document.title=(isPM?"Project Manager":AREAS[route].n)+" · Bitácora Tiempo de Dios";
+  const isPM=route==="pm",P=route==="equipo"||route==="persona",A=!isPM&&!P;
+  const pp=route==="persona"?perfiles.find(x=>x.id===personaId):null;
+  document.body.dataset.area=P?(pp&&AREAS[pp.area]?pp.area:"pm"):route;
+  document.querySelectorAll(".areanav a").forEach(a=>a.setAttribute("aria-current",a.dataset.route===route||(route==="persona"&&a.dataset.route==="equipo")?"page":"false"));
+  const nombre=P?(route==="equipo"?"Equipo":pp?pp.nombre:"Perfil"):isPM?"Project Manager":AREAS[route].n;
+  $("areaTag").innerHTML=(AREA_ICON[route]||"")+esc(route==="persona"?"Perfil":nombre);
+  $("h1").innerHTML=route==="equipo"?`El equipo <em>en orden</em>`:route==="persona"?esc(nombre):isPM?`Las áreas <em>en orden</em>`:`La semana <em>en orden</em>`;
+  document.title=nombre+" · Bitácora Tiempo de Dios";
   // pestañas
-  if(pmView==="team"&&!esPM())pmView="week";
-  const tabs=isPM?PM_TABS.filter(([k])=>k!=="team"||esPM()):AREA_TABS;const cur=isPM?pmView:areaView[route];
-  const counts=isPM?{}:tabCounts(route);
+  if(PM_SOLO.includes(pmView)&&!esPM())pmView="week";
+  const tabs=P?[]:isPM?PM_TABS.filter(([k])=>!PM_SOLO.includes(k)||esPM()):AREA_TABS;const cur=P?route:isPM?pmView:areaView[route];
+  const counts=P?{}:isPM?{tasks:tasks.filter(t=>t.semana===key(weekStart())&&!t.hecha).length}:tabCounts(route);
   $("tabs").innerHTML=tabs.map(([k,l])=>`<button class="tab" role="tab" data-tab="${k}" aria-selected="${k===cur}">${l}${counts[k]?`<span class="count">${counts[k]}</span>`:""}</button>`).join("");
   // periodo
   const sc=scope(),now=new Date();
@@ -653,18 +771,18 @@ function render(){
   const same=sc==="week"?key(weekStart())===key(mondayOf(now)):sc==="month"?(anchor.getFullYear()===now.getFullYear()&&anchor.getMonth()===now.getMonth()):anchor.getFullYear()===now.getFullYear();
   $("todayP").textContent=sc==="week"?"Esta semana":sc==="month"?"Este mes":"Este año";
   $("todayP").disabled=same;$("todayP").style.opacity=same?.45:1;
-  $("todayP").parentElement.style.display=sc==="team"?"none":"";if(sc==="team")$("periodLabel").textContent="Administración del equipo";
+  $("todayP").parentElement.style.display=sc==="team"?"none":"";if(sc==="team")$("periodLabel").textContent=route==="equipo"?`${perfiles.length} persona${perfiles.length===1?"":"s"} en la bitácora`:"Administración del equipo";
   // datalists
   const projs=[...new Set(tasks.map(t=>t.proyecto).filter(Boolean))];
   $("projList").innerHTML=projs.map(p=>`<option value="${esc(p)}">`).join("");
   const people=[...new Set(tasks.flatMap(t=>[t.responsable,...t.subtareas.map(s=>s.responsable)]).concat(logros.map(l=>l.responsable)).concat(perfiles.map(p=>p.nombre)).filter(Boolean))];
   $("whoList").innerHTML=people.map(p=>`<option value="${esc(p)}">`).join("");
   // vistas
-  const show={vTasks:!isPM&&cur==="tasks",vReport:!isPM&&cur==="report",vMonth:!isPM&&cur==="month",vLogros:!isPM&&cur==="logros",vPM:isPM&&cur!=="team",vTeam:isPM&&cur==="team"};
+  const show={vTasks:A&&cur==="tasks",vReport:A&&cur==="report",vMonth:A&&cur==="month",vLogros:A&&cur==="logros",vPM:isPM&&!PM_SOLO.includes(cur),vPMTasks:isPM&&cur==="tasks",vTeam:isPM&&cur==="team",vPeople:route==="equipo",vPerson:route==="persona"};
   Object.entries(show).forEach(([id,v])=>{$(id).hidden=!v});
-  if(!isPM){const ro=!canEdit(route);const msg=ro?`Vista de solo lectura. Solo el equipo de ${AREAS[route].n} y la project manager pueden registrar aquí.`:"";
+  if(A){const ro=!canEdit(route);const msg=ro?`Vista de solo lectura. Solo el equipo de ${AREAS[route].n} y la project manager pueden registrar aquí.`:"";
     $("roTasks").hidden=$("roLogros").hidden=!ro;$("roTasks").textContent=$("roLogros").textContent=msg;$("addForm").hidden=ro;$("logroForm").hidden=ro}
-  if(isPM&&cur==="team")renderTeam();else if(isPM)renderPM();else if(cur==="tasks")renderTasks();else if(cur==="report")renderReport();else if(cur==="month")renderMonth();else renderLogros();
+  if(route==="equipo")renderPeople();else if(route==="persona")renderPerson();else if(isPM&&cur==="team")renderTeam();else if(isPM&&cur==="tasks")renderPMTasks();else if(isPM)renderPM();else if(cur==="tasks")renderTasks();else if(cur==="report")renderReport();else if(cur==="month")renderMonth();else renderLogros();
 }
 function tabCounts(a){const ws=weekStart(),ms=monthStart(),r=monthRange(ms);
   return {tasks:weekTasksOf(a,ws).filter(t=>!t.hecha).length,report:logRange(key(ws),key(addDays(ws,6)),a).length,month:logRange(r.s,r.e,a).length,logros:logrosRange(r.s,r.e,a).length}}
@@ -677,38 +795,46 @@ function renderTasks(){
   const pct=items?Math.round(doneItems/items*100):0;
   $("progress").innerHTML=wt.length?`<div class="meta"><div class="big">${wt.filter(t=>t.hecha).length}<small> de ${wt.length} tareas listas</small></div><div class="status">${doneItems}/${items} pasos · ${pct}%</div></div><div class="bar"><i style="width:${pct}%"></i></div>`:"";
   const wk=key(ws);const old=areaTasks(a).filter(t=>!t.hecha&&t.semana<wk);
-  $("carry").innerHTML=old.length&&loadedT?`<div class="carry"><h3 class="section-h" style="margin:0;color:var(--flame)">Quedaron pendientes de semanas anteriores</h3>${old.map(t=>`<div class="row"><span>${esc(t.titulo)} ${whoChip(t.responsable)}</span><button class="btn ghost sm" data-move="${t.id}">Pasar a esta semana</button></div>`).join("")}</div>`:"";
+  $("carry").innerHTML=old.length&&loadedT?`<div class="carry"><h3 class="section-h" style="margin:0;color:var(--flame)">Quedaron pendientes de semanas anteriores</h3>${old.map(t=>`<div class="row"><span>${esc(t.titulo)} ${whoChip(t.responsable,t.responsable_id)}</span><button class="btn ghost sm" data-move="${t.id}">Pasar a esta semana</button></div>`).join("")}</div>`:"";
+  fillSelect($("newWho"),opcionesPersona(a,""));
   const L=$("taskList");
   if(!loadedT){L.innerHTML="";return}
   if(!wt.length){L.innerHTML=`<li class="empty"><strong>Sin pendientes esta semana</strong><p>Escribe la primera tarea arriba y agrégale subtareas con el botón +. Cada vez que palomees algo, quedará en el Reporte diario con el día y la hora exactos.</p></li>`;return}
-  L.innerHTML=wt.map(t=>{const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen=open.has(t.id);
+  L.innerHTML=wt.map(t=>taskItem(t)).join("")}
+function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen=open.has(t.id),a=areaOf(t),ed=canEdit(a),r=(p=>({sel:p?p.id:"",legacy:!p&&t.responsable?t.responsable:""}))(personaDe(t.responsable_id,t.responsable));
     return `<li class="task ${t.hecha?"done":""}">
       <div class="trow">
-        <button class="check" role="checkbox" aria-checked="${!!t.hecha}" aria-label="Marcar ${esc(t.titulo)}" data-tt="${t.id}">${CHECK}</button>
+        <button class="check" role="checkbox" aria-checked="${!!t.hecha}" aria-label="Marcar ${esc(t.titulo)}" data-tt="${t.id}" ${ed?"":"disabled"}>${CHECK}</button>
         <div class="tbody">
           <button class="ttitle" data-open="${t.id}" aria-expanded="${isOpen}">${esc(t.titulo)}</button>
-          <div class="tmeta">${whoChip(t.responsable)}${t.proyecto?`<span class="chip">${esc(t.proyecto)}</span>`:""}${t.subtareas.length?`<span>${subsDone}/${t.subtareas.length} subtareas</span>`:""}${t.hecha?`<span class="when">✓ ${DIAS[new Date(t.hecha).getDay()]} ${hhmm(t.hecha)}</span>`:""}</div>
+          <div class="tmeta">${whoChip(t.responsable,t.responsable_id)}${t.proyecto?`<span class="chip">${esc(t.proyecto)}</span>`:""}${t.subtareas.length?`<span>${subsDone}/${t.subtareas.length} subtareas</span>`:""}${t.hecha?`<span class="when">✓ ${DIAS[new Date(t.hecha).getDay()]} ${hhmm(t.hecha)}</span>`:""}</div>
         </div>
         <div class="tactions">
-          <button class="icon" data-open="${t.id}" aria-label="Subtareas y responsable" title="Subtareas">${ICON_SUB}</button>
-          <button class="icon del" data-del="${t.id}" aria-label="Borrar tarea" title="Borrar">${ICON_DEL}</button>
+          <button class="icon" data-open="${t.id}" aria-label="Editar, subtareas y responsable" title="Editar y subtareas">${ICON_SUB}</button>
+          ${ed?`<button class="icon del" data-del="${t.id}" aria-label="Borrar tarea" title="Borrar">${ICON_DEL}</button>`:""}
         </div>
       </div>
       ${(isOpen||t.subtareas.length)?`<div class="subs">
         ${t.subtareas.map(s=>`<div class="sub-item ${s.hecha?"done":""}">
-          <button class="check sub" role="checkbox" aria-checked="${!!s.hecha}" aria-label="Marcar ${esc(s.titulo)}" data-st="${t.id}|${s.id}">${CHECK}</button>
-          <span>${esc(s.titulo)} ${whoChip(s.responsable)}${s.hecha?` <span class="when" style="color:var(--muted)">· ${DIAS[new Date(s.hecha).getDay()].slice(0,3)} ${hhmm(s.hecha)}</span>`:""}</span>
-          <button class="icon del" data-sdel="${t.id}|${s.id}" aria-label="Borrar subtarea">${ICON_DEL}</button></div>`).join("")}
-        ${isOpen?`<label class="ownerrow" for="own-${t.id}">Responsable de la tarea <input id="own-${t.id}" data-owner="${t.id}" value="${esc(t.responsable||"")}" placeholder="¿Quién la lleva?" maxlength="40" list="whoList"></label>
-        <form class="subadd" data-subform="${t.id}"><input id="sub-${t.id}" placeholder="Nueva subtarea…" aria-label="Nueva subtarea" maxlength="200"><input class="who-in" id="subwho-${t.id}" placeholder="Responsable" aria-label="Responsable de la subtarea" maxlength="40" list="whoList"><button class="btn sm" type="submit">Añadir</button></form>`:""}
+          <button class="check sub" role="checkbox" aria-checked="${!!s.hecha}" aria-label="Marcar ${esc(s.titulo)}" data-st="${t.id}|${s.id}" ${ed?"":"disabled"}>${CHECK}</button>
+          <span>${esc(s.titulo)} ${whoChip(s.responsable,s.responsable_id)}${s.hecha?` <span class="when" style="color:var(--muted)">· ${DIAS[new Date(s.hecha).getDay()].slice(0,3)} ${hhmm(s.hecha)}</span>`:""}</span>
+          ${ed?`<button class="icon del" data-sdel="${t.id}|${s.id}" aria-label="Borrar subtarea">${ICON_DEL}</button>`:""}</div>`).join("")}
+        ${isOpen&&ed?`<div class="editrow">
+          <label>Tarea<input data-tedit="${t.id}" data-f="titulo" value="${esc(t.titulo)}" maxlength="200"></label>
+          <label>Proyecto<input data-tedit="${t.id}" data-f="proyecto" value="${esc(t.proyecto||"")}" maxlength="40" list="projList" placeholder="Sin proyecto"></label>
+          <label>Responsable<select data-owner="${t.id}">${opcionesPersona(a,r.sel,r.legacy)}</select></label>
+          ${esPM()?`<label>Área<select data-tedit="${t.id}" data-f="area">${AREA_IDS.map(x=>`<option value="${x}" ${x===a?"selected":""}>${AREAS[x].n}</option>`).join("")}</select></label>
+          <label>Semana<input type="date" data-tedit="${t.id}" data-f="semana" value="${t.semana}"></label>`:""}
+        </div>
+        <form class="subadd" data-subform="${t.id}"><input id="sub-${t.id}" placeholder="Nueva subtarea…" aria-label="Nueva subtarea" maxlength="200"><select id="subwho-${t.id}" aria-label="Responsable de la subtarea">${opcionesPersona(a,"")}</select><button class="btn sm" type="submit">Añadir</button></form>`:""}
       </div>`:""}
-    </li>`}).join("")}
+    </li>`}
 
 /* Reporte diario */
 function dayRows(log,ws,withArea){const today=key(new Date());let html="";
   for(let i=0;i<7;i++){const d=addDays(ws,i),k=key(d),items=log.filter(x=>x.dia===k);if(i>=5&&!items.length)continue;
     html+=`<div class="day ${k===today?"today":""}"><div class="dlabel"><b>${DIAS[d.getDay()]}</b><span>${d.getDate()} ${MESES[d.getMonth()]}</span>${items.length?`<span class="chip tipo n">${items.length} hecho${items.length>1?"s":""}</span>`:""}</div>
-    ${items.length?`<ul class="ditems">${items.map(x=>`<li class="ditem"><time datetime="${x.hecha}">${hhmm(x.hecha)}</time><div>${x.tipo==="t"?`<span class="k t">Tarea</span><strong>${esc(x.titulo)}</strong>`:`<span class="k s">Sub</span>${esc(x.titulo)} <span class="parent">› ${esc(x.padre)}</span>`} ${whoChip(x.responsable)}${x.proyecto?` <span class="chip">${esc(x.proyecto)}</span>`:""}</div></li>`).join("")}</ul>`:`<div class="none">${k>today?"Aún no llega":"Sin registros este día"}</div>`}</div>`}
+    ${items.length?`<ul class="ditems">${items.map(x=>`<li class="ditem"><time datetime="${x.hecha}">${hhmm(x.hecha)}</time><div>${x.tipo==="t"?`<span class="k t">Tarea</span><strong>${esc(x.titulo)}</strong>`:`<span class="k s">Sub</span>${esc(x.titulo)} <span class="parent">› ${esc(x.padre)}</span>`} ${whoChip(x.responsable,x.rid)}${x.proyecto?` <span class="chip">${esc(x.proyecto)}</span>`:""}</div></li>`).join("")}</ul>`:`<div class="none">${k>today?"Aún no llega":"Sin registros este día"}</div>`}</div>`}
   return html}
 function renderReport(){
   const a=route,ws=weekStart(),s=key(ws),e=key(addDays(ws,6)),log=logRange(s,e,a),lg=logrosRange(s,e,a);
@@ -717,7 +843,7 @@ function renderReport(){
   $("rDays").innerHTML=loadedT?dayRows(log,ws):"";
   $("rLogros").innerHTML=lg.length?`<h3 class="section-h">Logros de la semana</h3><ul class="wins">${lg.map(l=>logroLi(l)).join("")}</ul>`:"";
   const pend=weekTasksOf(a,ws).filter(t=>!t.hecha);
-  $("rPending").innerHTML=pend.length?`<h3 class="section-h">Sigue en curso</h3><ul class="pending-list">${pend.map(t=>`<li><span>${esc(t.titulo)}${t.subtareas.length?` <span class="when" style="color:var(--muted)">(${t.subtareas.filter(s=>s.hecha).length}/${t.subtareas.length})</span>`:""} ${whoChip(t.responsable)}</span></li>`).join("")}</ul>`:"";
+  $("rPending").innerHTML=pend.length?`<h3 class="section-h">Sigue en curso</h3><ul class="pending-list">${pend.map(t=>`<li><span>${esc(t.titulo)}${t.subtareas.length?` <span class="when" style="color:var(--muted)">(${t.subtareas.filter(s=>s.hecha).length}/${t.subtareas.length})</span>`:""} ${whoChip(t.responsable,t.responsable_id)}</span></li>`).join("")}</ul>`:"";
 }
 function logroLi(l){const u=safeUrl(l.liga);return `<li>${DOT_CHECK}<div><strong>${esc(l.titulo)}</strong> <span class="chip tipo">${esc(l.tipo)}</span> <span class="when" style="color:var(--muted)">${shortDate(l.fecha)}</span>${u?` · <a href="${esc(u)}" target="_blank" rel="noopener">${esc(hostOf(u))} ↗</a>`:""}${l.nota?` <span style="color:var(--muted);font-size:13px">· ${esc(l.nota)}</span>`:""}${(l.testimonios||[]).length?` <span style="color:var(--muted);font-size:13px">· ${l.testimonios.length} testimonio${l.testimonios.length>1?"s":""}</span>`:""}</div></li>`}
 function testiBlock(l){const ts=l.testimonios||[];return `<div class="testis">${ts.map(t=>`<blockquote class="testi"><div><q>${esc(t.texto)}</q>${t.autor?`<cite>${esc(t.autor)}</cite>`:""}</div><button class="icon del" data-tdel="${l.id}|${t.id}" aria-label="Borrar testimonio">${ICON_DEL}</button></blockquote>`).join("")}${openTesti.has(l.id)?`<form class="tform" data-testiform="${l.id}"><textarea id="tt-${l.id}" placeholder="${route==="audiovisual"?"Testimonio o comentario importante sobre el video…":route==="musica"?"Testimonio sobre la canción…":"Testimonio sobre el curso o taller…"}" maxlength="1500" aria-label="Testimonio"></textarea><div class="r"><input id="ta-${l.id}" placeholder="¿Quién lo dijo?" maxlength="60" aria-label="Quién lo dijo"><button class="btn sm" type="submit">Guardar testimonio</button><button class="btn ghost sm" type="button" data-testiopen="${l.id}">Cancelar</button></div></form>`:`<button class="addtesti" data-testiopen="${l.id}">+ Agregar testimonio</button>`}</div>`}
@@ -739,7 +865,7 @@ function renderMonth(){
     const cells=["L","M","M","J","V","S","D"].map(d=>`<span class="dh">${d}</span>`).join("")+[0,1,2,3,4,5,6].map(j=>{const d=addDays(w,j),k=key(d),inM=k>=r.s&&k<=r.e;const n=inM?wl.filter(x=>x.dia===k).length:0;
       return `<div class="cell ${inM?heat(n):"out"} ${k===today?"today":""}" title="${DIAS[d.getDay()]} ${d.getDate()}: ${n} hecho${n===1?"":"s"}"><span>${d.getDate()}</span>${n?`<b>${n}</b>`:""}</div>`}).join("");
     const shown=done.slice(0,6);
-    const body=(done.length||subs.length||wlg.length)?`<ul class="wins">${wlg.map(logroLi).join("")}${shown.map(x=>`<li>${DOT_CHECK}<div><strong>${esc(x.titulo)}</strong> ${whoChip(x.responsable)}</div></li>`).join("")}</ul>${done.length>6?`<span class="more">+${done.length-6} tareas más</span>`:""}${subs.length?`<span class="more">${subs.length} subtarea${subs.length>1?"s":""} completada${subs.length>1?"s":""}</span>`:""}`:`<div class="none">${s>today?"Semana por venir":"Sin logros registrados"}</div>`;
+    const body=(done.length||subs.length||wlg.length)?`<ul class="wins">${wlg.map(logroLi).join("")}${shown.map(x=>`<li>${DOT_CHECK}<div><strong>${esc(x.titulo)}</strong> ${whoChip(x.responsable,x.rid)}</div></li>`).join("")}</ul>${done.length>6?`<span class="more">+${done.length-6} tareas más</span>`:""}${subs.length?`<span class="more">${subs.length} subtarea${subs.length>1?"s":""} completada${subs.length>1?"s":""}</span>`:""}`:`<div class="none">${s>today?"Semana por venir":"Sin logros registrados"}</div>`;
     return `<article class="wk ${s===curW?"current":""}"><div class="wk-h"><h4>Semana ${i+1}<span>${shortRange(w,ms)}</span></h4><button class="btn ghost sm" data-goweek="${s}">Ver detalle →</button></div><div class="cal">${cells}</div><div>${body}</div></article>`}).join(""):"";
 }
 
@@ -763,6 +889,63 @@ function renderLogros(){
   L.innerHTML=lm.slice().reverse().map(l=>{const u=safeUrl(l.liga);return `<li class="litem"><time>${shortDate(l.fecha)}</time><div class="lt"><strong>${esc(l.titulo)}</strong><div class="tmeta"><span class="chip tipo">${esc(l.tipo)}</span>${whoChip(l.responsable)}${u?`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(hostOf(u))} ↗</a>`:""}</div>${l.nota?`<p>${esc(l.nota)}</p>`:""}${testiBlock(l)}</div><div class="tactions"><button class="icon del" data-ldel="${l.id}" aria-label="Borrar logro">${ICON_DEL}</button></div></li>`}).join("");
 }
 
+/* ---------- Tareas de todas las áreas (PM) ---------- */
+function renderPMTasks(){const ws=weekStart(),wk=key(ws);
+  if(!$("ptArea").options.length)$("ptArea").innerHTML=AREA_IDS.map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("");
+  fillSelect($("ptWho"),opcionesPersona($("ptArea").value,""));
+  if(!$("ptSemana").dataset.touched)$("ptSemana").value=wk;
+  if(!$("pfArea").options.length)$("pfArea").innerHTML=`<option value="">Todas</option>`+AREA_IDS.map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("");
+  fillSelect($("pfWho"),`<option value="">Todas</option>`+perfiles.slice().sort((a,b)=>(a.nombre||"").localeCompare(b.nombre||"")).map(p=>`<option value="${p.id}">${esc(p.nombre)}</option>`).join(""));
+  const fa=$("pfArea").value,fw=$("pfWho").value,abiertas=$("pfEstado").value==="abiertas";
+  const pasa=t=>(!fa||areaOf(t)===fa)&&(!fw||asignadoA(t,fw)||t.subtareas.some(s=>asignadoA(s,fw)));
+  const chipA=a=>`<span class="chip area" style="background:${AREAS[a].c};color:${AREAS[a].on}">${AREAS[a].n}</span>`;
+  const old=tasks.filter(t=>!t.hecha&&t.semana<wk&&pasa(t));
+  $("ptCarry").innerHTML=old.length&&loadedT?`<div class="carry"><h3 class="section-h" style="margin:0;color:var(--flame)">Quedaron pendientes de semanas anteriores</h3>${old.map(t=>`<div class="row"><span>${chipA(areaOf(t))} ${esc(t.titulo)} ${whoChip(t.responsable,t.responsable_id)}</span><button class="btn ghost sm" data-move="${t.id}">Pasar a esta semana</button></div>`).join("")}</div>`:"";
+  if(!loadedT){$("ptList").innerHTML="";return}
+  $("ptList").innerHTML=AREA_IDS.filter(a=>!fa||a===fa).map(a=>{const all=tasks.filter(t=>t.semana===wk&&areaOf(t)===a);
+    const ts=all.filter(t=>pasa(t)&&(!abiertas||!t.hecha)).sort((x,y)=>(x.orden||0)-(y.orden||0));
+    return `<div class="agroup"><h3><i style="background:${AREAS[a].c}"></i>${AREAS[a].n}<span>${all.filter(t=>t.hecha).length}/${all.length} listas</span></h3>${ts.length?`<ul class="list">${ts.map(taskItem).join("")}</ul>`:`<div class="none">${all.length&&abiertas&&!fw?"Todo listo en esta área.":"Sin tareas que mostrar."}</div>`}</div>`}).join("")}
+
+/* ---------- Directorio y perfil ---------- */
+function renderPeople(){const G=$("peopleGrid");
+  if(!perfiles.length){G.innerHTML=`<div class="none">Cargando el equipo…</div>`;return}
+  const orden={pm:0,lider:1,colaborador:2};
+  G.innerHTML=perfiles.slice().sort((a,b)=>(AREA_IDS.indexOf(a.area)-AREA_IDS.indexOf(b.area))||(orden[a.rol]-orden[b.rol])||(a.nombre||"").localeCompare(b.nombre||"")).map(p=>{const n=pendientesDe(p.id).length;
+    return `<a class="pcard" href="#persona/${p.id}" style="--c:${AREAS[p.area]?AREAS[p.area].c:"var(--flame)"}">${av(p,"lg")}<b>${esc(p.nombre)}</b><span>${esc(rolDe(p))}</span><span class="n">${n?`${n} pendiente${n>1?"s":""}`:"Sin pendientes"}</span></a>`}).join("")}
+function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
+  if(!p){$("personCard").innerHTML=perfiles.length?`<div class="empty"><strong>No encontramos a esta persona</strong><p>Puede que ya no tenga acceso a la bitácora. <a href="#equipo">Ver el equipo</a></p></div>`:`<div class="none">Cargando…</div>`;
+    ["personStats","personPend","personDone"].forEach(i=>$(i).innerHTML="");return}
+  const self=!!perfil&&p.id===perfil.id,puede=self||esPM();
+  if(esPM()&&!self&&cuentas===null&&!cuentasErr&&!cuentasCargando)cargarCuentas();
+  const c=cuentas&&cuentas.get(p.id),email=self?perfil.email||"":c?c.email:"";
+  $("personCard").innerHTML=`<div class="profile"><div class="pfoto">${av(p,"xl")}${puede?`<label class="btn ghost sm file">${p.foto?"Cambiar foto":"Subir foto"}<input type="file" accept="image/*" data-foto="${p.id}" hidden></label>`:""}</div>
+    <div class="pinfo">${puede?`<input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre">`:`<h2>${esc(p.nombre)}</h2>`}<span>${esc(rolDe(p))}</span>${email?`<span class="mail">${esc(email)}</span>`:""}${esPM()&&!self?`<span><button class="btn ghost sm" data-goteam="1">Cambiar rol o área</button></span>`:""}</div></div>`;
+  const ws=weekStart(),actual=key(ws)===key(mondayOf(new Date())),wkNow=key(mondayOf(new Date()));
+  const pend=pendientesDe(p.id),done=logRange(key(ws),key(addDays(ws,6))).filter(x=>asignadoA({responsable_id:x.rid,responsable:x.responsable},p.id));
+  const r=monthRange(monthStart()),lg=logrosRange(r.s,r.e).filter(l=>asignadoA(l,p.id));
+  const chipA=a=>`<span class="chip area" style="background:${AREAS[a].c};color:${AREAS[a].on}">${AREAS[a].n}</span>`;
+  $("personStats").innerHTML=`<div class="stat s1"><b>${pend.length}</b><span>pendientes</span></div><div class="stat s2"><b>${done.length}</b><span>completadas ${actual?"esta semana":"en la semana"}</span></div><div class="stat s3"><b>${lg.length}</b><span>logros en ${MESES_L[monthStart().getMonth()]}</span></div>`;
+  $("personPendH").textContent=self?"Mis pendientes":"Sus pendientes";
+  $("personDoneH").textContent=actual?"Completado esta semana":"Completado · "+weekLabel(ws).toLowerCase();
+  $("personPend").innerHTML=pend.length?pend.map(({t,s})=>{const x=s||t,a=areaOf(t);
+    const cuando=t.semana<wkNow?`<span style="color:var(--flame)">Viene de la ${weekLabel(fromKey(t.semana)).toLowerCase()}</span>`:t.semana>wkNow?weekLabel(fromKey(t.semana)):"Esta semana";
+    return `<li class="pitem"><button class="check ${s?"sub":""}" role="checkbox" aria-checked="false" aria-label="Marcar ${esc(x.titulo)}" ${s?`data-st="${t.id}|${s.id}"`:`data-tt="${t.id}"`} ${canEdit(a)?"":"disabled"}>${CHECK}</button>
+      <div class="txt"><strong>${esc(x.titulo)}</strong><small>${s?`Subtarea de ${esc(t.titulo)} · `:""}${cuando}${t.proyecto?" · "+esc(t.proyecto):""}</small></div>${chipA(a)}</li>`}).join(""):`<li class="none">Nada pendiente.</li>`;
+  $("personDone").innerHTML=done.length?done.map(x=>`<li class="pitem"><time datetime="${x.hecha}">${DIAS[new Date(x.hecha).getDay()].slice(0,3)} ${hhmm(x.hecha)}</time><div class="txt"><strong>${esc(x.titulo)}</strong>${x.tipo==="s"?`<small>Subtarea de ${esc(x.padre)}</small>`:""}</div>${chipA(x.area)}</li>`).join(""):`<li class="none">Nada completado en esta semana.</li>`}
+
+/* Fotos: se recortan cuadradas a 512 px en el navegador y se suben a Storage (bucket "fotos") */
+function reducirImagen(file,max){return new Promise((res,rej)=>{const img=new Image(),url=URL.createObjectURL(file);
+  img.onload=()=>{const lado=Math.min(img.width,img.height),s=Math.min(max,lado),c=document.createElement("canvas");c.width=c.height=s;
+    c.getContext("2d").drawImage(img,(img.width-lado)/2,(img.height-lado)/2,lado,lado,0,0,s,s);URL.revokeObjectURL(url);
+    c.toBlob(b=>b?res(b):rej(new Error("No se pudo procesar la imagen")),"image/jpeg",.85)};
+  img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error("Ese archivo no parece una imagen"))};img.src=url})}
+async function subirFoto(id,file){if(!sb)return;toast("Subiendo foto…");
+  try{const blob=await reducirImagen(file,512),path=`${id}/foto.jpg`;
+    const {error}=await sb.storage.from("fotos").upload(path,blob,{upsert:true,contentType:"image/jpeg",cacheControl:"3600"});
+    if(error)throw error;
+    await actualizarPerfil(id,{foto:sb.storage.from("fotos").getPublicUrl(path).data.publicUrl+"?v="+Date.now()})}
+  catch(e){console.error(e);toast("No se pudo subir la foto: "+(e.message||e))}}
+
 /* ---------- Equipo (solo PM) ---------- */
 /* Invitar y quitar usa la Edge Function "equipo" (supabase/functions/equipo).
    Cambiar nombre, rol y área se escribe directo en perfiles (RLS: solo la PM). */
@@ -776,7 +959,7 @@ async function cargarCuentas(){if(cuentasCargando||!sb)return;cuentasCargando=tr
   try{const d=await equipoFn({accion:"listar"});cuentas=new Map(d.usuarios.map(u=>[u.id,u]));cuentasErr=""}
   catch(e){cuentasErr=e.message}
   finally{cuentasCargando=false}
-  const {data}=await sb.from("perfiles").select("id,nombre,rol,area");if(data)perfiles=data;
+  const {data}=await sb.from("perfiles").select("*");if(data)perfiles=data;
   render()}
 function renderTeam(){
   if(cuentas===null&&!cuentasErr&&!cuentasCargando)cargarCuentas();
@@ -788,7 +971,7 @@ function renderTeam(){
   $("teamList").innerHTML=rows.length?rows.map(p=>{const c=cuentas&&cuentas.get(p.id),self=perfil&&p.id===perfil.id;
     const estado=self?`<span class="chip">Tú</span>`:c&&!c.activo?`<span class="chip pend" title="Aún no acepta la invitación">Pendiente</span>`:"";
     return `<li class="member">
-      <div class="who"><input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre"><span class="mail">${esc(c?c.email:"")}</span></div>
+      <div class="who"><div class="wl"><a href="#persona/${p.id}" title="Ver perfil">${av(p,"md")}</a><input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre"></div><span class="mail">${esc(c?c.email:"")}</span></div>
       <select data-prol="${p.id}" aria-label="Rol" ${self?'disabled title="No puedes cambiar tu propio rol"':""}>${Object.entries(ROLES).map(([k,l])=>`<option value="${k}" ${p.rol===k?"selected":""}>${l}</option>`).join("")}</select>
       <select data-parea="${p.id}" aria-label="Área" ${p.rol==="pm"?"disabled":""}>${p.rol==="pm"?`<option>Todas</option>`:`<option value="" ${p.area?"":"selected"}>Sin área</option>${AREA_IDS.map(a=>`<option value="${a}" ${p.area===a?"selected":""}>${AREAS[a].n}</option>`).join("")}`}</select>
       <div class="acts">${estado}${c&&!c.activo&&!self?`<button class="btn ghost sm" data-reenviar="${p.id}">Reenviar</button>`:""}${self?"":`<button class="icon" data-quitar="${p.id}" aria-label="Quitar acceso a ${esc(p.nombre)}">${ICON_DEL}</button>`}</div>
@@ -947,6 +1130,7 @@ document.addEventListener("click",e=>{
   if(b.dataset.tab){if(route==="pm"){pmView=b.dataset.tab}else{const prev=scope();areaView[route]=b.dataset.tab}render();return}
   if(b.dataset.goweek){anchor=fromKey(b.dataset.goweek);areaView[route]="report";render();window.scrollTo({top:0,behavior:"smooth"});return}
   if(b.dataset.goarea){const [a,v]=b.dataset.goarea.split("|");areaView[a]=v;location.hash=a;return}
+  if(b.dataset.goteam){pmView="team";location.hash="pm";return}
   if(b.dataset.reenviar){const c=cuentas&&cuentas.get(b.dataset.reenviar);if(!c)return;b.disabled=true;
     equipoFn({accion:"reenviar",email:c.email,redirectTo:location.origin+location.pathname}).then(()=>toast("Invitación reenviada a "+c.email),e=>toast(e.message)).finally(()=>{b.disabled=false});return}
   if(b.dataset.quitar){const id=b.dataset.quitar;confirmDel(b,id,()=>{const p=perfiles.find(x=>x.id===id);
@@ -965,6 +1149,17 @@ document.addEventListener("click",e=>{
 document.addEventListener("submit",e=>{const f=e.target.closest("[data-subform]");if(!f)return;e.preventDefault();const id=f.dataset.subform;const v=$("sub-"+id).value.trim();if(!v)return;addSub(id,v,$("subwho-"+id).value.trim());setTimeout(()=>{const i=$("sub-"+id);if(i)i.focus()},0)});
 document.addEventListener("submit",e=>{const f=e.target.closest("[data-testiform]");if(!f)return;e.preventDefault();const id=f.dataset.testiform;const tx=$("tt-"+id).value.trim();if(!tx){$("tt-"+id).focus();return}const l=logros.find(x=>x.id===id);if(!l||!logrosCol)return;l.testimonios=[...(l.testimonios||[]),{id:uid(),texto:tx,autor:$("ta-"+id).value.trim(),creado:new Date().toISOString()}];openTesti.delete(id);render();saveLogro(l);toast("Testimonio guardado.")});
 document.addEventListener("change",e=>{const i=e.target.closest("[data-owner]");if(i&&tasksCol)setOwner(i.dataset.owner,i.value.trim())});
+document.addEventListener("change",e=>{const i=e.target.closest("[data-tedit]");if(i&&tasksCol)editTask(i.dataset.tedit,i.dataset.f,i.value)});
+document.addEventListener("change",e=>{const f=e.target.closest("[data-foto]");if(f&&f.files&&f.files[0]){subirFoto(f.dataset.foto,f.files[0]);f.value=""}});
+$("ptArea").addEventListener("change",()=>fillSelect($("ptWho"),opcionesPersona($("ptArea").value,"")));
+$("ptSemana").addEventListener("change",()=>{$("ptSemana").dataset.touched="1"});
+["pfArea","pfWho","pfEstado"].forEach(id=>$(id).addEventListener("change",render));
+$("ptForm").addEventListener("submit",e=>{e.preventDefault();if(!tasksCol){toast("La bitácora aún no se conecta");return}
+  const titulo=$("ptTitulo").value.trim();if(!titulo){$("ptTitulo").focus();return}
+  const area=$("ptArea").value,who=$("ptWho").value,v=$("ptSemana").value,sem=v?key(mondayOf(fromKey(v))):key(weekStart());
+  addTask(titulo,$("ptProyecto").value.trim(),who,area,sem);
+  const p=perfiles.find(x=>x.id===who);$("ptTitulo").value="";$("ptProyecto").value="";$("ptTitulo").focus();
+  toast(`Tarea asignada a ${p?p.nombre:AREAS[area].n}${sem!==key(weekStart())?" para la "+weekLabel(fromKey(sem)).toLowerCase():""}.`)});
 document.addEventListener("change",e=>{const t=e.target;if(!sb)return;
   if(t.dataset.prol){const rol=t.value;actualizarPerfil(t.dataset.prol,rol==="pm"?{rol,area:null}:{rol})}
   else if(t.dataset.parea)actualizarPerfil(t.dataset.parea,{area:t.value||null});
@@ -1015,7 +1210,7 @@ function setEye(show){$("authPass").type=show?"text":"password";$("authEye").inn
 setEye(false);
 $("authEye").onclick=()=>{setEye($("authPass").type==="password");$("authPass").focus()};
 function pintarCuenta(email){if(!perfil)return;const rol=perfil.rol==="pm"?"Project Manager":`${ROLES[perfil.rol]||"Colaborador"} · ${perfil.area&&AREAS[perfil.area]?AREAS[perfil.area].n:"Sin área asignada"}`;
-  $("userName").innerHTML=`<b>${esc(perfil.nombre)}</b><span class="rol"> · ${esc(rol)}</span>`;$("acctAvatar").textContent=(perfil.nombre||"?").trim().charAt(0).toUpperCase();
+  $("userName").innerHTML=`<b>${esc(perfil.nombre)}</b><span class="rol"> · ${esc(rol)}</span>`;$("acctAvatar").innerHTML=perfil.foto?`<img src="${esc(perfil.foto)}" alt="">`:esc((perfil.nombre||"?").trim().charAt(0).toUpperCase());
   $("acctNombre").textContent=perfil.nombre;$("acctRol").textContent=rol;if(email)$("acctEmail").textContent=email}
 function authErr(m){$("authMsg").textContent=m;$("authMsg").className="authmsg err"}
 // Si Supabase no responde, avisa en vez de dejar el botón congelado
@@ -1034,19 +1229,20 @@ function acctMenu(open){$("acctMenu").hidden=!open;$("acctBtn").setAttribute("ar
 $("acctBtn").onclick=e=>{e.stopPropagation();acctMenu($("acctMenu").hidden)};
 document.addEventListener("click",e=>{if(!$("acctMenu").hidden&&!e.target.closest("#userbar"))acctMenu(false)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("acctMenu").hidden){acctMenu(false);$("acctBtn").focus()}});
+$("meBtn").onclick=()=>{acctMenu(false);if(perfil)location.hash="persona/"+perfil.id};
 $("pwBtn").onclick=()=>{acctMenu(false);showAuth("change");$("authPass").focus()};
 $("authCancel").onclick=()=>{$("auth").hidden=true};
 $("logoutBtn").onclick=async()=>{$("logoutBtn").textContent="Cerrando sesión…";try{await conLimite(sb.auth.signOut(),8000)}catch(e){}location.replace(location.pathname)};
 let started=false;
 async function start(){
   const {data:{user}}=await sb.auth.getUser();if(!user){showAuth("login");return}
-  const {data:p}=await sb.from("perfiles").select("id,nombre,rol,area").eq("id",user.id).single();
-  perfil=p||{id:user.id,nombre:user.email,rol:"colaborador",area:null};
+  const {data:p}=await sb.from("perfiles").select("*").eq("id",user.id).single();
+  perfil=p||{id:user.id,nombre:user.email,rol:"colaborador",area:null};perfil.email=user.email;
   $("auth").hidden=true;$("userbar").hidden=false;
   pintarCuenta(user.email);
   if(!location.hash){route=perfil.rol==="pm"?"pm":(perfil.area||"formacion");history.replaceState(null,"",location.pathname+"#"+route)}
   if(started){render();return}started=true;
-  sb.from("perfiles").select("id,nombre,rol,area").then(({data})=>{perfiles=data||[];render()});
+  sb.from("perfiles").select("*").then(({data})=>{perfiles=data||[];render()});
   tasksCol=makeCol("tareas");logrosCol=makeCol("logros");
   let gotT=false,gotL=false;
   const timer=setTimeout(()=>setStatus("No se pudo conectar todavía; revisa tu conexión.",true),10000);

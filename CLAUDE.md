@@ -17,7 +17,8 @@ Dueña del proyecto: Ceci (líder de Formación).
   - `@supabase/supabase-js@2.45.4` (UMD)
   - `jspdf@2.5.1` (UMD) para generar los PDF en el navegador
 - `app/config.js` (no versionado): `window.BITACORA_CONFIG = {supabaseUrl, supabaseAnonKey}`.
-- `supabase/schema.sql`: tablas `perfiles`, `tareas` y `logros`, con RLS, triggers y realtime.
+- `supabase/schema.sql`: tablas `perfiles`, `tareas` y `logros`, con RLS, triggers, realtime y el bucket `fotos`.
+- `supabase/migraciones/`: cambios para proyectos ya creados (002: foto de perfil, cada quien edita su nombre/foto, trigger `proteger_rol`).
 - `supabase/functions/equipo/index.ts`: Edge Function (solo PM) con las acciones `listar`, `invitar`, `reenviar` y `quitar`. Usa la service_role key del entorno de Supabase. Nombre, rol y área se editan directo en `perfiles` (la RLS ya lo permite a la PM).
 - `.htaccess`: Hostinger clona el repo completo en `public_html/pm`; esto sirve solo `app/`.
 - `prototipo/`: la versión original como artifact de Claude. Es la referencia visual: no se despliega.
@@ -34,13 +35,14 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 
 ### Modelo (contenido de `data`)
 - **Tarea:**
-  `{area, titulo, proyecto, responsable, semana:"YYYY-MM-DD" (lunes), creada:ISO, hecha:ISO|null, orden:number, subtareas:[{id, titulo, responsable, hecha:ISO|null}]}`
+  `{area, titulo, proyecto, responsable, responsable_id, semana:"YYYY-MM-DD" (lunes), creada:ISO, creada_por, hecha:ISO|null, orden:number, subtareas:[{id, titulo, responsable, responsable_id, hecha:ISO|null}]}`
+  - `responsable_id` es el uuid de `perfiles`; `responsable` guarda el nombre para reportes y PDF. Las tareas viejas solo traen nombre y se relacionan con perfiles por nombre (`personaDe`, `asignadoA`).
   - Al marcar la tarea padre se completan todas sus subtareas abiertas.
   - Al completar todas las subtareas, la tarea se marca sola.
 - **Logro:**
   `{area, tipo, titulo, fecha:"YYYY-MM-DD", liga, responsable, nota, testimonios:[{id, texto, autor, creado}], creado}`
   - Todos los logros entran a los resúmenes del mes y del año.
-- `responsable` hoy es texto libre. Se sugieren nombres de `perfiles`.
+- **Perfil:** `perfiles {id, nombre, rol, area, foto}`. La foto se sube recortada a 512 px a Storage `fotos/<id>/foto.jpg`.
 
 ### Tipos de logro por área (`AREAS` en index.html)
 - **Formación:** Curso, Taller, Retiros / camps, Material creado
@@ -49,9 +51,10 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 - Siempre se puede agregar uno nuevo con "Otro…".
 
 ### Rutas (hash)
-`#formacion`, `#musica`, `#audiovisual` y `#pm`.
+`#formacion`, `#musica`, `#audiovisual`, `#pm`, `#equipo` (directorio con fotos) y `#persona/<id>` (perfil con sus pendientes).
 - Cada área tiene las pestañas Pendientes, Reporte diario, Mes y Logros.
-- El panel de la PM tiene las pestañas Semana, Mes, Año y Equipo (administración del equipo).
+- El panel de la PM tiene las pestañas Semana, Mes, Año, Tareas (asignar y editar en las tres áreas) y Equipo (administración). Tareas y Equipo solo las ve la PM.
+- Al abrir una tarea (botón +) se editan título, proyecto y responsable; la PM además cambia área y semana.
 
 ### Roles (RLS)
 - `pm`: lee y escribe todo.
@@ -70,13 +73,10 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 - Soporta modo claro y oscuro mediante tokens CSS.
 
 ## Roadmap acordado / sugerido
-1. **Asignación de tareas:**
-   - Cambiar `responsable` de texto a `responsable_id` (uuid de `perfiles`).
-   - La PM asigna tareas a cualquier persona.
-   - Agregar una vista "Mis tareas" por usuario.
+1. ✅ **Asignación de tareas** (hecho: `responsable_id`, pestaña Tareas de la PM, perfil con "Mis pendientes"). Pendiente:
    - Opcional: notificación por correo al asignar.
 2. ~~**Administración del equipo**~~ ✅ Hecho: pestaña Equipo + Edge Function `equipo`.
-3. **Mover tareas entre áreas.**
+3. ✅ **Mover tareas entre áreas** (la PM cambia el área al editar la tarea).
 4. **Historial:** guardar quién completó cada cosa (`completada_por`).
 5. **Normalizar datos** cuando haya volumen: tablas `subtareas` y `testimonios`, índices por `semana` y `fecha`. Hoy la carga inicial trae todo (límite de 10 000 filas).
 6. Migrar a **Vite + React** (o similar) si el `index.html` se vuelve difícil de mantener. Conservar el diseño del prototipo.
