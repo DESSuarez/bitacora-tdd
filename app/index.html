@@ -595,7 +595,7 @@ table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:52
         <div class="readonly" id="teamNote" hidden></div>
         <ul class="team" id="teamList"></ul>
       </div>
-      <p class="dlnote">Roles: <b>Project Manager</b> ve y edita todo y administra el equipo. <b>Líder</b> y <b>Colaborador</b> ven todo y editan solo su área.</p>
+      <p class="dlnote">Roles: <b>Project Manager</b> y <b>Desarrollador web</b> ven y editan todo y administran el equipo. <b>Líder</b> y <b>Colaborador</b> ven todo y editan solo su área.</p>
     </section>
   </div>
 </main>
@@ -624,7 +624,8 @@ AREA_ICON.persona=AREA_ICON.equipo;
 const AREA_TABS=[["tasks","Pendientes"],["report","Reporte diario"],["month","Mes"],["logros","Logros"]];
 const PM_TABS=[["week","Semana"],["month","Mes"],["year","Año"],["tasks","Tareas"],["team","Equipo"]];
 const PM_SOLO=["tasks","team"];
-const ROLES={pm:"Project Manager",lider:"Líder",colaborador:"Colaborador"};
+const ROLES={pm:"Project Manager",desarrollador:"Desarrollador web",lider:"Líder",colaborador:"Colaborador"};
+const ACCESO_TOTAL=["pm","desarrollador"]; // sin área: ven y editan todo
 const $=id=>document.getElementById(id);
 const CHECK='<svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.2 3L13 4.5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const ICON_DEL='<svg viewBox="0 0 20 20" fill="none"><path d="M5 6h10M8 6V4h4v2M6.5 6l.7 10h5.6l.7-10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -672,19 +673,20 @@ function av(p,size){const ini=esc(((p&&p.nombre||"?").trim()[0]||"?").toUpperCas
 function whoChip(n,id){const p=personaDe(id,n);
   if(p)return `<a class="chip who has-av" href="#persona/${p.id}">${av(p)}${esc(p.nombre)}</a>`;
   if(!n)return"";return `<span class="chip who" data-i="${esc((n.trim()[0]||"").toUpperCase())}">${esc(n)}</span>`}
-function rolDe(p){return p.rol==="pm"?"Project Manager":`${ROLES[p.rol]||"Colaborador"} · ${p.area&&AREAS[p.area]?AREAS[p.area].n:"Sin área asignada"}`}
+function rolDe(p){return ACCESO_TOTAL.includes(p.rol)?ROLES[p.rol]:`${ROLES[p.rol]||"Colaborador"} · ${p.area&&AREAS[p.area]?AREAS[p.area].n:"Sin área asignada"}`}
 function opcionesPersona(area,sel,legacy){const ord=(a,b)=>(a.nombre||"").localeCompare(b.nombre||"");
-  const de=perfiles.filter(p=>p.area===area).sort(ord),otros=perfiles.filter(p=>p.area!==area).sort(ord);
+  const dev=p=>p.rol==="desarrollador",de=perfiles.filter(p=>p.area===area&&!dev(p)).sort(ord),otros=perfiles.filter(p=>p.area!==area&&!dev(p)).sort(ord),devs=perfiles.filter(dev).sort(ord);
   const o=p=>`<option value="${p.id}" ${p.id===sel?"selected":""}>${esc(p.nombre)}</option>`;
   return `<option value="">Sin asignar</option>${legacy?`<option value="__txt" selected>${esc(legacy)}</option>`:""}`+
     (de.length?`<optgroup label="${AREAS[area]?AREAS[area].n:"Área"}">${de.map(o).join("")}</optgroup>`:"")+
-    (otros.length?`<optgroup label="Otras personas">${otros.map(o).join("")}</optgroup>`:"")}
+    (otros.length?`<optgroup label="Otras personas">${otros.map(o).join("")}</optgroup>`:"")+
+    (devs.length?`<optgroup label="Desarrollo">${devs.map(o).join("")}</optgroup>`:"")}
 function fillSelect(el,html){const v=el.value;el.innerHTML=html;if(v&&[...el.options].some(o=>o.value===v))el.value=v}
 function pendientesDe(pid){const out=[];
   tasks.forEach(t=>{if(!t.hecha&&asignadoA(t,pid))out.push({t});t.subtareas.forEach(s=>{if(!s.hecha&&asignadoA(s,pid))out.push({t,s})})});
   return out.sort((a,b)=>a.t.semana<b.t.semana?-1:a.t.semana>b.t.semana?1:0)}
-function canEdit(a){return !!perfil&&(perfil.rol==="pm"||perfil.area===a)}
-function esPM(){return !!perfil&&perfil.rol==="pm"}
+function esPM(){return !!perfil&&ACCESO_TOTAL.includes(perfil.rol)}
+function canEdit(a){return esPM()||(!!perfil&&perfil.area===a)}
 function areaOf(x){return AREAS[x.area]?x.area:"formacion"}
 function safeUrl(u){if(!u)return"";u=u.trim();if(!/^https?:\/\//i.test(u))u="https://"+u;try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:""}catch(e){return""}}
 function hostOf(u){try{return new URL(u).hostname.replace(/^www\./,"")}catch(e){return"liga"}}
@@ -909,8 +911,9 @@ function renderPMTasks(){const ws=weekStart(),wk=key(ws);
 /* ---------- Directorio y perfil ---------- */
 function renderPeople(){const G=$("peopleGrid");
   if(!perfiles.length){G.innerHTML=`<div class="none">Cargando el equipo…</div>`;return}
-  const orden={pm:0,lider:1,colaborador:2};
-  G.innerHTML=perfiles.slice().sort((a,b)=>(AREA_IDS.indexOf(a.area)-AREA_IDS.indexOf(b.area))||(orden[a.rol]-orden[b.rol])||(a.nombre||"").localeCompare(b.nombre||"")).map(p=>{const n=pendientesDe(p.id).length;
+  const orden={pm:0,lider:1,colaborador:2,desarrollador:3};
+  const pos=p=>p.rol==="desarrollador"?9:AREA_IDS.indexOf(p.area);
+  G.innerHTML=perfiles.slice().sort((a,b)=>(pos(a)-pos(b))||(orden[a.rol]-orden[b.rol])||(a.nombre||"").localeCompare(b.nombre||"")).map(p=>{const n=pendientesDe(p.id).length;
     return `<a class="pcard" href="#persona/${p.id}" style="--c:${AREAS[p.area]?AREAS[p.area].c:"var(--flame)"}">${av(p,"lg")}<b>${esc(p.nombre)}</b><span>${esc(rolDe(p))}</span><span class="n">${n?`${n} pendiente${n>1?"s":""}`:"Sin pendientes"}</span></a>`}).join("")}
 function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
   if(!p){$("personCard").innerHTML=perfiles.length?`<div class="empty"><strong>No encontramos a esta persona</strong><p>Puede que ya no tenga acceso a la bitácora. <a href="#equipo">Ver el equipo</a></p></div>`:`<div class="none">Cargando…</div>`;
@@ -965,7 +968,7 @@ function renderTeam(){
   if(cuentas===null&&!cuentasErr&&!cuentasCargando)cargarCuentas();
   $("teamNote").hidden=!cuentasErr&&!cuentasCargando;
   $("teamNote").textContent=cuentasErr?`No se pudieron cargar los correos: ${cuentasErr}`:"Cargando el equipo…";
-  const orden={pm:0,lider:1,colaborador:2};
+  const orden={pm:0,lider:1,colaborador:2,desarrollador:3};
   const rows=perfiles.slice().sort((a,b)=>(orden[a.rol]-orden[b.rol])||(a.area||"").localeCompare(b.area||"")||(a.nombre||"").localeCompare(b.nombre||""));
   $("teamH").textContent=`Personas · ${rows.length}`;
   $("teamList").innerHTML=rows.length?rows.map(p=>{const c=cuentas&&cuentas.get(p.id),self=perfil&&p.id===perfil.id;
@@ -973,7 +976,7 @@ function renderTeam(){
     return `<li class="member">
       <div class="who"><div class="wl"><a href="#persona/${p.id}" title="Ver perfil">${av(p,"md")}</a><input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre"></div><span class="mail">${esc(c?c.email:"")}</span></div>
       <select data-prol="${p.id}" aria-label="Rol" ${self?'disabled title="No puedes cambiar tu propio rol"':""}>${Object.entries(ROLES).map(([k,l])=>`<option value="${k}" ${p.rol===k?"selected":""}>${l}</option>`).join("")}</select>
-      <select data-parea="${p.id}" aria-label="Área" ${p.rol==="pm"?"disabled":""}>${p.rol==="pm"?`<option>Todas</option>`:`<option value="" ${p.area?"":"selected"}>Sin área</option>${AREA_IDS.map(a=>`<option value="${a}" ${p.area===a?"selected":""}>${AREAS[a].n}</option>`).join("")}`}</select>
+      <select data-parea="${p.id}" aria-label="Área" ${ACCESO_TOTAL.includes(p.rol)?"disabled":""}>${ACCESO_TOTAL.includes(p.rol)?`<option>Todas</option>`:`<option value="" ${p.area?"":"selected"}>Sin área</option>${AREA_IDS.map(a=>`<option value="${a}" ${p.area===a?"selected":""}>${AREAS[a].n}</option>`).join("")}`}</select>
       <div class="acts">${estado}${c&&!c.activo&&!self?`<button class="btn ghost sm" data-reenviar="${p.id}">Reenviar</button>`:""}${self?"":`<button class="icon" data-quitar="${p.id}" aria-label="Quitar acceso a ${esc(p.nombre)}">${ICON_DEL}</button>`}</div>
     </li>`}).join(""):`<li class="none">Aún no hay nadie en el equipo.</li>`}
 async function actualizarPerfil(id,cambios){const p=perfiles.find(x=>x.id===id);if(!p)return;const antes={...p};Object.assign(p,cambios);render();
@@ -1161,15 +1164,15 @@ $("ptForm").addEventListener("submit",e=>{e.preventDefault();if(!tasksCol){toast
   const p=perfiles.find(x=>x.id===who);$("ptTitulo").value="";$("ptProyecto").value="";$("ptTitulo").focus();
   toast(`Tarea asignada a ${p?p.nombre:AREAS[area].n}${sem!==key(weekStart())?" para la "+weekLabel(fromKey(sem)).toLowerCase():""}.`)});
 document.addEventListener("change",e=>{const t=e.target;if(!sb)return;
-  if(t.dataset.prol){const rol=t.value;actualizarPerfil(t.dataset.prol,rol==="pm"?{rol,area:null}:{rol})}
+  if(t.dataset.prol){const rol=t.value;actualizarPerfil(t.dataset.prol,ACCESO_TOTAL.includes(rol)?{rol,area:null}:{rol})}
   else if(t.dataset.parea)actualizarPerfil(t.dataset.parea,{area:t.value||null});
   else if(t.dataset.pnombre){const v=t.value.trim();const p=perfiles.find(x=>x.id===t.dataset.pnombre);if(!v||!p||v===p.nombre){if(p)t.value=p.nombre;return}actualizarPerfil(p.id,{nombre:v})}});
-$("iRol").innerHTML=["colaborador","lider","pm"].map(k=>`<option value="${k}">${ROLES[k]}</option>`).join("");
+$("iRol").innerHTML=["colaborador","lider","pm","desarrollador"].map(k=>`<option value="${k}">${ROLES[k]}</option>`).join("");
 $("iArea").innerHTML=`<option value="">Elige un área…</option>`+AREA_IDS.map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("");
-$("iRol").addEventListener("change",()=>{$("iArea").disabled=$("iRol").value==="pm";if($("iArea").disabled)$("iArea").value=""});
+$("iRol").addEventListener("change",()=>{$("iArea").disabled=ACCESO_TOTAL.includes($("iRol").value);if($("iArea").disabled)$("iArea").value=""});
 $("inviteForm").addEventListener("submit",async e=>{e.preventDefault();if(!sb)return;
-  const email=$("iEmail").value.trim(),rol=$("iRol").value,area=rol==="pm"?null:$("iArea").value;
-  if(rol!=="pm"&&!area){$("iArea").focus();toast("Elige el área de la persona.");return}
+  const email=$("iEmail").value.trim(),rol=$("iRol").value,area=ACCESO_TOTAL.includes(rol)?null:$("iArea").value;
+  if(!area&&!ACCESO_TOTAL.includes(rol)){$("iArea").focus();toast("Elige el área de la persona.");return}
   $("iBtn").disabled=true;
   try{await equipoFn({accion:"invitar",email,nombre:$("iNombre").value.trim(),rol,area,redirectTo:location.origin+location.pathname});
     $("iEmail").value=$("iNombre").value="";toast("Invitación enviada a "+email);cuentas=null;cuentasErr="";await cargarCuentas()}
@@ -1209,7 +1212,7 @@ const EYE_OFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 function setEye(show){$("authPass").type=show?"text":"password";$("authEye").innerHTML=show?EYE_OFF:EYE;$("authEye").setAttribute("aria-pressed",show);$("authEye").setAttribute("aria-label",show?"Ocultar contraseña":"Mostrar contraseña")}
 setEye(false);
 $("authEye").onclick=()=>{setEye($("authPass").type==="password");$("authPass").focus()};
-function pintarCuenta(email){if(!perfil)return;const rol=perfil.rol==="pm"?"Project Manager":`${ROLES[perfil.rol]||"Colaborador"} · ${perfil.area&&AREAS[perfil.area]?AREAS[perfil.area].n:"Sin área asignada"}`;
+function pintarCuenta(email){if(!perfil)return;const rol=rolDe(perfil);
   $("userName").innerHTML=`<b>${esc(perfil.nombre)}</b><span class="rol"> · ${esc(rol)}</span>`;$("acctAvatar").innerHTML=perfil.foto?`<img src="${esc(perfil.foto)}" alt="">`:esc((perfil.nombre||"?").trim().charAt(0).toUpperCase());
   $("acctNombre").textContent=perfil.nombre;$("acctRol").textContent=rol;if(email)$("acctEmail").textContent=email}
 function authErr(m){$("authMsg").textContent=m;$("authMsg").className="authmsg err"}
@@ -1240,7 +1243,7 @@ async function start(){
   perfil=p||{id:user.id,nombre:user.email,rol:"colaborador",area:null};perfil.email=user.email;
   $("auth").hidden=true;$("userbar").hidden=false;
   pintarCuenta(user.email);
-  if(!location.hash){route=perfil.rol==="pm"?"pm":(perfil.area||"formacion");history.replaceState(null,"",location.pathname+"#"+route)}
+  if(!location.hash){route=esPM()?"pm":(perfil.area||"formacion");history.replaceState(null,"",location.pathname+"#"+route)}
   if(started){render();return}started=true;
   sb.from("perfiles").select("*").then(({data})=>{perfiles=data||[];render()});
   tasksCol=makeCol("tareas");logrosCol=makeCol("logros");

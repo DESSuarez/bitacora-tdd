@@ -12,7 +12,8 @@ const cors = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
-const ROLES = ["pm", "lider", "colaborador"];
+const ROLES = ["pm", "desarrollador", "lider", "colaborador"];
+const ACCESO_TOTAL = ["pm", "desarrollador"];
 const AREAS = ["formacion", "musica", "audiovisual"];
 
 function json(body: unknown, status = 200) {
@@ -32,7 +33,7 @@ Deno.serve(async (req) => {
   const { data: { user } } = await admin.auth.getUser(jwt);
   if (!user) return json({ error: "Tu sesión expiró. Vuelve a entrar." }, 401);
   const { data: yo } = await admin.from("perfiles").select("rol").eq("id", user.id).single();
-  if (yo?.rol !== "pm") return json({ error: "Solo la project manager puede administrar el equipo." }, 403);
+  if (!ACCESO_TOTAL.includes(yo?.rol)) return json({ error: "Solo la project manager puede administrar el equipo." }, 403);
 
   const body = await req.json().catch(() => ({}));
 
@@ -63,8 +64,8 @@ Deno.serve(async (req) => {
 
     const nombre = String(body.nombre || "").trim().slice(0, 60) || email.split("@")[0];
     const rol = ROLES.includes(body.rol) ? body.rol : "colaborador";
-    const area = rol === "pm" ? null : AREAS.includes(body.area) ? body.area : null;
-    if (rol !== "pm" && !area) return json({ error: "Elige el área de la persona." }, 400);
+    const area = ACCESO_TOTAL.includes(rol) ? null : AREAS.includes(body.area) ? body.area : null;
+    if (!ACCESO_TOTAL.includes(rol) && !area) return json({ error: "Elige el área de la persona." }, 400);
 
     const { data, error } = await admin.auth.admin.inviteUserByEmail(email, { data: { nombre }, redirectTo });
     if (error) {

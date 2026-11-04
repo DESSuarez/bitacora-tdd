@@ -23,7 +23,7 @@ bitacora-tdd/
 - **Frontend:** una sola página estática (no necesita servidor propio ni compilar nada).
 - **Base de datos, inicio de sesión y tiempo real:** [Supabase](https://supabase.com) (Postgres). El plan gratuito alcanza para un equipo de este tamaño.
 - **Roles:**
-  - `pm`: ve y edita todas las áreas y entra directo al panel de Project Manager.
+  - `pm` y `desarrollador`: ven y editan todas las áreas, administran el equipo y entran directo al panel de Project Manager.
   - `lider` y `colaborador`: ven todo y editan solo su área.
 - Los cambios aparecen en vivo en todas las pantallas abiertas.
 
@@ -61,6 +61,9 @@ La primera PM se asigna a mano en **SQL Editor** (al final de `schema.sql` hay e
 
 ### 5. Fotos de perfil (proyectos creados antes de noviembre 2026)
 Si tu base de datos se creó con una versión anterior de `schema.sql`, corre una vez `supabase/migraciones/002_perfil_y_fotos.sql` en **SQL Editor**. Crea el espacio para las fotos y deja que cada persona edite su nombre y foto (pero no su rol ni su área).
+
+### 6. Rol de desarrollador (proyectos creados antes de noviembre 2026)
+Corre `supabase/migraciones/003_rol_desarrollador.sql` en **SQL Editor** y vuelve a desplegar la función `equipo` (pega otra vez `supabase/functions/equipo/index.ts` y toca **Deploy**). El desarrollador tiene el mismo acceso que la PM, con su propia etiqueta.
 
 ## Seguridad
 - La *anon key* puede ir en el navegador. Lo que protege los datos son las reglas de `schema.sql`: sin sesión no se ve nada, y cada quien solo escribe en su área.

@@ -2,12 +2,13 @@
 -- Ejecútalo completo en Supabase → SQL Editor → New query → Run.
 
 -- ============ Perfiles y roles ============
--- rol: 'pm' (project manager, ve y edita todo), 'lider' (encargado de un área), 'colaborador'
+-- rol: 'pm' (project manager, ve y edita todo), 'desarrollador' (mismo acceso que la PM),
+--      'lider' (encargado de un área), 'colaborador'
 -- area: 'formacion' | 'musica' | 'audiovisual' (null para la PM)
 create table if not exists public.perfiles (
   id uuid primary key references auth.users(id) on delete cascade,
   nombre text not null,
-  rol text not null default 'colaborador' check (rol in ('pm','lider','colaborador')),
+  rol text not null default 'colaborador' constraint perfiles_rol_check check (rol in ('pm','desarrollador','lider','colaborador')),
   area text check (area in ('formacion','musica','audiovisual')),
   creado timestamptz not null default now()
 );
@@ -29,7 +30,7 @@ for each row execute function public.crear_perfil();
 -- Funciones auxiliares para las reglas
 create or replace function public.es_pm()
 returns boolean language sql stable security definer set search_path = public as $$
-  select exists (select 1 from public.perfiles where id = auth.uid() and rol = 'pm');
+  select exists (select 1 from public.perfiles where id = auth.uid() and rol in ('pm','desarrollador'));
 $$;
 
 create or replace function public.mi_area()

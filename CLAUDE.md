@@ -18,7 +18,7 @@ Dueña del proyecto: Ceci (líder de Formación).
   - `jspdf@2.5.1` (UMD) para generar los PDF en el navegador
 - `app/config.js` (no versionado): `window.BITACORA_CONFIG = {supabaseUrl, supabaseAnonKey}`.
 - `supabase/schema.sql`: tablas `perfiles`, `tareas` y `logros`, con RLS, triggers, realtime y el bucket `fotos`.
-- `supabase/migraciones/`: cambios para proyectos ya creados (002: foto de perfil, cada quien edita su nombre/foto, trigger `proteger_rol`).
+- `supabase/migraciones/`: cambios para proyectos ya creados (002: foto de perfil, cada quien edita su nombre/foto, trigger `proteger_rol`; 003: rol `desarrollador`).
 - `supabase/functions/equipo/index.ts`: Edge Function (solo PM) con las acciones `listar`, `invitar`, `reenviar` y `quitar`. Usa la service_role key del entorno de Supabase. Nombre, rol y área se editan directo en `perfiles` (la RLS ya lo permite a la PM).
 - `.htaccess`: Hostinger clona el repo completo en `public_html/pm`; esto sirve solo `app/`.
 - `prototipo/`: la versión original como artifact de Claude. Es la referencia visual: no se despliega.
@@ -57,7 +57,7 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 - Al abrir una tarea (botón +) se editan título, proyecto y responsable; la PM además cambia área y semana.
 
 ### Roles (RLS)
-- `pm`: lee y escribe todo.
+- `pm` y `desarrollador`: leen y escriben todo y administran el equipo (`es_pm()` en SQL, `esPM()` y `ACCESO_TOTAL` en la app). Solo cambia la etiqueta: "Project Manager" o "Desarrollador web".
 - `lider` y `colaborador`: leen todo y escriben solo filas de su `area`.
 - La UI oculta los formularios cuando no hay permiso (`canEdit`).
 
