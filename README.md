@@ -36,8 +36,7 @@ bitacora-tdd/
 4. En **Authentication → URL Configuration**, pon en **Site URL** tu subdominio, por ejemplo `https://bitacora.tiempodedios.mx`.
 
 ### 2. Configurar la app
-1. Copia `app/config.example.js` como `app/config.js`.
-2. Pega ahí la **Project URL** y la **anon public key**. Están en Supabase → Project Settings → API.
+Pon la **Project URL** y la **anon public key** en `app/config.publico.js` (Supabase → Project Settings → Data API y API Keys → Legacy). Este archivo sí se sube a GitHub: la anon key es pública por diseño. Nunca pongas ahí la *service_role key*.
 
 ### 3. Subirla a tu subdominio
 Sube el contenido de la carpeta `app/` (`index.html` y `config.js`) a cualquier hosting de archivos estáticos:

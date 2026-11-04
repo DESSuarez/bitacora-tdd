@@ -602,6 +602,7 @@ table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:52
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.publico.js"></script>
 <script src="config.js"></script>
 <script>
 (function(){
@@ -1256,7 +1257,10 @@ async function start(){
 }
 (async()=>{
   const cfg=window.BITACORA_CONFIG||{};
-  if(!window.supabase||!cfg.supabaseUrl||!cfg.supabaseAnonKey||/TU-PROYECTO/.test(cfg.supabaseUrl)){loadedT=loadedL=true;setStatus("Falta configurar config.js con la URL y la llave pública de Supabase (ver README).",true);render();return}
+  const sinCfg=!cfg.supabaseUrl||!cfg.supabaseAnonKey||/TU-PROYECTO/.test(cfg.supabaseUrl);
+  if(!window.supabase||sinCfg){loadedT=loadedL=true;
+    setStatus(sinCfg?"Falta la configuración de Supabase (app/config.publico.js).":"No se pudo cargar Supabase. Revisa tu conexión o desactiva bloqueadores de anuncios y recarga.",true);
+    if(!sinCfg)showAuth("login","No se pudo conectar. Revisa tu conexión y recarga la página.");render();return}
   // Acepta la URL aunque la peguen con /rest/v1/ o con diagonal final
   const url=cfg.supabaseUrl.trim().replace(/\/(rest|auth)\/v1\/?$/,"").replace(/\/+$/,"");
   sb=window.supabase.createClient(url,cfg.supabaseAnonKey.trim());

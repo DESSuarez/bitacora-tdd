@@ -16,7 +16,7 @@ Dueña del proyecto: Ceci (líder de Formación).
 - `app/index.html`: una sola página con HTML, CSS y JS sin framework ni build. Usa estas librerías desde CDN:
   - `@supabase/supabase-js@2.45.4` (UMD)
   - `jspdf@2.5.1` (UMD) para generar los PDF en el navegador
-- `app/config.js` (no versionado): `window.BITACORA_CONFIG = {supabaseUrl, supabaseAnonKey}`.
+- `app/config.publico.js` (versionado): `window.BITACORA_CONFIG = {supabaseUrl, supabaseAnonKey}` con la anon key, que es pública por diseño. `app/config.js` (no versionado, opcional) lo reemplaza si existe.
 - `supabase/schema.sql`: tablas `perfiles`, `tareas` y `logros`, con RLS, triggers, realtime y el bucket `fotos`.
 - `supabase/migraciones/`: cambios para proyectos ya creados (002: foto de perfil, cada quien edita su nombre/foto, trigger `proteger_rol`; 003: rol `desarrollador`).
 - `supabase/functions/equipo/index.ts`: Edge Function (solo PM) con las acciones `listar`, `invitar`, `reenviar` y `quitar`. Usa la service_role key del entorno de Supabase. Nombre, rol y área se editan directo en `perfiles` (la RLS ya lo permite a la PM).
@@ -89,5 +89,5 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 ## Despliegue
 - Producción: https://pm.tiempodedios.mx (Hostinger, carpeta `public_html/pm`).
 - Repo: github.com/DESSuarez/bitacora-tdd, rama `main`. Hostinger está conectado por su integración con GitHub: cada push a `main` se despliega.
-- `app/config.js` existe solo en el servidor (`public_html/pm/app/config.js`).
+- La configuración va en `app/config.publico.js` (versionado). El `config.js` del servidor es opcional y ya no hace falta.
 - La Edge Function `equipo` se despliega aparte, en Supabase (ver README).
