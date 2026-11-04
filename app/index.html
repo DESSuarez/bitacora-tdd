@@ -234,6 +234,10 @@ a.chip.who{text-decoration:none}a.chip.who:hover{filter:brightness(.95)}
 .pcard{border:1.5px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;text-decoration:none;color:var(--fg);background:var(--bg);border-top:6px solid var(--c,var(--line))}
 .pcard:hover{border-color:var(--c,var(--area-ink))}
 .pcard b{font-size:16px}.pcard span{font-size:13px;color:var(--muted)}
+.pcard .u,.profile .u{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.uedit{display:flex;align-items:center;gap:2px;font-family:var(--mono);font-size:14px;color:var(--muted);max-width:320px}
+.uedit input{font-family:var(--mono)!important;font-size:14px!important;font-weight:400!important;border:1.5px solid transparent;border-radius:8px;background:transparent;padding:4px 6px!important;margin:0!important;color:var(--fg);min-width:0;flex:1}
+.uedit input:hover{border-color:var(--line)}.uedit input:focus{border-color:var(--area-ink);outline:none;background:var(--bg)}
 .pcard .n{font-family:var(--mono);font-size:12px}
 .profile{display:flex;gap:24px;align-items:center;flex-wrap:wrap;border:1.5px solid var(--line);border-radius:18px;padding:22px;background:var(--surface)}
 .profile .pfoto{display:flex;flex-direction:column;align-items:center;gap:10px}
@@ -414,7 +418,7 @@ table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:52
       <div class="userbar" id="userbar" hidden>
         <button type="button" class="acct" id="acctBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="acctMenu"><span class="avatar" id="acctAvatar"></span><span id="userName"></span><svg class="caret" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div class="acctmenu" id="acctMenu" role="menu" hidden>
-          <div class="acctinfo"><b id="acctNombre"></b><span id="acctRol"></span><span class="mail" id="acctEmail"></span></div>
+          <div class="acctinfo"><b id="acctNombre"></b><span class="mail" id="acctUsuario"></span><span id="acctRol"></span><span class="mail" id="acctEmail"></span></div>
           <button type="button" role="menuitem" id="meBtn">Mi perfil</button>
           <button type="button" role="menuitem" id="pwBtn">Cambiar contraseña</button>
           <button type="button" role="menuitem" id="logoutBtn" class="out">Cerrar sesión</button>
@@ -661,7 +665,7 @@ function cap(s){return s?s[0].toUpperCase()+s.slice(1):s}
 /* Utilidades */
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function uid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4)}
-function toast(msg){const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
+function toast(msg){document.querySelectorAll(".toast").forEach(x=>x.remove());const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
 function setStatus(msg,warn){const s=$("status");s.textContent=msg||"";s.className="status"+(warn?" warn":"");s.hidden=!msg}
 /* Personas: el responsable se guarda con id (responsable_id) y con nombre (responsable) para reportes y PDF.
    Las tareas viejas solo traen el nombre: se relacionan con perfiles por nombre. */
@@ -674,6 +678,8 @@ function av(p,size){const ini=esc(((p&&p.nombre||"?").trim()[0]||"?").toUpperCas
 function whoChip(n,id){const p=personaDe(id,n);
   if(p)return `<a class="chip who has-av" href="#persona/${p.id}">${av(p)}${esc(p.nombre)}</a>`;
   if(!n)return"";return `<span class="chip who" data-i="${esc((n.trim()[0]||"").toUpperCase())}">${esc(n)}</span>`}
+function arroba(p){return p&&p.usuario?"@"+p.usuario:""}
+const USUARIO_OK=/^[a-z0-9._]{2,30}$/;
 function rolDe(p){return ACCESO_TOTAL.includes(p.rol)?ROLES[p.rol]:`${ROLES[p.rol]||"Colaborador"} · ${p.area&&AREAS[p.area]?AREAS[p.area].n:"Sin área asignada"}`}
 function opcionesPersona(area,sel,legacy){const ord=(a,b)=>(a.nombre||"").localeCompare(b.nombre||"");
   const dev=p=>p.rol==="desarrollador",de=perfiles.filter(p=>p.area===area&&!dev(p)).sort(ord),otros=perfiles.filter(p=>p.area!==area&&!dev(p)).sort(ord),devs=perfiles.filter(dev).sort(ord);
@@ -915,7 +921,7 @@ function renderPeople(){const G=$("peopleGrid");
   const orden={pm:0,lider:1,colaborador:2,desarrollador:3};
   const pos=p=>p.rol==="desarrollador"?9:AREA_IDS.indexOf(p.area);
   G.innerHTML=perfiles.slice().sort((a,b)=>(pos(a)-pos(b))||(orden[a.rol]-orden[b.rol])||(a.nombre||"").localeCompare(b.nombre||"")).map(p=>{const n=pendientesDe(p.id).length;
-    return `<a class="pcard" href="#persona/${p.id}" style="--c:${AREAS[p.area]?AREAS[p.area].c:"var(--flame)"}">${av(p,"lg")}<b>${esc(p.nombre)}</b><span>${esc(rolDe(p))}</span><span class="n">${n?`${n} pendiente${n>1?"s":""}`:"Sin pendientes"}</span></a>`}).join("")}
+    return `<a class="pcard" href="#persona/${p.id}" style="--c:${AREAS[p.area]?AREAS[p.area].c:"var(--flame)"}">${av(p,"lg")}<b>${esc(p.nombre)}</b>${p.usuario?`<span class="u">${esc(arroba(p))}</span>`:""}<span>${esc(rolDe(p))}</span><span class="n">${n?`${n} pendiente${n>1?"s":""}`:"Sin pendientes"}</span></a>`}).join("")}
 function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
   if(!p){$("personCard").innerHTML=perfiles.length?`<div class="empty"><strong>No encontramos a esta persona</strong><p>Puede que ya no tenga acceso a la bitácora. <a href="#equipo">Ver el equipo</a></p></div>`:`<div class="none">Cargando…</div>`;
     ["personStats","personPend","personDone"].forEach(i=>$(i).innerHTML="");return}
@@ -923,7 +929,8 @@ function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
   if(esPM()&&!self&&cuentas===null&&!cuentasErr&&!cuentasCargando)cargarCuentas();
   const c=cuentas&&cuentas.get(p.id),email=self?perfil.email||"":c?c.email:"";
   $("personCard").innerHTML=`<div class="profile"><div class="pfoto">${av(p,"xl")}${puede?`<label class="btn ghost sm file">${p.foto?"Cambiar foto":"Subir foto"}<input type="file" accept="image/*" data-foto="${p.id}" hidden></label>`:""}</div>
-    <div class="pinfo">${puede?`<input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre">`:`<h2>${esc(p.nombre)}</h2>`}<span>${esc(rolDe(p))}</span>${email?`<span class="mail">${esc(email)}</span>`:""}${esPM()&&!self?`<span><button class="btn ghost sm" data-goteam="1">Cambiar rol o área</button></span>`:""}</div></div>`;
+    <div class="pinfo">${puede?`<input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre" title="Nombre: como te ve el equipo">`:`<h2>${esc(p.nombre)}</h2>`}
+      ${puede?`<label class="uedit" title="Usuario: identificador único, en minúsculas">@<input data-pusuario="${p.id}" value="${esc(p.usuario||"")}" maxlength="30" placeholder="usuario" aria-label="Usuario" autocapitalize="off" spellcheck="false"></label>`:p.usuario?`<span class="u">${esc(arroba(p))}</span>`:""}<span>${esc(rolDe(p))}</span>${email?`<span class="mail">${esc(email)}</span>`:""}${esPM()&&!self?`<span><button class="btn ghost sm" data-goteam="1">Cambiar rol o área</button></span>`:""}</div></div>`;
   const ws=weekStart(),actual=key(ws)===key(mondayOf(new Date())),wkNow=key(mondayOf(new Date()));
   const pend=pendientesDe(p.id),done=logRange(key(ws),key(addDays(ws,6))).filter(x=>asignadoA({responsable_id:x.rid,responsable:x.responsable},p.id));
   const r=monthRange(monthStart()),lg=logrosRange(r.s,r.e).filter(l=>asignadoA(l,p.id));
@@ -975,14 +982,15 @@ function renderTeam(){
   $("teamList").innerHTML=rows.length?rows.map(p=>{const c=cuentas&&cuentas.get(p.id),self=perfil&&p.id===perfil.id;
     const estado=self?`<span class="chip">Tú</span>`:c&&!c.activo?`<span class="chip pend" title="Aún no acepta la invitación">Pendiente</span>`:"";
     return `<li class="member">
-      <div class="who"><div class="wl"><a href="#persona/${p.id}" title="Ver perfil">${av(p,"md")}</a><input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre"></div><span class="mail">${esc(c?c.email:"")}</span></div>
+      <div class="who"><div class="wl"><a href="#persona/${p.id}" title="Ver perfil">${av(p,"md")}</a><input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre"></div><span class="mail">${esc([arroba(p),c?c.email:""].filter(Boolean).join(" · "))}</span></div>
       <select data-prol="${p.id}" aria-label="Rol" ${self?'disabled title="No puedes cambiar tu propio rol"':""}>${Object.entries(ROLES).map(([k,l])=>`<option value="${k}" ${p.rol===k?"selected":""}>${l}</option>`).join("")}</select>
       <select data-parea="${p.id}" aria-label="Área" ${ACCESO_TOTAL.includes(p.rol)?"disabled":""}>${ACCESO_TOTAL.includes(p.rol)?`<option>Todas</option>`:`<option value="" ${p.area?"":"selected"}>Sin área</option>${AREA_IDS.map(a=>`<option value="${a}" ${p.area===a?"selected":""}>${AREAS[a].n}</option>`).join("")}`}</select>
       <div class="acts">${estado}${c&&!c.activo&&!self?`<button class="btn ghost sm" data-reenviar="${p.id}">Reenviar</button>`:""}${self?"":`<button class="icon" data-quitar="${p.id}" aria-label="Quitar acceso a ${esc(p.nombre)}">${ICON_DEL}</button>`}</div>
     </li>`}).join(""):`<li class="none">Aún no hay nadie en el equipo.</li>`}
 async function actualizarPerfil(id,cambios){const p=perfiles.find(x=>x.id===id);if(!p)return;const antes={...p};Object.assign(p,cambios);render();
   const {data,error}=await sb.from("perfiles").update(cambios).eq("id",id).select("id");
-  if(error||!data||!data.length){Object.assign(p,antes);render();toast("No se pudo guardar el cambio.");return}
+  if(error||!data||!data.length){Object.assign(p,antes);render();
+    toast(error&&error.code==="23505"?"Ese usuario ya lo tiene otra persona.":error&&error.code==="23514"?"El usuario solo puede llevar minúsculas, números, punto y guion bajo.":"No se pudo guardar el cambio.");return}
   if(perfil&&id===perfil.id){Object.assign(perfil,cambios);pintarCuenta()}
   toast("Cambio guardado.")}
 
@@ -1167,6 +1175,10 @@ $("ptForm").addEventListener("submit",e=>{e.preventDefault();if(!tasksCol){toast
 document.addEventListener("change",e=>{const t=e.target;if(!sb)return;
   if(t.dataset.prol){const rol=t.value;actualizarPerfil(t.dataset.prol,ACCESO_TOTAL.includes(rol)?{rol,area:null}:{rol})}
   else if(t.dataset.parea)actualizarPerfil(t.dataset.parea,{area:t.value||null});
+  else if(t.dataset.pusuario){const p=perfiles.find(x=>x.id===t.dataset.pusuario);const v=t.value.trim().replace(/^@/,"").toLowerCase();
+    if(!p||v===(p.usuario||"")){if(p)t.value=p.usuario||"";return}
+    if(!USUARIO_OK.test(v)){t.value=p.usuario||"";toast("El usuario lleva de 2 a 30 caracteres: minúsculas, números, punto o guion bajo.");return}
+    actualizarPerfil(p.id,{usuario:v})}
   else if(t.dataset.pnombre){const v=t.value.trim();const p=perfiles.find(x=>x.id===t.dataset.pnombre);if(!v||!p||v===p.nombre){if(p)t.value=p.nombre;return}actualizarPerfil(p.id,{nombre:v})}});
 $("iRol").innerHTML=["colaborador","lider","pm","desarrollador"].map(k=>`<option value="${k}">${ROLES[k]}</option>`).join("");
 $("iArea").innerHTML=`<option value="">Elige un área…</option>`+AREA_IDS.map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("");
@@ -1215,7 +1227,7 @@ setEye(false);
 $("authEye").onclick=()=>{setEye($("authPass").type==="password");$("authPass").focus()};
 function pintarCuenta(email){if(!perfil)return;const rol=rolDe(perfil);
   $("userName").innerHTML=`<b>${esc(perfil.nombre)}</b><span class="rol"> · ${esc(rol)}</span>`;$("acctAvatar").innerHTML=perfil.foto?`<img src="${esc(perfil.foto)}" alt="">`:esc((perfil.nombre||"?").trim().charAt(0).toUpperCase());
-  $("acctNombre").textContent=perfil.nombre;$("acctRol").textContent=rol;if(email)$("acctEmail").textContent=email}
+  $("acctNombre").textContent=perfil.nombre;$("acctUsuario").textContent=arroba(perfil);$("acctRol").textContent=rol;if(email)$("acctEmail").textContent=email}
 function authErr(m){$("authMsg").textContent=m;$("authMsg").className="authmsg err"}
 // Si Supabase no responde, avisa en vez de dejar el botón congelado
 function conLimite(p,ms){return Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error("timeout")),ms))])}

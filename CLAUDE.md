@@ -18,7 +18,7 @@ Dueña del proyecto: Ceci (líder de Formación).
   - `jspdf@2.5.1` (UMD) para generar los PDF en el navegador
 - `app/config.publico.js` (versionado): `window.BITACORA_CONFIG = {supabaseUrl, supabaseAnonKey}` con la anon key, que es pública por diseño. `app/config.js` (no versionado, opcional) lo reemplaza si existe.
 - `supabase/schema.sql`: tablas `perfiles`, `tareas` y `logros`, con RLS, triggers, realtime y el bucket `fotos`.
-- `supabase/migraciones/`: cambios para proyectos ya creados (002: foto de perfil, cada quien edita su nombre/foto, trigger `proteger_rol`; 003: rol `desarrollador`).
+- `supabase/migraciones/`: cambios para proyectos ya creados (002: foto de perfil, cada quien edita su nombre/foto, trigger `proteger_rol`; 003: rol `desarrollador`; 004: `usuario`).
 - `supabase/functions/equipo/index.ts`: Edge Function (solo PM) con las acciones `listar`, `invitar`, `reenviar` y `quitar`. Usa la service_role key del entorno de Supabase. Nombre, rol y área se editan directo en `perfiles` (la RLS ya lo permite a la PM).
 - `.htaccess`: Hostinger clona el repo completo en `public_html/pm`; esto sirve solo `app/`.
 - `prototipo/`: la versión original como artifact de Claude. Es la referencia visual: no se despliega.
@@ -42,7 +42,7 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 - **Logro:**
   `{area, tipo, titulo, fecha:"YYYY-MM-DD", liga, responsable, nota, testimonios:[{id, texto, autor, creado}], creado}`
   - Todos los logros entran a los resúmenes del mes y del año.
-- **Perfil:** `perfiles {id, nombre, rol, area, foto}`. La foto se sube recortada a 512 px a Storage `fotos/<id>/foto.jpg`.
+- **Perfil:** `perfiles {id, nombre, usuario, rol, area, foto}`. `nombre` es como se ve la persona; `usuario` es su identificador único en minúsculas (`^[a-z0-9._]{2,30}$`, índice único sin mayúsculas, lo propone `usuario_libre()` desde el correo). La foto se sube recortada a 512 px a Storage `fotos/<id>/foto.jpg`.
 
 ### Tipos de logro por área (`AREAS` en index.html)
 - **Formación:** Curso, Taller, Retiros / camps, Material creado

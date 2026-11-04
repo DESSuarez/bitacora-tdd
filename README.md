@@ -64,6 +64,9 @@ Si tu base de datos se creó con una versión anterior de `schema.sql`, corre un
 ### 6. Rol de desarrollador (proyectos creados antes de noviembre 2026)
 Corre `supabase/migraciones/003_rol_desarrollador.sql` en **SQL Editor** y vuelve a desplegar la función `equipo` (pega otra vez `supabase/functions/equipo/index.ts` y toca **Deploy**). El desarrollador tiene el mismo acceso que la PM, con su propia etiqueta.
 
+### 7. Nombre de usuario (proyectos creados antes de noviembre 2026)
+Corre `supabase/migraciones/004_usuario.sql` en **SQL Editor**. Separa el **nombre** (como te ve el equipo, "Diego Suárez") del **usuario** (identificador único, "@diegosuarez"). A quien no tenga usuario se le asigna el de su correo; cada quien lo cambia en su perfil.
+
 ## Seguridad
 - La *anon key* puede ir en el navegador. Lo que protege los datos son las reglas de `schema.sql`: sin sesión no se ve nada, y cada quien solo escribe en su área.
 - Nunca subas la *service_role key* a la app.
