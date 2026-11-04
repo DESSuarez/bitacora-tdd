@@ -18,7 +18,8 @@ Dueña del proyecto: Ceci (líder de Formación).
   - `jspdf@2.5.1` (UMD) para generar los PDF en el navegador
 - `app/config.publico.js` (versionado): `window.BITACORA_CONFIG = {supabaseUrl, supabaseAnonKey}` con la anon key, que es pública por diseño. `app/config.js` (no versionado, opcional) lo reemplaza si existe.
 - `supabase/schema.sql`: tablas `perfiles`, `tareas` y `logros`, con RLS, triggers, realtime y el bucket `fotos`.
-- `supabase/migraciones/`: cambios para proyectos ya creados (002: foto de perfil, cada quien edita su nombre/foto, trigger `proteger_rol`; 003: rol `desarrollador`; 004: `usuario`).
+- `supabase/migraciones/`: cambios para proyectos ya creados (002: foto de perfil, cada quien edita su nombre/foto, trigger `proteger_rol`; 003: rol `desarrollador`; 004: `usuario`; 005: lectura en el bucket `fotos` para borrar la foto anterior).
+- Fotos: cada subida usa un nombre nuevo (`fotos/<id>/<timestamp>.jpg`) **sin upsert**, porque sobrescribir en Storage exige además permiso de lectura.
 - `supabase/functions/equipo/index.ts`: Edge Function (solo PM) con las acciones `listar`, `invitar`, `reenviar` y `quitar`. Usa la service_role key del entorno de Supabase. Nombre, rol y área se editan directo en `perfiles` (la RLS ya lo permite a la PM).
 - `.htaccess`: Hostinger clona el repo completo en `public_html/pm`; esto sirve solo `app/`.
 - `prototipo/`: la versión original como artifact de Claude. Es la referencia visual: no se despliega.
@@ -71,6 +72,9 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 - **Tipografía:** Archivo (display y texto, pesos 800–900, ligeramente expandida) e IBM Plex Mono (fechas y horas).
 - **Encabezado:** banda Night con una franja inferior del color del área y una etiqueta pequeña del área sobre el título "La semana en orden".
 - Soporta modo claro y oscuro mediante tokens CSS.
+
+## Pendientes de configuración (fuera del código)
+- **Correo SMTP propio en Supabase** (noviembre 2026): el correo integrado de Supabase solo manda ~2 correos por hora y frenó las invitaciones ("email rate limit exceeded"). Plan: buzón `bitacora@tiempodedios.mx` en Hostinger → Supabase → Authentication → Emails → SMTP Settings (`smtp.hostinger.com`, puerto 465) y subir Rate Limits de correos a ~30/hora. Mientras tanto, crear usuarios en Authentication → Users → Add user (Auto Confirm) y asignar rol y área en la pestaña Equipo.
 
 ## Roadmap acordado / sugerido
 1. ✅ **Asignación de tareas** (hecho: `responsable_id`, pestaña Tareas de la PM, perfil con "Mis pendientes"). Pendiente:

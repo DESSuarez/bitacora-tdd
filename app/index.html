@@ -960,12 +960,16 @@ function reducirImagen(file,max){return new Promise((res,rej)=>{const img=new Im
     c.getContext("2d").drawImage(img,(img.width-lado)/2,(img.height-lado)/2,lado,lado,0,0,s,s);URL.revokeObjectURL(url);
     c.toBlob(b=>b?res(b):rej(new Error("No se pudo procesar la imagen")),"image/jpeg",.85)};
   img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error("Ese archivo no parece una imagen"))};img.src=url})}
+// Cada foto se sube con nombre nuevo (sin upsert: sobrescribir exige además permiso de lectura en Storage)
+// y luego se intenta borrar la anterior.
 async function subirFoto(id,file){if(!sb)return;toast("Subiendo foto…");
-  try{const blob=await reducirImagen(file,512),path=`${id}/foto.jpg`;
-    const {error}=await sb.storage.from("fotos").upload(path,blob,{upsert:true,contentType:"image/jpeg",cacheControl:"3600"});
+  try{const blob=await reducirImagen(file,512),path=`${id}/${Date.now()}.jpg`,antes=(perfiles.find(x=>x.id===id)||{}).foto||"";
+    const {error}=await sb.storage.from("fotos").upload(path,blob,{contentType:"image/jpeg",cacheControl:"31536000"});
     if(error)throw error;
-    await actualizarPerfil(id,{foto:sb.storage.from("fotos").getPublicUrl(path).data.publicUrl+"?v="+Date.now()})}
-  catch(e){console.error(e);toast("No se pudo subir la foto: "+(e.message||e))}}
+    await actualizarPerfil(id,{foto:sb.storage.from("fotos").getPublicUrl(path).data.publicUrl});
+    const vieja=(antes.split("/object/public/fotos/")[1]||"").split("?")[0];
+    if(vieja&&vieja.startsWith(id+"/"))sb.storage.from("fotos").remove([vieja]).catch(()=>{})}
+  catch(e){console.error(e);toast("No se pudo subir la foto: "+(/row-level security|Unauthorized|403/i.test(e.message||"")?"no tienes permiso (revisa la migración 002).":e.message||e))}}
 
 /* ---------- Equipo (solo PM) ---------- */
 /* Invitar y quitar usa la Edge Function "equipo" (supabase/functions/equipo).

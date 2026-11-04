@@ -135,6 +135,10 @@ insert into storage.buckets (id, name, public)
 values ('fotos', 'fotos', true)
 on conflict (id) do update set public = true;
 
+drop policy if exists fotos_leer on storage.objects;
+create policy fotos_leer on storage.objects for select to authenticated
+  using (bucket_id = 'fotos');
+
 drop policy if exists fotos_subir on storage.objects;
 create policy fotos_subir on storage.objects for insert to authenticated
   with check (bucket_id = 'fotos' and ((storage.foldername(name))[1] = auth.uid()::text or public.es_pm()));
