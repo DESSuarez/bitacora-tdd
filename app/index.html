@@ -243,6 +243,16 @@ a.chip.who{text-decoration:none}a.chip.who:hover{filter:brightness(.95)}
 .profile .pfoto{display:flex;flex-direction:column;align-items:center;gap:10px;border:2px dashed transparent;border-radius:18px;padding:10px;transition:border-color .15s,background .15s}
 .profile .pfoto[data-drop]{border-color:var(--line)}
 .profile .pfoto.over{border-color:var(--area);background:var(--area-soft)}
+.cropper{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.72);display:grid;place-items:center;padding:16px;overflow:auto}
+.cropcard{background:var(--bg);color:var(--fg);border-radius:18px;padding:20px;width:100%;max-width:420px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.cropcard h3{margin:0;font-family:var(--display);font-weight:900;font-size:22px}
+.cropcard p{margin:0;color:var(--muted);font-size:13px}
+.cropview{width:min(100%,calc(100vh - 250px));min-width:180px;align-self:center;aspect-ratio:1;border-radius:14px;overflow:hidden;background:#000;touch-action:none;cursor:grab}
+.cropview:active{cursor:grabbing}
+.cropview canvas{width:100%;height:100%;display:block}
+.zoomrow{display:flex;align-items:center;gap:12px;font-size:20px;font-weight:700;color:var(--muted)}
+.zoomrow input{flex:1;accent-color:var(--flame);height:28px}
+.cropbtns{display:flex;justify-content:flex-end;gap:8px}
 .drophint{font-size:11.5px;color:var(--muted);text-align:center;line-height:1.35}
 .pcard.add{border-style:dashed;border-top-width:1.5px;justify-content:center;color:var(--muted);cursor:pointer;font:inherit;min-height:200px}
 .pcard.add .plus{width:72px;height:72px;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center;font-size:34px;font-weight:300;color:var(--fg)}
@@ -406,6 +416,15 @@ select:disabled{cursor:default;opacity:.7}
 </head>
 <body>
 
+<div class="cropper" id="cropper" role="dialog" aria-modal="true" aria-labelledby="cropTitle" hidden>
+  <div class="cropcard">
+    <h3 id="cropTitle">Ajusta la foto</h3>
+    <p>Arrastra para mover. Acerca con la barra, la rueda del mouse o pellizcando.</p>
+    <div class="cropview"><canvas id="cropCanvas" width="640" height="640" aria-label="Vista previa de la foto"></canvas></div>
+    <label class="zoomrow" for="cropZoom"><span aria-hidden="true">−</span><input type="range" id="cropZoom" min="1" max="5" step="0.01" value="1" aria-label="Zoom"><span aria-hidden="true">+</span></label>
+    <div class="cropbtns"><button class="btn ghost" type="button" id="cropCancel">Cancelar</button><button class="btn" type="button" id="cropOk">Guardar foto</button></div>
+  </div>
+</div>
 <div class="auth" id="auth" hidden>
   <form class="authcard" id="authForm" autocomplete="on">
     <div class="brandrow" style="color:var(--muted)"><span class="dots"><i style="background:#FF3D1A"></i><i style="background:#98D5E0"></i><i style="background:#457A7F"></i></span>Tiempo de Dios · Bitácora</div>
@@ -938,7 +957,7 @@ function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
   const self=!!perfil&&p.id===perfil.id,puede=self||esPM();
   if(esPM()&&!self&&cuentas===null&&!cuentasErr&&!cuentasCargando)cargarCuentas();
   const c=cuentas&&cuentas.get(p.id),email=self?perfil.email||"":c?c.email:"";
-  $("personCard").innerHTML=`<div class="profile"><div class="pfoto" ${puede?`data-drop="${p.id}" title="Arrastra o pega una imagen aquí"`:""}>${av(p,"xl")}${puede?`<label class="btn ghost sm file">${p.foto?"Cambiar foto":"Subir foto"}<input type="file" accept="image/*" data-foto="${p.id}" hidden></label><small class="drophint">o arrastra una imagen aquí,<br>o pégala con ⌘V</small>`:""}</div>
+  $("personCard").innerHTML=`<div class="profile"><div class="pfoto" ${puede?`data-drop="${p.id}" title="Arrastra o pega una imagen aquí"`:""}>${av(p,"xl")}${puede?`<label class="btn ghost sm file">${p.foto?"Cambiar foto":"Subir foto"}<input type="file" accept="image/*" data-foto="${p.id}" hidden></label>${p.foto?`<button type="button" class="btn ghost sm" data-ajustar="${p.id}">Ajustar encuadre</button>`:""}<small class="drophint">o arrastra una imagen aquí,<br>o pégala con ⌘V</small>`:""}</div>
     <div class="pinfo">${puede?`<input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre" title="Nombre: como te ve el equipo">`:`<h2>${esc(p.nombre)}</h2>`}
       ${puede?`<label class="uedit" title="Usuario: identificador único, en minúsculas">@<input data-pusuario="${p.id}" value="${esc(p.usuario||"")}" maxlength="30" placeholder="usuario" aria-label="Usuario" autocapitalize="off" spellcheck="false"></label>`:p.usuario?`<span class="u">${esc(arroba(p))}</span>`:""}<span>${esc(rolDe(p))}</span>${email?`<span class="mail">${esc(email)}</span>`:""}${esPM()&&!self?`<span><button class="btn ghost sm" data-goteam="1">Cambiar rol o área</button></span>`:""}</div></div>`;
   const ws=weekStart(),actual=key(ws)===key(mondayOf(new Date())),wkNow=key(mondayOf(new Date()));
@@ -954,16 +973,48 @@ function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
       <div class="txt"><strong>${esc(x.titulo)}</strong><small>${s?`Subtarea de ${esc(t.titulo)} · `:""}${cuando}${t.proyecto?" · "+esc(t.proyecto):""}</small></div>${chipA(a)}</li>`}).join(""):`<li class="none">Nada pendiente.</li>`;
   $("personDone").innerHTML=done.length?done.map(x=>`<li class="pitem"><time datetime="${x.hecha}">${DIAS[new Date(x.hecha).getDay()].slice(0,3)} ${hhmm(x.hecha)}</time><div class="txt"><strong>${esc(x.titulo)}</strong>${x.tipo==="s"?`<small>Subtarea de ${esc(x.padre)}</small>`:""}</div>${chipA(x.area)}</li>`).join(""):`<li class="none">Nada completado en esta semana.</li>`}
 
-/* Fotos: se recortan cuadradas a 512 px en el navegador y se suben a Storage (bucket "fotos") */
-function reducirImagen(file,max){return new Promise((res,rej)=>{const img=new Image(),url=URL.createObjectURL(file);
-  img.onload=()=>{const lado=Math.min(img.width,img.height),s=Math.min(max,lado),c=document.createElement("canvas");c.width=c.height=s;
-    c.getContext("2d").drawImage(img,(img.width-lado)/2,(img.height-lado)/2,lado,lado,0,0,s,s);URL.revokeObjectURL(url);
-    c.toBlob(b=>b?res(b):rej(new Error("No se pudo procesar la imagen")),"image/jpeg",.85)};
-  img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error("Ese archivo no parece una imagen"))};img.src=url})}
+/* Fotos: antes de subir se abre el recorte (mover y zoom); se guarda un JPG cuadrado de 512 px en Storage (bucket "fotos").
+   El círculo es lo que se ve en el avatar. */
+const CR={S:640,img:null,id:null,z:1,base:1,cx:320,cy:320,ptrs:new Map(),pinch:null};
+function crPintar(ctx,S,guia){const k=S/CR.S,w=CR.img.width*CR.base*CR.z*k,hh=CR.img.height*CR.base*CR.z*k;
+  ctx.clearRect(0,0,S,S);ctx.fillStyle="#000";ctx.fillRect(0,0,S,S);ctx.drawImage(CR.img,CR.cx*k-w/2,CR.cy*k-hh/2,w,hh);
+  if(guia){ctx.save();ctx.fillStyle="rgba(0,0,0,.55)";ctx.beginPath();ctx.rect(0,0,S,S);ctx.arc(S/2,S/2,S/2-3,0,Math.PI*2);ctx.fill("evenodd");
+    ctx.strokeStyle="rgba(255,255,255,.85)";ctx.lineWidth=3;ctx.beginPath();ctx.arc(S/2,S/2,S/2-3,0,Math.PI*2);ctx.stroke();ctx.restore()}}
+function crAjustar(){const w=CR.img.width*CR.base*CR.z,hh=CR.img.height*CR.base*CR.z,S=CR.S;
+  CR.cx=Math.min(w/2,Math.max(S-w/2,CR.cx));CR.cy=Math.min(hh/2,Math.max(S-hh/2,CR.cy))}
+function crRender(){crAjustar();crPintar($("cropCanvas").getContext("2d"),CR.S,true)}
+function crZoom(z,px,py){z=Math.min(5,Math.max(1,z));if(px==null){px=py=CR.S/2}
+  const f=z/CR.z;CR.cx=px-(px-CR.cx)*f;CR.cy=py-(py-CR.cy)*f;CR.z=z;$("cropZoom").value=z;crRender()}
+function abrirRecorte(id,src){const archivo=typeof src!=="string";
+  if(archivo&&!/^image\//.test(src.type||"")){toast("Ese archivo no parece una imagen.");return}
+  const img=new Image(),url=archivo?URL.createObjectURL(src):src+(src.includes("?")?"&":"?")+"r="+Date.now();
+  if(!archivo)img.crossOrigin="anonymous";
+  img.onload=()=>{if(archivo)URL.revokeObjectURL(url);
+    Object.assign(CR,{img,id,z:1,base:Math.max(CR.S/img.width,CR.S/img.height),cx:CR.S/2,cy:CR.S/2,pinch:null});CR.ptrs.clear();
+    $("cropZoom").value=1;$("cropper").hidden=false;crRender();$("cropOk").focus()};
+  img.onerror=()=>{if(archivo)URL.revokeObjectURL(url);toast(archivo?"No se pudo leer esa imagen.":"No se pudo abrir la foto actual. Sube la imagen original.")};
+  img.src=url}
+function cerrarRecorte(){$("cropper").hidden=true;CR.img=null;CR.ptrs.clear()}
+function guardarRecorte(){if(!CR.img)return;const c=document.createElement("canvas"),id=CR.id;c.width=c.height=512;crPintar(c.getContext("2d"),512,false);cerrarRecorte();
+  try{c.toBlob(b=>b?subirFoto(id,b):toast("No se pudo procesar la imagen."),"image/jpeg",.88)}
+  catch(e){console.error(e);toast("No se pudo procesar la imagen. Sube la imagen original.")}}
+(()=>{const cv=$("cropCanvas"),pos=e=>{const r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*CR.S/r.width,y:(e.clientY-r.top)*CR.S/r.height}};
+  const dist=()=>{const [a,b]=[...CR.ptrs.values()];return Math.hypot(a.x-b.x,a.y-b.y)||1};
+  cv.addEventListener("pointerdown",e=>{if(!CR.img)return;cv.setPointerCapture(e.pointerId);CR.ptrs.set(e.pointerId,pos(e));if(CR.ptrs.size===2)CR.pinch={d:dist(),z:CR.z}});
+  cv.addEventListener("pointermove",e=>{if(!CR.ptrs.has(e.pointerId))return;const p=pos(e),q=CR.ptrs.get(e.pointerId);CR.ptrs.set(e.pointerId,p);
+    if(CR.ptrs.size===1){CR.cx+=p.x-q.x;CR.cy+=p.y-q.y;crRender()}
+    else if(CR.pinch){const [a,b]=[...CR.ptrs.values()];crZoom(CR.pinch.z*dist()/CR.pinch.d,(a.x+b.x)/2,(a.y+b.y)/2)}});
+  const fin=e=>{CR.ptrs.delete(e.pointerId);if(CR.ptrs.size<2)CR.pinch=null};
+  cv.addEventListener("pointerup",fin);cv.addEventListener("pointercancel",fin);
+  cv.addEventListener("wheel",e=>{if(!CR.img)return;e.preventDefault();const p=pos(e);crZoom(CR.z*Math.exp(-e.deltaY*.0015),p.x,p.y)},{passive:false});
+  $("cropZoom").addEventListener("input",e=>crZoom(+e.target.value));
+  $("cropCancel").onclick=cerrarRecorte;$("cropOk").onclick=guardarRecorte;
+  $("cropper").addEventListener("click",e=>{if(e.target===$("cropper"))cerrarRecorte()});
+  document.addEventListener("keydown",e=>{if($("cropper").hidden)return;if(e.key==="Escape")cerrarRecorte();else if(e.key==="Enter"){e.preventDefault();guardarRecorte()}})})();
 // Cada foto se sube con nombre nuevo (sin upsert: sobrescribir exige además permiso de lectura en Storage)
 // y luego se intenta borrar la anterior.
-async function subirFoto(id,file){if(!sb)return;toast("Subiendo foto…");
-  try{const blob=await reducirImagen(file,512),path=`${id}/${Date.now()}.jpg`,antes=(perfiles.find(x=>x.id===id)||{}).foto||"";
+async function subirFoto(id,blob){if(!sb)return;toast("Subiendo foto…");
+  try{const path=`${id}/${Date.now()}.jpg`,antes=(perfiles.find(x=>x.id===id)||{}).foto||"";
     const {error}=await sb.storage.from("fotos").upload(path,blob,{contentType:"image/jpeg",cacheControl:"31536000"});
     if(error)throw error;
     await actualizarPerfil(id,{foto:sb.storage.from("fotos").getPublicUrl(path).data.publicUrl});
@@ -1157,6 +1208,7 @@ document.addEventListener("click",e=>{
   if(b.dataset.tab){if(route==="pm"){pmView=b.dataset.tab}else{const prev=scope();areaView[route]=b.dataset.tab}render();return}
   if(b.dataset.goweek){anchor=fromKey(b.dataset.goweek);areaView[route]="report";render();window.scrollTo({top:0,behavior:"smooth"});return}
   if(b.dataset.goarea){const [a,v]=b.dataset.goarea.split("|");areaView[a]=v;location.hash=a;return}
+  if(b.dataset.ajustar){const p=perfiles.find(x=>x.id===b.dataset.ajustar);if(p&&p.foto)abrirRecorte(p.id,p.foto);return}
   if(b.dataset.goteam){pmView="team";if(b.dataset.goteam==="invitar")enfocarInvitar=true;if(location.hash==="#pm")render();else location.hash="pm";return}
   if(b.dataset.reenviar){const c=cuentas&&cuentas.get(b.dataset.reenviar);if(!c)return;b.disabled=true;
     equipoFn({accion:"reenviar",email:c.email,redirectTo:location.origin+location.pathname}).then(()=>toast("Invitación reenviada a "+c.email),e=>toast(e.message)).finally(()=>{b.disabled=false});return}
@@ -1183,10 +1235,10 @@ document.addEventListener("dragover",e=>{const z=e.target.closest("[data-drop]")
 document.addEventListener("dragleave",e=>{const z=e.target.closest("[data-drop]");if(z&&!z.contains(e.relatedTarget))z.classList.remove("over")});
 document.addEventListener("drop",e=>{const z=e.target.closest("[data-drop]");if(!z)return;e.preventDefault();z.classList.remove("over");
   const f=imagenDe(e.dataTransfer&&e.dataTransfer.items)||[...(e.dataTransfer&&e.dataTransfer.files||[])].find(x=>/^image\//.test(x.type));
-  if(f)subirFoto(z.dataset.drop,f);else toast("Suelta una imagen (JPG, PNG…).")});
-document.addEventListener("paste",e=>{if(route!=="persona")return;const z=document.querySelector("[data-drop]");if(!z)return;
-  if(e.target.closest("input,textarea"))return;const f=imagenDe(e.clipboardData&&e.clipboardData.items);if(!f)return;e.preventDefault();subirFoto(z.dataset.drop,f)});
-document.addEventListener("change",e=>{const f=e.target.closest("[data-foto]");if(f&&f.files&&f.files[0]){subirFoto(f.dataset.foto,f.files[0]);f.value=""}});
+  if(f)abrirRecorte(z.dataset.drop,f);else toast("Suelta una imagen (JPG, PNG…).")});
+document.addEventListener("paste",e=>{if(route!=="persona"||!$("cropper").hidden)return;const z=document.querySelector("[data-drop]");if(!z)return;
+  if(e.target.closest("input,textarea"))return;const f=imagenDe(e.clipboardData&&e.clipboardData.items);if(!f)return;e.preventDefault();abrirRecorte(z.dataset.drop,f)});
+document.addEventListener("change",e=>{const f=e.target.closest("[data-foto]");if(f&&f.files&&f.files[0]){abrirRecorte(f.dataset.foto,f.files[0]);f.value=""}});
 $("ptArea").addEventListener("change",()=>fillSelect($("ptWho"),opcionesPersona($("ptArea").value,"")));
 $("ptSemana").addEventListener("change",()=>{$("ptSemana").dataset.touched="1"});
 ["pfArea","pfWho","pfEstado"].forEach(id=>$(id).addEventListener("change",render));
