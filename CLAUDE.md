@@ -36,8 +36,10 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 
 ### Modelo (contenido de `data`)
 - **Tarea:**
-  `{area, titulo, proyecto, responsable, responsable_id, semana:"YYYY-MM-DD" (lunes), creada:ISO, creada_por, hecha:ISO|null, orden:number, subtareas:[{id, titulo, responsable, responsable_id, hecha:ISO|null}]}`
+  `{area, titulo, proyecto, responsable, responsable_id, semana:"YYYY-MM-DD" (lunes), creada:ISO, creada_por, hecha:ISO|null, orden:number, nota, ligas:[{id, url, titulo, creada}], subtareas:[{id, titulo, responsable, responsable_id, hecha:ISO|null, nota, ligas}]}`
   - `responsable_id` es el uuid de `perfiles`; `responsable` guarda el nombre para reportes y PDF. Las tareas viejas solo traen nombre y se relacionan con perfiles por nombre (`personaDe`, `asignadoA`).
+  - Personas sin cuenta: `responsable_id` es null y solo se guarda el nombre. En las listas su valor es `txt:<nombre>` ("✎ Escribir otro nombre…").
+  - La fecha y hora de `hecha` se puede corregir al abrir la tarea (campo "Hecha el"); no se aceptan fechas futuras.
   - Al marcar la tarea padre se completan todas sus subtareas abiertas.
   - Al completar todas las subtareas, la tarea se marca sola.
 - **Logro:**

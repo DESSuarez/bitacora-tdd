@@ -280,6 +280,25 @@ a.chip.who{text-decoration:none}a.chip.who:hover{filter:brightness(.95)}
 .editrow label{display:flex;flex-direction:column;gap:3px;font-size:12px;font-weight:700;color:var(--muted);min-width:0}
 .editrow input,.editrow select,.subadd select{height:36px;border:1.5px solid var(--line);border-radius:8px;padding:0 10px;background:var(--bg);font-size:14px;min-width:0;width:100%}
 .subadd select{width:auto;max-width:180px}
+.editrow label.full{grid-column:1/-1}
+.editrow textarea{min-height:64px;border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--bg);font:inherit;font-size:14px;font-weight:400;color:var(--fg);resize:vertical;width:100%}
+.editrow textarea:focus,.whenin:focus,.subnota:focus,.ligaadd input:focus{border-color:var(--area-ink);outline:none}
+.sbody{min-width:0;display:flex;flex-direction:column;gap:4px}
+.sub-item.done .stit{color:var(--muted);text-decoration:line-through}
+.ligas{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ligaw{display:inline-flex;align-items:center;gap:2px;max-width:100%}
+a.chip.liga{background:var(--area-soft);color:var(--area-ink);border-color:transparent;text-decoration:none;gap:4px}
+a.chip.liga:hover{text-decoration:underline}
+.ligaw .x{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:15px;line-height:1;padding:2px 4px;border-radius:6px}
+.ligaw .x:hover{color:var(--flame)}
+.notatxt{font-size:13px;color:var(--muted);white-space:pre-wrap;overflow-wrap:anywhere}
+.whenin,.subnota{height:30px;border:1.5px solid var(--line);border-radius:8px;padding:0 8px;background:var(--bg);font-size:13px;min-width:0;color:var(--fg)}
+.whenin{font-family:var(--mono);max-width:210px}
+.subnota{width:100%}
+.ligaadd{display:flex;gap:8px;flex-wrap:wrap}
+.ligaadd input{flex:1 1 200px;min-width:0;height:36px;border:1.5px solid var(--line);border-radius:8px;padding:0 12px;background:var(--bg);font-size:14px}
+.ligaadd select{height:36px;border:1.5px solid var(--line);border-radius:8px;padding:0 10px;background:var(--bg);font-size:14px;max-width:200px}
+.otro-in{min-width:0}
 @media (max-width:480px){.subadd select{flex:1 1 auto;max-width:none}.profile{padding:16px;gap:16px}.profile .pinfo input,.profile .pinfo h2{font-size:22px}}
 /* Equipo */
 .team{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
@@ -721,14 +740,43 @@ function whoChip(n,id){const p=personaDe(id,n);
 function arroba(p){return p&&p.usuario?"@"+p.usuario:""}
 const USUARIO_OK=/^[a-z0-9._]{2,30}$/;
 function rolDe(p){return ACCESO_TOTAL.includes(p.rol)?ROLES[p.rol]:`${ROLES[p.rol]||"Colaborador"} · ${p.area&&AREAS[p.area]?AREAS[p.area].n:"Sin área asignada"}`}
-function opcionesPersona(area,sel,legacy){const ord=(a,b)=>(a.nombre||"").localeCompare(b.nombre||"");
+/* Responsables sin cuenta: se guardan solo con nombre (responsable_id null). En las listas su valor es "txt:<nombre>". */
+function nombresLibres(){const m=new Map(),add=n=>{n=(n||"").trim();if(n&&!m.has(n.toLowerCase())&&!personaDe(null,n))m.set(n.toLowerCase(),n)};
+  tasks.forEach(t=>{if(!t.responsable_id)add(t.responsable);t.subtareas.forEach(s=>{if(!s.responsable_id)add(s.responsable)})});
+  return [...m.values()].sort((a,b)=>a.localeCompare(b))}
+function respDe(v){v=(v||"").trim();if(v.startsWith("txt:")){const n=v.slice(4).trim().slice(0,60);return {id:null,nombre:n}}
+  const p=perfiles.find(x=>x.id===v);return p?{id:p.id,nombre:p.nombre}:{id:null,nombre:""}}
+function valorResp(id,n){const p=personaDe(id,n);return p?p.id:n?"txt:"+n:""}
+function opcionesPersona(area,sel){const ord=(a,b)=>(a.nombre||"").localeCompare(b.nombre||"");
   const dev=p=>p.rol==="desarrollador",de=perfiles.filter(p=>p.area===area&&!dev(p)).sort(ord),otros=perfiles.filter(p=>p.area!==area&&!dev(p)).sort(ord),devs=perfiles.filter(dev).sort(ord);
   const o=p=>`<option value="${p.id}" ${p.id===sel?"selected":""}>${esc(p.nombre)}</option>`;
-  return `<option value="">Sin asignar</option>${legacy?`<option value="__txt" selected>${esc(legacy)}</option>`:""}`+
+  const libres=nombresLibres();if(sel&&sel.startsWith("txt:")&&!libres.some(n=>n.toLowerCase()===sel.slice(4).toLowerCase()))libres.unshift(sel.slice(4));
+  const ol=n=>`<option value="txt:${esc(n)}" ${sel&&sel.toLowerCase()==="txt:"+n.toLowerCase()?"selected":""}>${esc(n)}</option>`;
+  return `<option value="">Sin asignar</option>`+
     (de.length?`<optgroup label="${AREAS[area]?AREAS[area].n:"Área"}">${de.map(o).join("")}</optgroup>`:"")+
     (otros.length?`<optgroup label="Otras personas">${otros.map(o).join("")}</optgroup>`:"")+
-    (devs.length?`<optgroup label="Desarrollo">${devs.map(o).join("")}</optgroup>`:"")}
-function fillSelect(el,html){const v=el.value;el.innerHTML=html;if(v&&[...el.options].some(o=>o.value===v))el.value=v}
+    (devs.length?`<optgroup label="Desarrollo">${devs.map(o).join("")}</optgroup>`:"")+
+    (libres.length?`<optgroup label="Sin cuenta en la bitácora">${libres.map(ol).join("")}</optgroup>`:"")+
+    `<option value="__otro">✎ Escribir otro nombre…</option>`}
+/* Elegir "Escribir otro nombre…" cambia la lista por un campo de texto; Enter o salir del campo lo confirma */
+function pedirNombre(sel){const prev=sel.dataset.prev||"";const i=document.createElement("input");
+  i.className=(sel.className||"")+" otro-in";i.placeholder="Nombre de la persona";i.maxLength=60;i.setAttribute("aria-label","Nombre de la persona sin cuenta");
+  sel.hidden=true;sel.insertAdjacentElement("afterend",i);i.focus();let listo=false;
+  const fin=ok=>{if(listo)return;listo=true;const n=i.value.trim().replace(/\s+/g," ");i.remove();sel.hidden=false;
+    if(ok&&n){const p=personaDe(null,n),v=p?p.id:"txt:"+n;if(![...sel.options].some(o=>o.value===v)){const o=document.createElement("option");o.value=v;o.textContent=n;sel.insertBefore(o,sel.querySelector('option[value="__otro"]'))}sel.value=v}
+    else sel.value=prev;sel.dataset.prev=sel.value;sel.dispatchEvent(new Event("change",{bubbles:true}))};
+  i.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();fin(true)}else if(e.key==="Escape"){e.preventDefault();fin(false)}});
+  i.addEventListener("blur",()=>fin(true))}
+document.addEventListener("focusin",e=>{const s=e.target;if(s.tagName==="SELECT"&&s.value!=="__otro")s.dataset.prev=s.value});
+document.addEventListener("change",e=>{const s=e.target;if(s.tagName==="SELECT"&&s.value==="__otro"){e.stopImmediatePropagation();pedirNombre(s)}},true);
+/* Fecha y hora local para <input type="datetime-local"> */
+function localDT(iso){const d=new Date(iso),z=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}T${z(d.getHours())}:${z(d.getMinutes())}`}
+function ligaChip(l,del){const u=safeUrl(l.url);if(!u)return"";
+  return `<span class="ligaw"><a class="chip liga" href="${esc(u)}" target="_blank" rel="noopener" title="${esc(u)}">🔗 ${esc(l.titulo||hostOf(u))}</a>${del?`<button class="x" type="button" data-ligadel="${del}|${l.id}" aria-label="Quitar liga">×</button>`:""}</span>`}
+function ligasDe(x,del){const ls=x.ligas||[];return ls.length?`<div class="ligas">${ls.map(l=>ligaChip(l,del)).join("")}</div>`:""}
+function fillSelect(el,html){const v=el.value;el.innerHTML=html;if(!v||v==="__otro")return;
+  if(v.startsWith("txt:")&&![...el.options].some(o=>o.value===v)){const o=document.createElement("option");o.value=v;o.textContent=v.slice(4);el.insertBefore(o,el.querySelector('option[value="__otro"]'))}
+  if([...el.options].some(o=>o.value===v))el.value=v}
 function pendientesDe(pid){const out=[];
   tasks.forEach(t=>{if(!t.hecha&&asignadoA(t,pid))out.push({t});t.subtareas.forEach(s=>{if(!s.hecha&&asignadoA(s,pid))out.push({t,s})})});
   return out.sort((a,b)=>a.t.semana<b.t.semana?-1:a.t.semana>b.t.semana?1:0)}
@@ -772,9 +820,9 @@ function readHash(){const h=decodeURIComponent((location.hash||"").replace("#","
 window.addEventListener("hashchange",()=>{readHash();render();window.scrollTo(0,0)});
 
 /* Acciones de tareas */
-function addTask(titulo,proyecto,respId,area,semana){area=area||route;const wk=semana||key(weekStart()),p=perfiles.find(x=>x.id===respId);
+function addTask(titulo,proyecto,respVal,area,semana){area=area||route;const wk=semana||key(weekStart()),p=respDe(respVal);
   const ord=Math.max(0,...areaTasks(area).filter(t=>t.semana===wk).map(t=>t.orden||0))+1;
-  const t={id:uid(),area,titulo,proyecto:proyecto||"",responsable:p?p.nombre:"",responsable_id:p?p.id:null,semana:wk,creada:new Date().toISOString(),creada_por:perfil?perfil.id:null,hecha:null,orden:ord,subtareas:[]};
+  const t={id:uid(),area,titulo,proyecto:proyecto||"",responsable:p.nombre,responsable_id:p.id,semana:wk,creada:new Date().toISOString(),creada_por:perfil?perfil.id:null,hecha:null,orden:ord,subtareas:[]};
   tasks.push(t);render();saveTask(t)}
 function findT(id){return tasks.find(x=>x.id===id)}
 function toggleTask(id){const t=findT(id);if(!t)return;const now=new Date().toISOString();
@@ -784,13 +832,28 @@ function toggleSub(id,sid){const t=findT(id);if(!t)return;const now=new Date().t
   t.subtareas=t.subtareas.map(s=>s.id===sid?{...s,hecha:s.hecha?null:now}:s);
   const all=t.subtareas.length&&t.subtareas.every(s=>s.hecha);
   if(all&&!t.hecha)t.hecha=now;if(!all&&t.hecha)t.hecha=null;render();saveTask(t)}
-function addSub(id,titulo,respId){const t=findT(id);if(!t)return;const p=perfiles.find(x=>x.id===respId);t.subtareas=[...t.subtareas,{id:uid(),titulo,responsable:p?p.nombre:"",responsable_id:p?p.id:null,hecha:null}];if(t.hecha)t.hecha=null;open.add(id);render();saveTask(t)}
+function addSub(id,titulo,respVal){const t=findT(id);if(!t)return;const p=respDe(respVal);t.subtareas=[...t.subtareas,{id:uid(),titulo,responsable:p.nombre,responsable_id:p.id,hecha:null}];if(t.hecha)t.hecha=null;open.add(id);render();saveTask(t)}
 function delSub(id,sid){const t=findT(id);if(!t)return;t.subtareas=t.subtareas.filter(s=>s.id!==sid);render();saveTask(t)}
-function setOwner(id,val){const t=findT(id);if(!t||val==="__txt")return;const p=perfiles.find(x=>x.id===val);
-  t.responsable_id=p?p.id:null;t.responsable=p?p.nombre:"";render();saveTask(t)}
+function setOwner(id,val){const t=findT(id);if(!t||val==="__otro")return;const p=respDe(val);
+  if(p.id===(t.responsable_id||null)&&p.nombre===(t.responsable||""))return;
+  t.responsable_id=p.id;t.responsable=p.nombre;render();saveTask(t)}
+/* Cambiar el día y la hora en que se completó una tarea o subtarea */
+function setHecha(id,sid,val){const t=findT(id);if(!t||!val)return;const d=new Date(val);if(isNaN(d)){render();return}
+  if(d.getTime()>Date.now()+60000){toast("La fecha de realizado no puede ser futura.");render();return}
+  const iso=d.toISOString();
+  if(sid){const s=t.subtareas.find(x=>x.id===sid);if(!s||!s.hecha)return;s.hecha=iso}else{if(!t.hecha)return;t.hecha=iso}
+  render();saveTask(t);toast(`Marcada como hecha el ${DIAS[d.getDay()].toLowerCase()} ${d.getDate()} ${MESES[d.getMonth()]} a las ${hhmm(iso)}.`)}
+function setSubNota(id,sid,val){const t=findT(id);if(!t)return;const s=t.subtareas.find(x=>x.id===sid);if(!s)return;val=(val||"").trim();
+  if(val===(s.nota||""))return;s.nota=val;render();saveTask(t)}
+function addLiga(id,sid,url,titulo){const t=findT(id);if(!t)return false;const u=safeUrl(url);if(!u)return false;
+  const x=sid?t.subtareas.find(s=>s.id===sid):t;if(!x)return false;
+  x.ligas=[...(x.ligas||[]),{id:uid(),url:u,titulo:(titulo||"").trim().slice(0,80),creada:new Date().toISOString()}];open.add(id);render();saveTask(t);return true}
+function delLiga(id,sid,lid){const t=findT(id);if(!t)return;const x=sid?t.subtareas.find(s=>s.id===sid):t;if(!x)return;
+  x.ligas=(x.ligas||[]).filter(l=>l.id!==lid);render();saveTask(t)}
 function editTask(id,f,val){const t=findT(id);if(!t)return;val=(val||"").trim();
   if(f==="titulo"){if(!val||val===t.titulo){render();return}t.titulo=val}
   else if(f==="proyecto"){if(val===(t.proyecto||""))return;t.proyecto=val}
+  else if(f==="nota"){if(val===(t.nota||""))return;t.nota=val}
   else if(f==="area"){if(!esPM()||!AREAS[val]||val===t.area)return;t.area=val;toast(`Tarea movida a ${AREAS[val].n}.`)}
   else if(f==="semana"){if(!val)return;const wk=key(mondayOf(fromKey(val)));if(wk===t.semana){render();return}t.semana=wk;toast(`Tarea movida a la ${weekLabel(fromKey(wk)).toLowerCase()}.`)}
   else return;render();saveTask(t)}
@@ -800,6 +863,14 @@ function confirmDel(btn,id,fn){
   pendingDel=null;fn()}
 
 /* ---------- Render ---------- */
+/* Cambios que llegan en tiempo real: vuelve a pintar sin perder el campo que se está escribiendo */
+function renderKeep(){const ae=document.activeElement;
+  const sel=!ae||!ae.matches("input,textarea")||ae.classList.contains("otro-in")?null:ae.id?"#"+CSS.escape(ae.id):
+    ["tedit","snota","hecha"].map(k=>ae.dataset[k]!=null?`[data-${k}="${CSS.escape(ae.dataset[k])}"]`+(k==="tedit"?`[data-f="${ae.dataset.f}"]`:""):"").find(Boolean)||null;
+  if(ae&&ae.classList.contains("otro-in"))return;
+  if(!sel){render();return}
+  const v=ae.value,a=ae.selectionStart,b=ae.selectionEnd;render();const n=document.querySelector(sel);
+  if(n&&n!==ae){n.value=v;n.focus();try{n.setSelectionRange(a,b)}catch(e){}}}
 function render(){
   const isPM=route==="pm",P=route==="equipo"||route==="persona",A=!isPM&&!P;
   const pp=route==="persona"?perfiles.find(x=>x.id===personaId):null;
@@ -850,13 +921,14 @@ function renderTasks(){
   if(!loadedT){L.innerHTML="";return}
   if(!wt.length){L.innerHTML=`<li class="empty"><strong>Sin pendientes esta semana</strong><p>Escribe la primera tarea arriba y agrégale subtareas con el botón +. Cada vez que palomees algo, quedará en el Reporte diario con el día y la hora exactos.</p></li>`;return}
   L.innerHTML=wt.map(t=>taskItem(t)).join("")}
-function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen=open.has(t.id),a=areaOf(t),ed=canEdit(a),r=(p=>({sel:p?p.id:"",legacy:!p&&t.responsable?t.responsable:""}))(personaDe(t.responsable_id,t.responsable));
+function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen=open.has(t.id),a=areaOf(t),ed=canEdit(a),eo=isOpen&&ed;
     return `<li class="task ${t.hecha?"done":""}">
       <div class="trow">
         <button class="check" role="checkbox" aria-checked="${!!t.hecha}" aria-label="Marcar ${esc(t.titulo)}" data-tt="${t.id}" ${ed?"":"disabled"}>${CHECK}</button>
         <div class="tbody">
           <button class="ttitle" data-open="${t.id}" aria-expanded="${isOpen}">${esc(t.titulo)}</button>
-          <div class="tmeta">${whoChip(t.responsable,t.responsable_id)}${t.proyecto?`<span class="chip">${esc(t.proyecto)}</span>`:""}${t.subtareas.length?`<span>${subsDone}/${t.subtareas.length} subtareas</span>`:""}${t.hecha?`<span class="when">✓ ${DIAS[new Date(t.hecha).getDay()]} ${hhmm(t.hecha)}</span>`:""}</div>
+          <div class="tmeta">${whoChip(t.responsable,t.responsable_id)}${t.proyecto?`<span class="chip">${esc(t.proyecto)}</span>`:""}${t.subtareas.length?`<span>${subsDone}/${t.subtareas.length} subtareas</span>`:""}${t.hecha?`<span class="when">✓ ${DIAS[new Date(t.hecha).getDay()]} ${new Date(t.hecha).getDate()} ${MESES[new Date(t.hecha).getMonth()]} · ${hhmm(t.hecha)}</span>`:""}${t.nota&&!isOpen?`<button class="chip" type="button" data-open="${t.id}" style="cursor:pointer">📝 Nota</button>`:""}</div>
+          ${ligasDe(t,eo?t.id+"|":"")}
         </div>
         <div class="tactions">
           <button class="icon" data-open="${t.id}" aria-label="Editar, subtareas y responsable" title="Editar y subtareas">${ICON_SUB}</button>
@@ -864,17 +936,24 @@ function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen
         </div>
       </div>
       ${(isOpen||t.subtareas.length)?`<div class="subs">
+        ${isOpen&&!ed&&t.nota?`<div class="notatxt">📝 ${esc(t.nota)}</div>`:""}
         ${t.subtareas.map(s=>`<div class="sub-item ${s.hecha?"done":""}">
           <button class="check sub" role="checkbox" aria-checked="${!!s.hecha}" aria-label="Marcar ${esc(s.titulo)}" data-st="${t.id}|${s.id}" ${ed?"":"disabled"}>${CHECK}</button>
-          <span>${esc(s.titulo)} ${whoChip(s.responsable,s.responsable_id)}${s.hecha?` <span class="when" style="color:var(--muted)">· ${DIAS[new Date(s.hecha).getDay()].slice(0,3)} ${hhmm(s.hecha)}</span>`:""}</span>
+          <div class="sbody"><span><span class="stit">${esc(s.titulo)}</span> ${whoChip(s.responsable,s.responsable_id)}${s.hecha&&!eo?` <span class="when" style="color:var(--muted)">· ${DIAS[new Date(s.hecha).getDay()].slice(0,3)} ${new Date(s.hecha).getDate()} ${MESES[new Date(s.hecha).getMonth()]} ${hhmm(s.hecha)}</span>`:""}</span>
+            ${s.hecha&&eo?`<label class="notatxt">Hecha el <input type="datetime-local" class="whenin" data-hecha="${t.id}|${s.id}" value="${localDT(s.hecha)}" aria-label="Fecha y hora en que se completó ${esc(s.titulo)}"></label>`:""}
+            ${ligasDe(s,eo?t.id+"|"+s.id:"")}
+            ${eo?`<input class="subnota" data-snota="${t.id}|${s.id}" value="${esc(s.nota||"")}" maxlength="500" placeholder="Nota de la subtarea (opcional)…" aria-label="Nota de ${esc(s.titulo)}">`:s.nota?`<div class="notatxt">📝 ${esc(s.nota)}</div>`:""}</div>
           ${ed?`<button class="icon del" data-sdel="${t.id}|${s.id}" aria-label="Borrar subtarea">${ICON_DEL}</button>`:""}</div>`).join("")}
         ${isOpen&&ed?`<div class="editrow">
           <label>Tarea<input data-tedit="${t.id}" data-f="titulo" value="${esc(t.titulo)}" maxlength="200"></label>
           <label>Proyecto<input data-tedit="${t.id}" data-f="proyecto" value="${esc(t.proyecto||"")}" maxlength="40" list="projList" placeholder="Sin proyecto"></label>
-          <label>Responsable<select data-owner="${t.id}">${opcionesPersona(a,r.sel,r.legacy)}</select></label>
+          <label>Responsable<select data-owner="${t.id}">${opcionesPersona(a,valorResp(t.responsable_id,t.responsable))}</select></label>
+          ${t.hecha?`<label>Hecha el<input type="datetime-local" data-hecha="${t.id}|" value="${localDT(t.hecha)}"></label>`:""}
           ${esPM()?`<label>Área<select data-tedit="${t.id}" data-f="area">${AREA_IDS.map(x=>`<option value="${x}" ${x===a?"selected":""}>${AREAS[x].n}</option>`).join("")}</select></label>
           <label>Semana<input type="date" data-tedit="${t.id}" data-f="semana" value="${t.semana}"></label>`:""}
+          <label class="full">Notas<textarea data-tedit="${t.id}" data-f="nota" maxlength="2000" placeholder="Detalles, acuerdos o instrucciones…">${esc(t.nota||"")}</textarea></label>
         </div>
+        <form class="ligaadd" data-ligaform="${t.id}" autocomplete="off"><input id="lu-${t.id}" inputmode="url" placeholder="Pega la liga del documento (Drive, Docs, Canva…)" aria-label="Liga del documento" maxlength="1000"><input id="ln-${t.id}" placeholder="Nombre (opcional)" aria-label="Nombre de la liga" maxlength="80" style="flex:0 1 170px">${t.subtareas.length?`<select id="lp-${t.id}" aria-label="Para"><option value="">Para la tarea</option>${t.subtareas.map(s=>`<option value="${s.id}">Sub: ${esc(s.titulo)}</option>`).join("")}</select>`:""}<button class="btn ghost sm" type="submit">Añadir liga</button></form>
         <form class="subadd" data-subform="${t.id}"><input id="sub-${t.id}" placeholder="Nueva subtarea…" aria-label="Nueva subtarea" maxlength="200"><select id="subwho-${t.id}" aria-label="Responsable de la subtarea">${opcionesPersona(a,"")}</select><button class="btn sm" type="submit">Añadir</button></form>`:""}
       </div>`:""}
     </li>`}
@@ -1231,16 +1310,23 @@ document.addEventListener("click",e=>{
   else if(b.dataset.st){const [a,s]=b.dataset.st.split("|");toggleSub(a,s)}
   else if(b.dataset.open){const id=b.dataset.open;if(open.has(id)&&b.classList.contains("ttitle"))open.delete(id);else open.add(id);render();const i=$("sub-"+id);if(i)i.focus()}
   else if(b.dataset.del){const id=b.dataset.del;confirmDel(b,id,()=>{tasks=tasks.filter(t=>t.id!==id);render();write(id,()=>tasksCol.doc(id).delete())})}
+  else if(b.dataset.ligadel){const [a,s,l]=b.dataset.ligadel.split("|");confirmDel(b,l,()=>delLiga(a,s||null,l))}
   else if(b.dataset.sdel){const [a,s]=b.dataset.sdel.split("|");delSub(a,s)}
   else if(b.dataset.move)moveHere(b.dataset.move);
   else if(b.dataset.testiopen){const id=b.dataset.testiopen;if(openTesti.has(id))openTesti.delete(id);else openTesti.add(id);render();const t=$("tt-"+id);if(t)t.focus()}
   else if(b.dataset.tdel){const [lid,tid]=b.dataset.tdel.split("|");confirmDel(b,tid,()=>{const l=logros.find(x=>x.id===lid);if(l){l.testimonios=(l.testimonios||[]).filter(t=>t.id!==tid);render();saveLogro(l)}})}
   else if(b.dataset.ldel){const id=b.dataset.ldel;confirmDel(b,id,()=>{logros=logros.filter(l=>l.id!==id);render();write(id,()=>logrosCol.doc(id).delete())})}
 });
-document.addEventListener("submit",e=>{const f=e.target.closest("[data-subform]");if(!f)return;e.preventDefault();const id=f.dataset.subform;const v=$("sub-"+id).value.trim();if(!v)return;addSub(id,v,$("subwho-"+id).value.trim());setTimeout(()=>{const i=$("sub-"+id);if(i)i.focus()},0)});
+document.addEventListener("submit",e=>{const f=e.target.closest("[data-subform]");if(!f)return;e.preventDefault();const id=f.dataset.subform;const v=$("sub-"+id).value.trim();if(!v)return;$("sub-"+id).value="";addSub(id,v,$("subwho-"+id).value.trim());setTimeout(()=>{const i=$("sub-"+id);if(i)i.focus()},0)});
 document.addEventListener("submit",e=>{const f=e.target.closest("[data-testiform]");if(!f)return;e.preventDefault();const id=f.dataset.testiform;const tx=$("tt-"+id).value.trim();if(!tx){$("tt-"+id).focus();return}const l=logros.find(x=>x.id===id);if(!l||!logrosCol)return;l.testimonios=[...(l.testimonios||[]),{id:uid(),texto:tx,autor:$("ta-"+id).value.trim(),creado:new Date().toISOString()}];openTesti.delete(id);render();saveLogro(l);toast("Testimonio guardado.")});
 document.addEventListener("change",e=>{const i=e.target.closest("[data-owner]");if(i&&tasksCol)setOwner(i.dataset.owner,i.value.trim())});
 document.addEventListener("change",e=>{const i=e.target.closest("[data-tedit]");if(i&&tasksCol)editTask(i.dataset.tedit,i.dataset.f,i.value)});
+document.addEventListener("change",e=>{const i=e.target.closest("[data-hecha]");if(i&&tasksCol){const [a,s]=i.dataset.hecha.split("|");setHecha(a,s||null,i.value)}});
+document.addEventListener("change",e=>{const i=e.target.closest("[data-snota]");if(i&&tasksCol){const [a,s]=i.dataset.snota.split("|");setSubNota(a,s,i.value)}});
+document.addEventListener("submit",e=>{const f=e.target.closest("[data-ligaform]");if(!f)return;e.preventDefault();if(!tasksCol)return;const id=f.dataset.ligaform;
+  const u=$("lu-"+id),n=$("ln-"+id),p=$("lp-"+id);if(!u.value.trim()){u.focus();return}
+  const url=u.value,tit=n.value,sid=p?p.value:"";u.value="";n.value="";
+  if(addLiga(id,sid||null,url,tit))toast("Liga agregada.");else{toast("Esa liga no parece válida.");const i=$("lu-"+id);if(i){i.value=url;i.focus()}}});
 // Foto: arrastrar una imagen a la zona de la foto, o pegarla (⌘V) estando en un perfil editable
 function imagenDe(items){for(const it of items||[])if(it.kind==="file"&&/^image\//.test(it.type))return it.getAsFile();return null}
 document.addEventListener("dragover",e=>{const z=e.target.closest("[data-drop]");if(!z)return;e.preventDefault();z.classList.add("over")});
@@ -1258,8 +1344,8 @@ $("ptForm").addEventListener("submit",e=>{e.preventDefault();if(!tasksCol){toast
   const titulo=$("ptTitulo").value.trim();if(!titulo){$("ptTitulo").focus();return}
   const area=$("ptArea").value,who=$("ptWho").value,v=$("ptSemana").value,sem=v?key(mondayOf(fromKey(v))):key(weekStart());
   addTask(titulo,$("ptProyecto").value.trim(),who,area,sem);
-  const p=perfiles.find(x=>x.id===who);$("ptTitulo").value="";$("ptProyecto").value="";$("ptTitulo").focus();
-  toast(`Tarea asignada a ${p?p.nombre:AREAS[area].n}${sem!==key(weekStart())?" para la "+weekLabel(fromKey(sem)).toLowerCase():""}.`)});
+  const p=respDe(who);$("ptTitulo").value="";$("ptProyecto").value="";$("ptTitulo").focus();
+  toast(`Tarea asignada a ${p.nombre||AREAS[area].n}${sem!==key(weekStart())?" para la "+weekLabel(fromKey(sem)).toLowerCase():""}.`)});
 document.addEventListener("change",e=>{const t=e.target;if(!sb)return;
   if(t.dataset.prol){const rol=t.value;actualizarPerfil(t.dataset.prol,ACCESO_TOTAL.includes(rol)?{rol,area:null}:{rol})}
   else if(t.dataset.parea)actualizarPerfil(t.dataset.parea,{area:t.value||null});
@@ -1354,8 +1440,8 @@ async function start(){
   const timer=setTimeout(()=>setStatus("No se pudo conectar todavía; revisa tu conexión.",true),10000);
   const done=()=>{if(gotT&&gotL){clearTimeout(timer);setStatus("")}};
   const fail=err=>{clearTimeout(timer);loadedT=loadedL=true;setStatus("No se pudo leer la base de datos: "+(err&&err.message||"error desconocido"),true);render()};
-  tasksCol.onSnapshot(snap=>{tasks=snap.docs.map(d=>{const b=d.data()||{};return {...b,id:d.id,subtareas:(b.subtareas||[]).slice()}});loadedT=gotT=true;done();render()},fail);
-  logrosCol.onSnapshot(snap=>{logros=snap.docs.map(d=>({...(d.data()||{}),id:d.id}));loadedL=gotL=true;done();render()},fail);
+  tasksCol.onSnapshot(snap=>{tasks=snap.docs.map(d=>{const b=d.data()||{};return {...b,id:d.id,subtareas:(b.subtareas||[]).slice()}});loadedT=gotT=true;done();renderKeep()},fail);
+  logrosCol.onSnapshot(snap=>{logros=snap.docs.map(d=>({...(d.data()||{}),id:d.id}));loadedL=gotL=true;done();renderKeep()},fail);
 }
 (async()=>{
   // Respaldo dentro de la página: si config.publico.js o config.js no llegan (CDN, extensiones), la app igual se conecta.
