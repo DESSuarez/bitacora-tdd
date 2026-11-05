@@ -302,8 +302,16 @@ a.chip.liga:hover{text-decoration:underline}
 .chip.arch{cursor:pointer;background:var(--surface);color:var(--fg);gap:4px;font-family:inherit}
 .chip.arch:hover{border-color:var(--area-ink)}
 .chip.arch small{color:var(--muted);font-weight:600;font-family:var(--mono);font-size:10.5px}
-.upl{position:relative;cursor:pointer}
+.ligaadd .btn{height:36px}
+.upl{position:relative;display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 14px;border:1.5px dashed var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font-size:14px;cursor:pointer;transition:border-color .15s,background .15s}
+.upl:hover,.upl:focus-within,.subs.over .upl{border-color:var(--area-ink);background:var(--area-soft)}
+.upl svg{flex:none;width:20px;height:20px;fill:none;stroke:var(--area-ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.upl span{flex:1;min-width:0}
+.upl b{font-weight:800}
+.upl i{font-style:normal;color:var(--muted)}
+.upl small{color:var(--muted);font-size:12px;white-space:nowrap}
 .upl input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+@media (max-width:560px){.upl{flex-wrap:wrap}.upl small{flex-basis:100%;padding-left:30px;white-space:normal}}
 .subs.over{outline:2px dashed var(--area-ink);outline-offset:-4px;border-radius:10px}
 .entregas{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
 .entregas li{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:13px;color:var(--muted)}
@@ -995,7 +1003,8 @@ function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen
           <label>Semana<input type="date" data-tedit="${t.id}" data-f="semana" value="${t.semana}"></label>`:""}
           <label class="full">Notas<textarea data-tedit="${t.id}" data-f="nota" maxlength="2000" placeholder="Detalles, acuerdos o instrucciones…">${esc(t.nota||"")}</textarea></label>
         </div>
-        <form class="ligaadd" data-ligaform="${t.id}" autocomplete="off"><input id="lu-${t.id}" inputmode="url" placeholder="Pega una liga (Drive, Docs, Canva…)" aria-label="Liga del documento" maxlength="1000"><input id="ln-${t.id}" placeholder="Nombre (opcional)" aria-label="Nombre de la liga" maxlength="80" style="flex:0 1 170px">${t.subtareas.length?`<select id="lp-${t.id}" aria-label="Para"><option value="">Para la tarea</option>${t.subtareas.map(s=>`<option value="${s.id}">Sub: ${esc(s.titulo)}</option>`).join("")}</select>`:""}<button class="btn ghost sm" type="submit">Añadir liga</button><label class="btn ghost sm upl" title="PDF, imágenes u Office, hasta 25 MB. También puedes arrastrarlos aquí.">📎 Subir archivo<input type="file" data-adj="${t.id}" accept="${ARCH_ACCEPT}" multiple aria-label="Subir archivo entregable"></label></form>
+        <form class="ligaadd" data-ligaform="${t.id}" autocomplete="off"><input id="lu-${t.id}" inputmode="url" placeholder="Pega una liga (Drive, Docs, Canva…)" aria-label="Liga del documento" maxlength="1000"><input id="ln-${t.id}" placeholder="Nombre (opcional)" aria-label="Nombre de la liga" maxlength="80" style="flex:0 1 170px">${t.subtareas.length?`<select id="lp-${t.id}" aria-label="Para"><option value="">Para la tarea</option>${t.subtareas.map(s=>`<option value="${s.id}">Sub: ${esc(s.titulo)}</option>`).join("")}</select>`:""}<button class="btn ghost sm" type="submit">Añadir liga</button></form>
+        <label class="upl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5l-8.6 8.6a5.5 5.5 0 0 1-7.8-7.8l8.6-8.6a3.7 3.7 0 0 1 5.2 5.2l-8.6 8.6a1.8 1.8 0 0 1-2.6-2.6l7.9-7.9"/></svg><span><b>Subir archivo</b> <i>o arrástralo aquí</i></span><small>PDF, imágenes u Office · hasta 25 MB</small><input type="file" data-adj="${t.id}" accept="${ARCH_ACCEPT}" multiple aria-label="Subir archivo entregable"></label>
         <form class="subadd" data-subform="${t.id}"><input id="sub-${t.id}" placeholder="Nueva subtarea…" aria-label="Nueva subtarea" maxlength="200"><select id="subwho-${t.id}" aria-label="Responsable de la subtarea">${opcionesPersona(a,"")}</select><button class="btn sm" type="submit">Añadir</button></form>`:""}
       </div>`:""}
     </li>`}
