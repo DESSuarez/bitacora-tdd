@@ -70,6 +70,9 @@ Corre `supabase/migraciones/004_usuario.sql` en **SQL Editor**. Separa el **nomb
 ### 8. Borrar fotos anteriores (opcional)
 Corre `supabase/migraciones/005_fotos_lectura.sql`. Sin ella las fotos se suben igual, pero las anteriores se quedan guardadas.
 
+### 9. Archivos entregables en las tareas
+Corre `supabase/migraciones/006_entregables.sql` en **SQL Editor**. Crea el espacio privado `entregables` (hasta 25 MB por archivo). Solo quien inició sesión puede abrir los archivos; sube y borra quien edita esa área, o la PM.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 
