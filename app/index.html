@@ -1548,8 +1548,8 @@ function conLimite(p,ms){return Promise.race([p,new Promise((_,rej)=>setTimeout(
 $("authForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("authBtn"),txt=btn.textContent;btn.disabled=true;btn.textContent=auth.mode==="login"?"Entrando…":"Guardando…";$("authMsg").textContent="";
   try{if(!sb)return authErr("La app no está conectada a Supabase. Revisa config.js.");
     if(auth.mode==="change"){const {error}=await conLimite(sb.auth.updateUser({password:$("authPass").value}),15000);if(error)return authErr("No se pudo cambiar la contraseña: "+error.message);$("auth").hidden=true;toast("Contraseña actualizada.")}
-    else if(auth.mode==="setpass"){const {error}=await conLimite(sb.auth.updateUser({password:$("authPass").value}),15000);if(error)return authErr("No se pudo guardar la contraseña: "+error.message);history.replaceState(null,"",location.pathname+"#"+route);await start()}
-    else{const {error}=await conLimite(sb.auth.signInWithPassword({email:$("authEmail").value.trim(),password:$("authPass").value}),15000);if(error)return authErr("Correo o contraseña incorrectos.");await start()}}
+    else if(auth.mode==="setpass"){const {error}=await conLimite(sb.auth.updateUser({password:$("authPass").value}),15000);if(error)return authErr("No se pudo guardar la contraseña: "+error.message);marcarActividad(true);history.replaceState(null,"",location.pathname+"#"+route);await start()}
+    else{const {error}=await conLimite(sb.auth.signInWithPassword({email:$("authEmail").value.trim(),password:$("authPass").value}),15000);if(error)return authErr("Correo o contraseña incorrectos.");marcarActividad(true);await start()}}
   catch(err){console.error(err);authErr(err&&err.message==="timeout"?"Supabase no respondió. Cierra las otras pestañas de la bitácora, recarga y vuelve a intentar.":"Algo falló: "+(err&&err.message||err))}
   finally{btn.disabled=false;btn.textContent=txt}});
 $("authForgot").onclick=async()=>{const email=$("authEmail").value.trim();if(!email){authErr("Escribe tu correo arriba y vuelve a tocar aquí.");return}
@@ -1565,9 +1565,22 @@ $("authCancel").onclick=()=>{$("auth").hidden=true};
 // Cierra sesión aunque Supabase no responda: borra la sesión guardada en el navegador
 function cerrarSesion(){try{Object.keys(localStorage).filter(k=>/^sb-.*-auth-token/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){}location.replace(location.pathname)}
 $("logoutBtn").onclick=async()=>{$("logoutBtn").textContent="Cerrando sesión…";try{if(sb)await conLimite(sb.auth.signOut(),8000)}catch(e){}cerrarSesion()};
+/* Cierre de sesión tras 24 horas sin usar la app (en ninguna pestaña). La última actividad se guarda en este navegador. */
+const INACTIVO_MS=24*60*60*1000,KEY_ACT="bitacora-actividad";
+function marcarActividad(force){try{const n=Date.now(),t=+localStorage.getItem(KEY_ACT)||0;if(force||n-t>60000)localStorage.setItem(KEY_ACT,String(n))}catch(e){}}
+function sesionVencida(){try{const t=+localStorage.getItem(KEY_ACT)||0;return t>0&&Date.now()-t>INACTIVO_MS}catch(e){return false}}
+async function cerrarPorInactividad(){try{if(sb)await conLimite(sb.auth.signOut(),8000)}catch(e){}
+  try{localStorage.removeItem(KEY_ACT);sessionStorage.setItem("bitacora-motivo","inactividad")}catch(e){}cerrarSesion()}
+function revisarInactividad(){if(perfil&&sesionVencida())cerrarPorInactividad()}
+["pointerdown","keydown","touchstart","wheel"].forEach(ev=>document.addEventListener(ev,()=>{if(perfil)marcarActividad()},{passive:true}));
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)revisarInactividad()});
+window.addEventListener("focus",revisarInactividad);setInterval(revisarInactividad,5*60*1000);
 let started=false;
 async function start(){
-  const {data:{user}}=await sb.auth.getUser();if(!user){showAuth("login");return}
+  const {data:{user}}=await sb.auth.getUser();
+  if(!user){let m="";try{if(sessionStorage.getItem("bitacora-motivo")==="inactividad")m="Tu sesión se cerró después de 24 horas sin actividad. Vuelve a entrar.";sessionStorage.removeItem("bitacora-motivo")}catch(e){}showAuth("login",m);return}
+  if(sesionVencida()){cerrarPorInactividad();return}
+  marcarActividad(true);
   const {data:p}=await sb.from("perfiles").select("*").eq("id",user.id).single();
   perfil=p||{id:user.id,nombre:user.email,rol:"colaborador",area:null};perfil.email=user.email;
   $("auth").hidden=true;$("userbar").hidden=false;
