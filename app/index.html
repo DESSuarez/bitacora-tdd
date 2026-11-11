@@ -8,7 +8,8 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#1B1C1A">
 <script>/* Tema guardado por cada quien: "dia", "noche" o automático (sigue al sistema) */
-try{var t=localStorage.getItem("bitacora-tema");if(t==="dia")document.documentElement.dataset.theme="light";else if(t==="noche")document.documentElement.dataset.theme="dark"}catch(e){}</script>
+try{var t=localStorage.getItem("bitacora-tema");if(t==="dia")document.documentElement.dataset.theme="light";else if(t==="noche")document.documentElement.dataset.theme="dark";
+if(localStorage.getItem("bitacora-lateral")==="oculta")document.documentElement.dataset.lateral="oculta"}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -86,6 +87,19 @@ a{color:var(--area-ink)}
   .mtop{display:flex}
   body.menu-abierto{overflow:hidden}
 }
+.sidetoggle{width:34px;height:34px;flex:none;border-radius:9px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;padding:0}
+.sidetoggle svg{width:19px;height:19px}
+.sidetoggle:hover{background:var(--bg);color:var(--fg)}
+.sideborde{display:none}
+/* Menú oculto (como Arc): desaparece y se asoma al llevar el mouse a la orilla izquierda */
+@media (min-width:901px){
+  html[data-lateral="oculta"] .side{position:fixed;left:8px;top:8px;bottom:8px;height:auto;border:1px solid var(--line);border-radius:16px;box-shadow:0 22px 60px rgba(0,0,0,.3);transform:translateX(calc(-100% - 20px));transition:transform .2s ease}
+  html[data-lateral="oculta"].asoma .side{transform:none}
+  html[data-lateral="oculta"] .sideborde{display:block;position:fixed;left:0;top:0;bottom:0;width:12px;z-index:39}
+  html[data-lateral="oculta"] .mtop{display:flex}
+  html[data-lateral="oculta"] .sidetoggle{color:var(--fg);background:var(--bg)}
+}
+@media (max-width:900px){.sidetoggle{display:none}}
 @media (prefers-reduced-motion:reduce){.side{transition:none}}
 .wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 
@@ -602,6 +616,7 @@ select:disabled{cursor:default;opacity:.7}
 <aside class="side" id="side" aria-label="Menú principal">
   <div class="sidetop">
     <a class="sbrand" href="#" id="sbrand"><img src="favicon.png" alt="" width="34" height="34"><span><b>Tiempo de Dios</b><small>Bitácora</small></span></a>
+    <button type="button" class="sidetoggle" id="sideToggle" aria-label="Ocultar menú" title="Ocultar menú (⌘\)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16"/></svg></button>
     <button type="button" class="sideclose" id="sideClose" aria-label="Cerrar menú"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <nav class="areanav" aria-label="Secciones">
@@ -628,6 +643,7 @@ select:disabled{cursor:default;opacity:.7}
       </div>
 </aside>
 <div class="sideback" id="sideBack" hidden></div>
+<div class="sideborde" id="sideBorde" aria-hidden="true"></div>
 <div class="maincol">
 <header class="band">
   <div class="wrap">
@@ -1695,7 +1711,25 @@ function pintarMenu(){const yo=perfil&&perfil.id,esYo=route==="persona"&&persona
 document.querySelectorAll("[data-ic]").forEach(i=>{i.innerHTML=i.dataset.ic==="yo"?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>':AREA_ICON[i.dataset.ic]||""});
 function menuLateral(abierto){document.body.classList.toggle("menu-abierto",abierto);$("sideBack").hidden=!abierto;$("sideOpen").setAttribute("aria-expanded",abierto);
   if(abierto)setTimeout(()=>{const a=document.querySelector('.areanav a[aria-current="page"]')||$("sideClose");a.focus()},60)}
-$("sideOpen").onclick=()=>menuLateral(true);$("sideClose").onclick=()=>{menuLateral(false);$("sideOpen").focus()};$("sideBack").onclick=()=>menuLateral(false);
+/* En computadora el menú se puede ocultar (⌘\ o Ctrl+\); se queda así en este navegador */
+const esEscritorio=()=>window.matchMedia("(min-width:901px)").matches;
+function lateralOculto(){return document.documentElement.dataset.lateral==="oculta"}
+function ocultarLateral(oculta){const r=document.documentElement;r.classList.remove("asoma");
+  if(oculta)r.dataset.lateral="oculta";else delete r.dataset.lateral;
+  try{oculta?localStorage.setItem("bitacora-lateral","oculta"):localStorage.removeItem("bitacora-lateral")}catch(e){}
+  $("sideToggle").title=oculta?"Fijar menú (⌘\\)":"Ocultar menú (⌘\\)";$("sideToggle").setAttribute("aria-label",oculta?"Fijar menú":"Ocultar menú");
+  $("sideOpen").setAttribute("aria-label",oculta&&esEscritorio()?"Mostrar menú":"Abrir menú")}
+let asomoT=0;
+function asomar(si){clearTimeout(asomoT);if(!lateralOculto()||!esEscritorio())return;
+  if(si)document.documentElement.classList.add("asoma");
+  else asomoT=setTimeout(()=>{if(!$("acctMenu").hidden)return;document.documentElement.classList.remove("asoma")},280)}
+$("sideBorde").addEventListener("mouseenter",()=>asomar(true));
+$("side").addEventListener("mouseenter",()=>asomar(true));
+$("side").addEventListener("mouseleave",()=>asomar(false));
+$("sideToggle").onclick=()=>ocultarLateral(!lateralOculto());
+document.addEventListener("keydown",e=>{if((e.metaKey||e.ctrlKey)&&e.key==="\\"){e.preventDefault();if(esEscritorio())ocultarLateral(!lateralOculto());else menuLateral(!document.body.classList.contains("menu-abierto"))}});
+ocultarLateral(lateralOculto());
+$("sideOpen").onclick=()=>{if(esEscritorio()&&lateralOculto())ocultarLateral(false);else menuLateral(true)};$("sideClose").onclick=()=>{menuLateral(false);$("sideOpen").focus()};$("sideBack").onclick=()=>menuLateral(false);
 $("sbrand").onclick=e=>{e.preventDefault();location.hash=esPM()?"pm":(perfil&&areaPrincipal(perfil)!=="pm"?areaPrincipal(perfil):"formacion")};
 window.addEventListener("hashchange",()=>menuLateral(false));
 document.querySelector(".areanav").addEventListener("click",e=>{if(e.target.closest("a"))menuLateral(false)});
