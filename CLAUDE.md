@@ -58,7 +58,12 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 `#formacion`, `#musica`, `#audiovisual`, `#pm`, `#equipo` (directorio con fotos) y `#persona/<id>` (perfil con sus pendientes).
 - Cada área tiene las pestañas Pendientes, Reporte diario, Mes y Logros.
 - El panel de la PM tiene las pestañas Semana, Mes, Año, Tareas (asignar y editar en las tres áreas) y Equipo (administración). Tareas y Equipo solo las ve la PM.
-- Al abrir una tarea (botón +) se editan título, proyecto y responsable; la PM además cambia área y semana.
+- Al abrir una tarea (botón +) se editan título, proyecto, responsable y semana (incluye "A la próxima semana →"); solo la PM cambia el área.
+- En Pendientes y en Tareas de la PM, las completadas bajan al final bajo "Completadas · N" (`listaTareas`).
+- En Tareas, la PM puede elegir "Todas las áreas" (crea una tarea por área) y agregar una liga común (Drive, Sheets…).
+- El perfil (`#persona/<id>`) muestra "Asignado por la Project Manager": tareas del mes creadas por `pm`/`desarrollador` (`creada_por`), con % de avance, atrasadas y avance por área (`resumenPM`).
+- Las ligas también cuentan como entregables en los reportes y en el PDF semanal (con su URL).
+- Íconos: `app/favicon.png`, `app/apple-touch-icon.png` e `app/icono-512.png` (logo de Tiempo de Dios sin ©).
 
 ### Roles (RLS)
 - `pm` y `desarrollador`: leen y escriben todo y administran el equipo (`es_pm()` en SQL, `esPM()` y `ACCESO_TOTAL` en la app). Solo cambia la etiqueta: "Project Manager" o "Desarrollador web".
