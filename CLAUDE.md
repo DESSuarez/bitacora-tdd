@@ -82,6 +82,7 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
   - Sol `#F2B33D` (Operativo; propuesta, no viene del manual de marca)
 - **Tipografía:** Archivo (display y texto, pesos 800–900, ligeramente expandida) e IBM Plex Mono (fechas y horas).
 - **Encabezado:** banda Night con una franja inferior del color del área y una etiqueta pequeña del área sobre el título "La semana en orden".
+- **Navegación:** menú lateral izquierdo estilo tablero (Mi trabajo, Áreas con pendientes por área, General: Equipo y Project Manager; abajo el botón Día/Noche y la cuenta). Sigue el tema claro/oscuro. En pantallas de 900 px o menos se abre como cajón con el botón ☰ (`menuLateral`). Las pestañas de cada vista siguen arriba, en la banda.
 - Modo **Día / Noche / Auto**: botón de sol/luna junto a la cuenta y selector "Apariencia" en el menú. Se guarda por navegador (`bitacora-tema` en localStorage) y se aplica en `<head>` antes de pintar (`data-theme` en `<html>`).
 - Paleta por persona: en Project Manager, Equipo y el propio perfil, la app toma el color del área de quien inició sesión (`miArea()`: su `area`, o la primera de `areas`, o Flame). Cada área conserva su color en su propia página; el perfil de otra persona usa el área de esa persona.
 
