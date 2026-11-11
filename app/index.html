@@ -344,6 +344,11 @@ a.chip.liga:hover{text-decoration:underline}
 .ligaadd input{flex:1 1 200px;min-width:0;height:36px;border:1.5px solid var(--line);border-radius:8px;padding:0 12px;background:var(--bg);font-size:14px}
 .ligaadd select{height:36px;border:1.5px solid var(--line);border-radius:8px;padding:0 10px;background:var(--bg);font-size:14px;max-width:200px}
 .otro-in{min-width:0}
+.chip.venc{background:var(--surface);color:var(--muted)}
+.chip.venc.pronto{background:var(--sol-soft);color:var(--sol-ink);border-color:transparent}
+.chip.venc.atr{background:var(--flame-soft);color:var(--flame);border-color:transparent}
+.avisos{border:1.5px solid var(--line);border-radius:16px;padding:18px;background:var(--surface)}
+.avlist{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px}
 .donesep{list-style:none;margin:14px 0 2px;font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;gap:10px}
 .donesep::after{content:"";flex:1;height:1px;background:var(--line)}
 .pmres{border:1.5px solid var(--line);border-radius:16px;padding:18px;background:var(--surface);gap:14px}
@@ -705,7 +710,8 @@ select:disabled{cursor:default;opacity:.7}
         <label class="c2" for="ptWho">Responsable<select class="field" id="ptWho"></select></label>
         <label class="c2" for="ptProyecto">Proyecto<input class="field" id="ptProyecto" placeholder="Opcional" maxlength="40" list="projList"></label>
         <label class="c2" for="ptSemana">Semana<input class="field" type="date" id="ptSemana"></label>
-        <label class="c4" for="ptLiga">Liga (opcional)<input class="field" id="ptLiga" inputmode="url" placeholder="Pega la liga de Drive, Docs, Sheets…" maxlength="1000"></label>
+        <label class="c2" for="ptVence">Vence (opcional)<input class="field" type="date" id="ptVence" title="Si no eliges fecha, vence el viernes de su semana"></label>
+        <label class="c2" for="ptLiga">Liga (opcional)<input class="field" id="ptLiga" inputmode="url" placeholder="Drive, Docs, Sheets…" maxlength="1000"></label>
         <label class="c2" for="ptLigaN">Nombre de la liga<input class="field" id="ptLigaN" placeholder="Ej. Formato para llenar" maxlength="80"></label>
         <div class="row">
           <span class="dlnote" id="ptNota">La tarea aparece en los Pendientes del área y en el perfil de la persona.</span>
@@ -756,6 +762,16 @@ select:disabled{cursor:default;opacity:.7}
         <h3 class="section-h" style="margin:0" id="teamH">Personas</h3>
         <div class="readonly" id="teamNote" hidden></div>
         <ul class="team" id="teamList"></ul>
+      </div>
+      <div class="panel avisos">
+        <h3 class="section-h" style="margin:0">Avisos por correo</h3>
+        <ul class="avlist">
+          <li><b>Un día antes</b> de que venza una actividad, le llega un correo a su responsable.</li>
+          <li><b>Si ya se atrasó</b>, le llega un correo cada mañana hasta que la complete.</li>
+          <li><b>El sábado en la mañana</b>, la Project Manager recibe lo que no se completó en la semana.</li>
+        </ul>
+        <p class="dlnote">Se envían a las 8:00 (hora del centro de México) desde bitacora@tiempodedios.mx. Las actividades vencen el viernes de su semana, o en la fecha que elijas al abrir la tarea. Las personas sin cuenta no reciben correo.</p>
+        <div><button type="button" class="btn ghost sm" id="avisosPrueba">Enviarme una prueba</button></div>
       </div>
       <p class="dlnote">Roles: <b>Project Manager</b> y <b>Desarrollador web</b> ven y editan todo y administran el equipo. <b>Líder</b> y <b>Colaborador</b> ven todo y editan solo su área y las que marques en <b>También en</b>.</p>
     </section>
@@ -992,12 +1008,13 @@ function delLiga(id,sid,lid){const t=findT(id);if(!t)return;const x=sid?t.subtar
 function editTask(id,f,val){const t=findT(id);if(!t)return;val=(val||"").trim();
   if(f==="titulo"){if(!val||val===t.titulo){render();return}t.titulo=val}
   else if(f==="proyecto"){if(val===(t.proyecto||""))return;t.proyecto=val}
+  else if(f==="vence"){const def=key(addDays(fromKey(t.semana),4));if(!val||val===def){if(!t.vence){render();return}delete t.vence}else{if(val===t.vence)return;t.vence=val}toast(`Ahora vence el ${fechaCorta(venceDe(t))}.`)}
   else if(f==="nota"){if(val===(t.nota||""))return;t.nota=val}
   else if(f==="area"){if(!esPM()||!AREAS[val]||val===t.area)return;t.area=val;toast(`Tarea movida a ${AREAS[val].n}.`)}
-  else if(f==="semana"){if(!val)return;const wk=key(mondayOf(fromKey(val)));if(wk===t.semana){render();return}t.semana=wk;toast(`Tarea movida a la ${weekLabel(fromKey(wk)).toLowerCase()}.`)}
+  else if(f==="semana"){if(!val)return;const wk=key(mondayOf(fromKey(val)));if(wk===t.semana){render();return}moverSemana(t,wk);toast(`Tarea movida a la ${weekLabel(fromKey(wk)).toLowerCase()}.`)}
   else return;render();saveTask(t)}
-function moveNext(id){const t=findT(id);if(!t)return;const wk=key(addDays(fromKey(t.semana),7));t.semana=wk;render();saveTask(t);toast(`"${t.titulo}" pasó a la ${weekLabel(fromKey(wk)).toLowerCase()}.`)}
-function moveHere(id){const t=findT(id);if(!t)return;t.semana=key(weekStart());render();saveTask(t)}
+function moveNext(id){const t=findT(id);if(!t)return;const wk=key(addDays(fromKey(t.semana),7));moverSemana(t,wk);render();saveTask(t);toast(`"${t.titulo}" pasó a la ${weekLabel(fromKey(wk)).toLowerCase()}.`)}
+function moveHere(id){const t=findT(id);if(!t)return;moverSemana(t,key(weekStart()));render();saveTask(t)}
 function confirmDel(btn,id,fn){
   if(pendingDel!==id){pendingDel=id;btn.innerHTML='<span style="font-size:11px;font-weight:700;color:var(--flame)">¿Borrar?</span>';btn.style.width="auto";btn.style.padding="0 8px";setTimeout(()=>{if(pendingDel===id){pendingDel=null;render()}},3000);return}
   pendingDel=null;fn()}
@@ -1061,6 +1078,15 @@ function renderTasks(){
   if(!loadedT){L.innerHTML="";return}
   if(!wt.length){L.innerHTML=`<li class="empty"><strong>Sin pendientes esta semana</strong><p>Escribe la primera tarea arriba y agrégale subtareas con el botón +. Cada vez que palomees algo, quedará en el Reporte diario con el día y la hora exactos.</p></li>`;return}
   L.innerHTML=listaTareas(wt)}
+/* Vencimiento: "vence" (YYYY-MM-DD) si se eligió; si no, el viernes de su semana. Los avisos por correo usan la misma regla. */
+function venceDe(t){return t.vence||key(addDays(fromKey(t.semana),4))}
+function fechaCorta(k){const d=fromKey(k);return `${DIAS[d.getDay()].slice(0,3)} ${d.getDate()} ${MESES[d.getMonth()]}`}
+function chipVence(t){if(t.hecha)return "";const v=venceDe(t),hoy=key(new Date()),man=key(addDays(new Date(),1));
+  if(v<hoy){const dias=Math.round((fromKey(hoy)-fromKey(v))/864e5);return `<span class="chip venc atr" title="Venció el ${fechaCorta(v)}">Atrasada · ${dias} día${dias>1?"s":""}</span>`}
+  if(v===hoy)return `<span class="chip venc pronto">Vence hoy</span>`;
+  if(v===man)return `<span class="chip venc pronto">Vence mañana</span>`;
+  return t.vence?`<span class="chip venc">Vence ${fechaCorta(v)}</span>`:""}
+function moverSemana(t,wk){if(t.vence){const d=Math.round((fromKey(wk)-fromKey(t.semana))/864e5);t.vence=key(addDays(fromKey(t.vence),d))}t.semana=wk}
 /* Las tareas completadas bajan al final, debajo de "Completadas" */
 function listaTareas(ts){const p=ts.filter(t=>!t.hecha),d=ts.filter(t=>t.hecha).sort((a,b)=>a.hecha<b.hecha?1:-1);
   return p.map(taskItem).join("")+(d.length?`<li class="donesep">Completadas · ${d.length}</li>`+d.map(taskItem).join(""):"")}
@@ -1070,7 +1096,7 @@ function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen
         <button class="check" role="checkbox" aria-checked="${!!t.hecha}" aria-label="Marcar ${esc(t.titulo)}" data-tt="${t.id}" ${ed?"":"disabled"}>${CHECK}</button>
         <div class="tbody">
           <button class="ttitle" data-open="${t.id}" aria-expanded="${isOpen}">${esc(t.titulo)}</button>
-          <div class="tmeta">${whoChip(t.responsable,t.responsable_id)}${t.proyecto?`<span class="chip">${esc(t.proyecto)}</span>`:""}${t.subtareas.length?`<span>${subsDone}/${t.subtareas.length} subtareas</span>`:""}${t.hecha?`<span class="when">✓ ${DIAS[new Date(t.hecha).getDay()]} ${new Date(t.hecha).getDate()} ${MESES[new Date(t.hecha).getMonth()]} · ${hhmm(t.hecha)}</span>`:""}${t.nota&&!isOpen?`<button class="chip" type="button" data-open="${t.id}" style="cursor:pointer">📝 Nota</button>`:""}</div>
+          <div class="tmeta">${whoChip(t.responsable,t.responsable_id)}${t.proyecto?`<span class="chip">${esc(t.proyecto)}</span>`:""}${chipVence(t)}${t.subtareas.length?`<span>${subsDone}/${t.subtareas.length} subtareas</span>`:""}${t.hecha?`<span class="when">✓ ${DIAS[new Date(t.hecha).getDay()]} ${new Date(t.hecha).getDate()} ${MESES[new Date(t.hecha).getMonth()]} · ${hhmm(t.hecha)}</span>`:""}${t.nota&&!isOpen?`<button class="chip" type="button" data-open="${t.id}" style="cursor:pointer">📝 Nota</button>`:""}</div>
           ${ligasDe(t,eo?t.id+"|":"")}
         </div>
         <div class="tactions">
@@ -1094,6 +1120,7 @@ function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen
           ${t.hecha?`<label>Hecha el<input type="datetime-local" data-hecha="${t.id}|" value="${localDT(t.hecha)}"></label>`:""}
           ${esPM()?`<label>Área<select data-tedit="${t.id}" data-f="area">${AREA_IDS.map(x=>`<option value="${x}" ${x===a?"selected":""}>${AREAS[x].n}</option>`).join("")}</select></label>`:""}
           <label>Semana<input type="date" data-tedit="${t.id}" data-f="semana" value="${t.semana}" title="Elige cualquier día: la tarea pasa a esa semana"></label>
+          <label>Vence<input type="date" data-tedit="${t.id}" data-f="vence" value="${venceDe(t)}" title="Si no eliges fecha, vence el viernes de su semana. Un día antes se avisa por correo."></label>
           ${!t.hecha?`<label>Mover<button type="button" class="btn ghost sm" data-nextweek="${t.id}" style="height:36px">A la próxima semana →</button></label>`:""}
           <label class="full">Notas<textarea data-tedit="${t.id}" data-f="nota" maxlength="2000" placeholder="Detalles, acuerdos o instrucciones…">${esc(t.nota||"")}</textarea></label>
         </div>
@@ -1220,9 +1247,9 @@ function resumenPM(p,self,chipA,wkNow){const ms=monthStart(),weeks=monthWeeks(ms
     t.subtareas.forEach(s=>{if(asignadoA(s,p.id)&&!asignadoA(t,p.id)&&va(s))its.push({t,s,x:s})})});
   const titulo=`<div class="pmhead"><div><h3>Asignado por la Project Manager</h3><p>${monthLabel(ms)} · ${self?"lo que te encargaron":"lo que le encargaron a "+esc((p.nombre||"").split(" ")[0])}</p></div>`;
   if(!its.length)return `<div class="panel pmres">${titulo}</div><div class="none">La PM no ${self?"te":"le"} ha asignado tareas en ${MESES_L[ms.getMonth()]}.</div></div>`;
-  const hechas=its.filter(i=>i.x.hecha).length,pct=Math.round(hechas/its.length*100),atr=its.filter(i=>!i.x.hecha&&i.t.semana<wkNow).length;
+  const hechas=its.filter(i=>i.x.hecha).length,pct=Math.round(hechas/its.length*100),atr=its.filter(i=>!i.x.hecha&&venceDe(i.t)<key(new Date())).length;
   const porArea=AREA_IDS.map(a=>{const l=its.filter(i=>areaOf(i.t)===a);return {a,n:l.length,d:l.filter(i=>i.x.hecha).length}}).filter(z=>z.n);
-  const li=i=>{const a=areaOf(i.t),x=i.x,cuando=x.hecha?`✓ ${DIAS[new Date(x.hecha).getDay()].slice(0,3)} ${new Date(x.hecha).getDate()} ${MESES[new Date(x.hecha).getMonth()]} · ${hhmm(x.hecha)}`:i.t.semana<wkNow?`<span style="color:var(--flame)">Atrasada · ${weekLabel(fromKey(i.t.semana)).toLowerCase()}</span>`:i.t.semana===wkNow?"Esta semana":weekLabel(fromKey(i.t.semana));
+  const li=i=>{const a=areaOf(i.t),x=i.x,cuando=x.hecha?`✓ ${DIAS[new Date(x.hecha).getDay()].slice(0,3)} ${new Date(x.hecha).getDate()} ${MESES[new Date(x.hecha).getMonth()]} · ${hhmm(x.hecha)}`:venceDe(i.t)<key(new Date())?`<span style="color:var(--flame)">Atrasada · venció el ${fechaCorta(venceDe(i.t))}</span>`:i.t.semana===wkNow?"Esta semana":weekLabel(fromKey(i.t.semana));
     return `<li class="pitem ${x.hecha?"hecha":""}"><button class="check ${i.s?"sub":""}" role="checkbox" aria-checked="${!!x.hecha}" aria-label="Marcar ${esc(x.titulo)}" ${i.s?`data-st="${i.t.id}|${i.s.id}"`:`data-tt="${i.t.id}"`} ${canEdit(a)?"":"disabled"}>${CHECK}</button>
       <div class="txt"><strong>${esc(x.titulo)}</strong><small>${i.s?`Subtarea de ${esc(i.t.titulo)} · `:""}${cuando}${i.t.proyecto?" · "+esc(i.t.proyecto):""}</small>${ligasDe(x,"")}</div>${chipA(a)}</li>`};
   const pend=its.filter(i=>!i.x.hecha).sort((a,b)=>a.t.semana<b.t.semana?-1:a.t.semana>b.t.semana?1:0),done=its.filter(i=>i.x.hecha).sort((a,b)=>a.x.hecha<b.x.hecha?1:-1);
@@ -1290,6 +1317,12 @@ async function equipoFn(body){
     if(!msg&&/send a request|fetch/i.test(error.message||""))msg="No se encontró la función «equipo» en Supabase. Revisa que esté desplegada (ver README).";
     throw new Error(msg||error.message||"Error desconocido")}
   return data}
+$("avisosPrueba").onclick=async e=>{const b=e.currentTarget;if(!sb)return;b.disabled=true;b.textContent="Enviando…";
+  try{const {data,error}=await sb.functions.invoke("avisos",{body:{prueba:true}});
+    if(error){let m="";try{m=(await error.context.json()).error}catch(x){}throw new Error(m||(/send a request|fetch/i.test(error.message||"")?"No se encontró la función «avisos» en Supabase (ver README).":error.message))}
+    const n=data&&data.enviados||0,pe=data&&data.personas||0;toast(`Te enviamos ${n} correo${n===1?"":"s"} de prueba. Hoy se avisaría a ${pe} persona${pe===1?"":"s"}.`)}
+  catch(err){toast("No se pudo enviar la prueba: "+err.message)}
+  finally{b.disabled=false;b.textContent="Enviarme una prueba"}};
 async function cargarCuentas(){if(cuentasCargando||!sb)return;cuentasCargando=true;
   try{const d=await equipoFn({accion:"listar"});cuentas=new Map(d.usuarios.map(u=>[u.id,u]));cuentasErr=""}
   catch(e){cuentasErr=e.message}
@@ -1527,8 +1560,9 @@ $("ptForm").addEventListener("submit",e=>{e.preventDefault();if(!tasksCol){toast
   const area=$("ptArea").value,who=$("ptWho").value,v=$("ptSemana").value,sem=v?key(mondayOf(fromKey(v))):key(weekStart());
   const lv=$("ptLiga").value.trim(),lu=lv?safeUrl(lv):"";if(lv&&!lu){$("ptLiga").focus();toast("La liga no parece válida. Revisa que esté completa.");return}
   const areas=area==="todas"?AREA_IDS:[area],ahora=new Date().toISOString();
-  areas.forEach(a=>addTask(titulo,$("ptProyecto").value.trim(),who,a,sem,lu?{ligas:[{id:uid(),url:lu,titulo:$("ptLigaN").value.trim().slice(0,80),creada:ahora,por_nombre:perfil?perfil.nombre:""}]}:null));
-  const p=respDe(who);["ptTitulo","ptProyecto","ptLiga","ptLigaN"].forEach(i=>$(i).value="");$("ptTitulo").focus();
+  const ve=$("ptVence").value;
+  areas.forEach(a=>{const ex={};if(lu)ex.ligas=[{id:uid(),url:lu,titulo:$("ptLigaN").value.trim().slice(0,80),creada:ahora,por_nombre:perfil?perfil.nombre:""}];if(ve)ex.vence=ve;addTask(titulo,$("ptProyecto").value.trim(),who,a,sem,ex)});
+  const p=respDe(who);["ptTitulo","ptProyecto","ptLiga","ptLigaN","ptVence"].forEach(i=>$(i).value="");$("ptTitulo").focus();
   toast(`Tarea asignada a ${area==="todas"?"todas las áreas"+(p.nombre?" ("+p.nombre+")":""):p.nombre||AREAS[area].n}${sem!==key(weekStart())?" para la "+weekLabel(fromKey(sem)).toLowerCase():""}.`)});
 document.addEventListener("change",e=>{const t=e.target;if(!sb)return;
   if(t.dataset.prol){const rol=t.value;actualizarPerfil(t.dataset.prol,ACCESO_TOTAL.includes(rol)?{rol,area:null}:{rol})}

@@ -76,6 +76,14 @@ Corre `supabase/migraciones/006_entregables.sql` en **SQL Editor**. Crea el espa
 ### 10. Área Operativo y personas en varias áreas
 Corre `supabase/migraciones/007_operativo_y_varias_areas.sql` en **SQL Editor** y vuelve a desplegar la función `equipo` (pega otra vez `supabase/functions/equipo/index.ts` y toca **Deploy**). Agrega el área **Operativo** y la columna `areas` (áreas adicionales). En la pestaña Equipo, la PM marca en **También en** dónde más participa cada persona.
 
+### 11. Avisos por correo (vencimientos y resumen del sábado)
+1. **Edge Functions → Deploy a new function**, nombre `avisos`; pega `supabase/functions/avisos/index.ts` y toca **Deploy**.
+2. En **Edge Functions → Secrets** agrega `SMTP_USER` = `bitacora@tiempodedios.mx` y `SMTP_PASS` = la contraseña de ese buzón.
+3. Corre `supabase/migraciones/008_avisos_por_correo.sql` en **SQL Editor**. Programa el envío diario a las 8:00 (centro de México).
+4. Prueba desde la app: pestaña **Equipo** → **Enviarme una prueba** (te llegan ejemplos a tu correo).
+
+Reglas: una actividad vence el viernes de su semana o en la fecha que se elija al abrir la tarea. Un día antes se le avisa a su responsable; si se atrasa, recibe un correo cada mañana hasta completarla; los sábados la PM recibe lo que quedó sin completar. Las personas sin cuenta no reciben correo.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 

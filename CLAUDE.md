@@ -18,8 +18,9 @@ Dueña del proyecto: Ceci (líder de Formación).
   - `jspdf@2.5.1` (UMD) para generar los PDF en el navegador
 - `app/config.publico.js` (versionado): `window.BITACORA_CONFIG = {supabaseUrl, supabaseAnonKey}` con la anon key, que es pública por diseño. `app/config.js` (no versionado, opcional) lo reemplaza si existe.
 - `supabase/schema.sql`: tablas `perfiles`, `tareas` y `logros`, con RLS, triggers, realtime y el bucket `fotos`.
-- `supabase/migraciones/`: cambios para proyectos ya creados (002: foto de perfil, cada quien edita su nombre/foto, trigger `proteger_rol`; 003: rol `desarrollador`; 004: `usuario`; 005: lectura en el bucket `fotos` para borrar la foto anterior; 006: bucket privado `entregables`; 007: área `operativo`, columna `perfiles.areas` y función `puede_area()`).
+- `supabase/migraciones/`: cambios para proyectos ya creados (002: foto de perfil, cada quien edita su nombre/foto, trigger `proteger_rol`; 003: rol `desarrollador`; 004: `usuario`; 005: lectura en el bucket `fotos` para borrar la foto anterior; 006: bucket privado `entregables`; 007: área `operativo`, columna `perfiles.areas` y función `puede_area()`; 008: tabla `avisos_enviados` y cron de avisos).
 - Fotos: cada subida usa un nombre nuevo (`fotos/<id>/<timestamp>.jpg`) **sin upsert**, porque sobrescribir en Storage exige además permiso de lectura.
+- `supabase/functions/avisos/index.ts`: Edge Function de correos automáticos (pg_cron diario 14:00 UTC, migración 008). Envía por SMTP de Hostinger (`npm:nodemailer`, secretos `SMTP_USER`/`SMTP_PASS`). Avisa un día antes del vencimiento, cada día mientras esté atrasada y, los sábados, manda a la PM lo que quedó sin completar. Tabla `avisos_enviados` evita duplicados. `{prueba:true}` (solo PM/desarrollador) manda ejemplos al propio correo.
 - `supabase/functions/equipo/index.ts`: Edge Function (solo PM) con las acciones `listar`, `invitar`, `reenviar` y `quitar`. Usa la service_role key del entorno de Supabase. Nombre, rol y área se editan directo en `perfiles` (la RLS ya lo permite a la PM).
 - `.htaccess`: Hostinger clona el repo completo en `public_html/pm`; esto sirve solo `app/`.
 - `prototipo/`: la versión original como artifact de Claude. Es la referencia visual: no se despliega.
@@ -36,7 +37,7 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 
 ### Modelo (contenido de `data`)
 - **Tarea:**
-  `{area, titulo, proyecto, responsable, responsable_id, semana:"YYYY-MM-DD" (lunes), creada:ISO, creada_por, hecha:ISO|null, orden:number, nota, ligas:[{id, url, titulo, creada}], archivos:[{id, path, nombre, tipo, tam, subido:ISO, por, por_nombre}], subtareas:[{id, titulo, responsable, responsable_id, hecha:ISO|null, nota, ligas, archivos}]}`
+  `{area, titulo, proyecto, responsable, responsable_id, semana:"YYYY-MM-DD" (lunes), vence?:"YYYY-MM-DD" (si falta, viernes de su semana: `venceDe`), creada:ISO, creada_por, hecha:ISO|null, orden:number, nota, ligas:[{id, url, titulo, creada}], archivos:[{id, path, nombre, tipo, tam, subido:ISO, por, por_nombre}], subtareas:[{id, titulo, responsable, responsable_id, hecha:ISO|null, nota, ligas, archivos}]}`
   - **Entregables:** archivos en el bucket privado `entregables`, ruta `<área>/<id tarea>/<timestamp>-<nombre>` (máx. 25 MB). Se abren con `createSignedUrl` (1 h). Aparecen en el Reporte diario, en "Entregables subidos esta semana", en las tarjetas de la PM y en el PDF semanal (solo nombres).
   - `responsable_id` es el uuid de `perfiles`; `responsable` guarda el nombre para reportes y PDF. Las tareas viejas solo traen nombre y se relacionan con perfiles por nombre (`personaDe`, `asignadoA`).
   - Personas sin cuenta: `responsable_id` es null y solo se guarda el nombre. En las listas su valor es `txt:<nombre>` ("✎ Escribir otro nombre…").
