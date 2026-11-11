@@ -24,7 +24,7 @@ bitacora-tdd/
 - **Base de datos, inicio de sesión y tiempo real:** [Supabase](https://supabase.com) (Postgres). El plan gratuito alcanza para un equipo de este tamaño.
 - **Roles:**
   - `pm` y `desarrollador`: ven y editan todas las áreas, administran el equipo y entran directo al panel de Project Manager.
-  - `lider` y `colaborador`: ven todo y editan solo su área.
+  - `lider` y `colaborador`: ven todo y editan solo su área (y las áreas adicionales de `perfiles.areas`).
 - Los cambios aparecen en vivo en todas las pantallas abiertas.
 
 ## Puesta en marcha (unos 20 minutos)
@@ -72,6 +72,9 @@ Corre `supabase/migraciones/005_fotos_lectura.sql`. Sin ella las fotos se suben 
 
 ### 9. Archivos entregables en las tareas
 Corre `supabase/migraciones/006_entregables.sql` en **SQL Editor**. Crea el espacio privado `entregables` (hasta 25 MB por archivo). Solo quien inició sesión puede abrir los archivos; sube y borra quien edita esa área, o la PM.
+
+### 10. Área Operativo y personas en varias áreas
+Corre `supabase/migraciones/007_operativo_y_varias_areas.sql` en **SQL Editor** y vuelve a desplegar la función `equipo` (pega otra vez `supabase/functions/equipo/index.ts` y toca **Deploy**). Agrega el área **Operativo** y la columna `areas` (áreas adicionales). En la pestaña Equipo, la PM marca en **También en** dónde más participa cada persona.
 
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.

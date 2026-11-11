@@ -10,11 +10,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: banda Night con navegación entre áreas; cada área toma su color de marca; el panel del PM resume las tres. */
+/* Layout: banda Night con navegación entre áreas; cada área toma su color de marca; el panel del PM resume todas. */
 :root{
-  --night:#1B1C1A; --flame:#FF3D1A; --baby:#98D5E0; --sea:#457A7F;
+  --night:#1B1C1A; --flame:#FF3D1A; --baby:#98D5E0; --sea:#457A7F; --sol:#F2B33D;
   --bg:#FFFFFF; --surface:#F4F7F7; --fg:#1B1C1A; --muted:#5E6766; --line:#DDE5E5;
   --sea-text:#3A6A6F; --baby-ink:#2B7B8A; --baby-soft:#E3F3F6; --flame-soft:#FFE7E1; --sea-soft:#E2EEEF;
+  --sol-ink:#8A5A00; --sol-soft:#FDF1D8;
   --band:#1B1C1A;
   --area:var(--sea); --area-ink:var(--sea-text); --area-soft:var(--sea-soft); --on-area:#FFFFFF;
   --display:"Archivo","Arial Black","Helvetica Neue",Arial,sans-serif;
@@ -23,13 +24,14 @@
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#1B1C1A; --surface:#242623; --fg:#F5F7F6; --muted:#A3ADAC; --line:#353835;
-  --sea-text:#8CC3C8; --baby-ink:#98D5E0; --baby-soft:#203033; --flame-soft:#3A2019; --sea-soft:#1F3133; --band:#121311; color-scheme:dark}}
+  --sea-text:#8CC3C8; --baby-ink:#98D5E0; --baby-soft:#203033; --flame-soft:#3A2019; --sea-soft:#1F3133; --sol-ink:#F2B33D; --sol-soft:#352B17; --band:#121311; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#1B1C1A; --surface:#242623; --fg:#F5F7F6; --muted:#A3ADAC; --line:#353835;
-  --sea-text:#8CC3C8; --baby-ink:#98D5E0; --baby-soft:#203033; --flame-soft:#3A2019; --sea-soft:#1F3133; --band:#121311; color-scheme:dark}
+  --sea-text:#8CC3C8; --baby-ink:#98D5E0; --baby-soft:#203033; --flame-soft:#3A2019; --sea-soft:#1F3133; --sol-ink:#F2B33D; --sol-soft:#352B17; --band:#121311; color-scheme:dark}
 body[data-area="formacion"]{--area:var(--sea);--area-ink:var(--sea-text);--area-soft:var(--sea-soft);--on-area:#FFFFFF}
 body[data-area="musica"]{--area:var(--flame);--area-ink:var(--flame);--area-soft:var(--flame-soft);--on-area:#FFFFFF}
 body[data-area="audiovisual"]{--area:var(--baby);--area-ink:var(--baby-ink);--area-soft:var(--baby-soft);--on-area:#1B1C1A}
+body[data-area="operativo"]{--area:var(--sol);--area-ink:var(--sol-ink);--area-soft:var(--sol-soft);--on-area:#1B1C1A}
 body[data-area="pm"]{--area:var(--flame);--area-ink:var(--flame);--area-soft:var(--flame-soft);--on-area:#FFFFFF}
 
 *{box-sizing:border-box}
@@ -229,7 +231,7 @@ main .wrap{padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
 /* Personas, fotos y perfil */
 .av{width:22px;height:22px;border-radius:50%;object-fit:cover;background:var(--flame);color:#fff;display:inline-grid;place-items:center;font-weight:800;font-size:10px;flex:none;overflow:hidden;font-style:normal}
 .av.md{width:36px;height:36px;font-size:14px}.av.lg{width:72px;height:72px;font-size:26px}.av.xl{width:128px;height:128px;font-size:44px}
-.av[data-a="formacion"]{background:var(--sea)}.av[data-a="audiovisual"]{background:var(--baby);color:#1B1C1A}
+.av[data-a="formacion"]{background:var(--sea)}.av[data-a="operativo"]{background:var(--sol);color:#1B1C1A}.av[data-a="audiovisual"]{background:var(--baby);color:#1B1C1A}
 a.chip.who{text-decoration:none}a.chip.who:hover{filter:brightness(.95)}
 .chip.who.has-av::before{display:none}
 .chip.who .av{width:16px;height:16px;font-size:9px}
@@ -353,8 +355,14 @@ a.chip.liga:hover{text-decoration:underline}
 .member .mail{font-family:var(--mono);font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .member select{height:38px;border:1.5px solid var(--line);border-radius:8px;padding:0 8px;background:var(--bg);font-size:13px;min-width:0;width:100%}
 .member .acts{display:flex;gap:6px;align-items:center;justify-content:flex-end}
+.member .tambien{grid-column:1/-2;grid-row:2;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;font-weight:700;color:var(--muted)}
+.tchip{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:99px;border:1.5px solid var(--line);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;user-select:none}
+.tchip input{position:absolute;opacity:0;pointer-events:none}
+.tchip:hover{border-color:var(--c)}
+.tchip.on{background:var(--c);border-color:var(--c);color:var(--on)}
+.tchip:focus-within{outline:2px solid var(--c);outline-offset:2px}
 .chip.pend{background:var(--flame-soft);color:var(--flame);border-color:transparent}
-@media (max-width:640px){.member{grid-template-columns:1fr 1fr}.member .who{grid-column:1/-1}.member .acts{grid-column:1/-1;justify-content:flex-start}}
+@media (max-width:640px){.member{grid-template-columns:1fr 1fr}.member .who{grid-column:1/-1}.member .tambien{grid-column:1/-1;grid-row:auto}.member .acts{grid-column:1/-1;justify-content:flex-start}}
 .counts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .count-tile{border-radius:14px;padding:14px 16px;background:var(--area-soft);color:var(--area-ink);display:flex;flex-direction:column;gap:2px;min-width:0}
 .count-tile b{font-family:var(--display);font-weight:900;font-size:34px;line-height:1;font-stretch:112%;color:var(--fg)}
@@ -390,7 +398,7 @@ a.chip.liga:hover{text-decoration:underline}
 .starbtn svg{width:20px;height:20px}
 
 /* Panel PM */
-.areas3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.areas3{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 @media (max-width:860px){.areas3{grid-template-columns:1fr}}
 .acard{border:1.5px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
 .acard .top{background:var(--c);color:var(--on);padding:16px;display:flex;flex-direction:column;gap:4px}
@@ -529,6 +537,7 @@ select:disabled{cursor:default;opacity:.7}
         <a href="#formacion" data-route="formacion"><i style="background:#457A7F"></i>Formación</a>
         <a href="#musica" data-route="musica"><i style="background:#FF3D1A"></i>Música</a>
         <a href="#audiovisual" data-route="audiovisual"><i style="background:#98D5E0"></i>Audiovisual</a>
+        <a href="#operativo" data-route="operativo"><i style="background:#F2B33D"></i>Operativo</a>
         <a href="#equipo" data-route="equipo"><i style="background:#C9D2D1"></i>Equipo</a>
         <a href="#pm" data-route="pm"><i style="background:#fff;border:1px solid #888"></i>Project Manager</a>
       </nav>
@@ -704,7 +713,7 @@ select:disabled{cursor:default;opacity:.7}
         <div class="readonly" id="teamNote" hidden></div>
         <ul class="team" id="teamList"></ul>
       </div>
-      <p class="dlnote">Roles: <b>Project Manager</b> y <b>Desarrollador web</b> ven y editan todo y administran el equipo. <b>Líder</b> y <b>Colaborador</b> ven todo y editan solo su área.</p>
+      <p class="dlnote">Roles: <b>Project Manager</b> y <b>Desarrollador web</b> ven y editan todo y administran el equipo. <b>Líder</b> y <b>Colaborador</b> ven todo y editan solo su área y las que marques en <b>También en</b>.</p>
     </section>
   </div>
 </main>
@@ -721,13 +730,15 @@ const MESES_L=["enero","febrero","marzo","abril","mayo","junio","julio","agosto"
 const AREAS={
   formacion:{n:"Formación",c:"var(--sea)",on:"#fff",rgb:[69,122,127],tipos:["Curso","Taller","Retiros / camps","Material creado"],ph:{titulo:"Ej. nombre del curso, taller o retiro",nota:"Ej. 35 asistentes, 4 sesiones, sede",testi:"Lo que alguien compartió sobre el curso, taller o retiro. Después puedes agregar más."}},
   musica:{n:"Música",c:"var(--flame)",on:"#fff",rgb:[255,61,26],tipos:["Canciones publicadas","Presentaciones en vivo","Eventos","Colaboraciones"],ph:{titulo:"Ej. nombre de la canción, presentación o evento",nota:"Ej. plataformas donde salió, reproducciones, lugar del evento",testi:"Lo que alguien compartió sobre la canción o la presentación. Después puedes agregar más."}},
-  audiovisual:{n:"Audiovisual",c:"var(--baby)",on:"#1B1C1A",rgb:[120,196,210],tipos:["Video en vivo","Podcast","Video musical","Reels","Videos de formación"],ph:{titulo:"Ej. título del video, episodio o reel",nota:"Ej. vistas, duración, plataforma",testi:"Lo que alguien compartió sobre el video o comentarios importantes que dejaron. Después puedes agregar más."}}
+  audiovisual:{n:"Audiovisual",c:"var(--baby)",on:"#1B1C1A",rgb:[120,196,210],tipos:["Video en vivo","Podcast","Video musical","Reels","Videos de formación"],ph:{titulo:"Ej. título del video, episodio o reel",nota:"Ej. vistas, duración, plataforma",testi:"Lo que alguien compartió sobre el video o comentarios importantes que dejaron. Después puedes agregar más."}},
+  operativo:{n:"Operativo",c:"var(--sol)",on:"#1B1C1A",rgb:[214,150,30],tipos:["Eventos organizados","Logística","Procesos y administración","Apoyo a otras áreas"],ph:{titulo:"Ej. evento, proceso o gestión que se concluyó",nota:"Ej. sede, proveedores, presupuesto, personas atendidas",testi:"Lo que alguien compartió sobre el evento o el apoyo recibido. Después puedes agregar más."}}
 };
 const AREA_IDS=Object.keys(AREAS);
 const AREA_ICON={
  formacion:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5c3-1.5 6-1.5 9 0v12c-3-1.5-6-1.5-9 0zM21 6.5c-3-1.5-6-1.5-9 0v12c3-1.5 6-1.5 9 0z"/></svg>',
  musica:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>',
  audiovisual:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="M15.5 10.5l6-3.5v10l-6-3.5z"/></svg>',
+ operativo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2.5h6V4M9 11l2 2 4-4M9 17h6"/></svg>',
  pm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
  equipo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14.5c2.4 0 4 1.5 4.5 4"/></svg>'};
 AREA_ICON.persona=AREA_ICON.equipo;
@@ -745,7 +756,7 @@ const DOT_CHECK='<svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8
 const DOT_STAR='<svg viewBox="0 0 18 18"><path d="M9 1.8l2.1 4.3 4.7.6-3.4 3.3.8 4.7L9 12.4l-4.2 2.3.8-4.7L2.2 6.7l4.7-.6z" fill="var(--flame)"/></svg>';
 
 let sb=null,perfil=null,perfiles=[],db=null,tasksCol=null,logrosCol=null,tasks=[],logros=[],loadedT=false,loadedL=false;
-let route="formacion",areaView={formacion:"tasks",musica:"tasks",audiovisual:"tasks"},pmView="week";
+let route="formacion",areaView={formacion:"tasks",musica:"tasks",audiovisual:"tasks",operativo:"tasks"},pmView="week";
 let anchor=new Date(),open=new Set(),openTesti=new Set(),pendingDel=null,personaId=null,enfocarInvitar=false;
 let cuentas=null,cuentasErr="",cuentasCargando=false;
 
@@ -785,7 +796,11 @@ function whoChip(n,id){const p=personaDe(id,n);
   if(!n)return"";return `<span class="chip who" data-i="${esc((n.trim()[0]||"").toUpperCase())}">${esc(n)}</span>`}
 function arroba(p){return p&&p.usuario?"@"+p.usuario:""}
 const USUARIO_OK=/^[a-z0-9._]{2,30}$/;
-function rolDe(p){return ACCESO_TOTAL.includes(p.rol)?ROLES[p.rol]:`${ROLES[p.rol]||"Colaborador"} · ${p.area&&AREAS[p.area]?AREAS[p.area].n:"Sin área asignada"}`}
+/* Una persona pertenece a su área principal (area) y a las adicionales (areas) */
+function enArea(p,a){return !!p&&(p.area===a||(p.areas||[]).includes(a))}
+function extrasDe(p){return (p.areas||[]).filter(a=>AREAS[a]&&a!==p.area)}
+function rolDe(p){const ex=extrasDe(p).map(a=>AREAS[a].n).join(" y ");
+  return (ACCESO_TOTAL.includes(p.rol)?ROLES[p.rol]:`${ROLES[p.rol]||"Colaborador"} · ${p.area&&AREAS[p.area]?AREAS[p.area].n:"Sin área asignada"}`)+(ex?` · también en ${ex}`:"")}
 /* Responsables sin cuenta: se guardan solo con nombre (responsable_id null). En las listas su valor es "txt:<nombre>". */
 function nombresLibres(){const m=new Map(),add=n=>{n=(n||"").trim();if(n&&!m.has(n.toLowerCase())&&!personaDe(null,n))m.set(n.toLowerCase(),n)};
   tasks.forEach(t=>{if(!t.responsable_id)add(t.responsable);t.subtareas.forEach(s=>{if(!s.responsable_id)add(s.responsable)})});
@@ -794,7 +809,7 @@ function respDe(v){v=(v||"").trim();if(v.startsWith("txt:")){const n=v.slice(4).
   const p=perfiles.find(x=>x.id===v);return p?{id:p.id,nombre:p.nombre}:{id:null,nombre:""}}
 function valorResp(id,n){const p=personaDe(id,n);return p?p.id:n?"txt:"+n:""}
 function opcionesPersona(area,sel){const ord=(a,b)=>(a.nombre||"").localeCompare(b.nombre||"");
-  const dev=p=>p.rol==="desarrollador",de=perfiles.filter(p=>p.area===area&&!dev(p)).sort(ord),otros=perfiles.filter(p=>p.area!==area&&!dev(p)).sort(ord),devs=perfiles.filter(dev).sort(ord);
+  const dev=p=>p.rol==="desarrollador",de=perfiles.filter(p=>enArea(p,area)).sort(ord),otros=perfiles.filter(p=>!enArea(p,area)&&!dev(p)).sort(ord),devs=perfiles.filter(p=>dev(p)&&!enArea(p,area)).sort(ord);
   const o=p=>`<option value="${p.id}" ${p.id===sel?"selected":""}>${esc(p.nombre)}</option>`;
   const libres=nombresLibres();if(sel&&sel.startsWith("txt:")&&!libres.some(n=>n.toLowerCase()===sel.slice(4).toLowerCase()))libres.unshift(sel.slice(4));
   const ol=n=>`<option value="txt:${esc(n)}" ${sel&&sel.toLowerCase()==="txt:"+n.toLowerCase()?"selected":""}>${esc(n)}</option>`;
@@ -859,7 +874,7 @@ function pendientesDe(pid){const out=[];
   tasks.forEach(t=>{if(!t.hecha&&asignadoA(t,pid))out.push({t});t.subtareas.forEach(s=>{if(!s.hecha&&asignadoA(s,pid))out.push({t,s})})});
   return out.sort((a,b)=>a.t.semana<b.t.semana?-1:a.t.semana>b.t.semana?1:0)}
 function esPM(){return !!perfil&&ACCESO_TOTAL.includes(perfil.rol)}
-function canEdit(a){return esPM()||(!!perfil&&perfil.area===a)}
+function canEdit(a){return esPM()||enArea(perfil,a)}
 function areaOf(x){return AREAS[x.area]?x.area:"formacion"}
 function safeUrl(u){if(!u)return"";u=u.trim();if(!/^https?:\/\//i.test(u))u="https://"+u;try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:""}catch(e){return""}}
 function hostOf(u){try{return new URL(u).hostname.replace(/^www\./,"")}catch(e){return"liga"}}
@@ -1249,6 +1264,7 @@ function renderTeam(){
       <div class="who"><div class="wl"><a href="#persona/${p.id}" title="Ver perfil">${av(p,"md")}</a><input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre"></div><span class="mail">${esc([arroba(p),c?c.email:""].filter(Boolean).join(" · "))}</span></div>
       <select data-prol="${p.id}" aria-label="Rol" ${self?'disabled title="No puedes cambiar tu propio rol"':""}>${Object.entries(ROLES).map(([k,l])=>`<option value="${k}" ${p.rol===k?"selected":""}>${l}</option>`).join("")}</select>
       <select data-parea="${p.id}" aria-label="Área" ${ACCESO_TOTAL.includes(p.rol)?"disabled":""}>${ACCESO_TOTAL.includes(p.rol)?`<option>Todas</option>`:`<option value="" ${p.area?"":"selected"}>Sin área</option>${AREA_IDS.map(a=>`<option value="${a}" ${p.area===a?"selected":""}>${AREAS[a].n}</option>`).join("")}`}</select>
+      <div class="tambien"><span>${ACCESO_TOTAL.includes(p.rol)?"Participa en":"También en"}</span>${AREA_IDS.filter(a=>a!==p.area).map(a=>`<label class="tchip ${enArea(p,a)?"on":""}" style="--c:${AREAS[a].c};--on:${AREAS[a].on}"><input type="checkbox" data-pareas="${p.id}|${a}" ${enArea(p,a)?"checked":""}>${AREAS[a].n}</label>`).join("")}</div>
       <div class="acts">${estado}${c&&!c.activo&&!self?`<button class="btn ghost sm" data-reenviar="${p.id}">Reenviar</button>`:""}${self?"":`<button class="icon" data-quitar="${p.id}" aria-label="Quitar acceso a ${esc(p.nombre)}">${ICON_DEL}</button>`}</div>
     </li>`}).join(""):`<li class="none">Aún no hay nadie en el equipo.</li>`}
 async function actualizarPerfil(id,cambios){const p=perfiles.find(x=>x.id===id);if(!p)return;const antes={...p};Object.assign(p,cambios);render();
@@ -1374,7 +1390,7 @@ function buildPDF(){
       P.gap(14)});
   }else{const r=yearRange(y),log=logRange(r.s,r.e),lg=logrosRange(r.s,r.e);
     P=pdfWriter("Resumen anual · logros",`Año ${y}`);fname=`TdD-resumen-anual-${y}.pdf`;
-    P.p(`En ${y} se registraron ${lg.length} logros y se completaron ${log.filter(x=>x.tipo==="t").length} tareas en las tres áreas.`,{bold:true});P.gap(10);
+    P.p(`En ${y} se registraron ${lg.length} logros y se completaron ${log.filter(x=>x.tipo==="t").length} tareas en todas las áreas.`,{bold:true});P.gap(10);
     AREA_IDS.forEach(a=>{const alg=lg.filter(l=>areaOf(l)===a);
       P.area(a);P.h("Logros del año");P.p(alg.length?countBy(alg,"tipo","Otro").map(([t,n])=>`${clean(t)}: ${n}`).join("   ·   "):"Sin logros registrados.",{bold:!!alg.length,size:10.5});
       if(alg.length){countBy(alg,"tipo","Otro").forEach(([t,n])=>{P.h(`${t} (${n})`);pdfLogros(P,alg.filter(l=>(l.tipo||"Otro")===t))})}P.gap(14)});
@@ -1467,10 +1483,12 @@ $("ptForm").addEventListener("submit",e=>{e.preventDefault();if(!tasksCol){toast
   const areas=area==="todas"?AREA_IDS:[area],ahora=new Date().toISOString();
   areas.forEach(a=>addTask(titulo,$("ptProyecto").value.trim(),who,a,sem,lu?{ligas:[{id:uid(),url:lu,titulo:$("ptLigaN").value.trim().slice(0,80),creada:ahora,por_nombre:perfil?perfil.nombre:""}]}:null));
   const p=respDe(who);["ptTitulo","ptProyecto","ptLiga","ptLigaN"].forEach(i=>$(i).value="");$("ptTitulo").focus();
-  toast(`Tarea asignada a ${area==="todas"?"las tres áreas"+(p.nombre?" ("+p.nombre+")":""):p.nombre||AREAS[area].n}${sem!==key(weekStart())?" para la "+weekLabel(fromKey(sem)).toLowerCase():""}.`)});
+  toast(`Tarea asignada a ${area==="todas"?"todas las áreas"+(p.nombre?" ("+p.nombre+")":""):p.nombre||AREAS[area].n}${sem!==key(weekStart())?" para la "+weekLabel(fromKey(sem)).toLowerCase():""}.`)});
 document.addEventListener("change",e=>{const t=e.target;if(!sb)return;
   if(t.dataset.prol){const rol=t.value;actualizarPerfil(t.dataset.prol,ACCESO_TOTAL.includes(rol)?{rol,area:null}:{rol})}
-  else if(t.dataset.parea)actualizarPerfil(t.dataset.parea,{area:t.value||null});
+  else if(t.dataset.parea){const p=perfiles.find(x=>x.id===t.dataset.parea),v=t.value||null;actualizarPerfil(t.dataset.parea,{area:v,areas:((p&&p.areas)||[]).filter(a=>a!==v)})}
+  else if(t.dataset.pareas){const [id,a]=t.dataset.pareas.split("|"),p=perfiles.find(x=>x.id===id);if(!p)return;
+    const cur=(p.areas||[]).filter(x=>x!==a);actualizarPerfil(id,{areas:t.checked?[...cur,a]:cur})}
   else if(t.dataset.pusuario){const p=perfiles.find(x=>x.id===t.dataset.pusuario);const v=t.value.trim().replace(/^@/,"").toLowerCase();
     if(!p||v===(p.usuario||"")){if(p)t.value=p.usuario||"";return}
     if(!USUARIO_OK.test(v)){t.value=p.usuario||"";toast("El usuario lleva de 2 a 30 caracteres: minúsculas, números, punto o guion bajo.");return}

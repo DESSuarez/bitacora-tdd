@@ -14,7 +14,7 @@ const cors = {
 };
 const ROLES = ["pm", "desarrollador", "lider", "colaborador"];
 const ACCESO_TOTAL = ["pm", "desarrollador"];
-const AREAS = ["formacion", "musica", "audiovisual"];
+const AREAS = ["formacion", "musica", "audiovisual", "operativo"];
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } });

@@ -3,7 +3,7 @@
 Contexto para Claude Code. Todo en español: interfaz, textos, commits y comentarios.
 
 ## Propósito
-Plataforma sencilla para que las áreas de **Formación**, **Música** y **Audiovisual** de Tiempo de Dios registren su trabajo:
+Plataforma sencilla para que las áreas de **Formación**, **Música**, **Audiovisual** y **Operativo** de Tiempo de Dios registren su trabajo:
 - Pendientes semanales con tareas y subtareas.
 - La hora exacta en que se completa cada cosa.
 - Logros con liga y testimonios.
@@ -18,7 +18,7 @@ Dueña del proyecto: Ceci (líder de Formación).
   - `jspdf@2.5.1` (UMD) para generar los PDF en el navegador
 - `app/config.publico.js` (versionado): `window.BITACORA_CONFIG = {supabaseUrl, supabaseAnonKey}` con la anon key, que es pública por diseño. `app/config.js` (no versionado, opcional) lo reemplaza si existe.
 - `supabase/schema.sql`: tablas `perfiles`, `tareas` y `logros`, con RLS, triggers, realtime y el bucket `fotos`.
-- `supabase/migraciones/`: cambios para proyectos ya creados (002: foto de perfil, cada quien edita su nombre/foto, trigger `proteger_rol`; 003: rol `desarrollador`; 004: `usuario`; 005: lectura en el bucket `fotos` para borrar la foto anterior; 006: bucket privado `entregables`).
+- `supabase/migraciones/`: cambios para proyectos ya creados (002: foto de perfil, cada quien edita su nombre/foto, trigger `proteger_rol`; 003: rol `desarrollador`; 004: `usuario`; 005: lectura en el bucket `fotos` para borrar la foto anterior; 006: bucket privado `entregables`; 007: área `operativo`, columna `perfiles.areas` y función `puede_area()`).
 - Fotos: cada subida usa un nombre nuevo (`fotos/<id>/<timestamp>.jpg`) **sin upsert**, porque sobrescribir en Storage exige además permiso de lectura.
 - `supabase/functions/equipo/index.ts`: Edge Function (solo PM) con las acciones `listar`, `invitar`, `reenviar` y `quitar`. Usa la service_role key del entorno de Supabase. Nombre, rol y área se editan directo en `perfiles` (la RLS ya lo permite a la PM).
 - `.htaccess`: Hostinger clona el repo completo en `public_html/pm`; esto sirve solo `app/`.
@@ -46,16 +46,17 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 - **Logro:**
   `{area, tipo, titulo, fecha:"YYYY-MM-DD", liga, responsable, nota, testimonios:[{id, texto, autor, creado}], creado}`
   - Todos los logros entran a los resúmenes del mes y del año.
-- **Perfil:** `perfiles {id, nombre, usuario, rol, area, foto}`. `nombre` es como se ve la persona; `usuario` es su identificador único en minúsculas (`^[a-z0-9._]{2,30}$`, índice único sin mayúsculas, lo propone `usuario_libre()` desde el correo). La foto se sube recortada a 512 px a Storage `fotos/<id>/foto.jpg`.
+- **Perfil:** `perfiles {id, nombre, usuario, rol, area, areas[], foto}`. `areas` son áreas adicionales donde también participa (aparece en sus listas de responsables y puede editarlas; `enArea()` en la app, `puede_area()` en SQL). La PM las marca en Equipo → "También en". Diego (desarrollador) está en Música y Operativo. `nombre` es como se ve la persona; `usuario` es su identificador único en minúsculas (`^[a-z0-9._]{2,30}$`, índice único sin mayúsculas, lo propone `usuario_libre()` desde el correo). La foto se sube recortada a 512 px a Storage `fotos/<id>/foto.jpg`.
 
 ### Tipos de logro por área (`AREAS` en index.html)
 - **Formación:** Curso, Taller, Retiros / camps, Material creado
 - **Música:** Canciones publicadas, Presentaciones en vivo, Eventos, Colaboraciones
 - **Audiovisual:** Video en vivo, Podcast, Video musical, Reels, Videos de formación
+- **Operativo:** Eventos organizados, Logística, Procesos y administración, Apoyo a otras áreas
 - Siempre se puede agregar uno nuevo con "Otro…".
 
 ### Rutas (hash)
-`#formacion`, `#musica`, `#audiovisual`, `#pm`, `#equipo` (directorio con fotos) y `#persona/<id>` (perfil con sus pendientes).
+`#formacion`, `#musica`, `#audiovisual`, `#operativo`, `#pm`, `#equipo` (directorio con fotos) y `#persona/<id>` (perfil con sus pendientes).
 - Cada área tiene las pestañas Pendientes, Reporte diario, Mes y Logros.
 - El panel de la PM tiene las pestañas Semana, Mes, Año, Tareas (asignar y editar en las tres áreas) y Equipo (administración). Tareas y Equipo solo las ve la PM.
 - Al abrir una tarea (botón +) se editan título, proyecto, responsable y semana (incluye "A la próxima semana →"); solo la PM cambia el área.
@@ -67,7 +68,7 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 
 ### Roles (RLS)
 - `pm` y `desarrollador`: leen y escriben todo y administran el equipo (`es_pm()` en SQL, `esPM()` y `ACCESO_TOTAL` en la app). Solo cambia la etiqueta: "Project Manager" o "Desarrollador web".
-- `lider` y `colaborador`: leen todo y escriben solo filas de su `area`.
+- `lider` y `colaborador`: leen todo y escriben solo filas de su `area` o de sus `areas` adicionales.
 - La UI oculta los formularios cuando no hay permiso (`canEdit`).
 
 ## Identidad visual
@@ -77,6 +78,7 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
   - Flame `#FF3D1A` (Música, PM)
   - Baby blue `#98D5E0` (Audiovisual)
   - Deep sea green `#457A7F` (Formación)
+  - Sol `#F2B33D` (Operativo; propuesta, no viene del manual de marca)
 - **Tipografía:** Archivo (display y texto, pesos 800–900, ligeramente expandida) e IBM Plex Mono (fechas y horas).
 - **Encabezado:** banda Night con una franja inferior del color del área y una etiqueta pequeña del área sobre el título "La semana en orden".
 - Soporta modo claro y oscuro mediante tokens CSS.

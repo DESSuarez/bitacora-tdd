@@ -4,12 +4,12 @@
 -- ============ Perfiles y roles ============
 -- rol: 'pm' (project manager, ve y edita todo), 'desarrollador' (mismo acceso que la PM),
 --      'lider' (encargado de un área), 'colaborador'
--- area: 'formacion' | 'musica' | 'audiovisual' (null para la PM)
+-- area: 'formacion' | 'musica' | 'audiovisual' | 'operativo' (null para la PM); areas: áreas adicionales
 create table if not exists public.perfiles (
   id uuid primary key references auth.users(id) on delete cascade,
   nombre text not null,
   rol text not null default 'colaborador' constraint perfiles_rol_check check (rol in ('pm','desarrollador','lider','colaborador')),
-  area text check (area in ('formacion','musica','audiovisual')),
+  area text check (area in ('formacion','musica','audiovisual','operativo')),
   creado timestamptz not null default now()
 );
 
@@ -43,7 +43,7 @@ $$;
 -- "area" se repite como columna para poder aplicar permisos por área.
 create table if not exists public.tareas (
   id text primary key,
-  area text not null default 'formacion' check (area in ('formacion','musica','audiovisual')),
+  area text not null default 'formacion' check (area in ('formacion','musica','audiovisual','operativo')),
   data jsonb not null,
   actualizado timestamptz not null default now(),
   actualizado_por uuid default auth.uid()
@@ -51,7 +51,7 @@ create table if not exists public.tareas (
 
 create table if not exists public.logros (
   id text primary key,
-  area text not null default 'formacion' check (area in ('formacion','musica','audiovisual')),
+  area text not null default 'formacion' check (area in ('formacion','musica','audiovisual','operativo')),
   data jsonb not null,
   actualizado timestamptz not null default now(),
   actualizado_por uuid default auth.uid()
@@ -225,3 +225,42 @@ end $$;
 --   where id = (select id from auth.users where email = 'ceciliagomez@tiempodedios.mx');
 -- update public.perfiles set nombre = 'Nombre', rol = 'colaborador', area = 'musica'
 --   where id = (select id from auth.users where email = 'persona@tiempodedios.mx');
+
+-- ============ Varias áreas por persona (migración 007) ============
+alter table public.perfiles add column if not exists areas text[] not null default '{}';
+alter table public.perfiles drop constraint if exists perfiles_areas_check;
+alter table public.perfiles add constraint perfiles_areas_check
+  check (areas <@ array['formacion','musica','audiovisual','operativo']::text[]);
+
+-- ¿Puede la persona con sesión escribir en esta área? (PM / desarrollador, su área o una adicional)
+create or replace function public.puede_area(a text)
+returns boolean language sql stable security definer set search_path = public as $$
+  select public.es_pm() or exists (
+    select 1 from public.perfiles where id = auth.uid() and (area = a or a = any(areas)));
+$$;
+
+drop policy if exists tareas_escribir on public.tareas;
+create policy tareas_escribir on public.tareas for all to authenticated
+  using (public.puede_area(area)) with check (public.puede_area(area));
+drop policy if exists logros_escribir on public.logros;
+create policy logros_escribir on public.logros for all to authenticated
+  using (public.puede_area(area)) with check (public.puede_area(area));
+
+drop policy if exists entregables_subir on storage.objects;
+create policy entregables_subir on storage.objects for insert to authenticated
+  with check (bucket_id = 'entregables' and public.puede_area((storage.foldername(name))[1]));
+drop policy if exists entregables_borrar on storage.objects;
+create policy entregables_borrar on storage.objects for delete to authenticated
+  using (bucket_id = 'entregables' and public.puede_area((storage.foldername(name))[1]));
+
+-- Solo la PM cambia rol, área y áreas adicionales
+create or replace function public.proteger_rol()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if auth.uid() is not null and not public.es_pm()
+     and (new.rol is distinct from old.rol or new.area is distinct from old.area
+          or new.areas is distinct from old.areas) then
+    raise exception 'Solo la project manager puede cambiar rol o área';
+  end if;
+  return new;
+end $$;
