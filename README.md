@@ -84,6 +84,9 @@ Corre `supabase/migraciones/007_operativo_y_varias_areas.sql` en **SQL Editor** 
 
 Reglas: una actividad vence el viernes de su semana o en la fecha que se elija al abrir la tarea. Un día antes se le avisa a su responsable; si se atrasa, recibe un correo cada mañana hasta completarla; los sábados la PM recibe lo que quedó sin completar. Las personas sin cuenta no reciben correo.
 
+### 12. Carta de presentación en el perfil
+Corre `supabase/migraciones/009_presentacion.sql`. Agrega el campo **Sobre mí** (`bio`) que cada quien escribe en su perfil.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 

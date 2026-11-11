@@ -270,7 +270,7 @@ main .wrap{padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
 @media (max-width:640px){.lform{grid-template-columns:1fr 1fr}.lform .c2,.lform .c3,.lform .c4{grid-column:1/-1}}
 /* Personas, fotos y perfil */
 .av{width:22px;height:22px;border-radius:50%;object-fit:cover;background:var(--flame);color:#fff;display:inline-grid;place-items:center;font-weight:800;font-size:10px;flex:none;overflow:hidden;font-style:normal}
-.av.md{width:36px;height:36px;font-size:14px}.av.lg{width:72px;height:72px;font-size:26px}.av.xl{width:128px;height:128px;font-size:44px}
+.av.md{width:36px;height:36px;font-size:14px}.av.lg{width:72px;height:72px;font-size:26px}.av.xl{width:128px;height:128px;font-size:44px}.av.xxl{display:inline-grid}
 .av[data-a="formacion"]{background:var(--sea)}.av[data-a="operativo"]{background:var(--sol);color:#1B1C1A}.av[data-a="audiovisual"]{background:var(--baby);color:#1B1C1A}
 a.chip.who{text-decoration:none}a.chip.who:hover{filter:brightness(.95)}
 .chip.who.has-av::before{display:none}
@@ -307,6 +307,47 @@ a.chip.who{text-decoration:none}a.chip.who:hover{filter:brightness(.95)}
 .profile .pinfo input:hover{border-color:var(--line)}.profile .pinfo input:focus{border-color:var(--area-ink);outline:none;background:var(--bg)}
 .profile .pinfo h2{margin:0;font-family:var(--display);font-weight:900;font-size:28px;font-stretch:108%}
 .profile .pinfo .mail{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.pcard .bio{font-size:12.5px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:center;line-height:1.4}
+.carta{display:block;padding:0;overflow:hidden}
+.carta .pcover{height:120px;position:relative}
+.carta .pcover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.18))}
+.carta .pmarca{position:absolute;right:20px;top:16px;z-index:1;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.85);mix-blend-mode:luminosity}
+.carta .pbody{display:flex;align-items:flex-end;gap:26px;padding:0 28px;margin-top:-84px;position:relative;z-index:2;flex-wrap:wrap}
+.carta .pfoto{position:relative;padding:0;border:0;border-radius:50%;flex:none}
+.carta .pfoto[data-drop]{border:0}
+.av.xxl{width:184px;height:184px;font-size:68px;border:6px solid var(--surface);box-shadow:0 10px 30px rgba(0,0,0,.22);box-sizing:content-box}
+.carta .pfoto.over .av{outline:4px dashed var(--area);outline-offset:4px}
+.fotobtn{position:absolute;right:10px;bottom:12px;width:44px;height:44px;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;cursor:pointer;border:3px solid var(--surface);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.fotobtn svg{width:20px;height:20px}
+.fotobtn:hover{background:var(--area);color:var(--on-area)}
+.carta .pinfo{padding:96px 0 4px;gap:6px;min-width:240px}
+.carta .pinfo input,.carta .pinfo h2{font-size:34px}
+.carta .prol{font-weight:800;font-size:15px}
+.pchips{display:flex;flex-wrap:wrap;gap:6px}
+.pchips .chip{height:26px;gap:5px;padding:0 11px;font-size:12.5px;text-decoration:none}
+.pchips .chip svg{width:13px;height:13px}
+.carta .pbio{padding:22px 28px 4px}
+.carta .pbio h3{margin:0 0 6px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.carta .pbio p{margin:0;font-size:16px;line-height:1.6;white-space:pre-wrap;max-width:68ch}
+.carta .pbio p.vacio{color:var(--muted);font-size:14px}
+.carta .pbio textarea{width:100%;min-height:84px;resize:vertical;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--fg);padding:12px 14px;font:inherit;font-size:15.5px;line-height:1.55}
+.carta .pbio textarea:focus{border-color:var(--area-ink);outline:none}
+.carta .pacts{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:14px 28px 24px}
+.carta .pacts .drophint{text-align:left}
+@media (max-width:640px){
+  .profile.carta{padding:0}
+  .carta .pcover{height:96px}
+  .carta .pmarca{display:none}
+  .carta .uedit input{flex:0 1 auto;width:14ch}
+  .carta .pbody{flex-direction:column;align-items:center;text-align:center;margin-top:-80px;gap:12px;padding:0 18px}
+  .carta .pinfo{padding:0;align-items:center;min-width:0;width:100%}
+  .carta .pinfo > input{text-align:center;margin-left:0}
+  .carta .uedit input{text-align:left}
+  .carta .uedit{justify-content:center}
+  .carta .pchips{justify-content:center}
+  .av.xxl{width:152px;height:152px;font-size:56px}
+  .carta .pbio,.carta .pacts{padding-left:18px;padding-right:18px}
+}
 .btn.file{display:inline-flex;align-items:center;cursor:pointer}
 .plist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .pitem{display:flex;gap:12px;align-items:center;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg)}
@@ -1213,7 +1254,7 @@ function renderPeople(){const G=$("peopleGrid");
   const orden={pm:0,lider:1,colaborador:2,desarrollador:3};
   const pos=p=>p.rol==="desarrollador"?9:AREA_IDS.indexOf(p.area);
   G.innerHTML=perfiles.slice().sort((a,b)=>(pos(a)-pos(b))||(orden[a.rol]-orden[b.rol])||(a.nombre||"").localeCompare(b.nombre||"")).map(p=>{const n=pendientesDe(p.id).length;
-    return `<a class="pcard" href="#persona/${p.id}" style="--c:${AREAS[p.area]?AREAS[p.area].c:"var(--flame)"}">${av(p,"lg")}<b>${esc(p.nombre)}</b>${p.usuario?`<span class="u">${esc(arroba(p))}</span>`:""}<span>${esc(rolDe(p))}</span><span class="n">${n?`${n} pendiente${n>1?"s":""}`:"Sin pendientes"}</span></a>`}).join("")+
+    return `<a class="pcard" href="#persona/${p.id}" style="--c:${AREAS[p.area]?AREAS[p.area].c:"var(--flame)"}">${av(p,"lg")}<b>${esc(p.nombre)}</b>${p.usuario?`<span class="u">${esc(arroba(p))}</span>`:""}<span>${esc(rolDe(p))}</span>${p.bio?`<span class="bio">${esc(p.bio)}</span>`:""}<span class="n">${n?`${n} pendiente${n>1?"s":""}`:"Sin pendientes"}</span></a>`}).join("")+
     (esPM()?`<button type="button" class="pcard add" data-goteam="invitar"><span class="plus">+</span><b>Invitar a alguien</b><span>Le llega un correo para crear su contraseña</span></button>`:"")}
 function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
   if(!p){$("personCard").innerHTML=perfiles.length?`<div class="empty"><strong>No encontramos a esta persona</strong><p>Puede que ya no tenga acceso a la bitácora. <a href="#equipo">Ver el equipo</a></p></div>`:`<div class="none">Cargando…</div>`;
@@ -1221,9 +1262,7 @@ function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
   const self=!!perfil&&p.id===perfil.id,puede=self||esPM();
   if(esPM()&&!self&&cuentas===null&&!cuentasErr&&!cuentasCargando)cargarCuentas();
   const c=cuentas&&cuentas.get(p.id),email=self?perfil.email||"":c?c.email:"";
-  $("personCard").innerHTML=`<div class="profile"><div class="pfoto" ${puede?`data-drop="${p.id}" title="Arrastra o pega una imagen aquí"`:""}>${av(p,"xl")}${puede?`<label class="btn ghost sm file">${p.foto?"Cambiar foto":"Subir foto"}<input type="file" accept="image/*" data-foto="${p.id}" hidden></label>${p.foto?`<button type="button" class="btn ghost sm" data-ajustar="${p.id}">Ajustar encuadre</button>`:""}<small class="drophint">o arrastra una imagen aquí,<br>o pégala con ⌘V</small>`:""}</div>
-    <div class="pinfo">${puede?`<input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre" title="Nombre: como te ve el equipo">`:`<h2>${esc(p.nombre)}</h2>`}
-      ${puede?`<label class="uedit" title="Usuario: identificador único, en minúsculas">@<input data-pusuario="${p.id}" value="${esc(p.usuario||"")}" maxlength="30" placeholder="usuario" aria-label="Usuario" autocapitalize="off" spellcheck="false"></label>`:p.usuario?`<span class="u">${esc(arroba(p))}</span>`:""}<span>${esc(rolDe(p))}</span>${email?`<span class="mail">${esc(email)}</span>`:""}${esPM()&&!self?`<span><button class="btn ghost sm" data-goteam="1">Cambiar rol o área</button></span>`:""}</div></div>`;
+  $("personCard").innerHTML=cartaPersona(p,self,puede,email);
   const ws=weekStart(),actual=key(ws)===key(mondayOf(new Date())),wkNow=key(mondayOf(new Date()));
   const pend=pendientesDe(p.id),done=logRange(key(ws),key(addDays(ws,6))).filter(x=>asignadoA({responsable_id:x.rid,responsable:x.responsable},p.id));
   const r=monthRange(monthStart()),lg=logrosRange(r.s,r.e).filter(l=>asignadoA(l,p.id));
@@ -1238,6 +1277,25 @@ function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
       <div class="txt"><strong>${esc(x.titulo)}</strong><small>${s?`Subtarea de ${esc(t.titulo)} · `:""}${cuando}${t.proyecto?" · "+esc(t.proyecto):""}</small></div>${chipA(a)}</li>`}).join(""):`<li class="none">Nada pendiente.</li>`;
   $("personDone").innerHTML=done.length?done.map(x=>`<li class="pitem"><time datetime="${x.hecha}">${DIAS[new Date(x.hecha).getDay()].slice(0,3)} ${hhmm(x.hecha)}</time><div class="txt"><strong>${esc(x.titulo)}</strong>${x.tipo==="s"?`<small>Subtarea de ${esc(x.padre)}</small>`:""}</div>${chipA(x.area)}</li>`).join(""):`<li class="none">Nada completado en esta semana.</li>`}
 
+/* Carta de presentación: portada con el color de sus áreas, foto grande, rol, áreas, correo y "Sobre mí" */
+function cartaPersona(p,self,puede,email){const ar=[p.area,...(p.areas||[])].filter((a,i,l)=>AREAS[a]&&l.indexOf(a)===i);
+  const cols=ar.length?ar.map(a=>AREAS[a].c):["var(--flame)"],cover=cols.length>1?`linear-gradient(110deg,${cols.map((c,i)=>`${c} ${Math.round(i/cols.length*100)}% ${Math.round((i+1)/cols.length*100)}%`).join(",")})`:cols[0];
+  const chips=ar.length?ar.map(a=>`<a class="chip area" href="#${a}" style="background:${AREAS[a].c};color:${AREAS[a].on}">${AREA_ICON[a]||""}${AREAS[a].n}</a>`).join(""):ACCESO_TOTAL.includes(p.rol)?`<span class="chip">Todas las áreas</span>`:`<span class="chip">Sin área asignada</span>`;
+  const CAM='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+  return `<article class="profile carta">
+    <div class="pcover" style="background:${cover}"><span class="pmarca">Tiempo de Dios</span></div>
+    <div class="pbody">
+      <div class="pfoto" ${puede?`data-drop="${p.id}" title="Arrastra o pega una imagen aquí"`:""}>${av(p,"xxl")}${puede?`<label class="fotobtn" title="${p.foto?"Cambiar foto":"Subir foto"}" aria-label="${p.foto?"Cambiar foto":"Subir foto"}">${CAM}<input type="file" accept="image/*" data-foto="${p.id}" hidden></label>`:""}</div>
+      <div class="pinfo">${puede?`<input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre" title="Nombre: como te ve el equipo">`:`<h2>${esc(p.nombre)}</h2>`}
+        ${puede?`<label class="uedit" title="Usuario: identificador único, en minúsculas">@<input data-pusuario="${p.id}" value="${esc(p.usuario||"")}" maxlength="30" placeholder="usuario" aria-label="Usuario" autocapitalize="off" spellcheck="false"></label>`:p.usuario?`<span class="u">${esc(arroba(p))}</span>`:""}
+        <span class="prol">${esc(ROLES[p.rol]||"Colaborador")}</span>
+        <div class="pchips">${chips}</div>
+        ${email?`<a class="mail" href="mailto:${esc(email)}">${esc(email)}</a>`:""}
+      </div>
+    </div>
+    <div class="pbio"><h3>Sobre ${self?"mí":"esta persona"}</h3>${puede?`<textarea data-pbio="${p.id}" maxlength="600" rows="3" placeholder="${self?"Cuéntale al equipo quién eres: qué haces en Tiempo de Dios, tus dones y cómo te gusta trabajar.":"Escribe una breve presentación."}">${esc(p.bio||"")}</textarea>`:p.bio?`<p>${esc(p.bio)}</p>`:`<p class="vacio">Aún no escribe su presentación.</p>`}</div>
+    ${puede||esPM()?`<div class="pacts">${puede?`<label class="btn ghost sm file">${p.foto?"Cambiar foto":"Subir foto"}<input type="file" accept="image/*" data-foto="${p.id}" hidden></label>${p.foto?`<button type="button" class="btn ghost sm" data-ajustar="${p.id}">Ajustar encuadre</button>`:""}<small class="drophint">o arrastra una imagen a la foto, o pégala con ⌘V</small>`:""}${esPM()&&!self?`<button class="btn ghost sm" data-goteam="1">Cambiar rol o área</button>`:""}</div>`:""}
+  </article>`}
 /* Resumen de lo que la PM (o desarrollo) le asignó a una persona en el mes: avance, por área y lista */
 function resumenPM(p,self,chipA,wkNow){const ms=monthStart(),weeks=monthWeeks(ms).map(key),w0=weeks[0];
   const dePM=t=>{const c=perfiles.find(x=>x.id===t.creada_por);return !!c&&ACCESO_TOTAL.includes(c.rol)&&c.id!==p.id};
@@ -1573,6 +1631,7 @@ document.addEventListener("change",e=>{const t=e.target;if(!sb)return;
     if(!p||v===(p.usuario||"")){if(p)t.value=p.usuario||"";return}
     if(!USUARIO_OK.test(v)){t.value=p.usuario||"";toast("El usuario lleva de 2 a 30 caracteres: minúsculas, números, punto o guion bajo.");return}
     actualizarPerfil(p.id,{usuario:v})}
+  else if(t.dataset.pbio){const p=perfiles.find(x=>x.id===t.dataset.pbio),v=t.value.trim().slice(0,600);if(!p||v===(p.bio||""))return;actualizarPerfil(p.id,{bio:v})}
   else if(t.dataset.pnombre){const v=t.value.trim();const p=perfiles.find(x=>x.id===t.dataset.pnombre);if(!v||!p||v===p.nombre){if(p)t.value=p.nombre;return}actualizarPerfil(p.id,{nombre:v})}});
 $("iRol").innerHTML=["colaborador","lider","pm","desarrollador"].map(k=>`<option value="${k}">${ROLES[k]}</option>`).join("");
 $("iArea").innerHTML=`<option value="">Elige un área…</option>`+AREA_IDS.map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("");
