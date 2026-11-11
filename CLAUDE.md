@@ -84,7 +84,7 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 - Soporta modo claro y oscuro mediante tokens CSS.
 
 ## Pendientes de configuración (fuera del código)
-- **Correo SMTP propio en Supabase** (noviembre 2026): el correo integrado de Supabase solo manda ~2 correos por hora y frenó las invitaciones ("email rate limit exceeded"). Plan: buzón `bitacora@tiempodedios.mx` en Hostinger → Supabase → Authentication → Emails → SMTP Settings (`smtp.hostinger.com`, puerto 465) y subir Rate Limits de correos a ~30/hora. Mientras tanto, crear usuarios en Authentication → Users → Add user (Auto Confirm) y asignar rol y área en la pestaña Equipo.
+- **Correo SMTP propio en Supabase** (noviembre 2026): el correo integrado de Supabase solo manda ~2 correos por hora y frenó las invitaciones ("email rate limit exceeded"). Plan: buzón `bitacora@tiempodedios.mx` en Hostinger → Supabase → Authentication → Emails → SMTP Settings (`smtp.hostinger.com`, puerto 465) y subir Rate Limits de correos a ~30/hora. Plantillas en español listas en `supabase/correos/` (invitación y recuperar contraseña). Mientras tanto, crear usuarios en Authentication → Users → Add user (Auto Confirm) y asignar rol y área en la pestaña Equipo.
 
 ## Roadmap acordado / sugerido
 1. ✅ **Asignación de tareas** (hecho: `responsable_id`, pestaña Tareas de la PM, perfil con "Mis pendientes"). Pendiente:
