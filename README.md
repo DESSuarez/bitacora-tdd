@@ -82,6 +82,8 @@ Corre `supabase/migraciones/007_operativo_y_varias_areas.sql` en **SQL Editor** 
 3. Corre `supabase/migraciones/008_avisos_por_correo.sql` en **SQL Editor**. Programa el envío diario a las 8:00 (centro de México).
 4. Prueba desde la app: pestaña **Equipo** → **Enviarme una prueba** (te llegan ejemplos a tu correo).
 
+En producción la función quedó con el nombre `bright-task`: la app (`FN_AVISOS`) y el cron (migración `010_avisos_nombre_funcion.sql`) la llaman así. Si algún día se despliega como `avisos`, cambia esos dos lugares.
+
 Reglas: una actividad vence el viernes de su semana o en la fecha que se elija al abrir la tarea. Un día antes se le avisa a su responsable; si se atrasa, recibe un correo cada mañana hasta completarla; los sábados la PM recibe lo que quedó sin completar. Las personas sin cuenta no reciben correo.
 
 ### 12. Carta de presentación en el perfil

@@ -1375,9 +1375,11 @@ async function equipoFn(body){
     if(!msg&&/send a request|fetch/i.test(error.message||""))msg="No se encontró la función «equipo» en Supabase. Revisa que esté desplegada (ver README).";
     throw new Error(msg||error.message||"Error desconocido")}
   return data}
+/* Nombre con el que quedó desplegada en Supabase la función de supabase/functions/avisos */
+const FN_AVISOS="bright-task";
 $("avisosPrueba").onclick=async e=>{const b=e.currentTarget;if(!sb)return;b.disabled=true;b.textContent="Enviando…";
-  try{const {data,error}=await sb.functions.invoke("avisos",{body:{prueba:true}});
-    if(error){let m="";try{m=(await error.context.json()).error}catch(x){}throw new Error(m||(/send a request|fetch/i.test(error.message||"")?"No se encontró la función «avisos» en Supabase (ver README).":error.message))}
+  try{const {data,error}=await sb.functions.invoke(FN_AVISOS,{body:{prueba:true}});
+    if(error){let m="";try{m=(await error.context.json()).error}catch(x){}throw new Error(m||(/send a request|fetch/i.test(error.message||"")?"No se encontró la función de avisos en Supabase (ver README).":error.message))}
     const n=data&&data.enviados||0,pe=data&&data.personas||0;toast(`Te enviamos ${n} correo${n===1?"":"s"} de prueba. Hoy se avisaría a ${pe} persona${pe===1?"":"s"}.`)}
   catch(err){toast("No se pudo enviar la prueba: "+err.message)}
   finally{b.disabled=false;b.textContent="Enviarme una prueba"}};
