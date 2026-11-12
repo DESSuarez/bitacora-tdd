@@ -790,6 +790,33 @@ button.cmore:hover{color:var(--fg)}
 .check14 .fase{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none}
 .chip.cvinc{cursor:pointer;background:var(--flame-soft);color:var(--flame);border-color:transparent}
 .csem{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+/* Samply */
+.samply{border:1.5px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px;background:var(--bg)}
+.smh{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.smh>div{flex:1;min-width:200px}
+.smh h3{margin:0;font-family:var(--display);font-weight:900;font-size:18px}
+.smh p{margin:2px 0 0;color:var(--muted);font-size:13.5px}
+.smlogo{width:38px;height:38px;border-radius:11px;background:#1B1C1A;color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:20px;flex:none;box-shadow:inset 0 -3px 0 #8E6BD8}
+.smbtns{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.smform{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.smform label{display:flex;flex-direction:column;gap:5px;font-weight:700;font-size:13.5px}.smform small{font-weight:500;color:var(--muted)}
+.smacts{display:flex;gap:8px;justify-content:flex-end}
+.smsug{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:color-mix(in srgb,#1DB954 12%,var(--bg));border:1.5px solid color-mix(in srgb,#1DB954 45%,transparent);border-radius:12px;padding:10px 12px;font-size:13.5px;font-weight:600}
+.smgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px}
+.smgrid .full{grid-column:1/-1}
+.smgrid h4{margin:0 0 6px;font-family:var(--mono);font-weight:500;font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.smlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.smlist li{display:flex;flex-direction:column;gap:2px;background:var(--surface);border-radius:10px;padding:8px 10px;min-width:0}
+.smlist li.ok{opacity:.65}
+.smlist b{font-size:13.5px;overflow-wrap:anywhere}.smlist small{font-size:12px;color:var(--muted)}
+.smlist p{margin:2px 0 0;font-size:13.5px;white-space:pre-wrap;overflow-wrap:anywhere}
+.smt{font-family:var(--mono);font-weight:500;font-size:11.5px;background:var(--bg);border-radius:6px;padding:1px 6px;color:var(--area-ink)}
+.smpct{display:block;height:4px;border-radius:99px;background:var(--bg);overflow:hidden;margin-top:3px}.smpct i{display:block;height:100%;background:#1DB954}
+.smev{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px}
+.smev h4{margin:0;font-family:var(--mono);font-weight:500;font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.smev div{display:flex;gap:8px;align-items:baseline}.smev small{font-size:12.5px;color:var(--fg)}
+.smnota{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;border-top:1px dashed var(--line);padding-top:10px}.smnota small{color:var(--muted)}
+@media (max-width:700px){.smform,.smgrid{grid-template-columns:1fr}}
 .cdatosh{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
 .cdatosh h3{margin:0;font-family:var(--display);font-weight:900;font-size:20px}
 .cedit{display:flex;flex-direction:column;gap:22px;border:1.5px solid var(--area);border-radius:18px;padding:18px;background:color-mix(in srgb,var(--area-soft) 45%,var(--bg))}
@@ -2004,7 +2031,7 @@ function etapaSegun(actual,ck){if(actual==="bloqueado")return actual;let e=actua
 function crearPendiente(c){if(!puedeMusica()||!tasksCol||pendienteAbierto(c))return;const n=siguientePaso(c);if(!n)return;
   const id=`cancion-${c.id}-p${n}`;if(findT(id))return;
   const [t,f,r]=PASOS[n-1],p=personaPorNombre(r),v=fechaPaso(c,n),hoy=key(new Date());
-  const extra={id,cancion_id:c.id,paso:n,nota:`Paso ${n} de ${PASOS.length} (${f}) de «${tituloDe(c)}» · ${creditoDe(c)}. Al completarlo se marca en su checklist y se crea el siguiente paso.`};
+  const extra={id,cancion_id:c.id,paso:n,pasos_version:2,nota:`Paso ${n} de ${PASOS.length} (${f}) de «${tituloDe(c)}» · ${creditoDe(c)}. Al completarlo se marca en su checklist y se crea el siguiente paso.`};
   if(v&&v>hoy){extra.vence=v;extra.semana=key(mondayOf(fromKey(v)))}
   addTask(`«${tituloDe(c)}» · ${t}`,"Canciones",p?p.id:"txt:"+r,"musica",extra.semana||key(mondayOf(new Date())),extra)}
 /* Guarda el checklist, avanza la etapa si toca y deja creado el siguiente pendiente */
@@ -2104,6 +2131,7 @@ function detalleCancion(c){const d=c.data||{},ck=c.checklist||{},hechos=pasosHec
     <div class="cpendiente">${pend?`<div><span class="evk2">Pendiente actual</span><strong>${esc(pend.titulo)}</strong><small>${esc(pend.responsable||"Sin responsable")} · vence ${shortDate(venceDe(pend))}</small></div><button type="button" class="btn ghost sm" data-irtarea="musica">Ver en Pendientes</button>`
       :n?`<div><span class="evk2">Siguiente paso</span><strong>${n}. ${esc(PASOS[n-1][0])}</strong><small>${esc(PASOS[n-1][2])} · todavía sin pendiente</small></div><button type="button" class="btn sm" data-cpend="${esc(c.id)}">Crear pendiente</button>`
       :`<div><span class="evk2">Proceso completo</span><strong>Canción lanzada y reportada 🎉</strong></div>`}</div>
+    ${panelSamply(c)}
     <div class="egestion cgest">
       <label for="cEtapa">Etapa<select class="field" id="cEtapa" data-cetapa="${esc(c.id)}">${ETAPAS.map(([k,n])=>`<option value="${k}" ${c.etapa===k?"selected":""}>${esc(n)}</option>`).join("")}</select><small class="ehint">${esc((ETAPAS.find(x=>x[0]===c.etapa)||[])[2]||"")} Avanza sola al completar pasos.</small></label>
       <label for="cMin">Ministerio<input class="field" id="cMin" data-cmin="${esc(c.id)}" value="${esc(c.ministerio||"")}" maxlength="120" placeholder="${esc(artistaDe(c))}"></label>
@@ -2356,6 +2384,86 @@ document.addEventListener("submit",async e=>{const f=e.target;
     const {data,error}=await q;if(error){toast("No se pudo guardar: "+error.message);return}
     if(iid){const i=ingresosF.findIndex(x=>x.id===iid);if(i>=0)ingresosF[i]=data}else if(data&&!ingresosF.some(x=>x.id===data.id))ingresosF.unshift(data);
     nuevoIngreso=false;ingresoEdit=null;const m=fromKey(fila.fecha);anchor=new Date(m.getFullYear(),m.getMonth(),1);render();toast(iid?"Ingreso actualizado.":"Ingreso registrado.")}});
+/* ---------- Samply: cada canción se liga a su proyecto (y carpeta) de Samply ----------
+   La app habla con la Edge Function "samply" (supabase/functions/samply), que guarda el token.
+   Se guarda en data.samply: {projectid, proyecto, folderid, carpeta, playerUrl}.
+   Muestra versiones, escuchas (quién, cuánto escuchó y cuándo) y comentarios, y los avisos del webhook. */
+const FN_SAMPLY="samply";
+let samplyCache={},samplyVinc=null,samplyEventos=[],samplyCh=null;
+async function samplyFn(body){
+  const {data,error}=await sb.functions.invoke(FN_SAMPLY,{body});
+  if(error){let msg="";try{msg=(await error.context.json()).error}catch(e){}
+    if(!msg&&/send a request|fetch|404/i.test((error.message||"")+(error.context&&error.context.status)))msg="Falta desplegar la función «samply» en Supabase (ver README, paso 20).";
+    throw new Error(msg||error.message||"Error desconocido")}
+  if(data&&data.error)throw new Error(data.error);
+  return data}
+function cargarSamplyEventos(){if(samplyCh||!sb||!puedeMusica())return;
+  sb.from("samply_eventos").select("*").order("creado",{ascending:false}).limit(300).then(({data})=>{if(data){samplyEventos=data;renderKeep()}});
+  samplyCh=sb.channel("rt-samply").on("postgres_changes",{event:"INSERT",schema:"public",table:"samply_eventos"},p=>{samplyEventos=[p.new,...samplyEventos];
+    const c=canciones.find(x=>((x.data||{}).samply||{}).projectid===p.new.projectid);
+    toast(p.new.tipo==="comment.created"?`Samply · nuevo comentario${p.new.autor?" de "+p.new.autor:""}${c?" en «"+tituloDe(c)+"»":""}`:`Samply · nueva versión subida${c?" de «"+tituloDe(c)+"»":""}: ${p.new.box_nombre||""}`);
+    if(c)delete samplyCache[c.id];renderKeep()}).subscribe()}
+function cargarSamply(c,forzar){const s=(c.data||{}).samply;if(!s||!s.projectid)return;const k=samplyCache[c.id];
+  if(k&&!forzar&&(k.estado==="cargando"||Date.now()-k.cuando<5*60*1000))return;
+  samplyCache[c.id]={estado:"cargando",cuando:Date.now(),datos:k&&k.datos};
+  samplyFn({accion:"cancion",projectid:s.projectid,folderid:s.folderid||null})
+    .then(d=>{samplyCache[c.id]={estado:"ok",cuando:Date.now(),datos:d};renderKeep()})
+    .catch(e=>{samplyCache[c.id]={estado:"error",cuando:Date.now(),error:e.message};renderKeep()})}
+function hace(ms){if(!ms)return "";const d=new Date(ms);return `${d.getDate()} ${MESES[d.getMonth()]} · ${hhmm(d.toISOString())}`}
+function mmss(s){if(s==null)return "";s=Math.round(s);return `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`}
+function panelSamply(c){const s=(c.data||{}).samply,v=samplyVinc&&samplyVinc.cid===c.id?samplyVinc:null;
+  if(!s||!s.projectid){
+    if(!v)return `<section class="samply"><div class="smh"><span class="smlogo">S</span><div><h3>Samply</h3><p>Liga esta canción con su proyecto y carpeta en Samply para ver aquí sus versiones, quién la escuchó y los comentarios del artista.</p></div><button type="button" class="btn sm" data-svinc="${esc(c.id)}">Vincular con Samply</button></div></section>`;
+    return `<section class="samply"><div class="smh"><span class="smlogo">S</span><div><h3>Vincular con Samply</h3><p>Elige el proyecto del artista y, si la canción tiene su propia carpeta, también la carpeta.</p></div></div>
+      ${v.error?`<div class="readonly">${esc(v.error)}</div>`:""}
+      ${!v.proyectos?`<p class="none">Cargando proyectos de Samply…</p>`:`<div class="smform">
+        <label>Proyecto<select class="field" data-sproy="${esc(c.id)}"><option value="">Elige un proyecto…</option>${v.proyectos.map(p=>`<option value="${esc(p.id)}" ${v.projectid===p.id?"selected":""}>${esc(p.nombre)}</option>`).join("")}</select></label>
+        <label>Carpeta de la canción <small>(opcional)</small><select class="field" data-scarp="${esc(c.id)}" ${v.projectid?"":"disabled"}><option value="">Todo el proyecto</option>${(v.carpetas||[]).map(f=>`<option value="${esc(f.id)}" ${v.folderid===f.id?"selected":""}>${esc(f.nombre)}</option>`).join("")}</select></label></div>`}
+      <div class="smacts"><button type="button" class="btn ghost sm" data-svinc="">Cancelar</button><button type="button" class="btn sm" data-sguardar="${esc(c.id)}" ${v.projectid?"":"disabled"}>Vincular</button></div></section>`}
+  cargarSamply(c);const k=samplyCache[c.id]||{},d=k.datos,evs=samplyEventos.filter(e=>e.projectid===s.projectid).slice(0,6);
+  const completas=d?d.escuchas.filter(e=>e.tipo==="play"&&e.completo!=null&&e.completo>=90):[];
+  const ck=c.checklist||{},sug=!ck["11"]&&completas.length?11:ck["11"]&&!ck["12"]&&completas.length>=2?12:null;
+  return `<section class="samply"><div class="smh"><span class="smlogo">S</span><div><h3>Samply</h3><p>${esc(s.proyecto||"Proyecto")}${s.carpeta?" › "+esc(s.carpeta):""}</p></div>
+      <div class="smbtns">${s.playerUrl?`<a class="btn sm" href="${esc(s.playerUrl)}" target="_blank" rel="noopener noreferrer">▶ Escuchar en Samply</a><button type="button" class="btn ghost sm" data-scopiar="${esc(c.id)}">Copiar liga</button>`:`<button type="button" class="btn sm" data-sliga="${esc(c.id)}">Crear liga para compartir</button>`}
+        <button type="button" class="icon" data-srefrescar="${esc(c.id)}" title="Actualizar" aria-label="Actualizar datos de Samply">↻</button><button type="button" class="icon" data-sdesv="${esc(c.id)}" title="Desvincular" aria-label="Desvincular de Samply">✕</button></div></div>
+    ${k.estado==="error"?`<div class="readonly">${esc(k.error)}</div>`:""}
+    ${sug?`<div class="smsug"><span>🎧 ${completas.length} escucha${completas.length>1?"s":""} completa${completas.length>1?"s":""} en Samply (la última: ${esc(completas[0].quien||"anónimo")}, ${hace(completas[0].cuando)}).</span><button type="button" class="btn sm" data-cpaso="${esc(c.id)}|${sug}">Marcar ${sug===11?"primera escucha":"segunda escucha y aprobación"}</button></div>`:""}
+    ${!d?`<p class="none">${k.estado==="error"?"":"Cargando datos de Samply…"}</p>`:`<div class="smgrid">
+      <div><h4>Versiones · ${d.archivos.reduce((n,a)=>n+a.versiones.length,0)}</h4>${d.archivos.length?`<ul class="smlist">${d.archivos.map(a=>`<li><b>${esc(a.nombre)}</b>${a.versiones.length>1?`<small>${a.versiones.length} versiones · la más nueva: ${esc(a.versiones[a.versiones.length-1].nombre)}</small>`:a.versiones[0]&&a.versiones[0].duracion?`<small>${mmss(a.versiones[0].duracion)}</small>`:""}</li>`).join("")}</ul>`:`<p class="none">Aún no hay archivos.</p>`}</div>
+      <div><h4>Escuchas · ${d.escuchas.filter(e=>e.tipo==="play").length}</h4>${d.escuchas.length?`<ul class="smlist">${d.escuchas.slice(0,8).map(e=>`<li><b>${esc(e.quien||"Anónimo")}</b><small>${e.tipo==="play"?`escuchó ${e.completo!=null?e.completo+"%":""}`:e.tipo==="export"?"descargó":e.tipo==="share"?"compartió":"abrió la liga"}${e.archivo?" · "+esc(e.archivo):""} · ${hace(e.cuando)}${e.ciudad?" · "+esc(e.ciudad):""}</small>${e.completo!=null?`<span class="smpct"><i style="width:${e.completo}%"></i></span>`:""}</li>`).join("")}</ul>`:`<p class="none">Nadie la ha escuchado todavía.</p>`}</div>
+      <div class="full"><h4>Comentarios · ${d.comentarios.length}</h4>${d.comentarios.length?`<ul class="smlist">${d.comentarios.slice(0,12).map(m=>`<li class="${m.resuelto?"ok":""}"><b>${esc(m.autor)}${m.segundo!=null?` <span class="smt">${mmss(m.segundo)}</span>`:""}</b><small>${esc(m.archivo)} · ${hace(m.cuando)}${m.resuelto?" · ✓ resuelto":""}</small><p>${esc(m.texto)}</p></li>`).join("")}</ul>`:`<p class="none">Sin comentarios.</p>`}</div>
+    </div>`}
+    ${esPM()&&!evs.length?`<div class="smnota"><small>¿Quieres que Samply avise aquí en cuanto se suba una versión o el artista comente?</small><button type="button" class="btn ghost sm" data-swebhook="1">Activar avisos de Samply</button></div>`:""}
+    ${evs.length?`<div class="smev"><h4>Avisos recientes de Samply</h4>${evs.map(e=>`<div><span>${e.tipo==="comment.created"?"💬":"⬆️"}</span><small>${esc(e.tipo==="comment.created"?(e.autor||"Alguien")+" comentó":"Nueva versión")}${e.box_nombre?" · "+esc(e.box_nombre):""}${e.mensaje?" · «"+esc(e.mensaje.slice(0,120))+"»":""} · ${hace(Date.parse(e.creado))}</small></div>`).join("")}</div>`:""}
+  </section>`}
+document.addEventListener("click",async e=>{const b=e.target.closest("button");if(!b)return;const ds=b.dataset;
+  if(ds.svinc!==undefined){if(!ds.svinc){samplyVinc=null;render();return}
+    samplyVinc={cid:ds.svinc};render();
+    try{const r=await samplyFn({accion:"proyectos"});if(!samplyVinc)return;const c=canciones.find(x=>x.id===samplyVinc.cid);
+      samplyVinc.proyectos=(r.proyectos||[]).sort((a,b)=>(b.modificado||0)-(a.modificado||0));
+      const m=c&&ministeriosDe(c).map(x=>x.toLowerCase()),g=m&&samplyVinc.proyectos.find(p=>m.some(x=>(p.nombre||"").toLowerCase().includes(x)));
+      if(g){samplyVinc.projectid=g.id;cargarCarpetas(g.id)}}
+    catch(err){if(samplyVinc)samplyVinc.error=err.message}
+    render();return}
+  if(ds.sguardar){const v=samplyVinc,c=canciones.find(x=>x.id===ds.sguardar);if(!v||!c||!v.projectid)return;
+    const p=v.proyectos.find(x=>x.id===v.projectid),f=(v.carpetas||[]).find(x=>x.id===v.folderid);
+    samplyVinc=null;delete samplyCache[c.id];
+    guardarCancion(c.id,{data:{...(c.data||{}),samply:{projectid:v.projectid,proyecto:p?p.nombre:"",folderid:f?f.id:null,carpeta:f?f.nombre:""}}},true,"Canción vinculada con Samply.");return}
+  if(ds.sliga){const c=canciones.find(x=>x.id===ds.sliga),s=c&&(c.data||{}).samply;if(!s)return;b.disabled=true;b.textContent="Creando liga…";
+    try{const r=await samplyFn({accion:"liga",projectid:s.projectid,folderid:s.folderid||null,nombre:`${tituloDe(c)} · ${creditoDe(c)}`});
+      await guardarCancion(c.id,{data:{...(c.data||{}),samply:{...s,playerUrl:r.playerUrl}}},true,"Liga de Samply creada.")}
+    catch(err){toast(err.message);render()}return}
+  if(ds.scopiar){const c=canciones.find(x=>x.id===ds.scopiar),s=c&&(c.data||{}).samply;if(s&&s.playerUrl)copiarTexto(s.playerUrl,"Liga de Samply copiada.");return}
+  if(ds.srefrescar){const c=canciones.find(x=>x.id===ds.srefrescar);if(c){cargarSamply(c,true);render()}return}
+  if(ds.sdesv){const c=canciones.find(x=>x.id===ds.sdesv);if(!c||!confirm("¿Desvincular esta canción de Samply? En Samply no se borra nada."))return;
+    const d={...(c.data||{})};delete d.samply;delete samplyCache[c.id];guardarCancion(c.id,{data:d},true,"Se desvinculó de Samply.");return}
+  if(ds.swebhook){b.disabled=true;try{const r=await samplyFn({accion:"webhook",funcion:FN_SAMPLY});toast("Listo: Samply avisará a la Bitácora de subidas y comentarios.")}catch(err){toast(err.message)}b.disabled=false;return}});
+async function cargarCarpetas(pid){try{const r=await samplyFn({accion:"carpetas",projectid:pid});if(samplyVinc&&samplyVinc.projectid===pid){samplyVinc.carpetas=r.carpetas||[];
+  const c=canciones.find(x=>x.id===samplyVinc.cid),t=c&&tituloDe(c).toLowerCase(),g=t&&samplyVinc.carpetas.find(f=>(f.nombre||"").toLowerCase().includes(t));if(g)samplyVinc.folderid=g.id;render()}}
+  catch(err){if(samplyVinc){samplyVinc.error=err.message;render()}}}
+document.addEventListener("change",e=>{const t=e.target;
+  if(t.dataset.sproy!==undefined&&samplyVinc){samplyVinc.projectid=t.value||null;samplyVinc.carpetas=null;samplyVinc.folderid=null;render();if(t.value)cargarCarpetas(t.value);return}
+  if(t.dataset.scarp!==undefined&&samplyVinc){samplyVinc.folderid=t.value||null;render()}});
 /* ---------- Tareas de todas las áreas (PM) ---------- */
 function renderPMTasks(){const ws=weekStart(),wk=key(ws);
   if(!$("ptArea").options.length)$("ptArea").innerHTML=AREA_IDS.map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("")+`<option value="todas">Todas las áreas</option>`;
@@ -2972,7 +3080,7 @@ async function start(){
   if(started){render();return}started=true;
   sb.from("perfiles").select("*").then(({data})=>{perfiles=data||[];render()});
   tasksCol=makeCol("tareas");logrosCol=makeCol("logros");
-  cargarEntradas();cargarCalendario();cargarCanciones();cargarFinanzas();
+  cargarEntradas();cargarCalendario();cargarCanciones();cargarFinanzas();cargarSamplyEventos();
   let gotT=false,gotL=false;
   const timer=setTimeout(()=>setStatus("No se pudo conectar todavía; revisa tu conexión.",true),10000);
   const done=()=>{if(gotT&&gotL){clearTimeout(timer);setStatus("")}};

@@ -121,6 +121,14 @@ Corre `supabase/migraciones/016_saludo.sql`. El Dashboard saluda «Bienvenido Di
 3. **Finanzas → Solicitudes de gasto**: pedir, aprobar, rechazar y marcar «Pago realizado» (fecha, método, referencia y comprobante). **Ingresos y egresos**: registro mensual con balance, por categoría y CSV.
 4. En Canciones, los pasos 12 (INDAUTOR/SACM) y 13 (splitsheet) solo se completan subiendo el documento.
 
+### 20. Samply (escuchas, versiones y comentarios de cada canción)
+1. Corre `supabase/migraciones/018_samply.sql`. Divide el paso 11 en las dos escuchas del master (el checklist pasa a 23 pasos y reacomoda las canciones que ya existen) y crea las tablas de avisos de Samply.
+2. En Samply crea un token nuevo en **samply.app/preferences/api**.
+3. En Supabase: **Edge Functions → Secrets** → agrega `SAMPLY_TOKEN` con ese token. Nunca lo pongas en el código.
+4. **Edge Functions → Deploy a new function → Via Editor**, nombre exacto `samply`. Pega `supabase/functions/samply/index.ts` y, antes de **Deploy**, **apaga «Verify JWT»** (Enforce JWT verification). La función revisa la sesión ella misma y Samply necesita poder enviarle avisos.
+5. En la app, abre una canción → **Vincular con Samply** → elige el proyecto y la carpeta. Con **Crear liga para compartir** se genera la liga de escucha.
+6. Una sola vez, la PM o el desarrollador toca **Activar avisos de Samply** en cualquier canción vinculada: Samply avisará a la Bitácora cuando se suba una versión o el artista comente.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 

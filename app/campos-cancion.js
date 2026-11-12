@@ -58,7 +58,8 @@ window.ETAPAS_CANCION = [
   ["bloqueado", "Bloqueado", "Algo detiene el proceso; anota el motivo en las notas."]
 ];
 
-// Checklist definitivo: 14 pasos de producción + 8 de marketing (pipeline D-Day).
+// Checklist definitivo: 15 pasos de producción (con las dos escuchas del master en Samply) + 8 de marketing (pipeline D-Day).
+// La migración 018 reacomodó los números de las canciones que ya existían (antes eran 22 pasos).
 // [paso, fase, responsable, días respecto al lanzamiento (solo marketing), documento obligatorio para completarlo]
 // El avance de cada canción (0 a 100 %) es cuántos de estos pasos están completos.
 // Ojo: el orden importa (el avance guardado usa el número de paso); agrega pasos nuevos al final.
@@ -73,7 +74,8 @@ window.CHECKLIST_CANCION = [
   ["Miércoles · Creación de contenido", "Producción", "Memo"],
   ["Jueves · Cierre de instrumentación y voces", "Producción", "Memo"],
   ["Viernes · Edición, mezcla y master", "Producción", "Memo"],
-  ["Aprobación del master por el artista", "Producción", "Memo"],
+  ["Primera escucha del master (Samply)", "Escuchas", "Memo"],
+  ["Segunda escucha y aprobación del master por el artista", "Escuchas", "Memo"],
   ["Registro INDAUTOR / SACM", "Registro", "Ariel", null, "el comprobante del registro INDAUTOR / SACM"],
   ["Splitsheet firmado", "Registro", "Memo", null, "el splitsheet firmado"],
   ["Handoff a Marketing", "Marketing", "Memo"],
@@ -88,7 +90,7 @@ window.CHECKLIST_CANCION = [
 ];
 
 // Al completar estos pasos, la canción avanza sola a la etapa indicada (nunca retrocede ni sale de "Bloqueado")
-window.ETAPA_POR_PASO = { 1: "preproduccion", 5: "agendada", 6: "produccion", 11: "registro", 14: "marketing", 22: "completado" };
+window.ETAPA_POR_PASO = { 1: "preproduccion", 5: "agendada", 6: "produccion", 12: "registro", 15: "marketing", 23: "completado" };
 
 // Semana de producción: lo que se hace cada día (lunes a viernes)
 window.DIAS_PRODUCCION = ["Maqueteo", "Instrumentación", "Creación de contenido", "Cierre de instrumentación y voces", "Edición, mezcla y master"];

@@ -678,3 +678,37 @@ exception when duplicate_object then null; end $$;
 drop policy if exists canciones_equipo_subir on storage.objects;
 create policy canciones_equipo_subir on storage.objects for insert to authenticated
   with check (bucket_id = 'canciones' and (storage.foldername(name))[1] = 'equipo' and public.puede_area('musica'));
+
+-- ============ Samply (migración 018) ============
+-- Checklist de 23 pasos (las canciones nuevas nacen con pasos_version = 2)
+alter table public.canciones add column if not exists pasos_version int not null default 2;
+
+-- ============ 2. Eventos de Samply ============
+create table if not exists public.samply_eventos (
+  id text primary key,                      -- webhook-id: evita guardar dos veces el mismo aviso
+  creado timestamptz not null default now(),
+  tipo text not null,                       -- upload.completed, comment.created…
+  projectid text,
+  boxid text,
+  box_nombre text,
+  mensaje text,
+  autor text,
+  payload jsonb
+);
+create index if not exists samply_eventos_proyecto on public.samply_eventos (projectid, creado desc);
+alter table public.samply_eventos enable row level security;
+drop policy if exists samply_eventos_ver on public.samply_eventos;
+create policy samply_eventos_ver on public.samply_eventos for select to authenticated
+  using (public.puede_area('musica'));
+-- (solo la función "samply" escribe aquí, con la service_role key)
+
+do $$ begin alter publication supabase_realtime add table public.samply_eventos;
+exception when duplicate_object then null; end $$;
+
+-- ============ 3. Configuración interna ============
+create table if not exists public.samply_config (
+  clave text primary key,
+  valor text not null
+);
+alter table public.samply_config enable row level security;
+-- Sin políticas: solo la service_role (la función) la lee y la escribe.
