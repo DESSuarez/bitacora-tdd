@@ -165,6 +165,24 @@ main .wrap{padding-block:44px 120px;display:flex;flex-direction:column;gap:28px}
 .list{display:flex;flex-direction:column;gap:10px;list-style:none;margin:0;padding:0}
 .task{border:1.5px solid var(--line);border-radius:14px;background:var(--bg)}
 .task.done{background:var(--surface)}
+/* Ordenar arrastrando: asa a la izquierda; la tarjeta se levanta y las demás le abren espacio */
+.task{transition:box-shadow .2s,border-color .2s}
+.task.ord .trow{grid-template-columns:auto auto 1fr auto;padding-left:4px;gap:8px 10px}
+.task.ord .trow>.check{margin-left:0}
+.grip{width:22px;height:30px;margin-top:-1px;border:0;border-radius:7px;background:transparent;color:var(--muted);display:grid;place-items:center;padding:0;cursor:grab;touch-action:none;opacity:.35;transition:opacity .15s,background .15s,color .15s}
+.grip svg{width:12px;height:18px}
+.task.ord:hover .grip,.grip:focus-visible{opacity:1}
+.grip:hover{background:var(--area-soft);color:var(--area-ink)}
+@media (hover:none){.grip{opacity:.6}}
+.list.ordenando{user-select:none;-webkit-user-select:none}
+.list.ordenando .task:not(.alzada){transition:transform .22s cubic-bezier(.22,.8,.24,1),opacity .2s}
+.task.alzada{position:relative;z-index:5;border-color:var(--area);box-shadow:0 18px 40px -12px rgba(0,0,0,.35),0 0 0 3px var(--area-soft);cursor:grabbing;scale:1.015;transition:scale .18s,box-shadow .2s}
+.task.alzada .grip{opacity:1;color:var(--area-ink);background:var(--area-soft);cursor:grabbing}
+.task.asentando{transition:transform .22s cubic-bezier(.22,.8,.24,1),box-shadow .3s,scale .2s}
+.task.recien{animation:recien 1.1s ease}
+@keyframes recien{0%{box-shadow:0 0 0 3px var(--area)}100%{box-shadow:0 0 0 0 transparent}}
+body.arrastrando,body.arrastrando *{cursor:grabbing!important}
+@media (prefers-reduced-motion:reduce){.list.ordenando .task,.task.asentando{transition:none!important}.task.recien{animation:none}}
 .trow{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;padding:14px 14px 14px 16px}
 .check{width:26px;height:26px;border-radius:8px;border:2px solid var(--area);background:transparent;display:grid;place-items:center;padding:0;flex:none;margin-top:1px}
 .check svg{width:16px;height:16px;opacity:0}
@@ -1145,7 +1163,8 @@ function confirmDel(btn,id,fn){
 /* ---------- Render ---------- */
 /* Cambios que llegan en tiempo real: vuelve a pintar sin perder el campo que se está escribiendo */
 function renderKeep(){const ae=document.activeElement;
-  if(ae&&ae.id==="eNotas"){esperaRender=true;return}
+  if((ae&&ae.id==="eNotas")||arrastre){esperaRender=true;return}
+  if(ae&&ae.dataset&&ae.dataset.grip){const g=ae.dataset.grip;render();const n=document.querySelector(`[data-grip="${g}"]`);if(n)n.focus();return}
   const sel=!ae||!ae.matches("input,textarea")||ae.classList.contains("otro-in")?null:ae.id?"#"+CSS.escape(ae.id):
     ["tedit","snota","hecha"].map(k=>ae.dataset[k]!=null?`[data-${k}="${CSS.escape(ae.dataset[k])}"]`+(k==="tedit"?`[data-f="${ae.dataset.f}"]`:""):"").find(Boolean)||null;
   if(ae&&ae.classList.contains("otro-in"))return;
@@ -1212,12 +1231,67 @@ function chipVence(t){if(t.hecha)return "";const v=venceDe(t),hoy=key(new Date()
   if(v===man)return `<span class="chip venc pronto">Vence mañana</span>`;
   return t.vence?`<span class="chip venc">Vence ${fechaCorta(v)}</span>`:""}
 function moverSemana(t,wk){if(t.vence){const d=Math.round((fromKey(wk)-fromKey(t.semana))/864e5);t.vence=key(addDays(fromKey(t.vence),d))}t.semana=wk}
+/* ---------- Ordenar tareas arrastrando ----------
+   Funciona con mouse, dedo y teclado (flechas en el asa). El orden se guarda en "orden"
+   y es el mismo para todo el equipo dentro de cada área y semana. */
+const GRIP='<svg viewBox="0 0 12 18" fill="currentColor"><circle cx="3" cy="3" r="1.6"/><circle cx="9" cy="3" r="1.6"/><circle cx="3" cy="9" r="1.6"/><circle cx="9" cy="9" r="1.6"/><circle cx="3" cy="15" r="1.6"/><circle cx="9" cy="15" r="1.6"/></svg>';
+let arrastre=null,recienMovida=null;
+/* Pone la tarea id justo antes de "antes" (o al final si es null) dentro de su área y semana, y renumera */
+function reordenar(id,antes){const t=findT(id);if(!t)return false;
+  const grupo=tasks.filter(x=>x.semana===t.semana&&areaOf(x)===areaOf(t)).sort((x,y)=>(x.orden||0)-(y.orden||0));
+  const sin=grupo.filter(x=>x.id!==id),i=antes?sin.findIndex(x=>x.id===antes):-1;
+  sin.splice(i<0?sin.length:i,0,t);
+  const antesOrden=grupo.map(x=>x.id).join();if(antesOrden===sin.map(x=>x.id).join())return false;
+  sin.forEach((x,k)=>{if(x.orden!==k+1){x.orden=k+1;saveTask(x)}});
+  recienMovida=id;setTimeout(()=>{if(recienMovida===id)recienMovida=null},1200);return true}
+function finArrastre(){const r=arrastre;arrastre=null;document.body.classList.remove("arrastrando");if(esperaRender){esperaRender=false}render();
+  const n=r&&document.querySelector(`[data-grip="${r.id}"]`);if(n&&r.teclado)n.focus()}
+document.addEventListener("pointerdown",e=>{const g=e.target.closest("[data-grip]");if(!g||e.button>0)return;
+  const li=g.closest("li.task"),ul=li&&li.parentElement;if(!ul)return;e.preventDefault();
+  const items=[...ul.querySelectorAll(":scope > li.task.ord")],idx=items.indexOf(li);if(items.length<2)return;
+  const rects=items.map(x=>x.getBoundingClientRect()),gap=items.length>1?rects[1].top-rects[0].bottom:10;
+  arrastre={id:g.dataset.grip,li,ul,items,idx,rects,gap,y0:e.clientY,s0:window.scrollY,dest:idx,y:e.clientY,activo:false,pid:e.pointerId};
+  try{g.setPointerCapture(e.pointerId)}catch(_){}});
+function moverArrastre(){const a=arrastre;if(!a||!a.activo)return;
+  const dy=a.y-a.y0+(window.scrollY-a.s0),h=a.rects[a.idx].height+a.gap,c=a.rects[a.idx].top+a.rects[a.idx].height/2+dy;
+  let dest=a.idx;a.rects.forEach((r,i)=>{const m=r.top+r.height/2;if(i<a.idx&&c<m)dest=Math.min(dest,i);if(i>a.idx&&c>m)dest=Math.max(dest,i)});
+  if(dest!==a.dest&&navigator.vibrate)try{navigator.vibrate(8)}catch(_){}
+  a.dest=dest;a.li.style.transform=`translateY(${dy}px)`;
+  a.items.forEach((x,i)=>{if(i===a.idx)return;x.style.transform=a.idx<dest&&i>a.idx&&i<=dest?`translateY(${-h}px)`:a.idx>dest&&i<a.idx&&i>=dest?`translateY(${h}px)`:""})}
+let autoScroll=0;
+function rodar(){if(!arrastre||!arrastre.activo){autoScroll=0;return}const y=arrastre.y,b=72;
+  const v=y<b?-Math.ceil((b-y)/6):y>innerHeight-b?Math.ceil((y-(innerHeight-b))/6):0;
+  if(v){window.scrollBy(0,v);moverArrastre()}autoScroll=requestAnimationFrame(rodar)}
+document.addEventListener("pointermove",e=>{const a=arrastre;if(!a||e.pointerId!==a.pid)return;a.y=e.clientY;
+  if(!a.activo){if(Math.abs(a.y-a.y0)<4)return;a.activo=true;a.ul.classList.add("ordenando");a.li.classList.add("alzada");document.body.classList.add("arrastrando");if(navigator.vibrate)try{navigator.vibrate(12)}catch(_){}if(!autoScroll)autoScroll=requestAnimationFrame(rodar)}
+  moverArrastre()});
+function soltar(e){const a=arrastre;if(!a||(e&&e.pointerId!==a.pid))return;
+  if(!a.activo){arrastre=null;return}
+  const h=a.rects[a.idx].height+a.gap,final=(a.dest-a.idx)*h,actual=parseFloat((a.li.style.transform.match(/-?[\d.]+/)||[0])[0]);
+  a.li.classList.add("asentando");a.li.style.transform=`translateY(${final-(window.scrollY-a.s0)+(window.scrollY-a.s0)}px)`;a.li.classList.remove("alzada");
+  setTimeout(()=>{a.ul.classList.remove("ordenando");a.items.forEach(x=>{x.style.transform="";x.classList.remove("asentando")});
+    if(a.dest!==a.idx){const orden=a.items.slice();const [m]=orden.splice(a.idx,1);orden.splice(a.dest,0,m);
+      const sig=orden[a.dest+1];reordenar(a.id,sig?sig.dataset.tid:siguienteFuera(a));toast("Orden guardado.")}
+    finArrastre()},actual===final?0:200)}
+/* Si se suelta al final de la lista visible, va justo antes de la primera tarea oculta por filtros que venía después */
+function siguienteFuera(a){const last=a.items[a.items.length-1].dataset.tid,t=findT(last);if(!t)return null;
+  const g=tasks.filter(x=>x.semana===t.semana&&areaOf(x)===areaOf(t)).sort((x,y)=>(x.orden||0)-(y.orden||0)),i=g.findIndex(x=>x.id===last);
+  const n=g.slice(i+1).find(x=>x.id!==a.id);return n?n.id:null}
+document.addEventListener("pointerup",soltar);document.addEventListener("pointercancel",soltar);
+/* Teclado: flechas arriba y abajo sobre el asa */
+document.addEventListener("keydown",e=>{const g=e.target.closest&&e.target.closest("[data-grip]");if(!g||(e.key!=="ArrowUp"&&e.key!=="ArrowDown"))return;e.preventDefault();
+  const ul=g.closest("ul"),items=[...ul.querySelectorAll(":scope > li.task.ord")],li=g.closest("li.task"),i=items.indexOf(li),j=e.key==="ArrowUp"?i-1:i+1;
+  if(j<0||j>=items.length)return;const sig=e.key==="ArrowUp"?items[j]:items[j+1];
+  if(reordenar(g.dataset.grip,sig?sig.dataset.tid:null)){arrastre={id:g.dataset.grip,teclado:true};finArrastre();toast(e.key==="ArrowUp"?"Subió un lugar.":"Bajó un lugar.")}});
+
 /* Las tareas completadas bajan al final, debajo de "Completadas" */
 function listaTareas(ts){const p=ts.filter(t=>!t.hecha),d=ts.filter(t=>t.hecha).sort((a,b)=>a.hecha<b.hecha?1:-1);
   return p.map(taskItem).join("")+(d.length?`<li class="donesep">Completadas · ${d.length}</li>`+d.map(taskItem).join(""):"")}
 function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen=open.has(t.id),a=areaOf(t),ed=canEdit(a),eo=isOpen&&ed;
-    return `<li class="task ${t.hecha?"done":""}">
+    const ord=ed&&!t.hecha;
+    return `<li class="task ${t.hecha?"done":""} ${ord?"ord":""} ${recienMovida===t.id?"recien":""}" data-tid="${t.id}">
       <div class="trow">
+        ${ord?`<button type="button" class="grip" data-grip="${t.id}" aria-label="Mover ${esc(t.titulo)} (arrastra, o usa las flechas arriba y abajo)" title="Arrastra para ordenar">${GRIP}</button>`:""}
         <button class="check" role="checkbox" aria-checked="${!!t.hecha}" aria-label="Marcar ${esc(t.titulo)}" data-tt="${t.id}" ${ed?"":"disabled"}>${CHECK}</button>
         <div class="tbody">
           <button class="ttitle" data-open="${t.id}" aria-expanded="${isOpen}">${esc(t.titulo)}</button>

@@ -65,6 +65,7 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 - El panel de la PM tiene las pestañas Semana, Mes, Año, Tareas (asignar y editar en las tres áreas) y Equipo (administración). Tareas y Equipo solo las ve la PM.
 - Al abrir una tarea (botón +) se editan título, proyecto, responsable y semana (incluye "A la próxima semana →"); solo la PM cambia el área.
 - En Pendientes y en Tareas de la PM, las completadas bajan al final bajo "Completadas · N" (`listaTareas`).
+- Las tareas pendientes se ordenan arrastrando el asa ⋮⋮ (mouse, dedo o flechas del teclado; `reordenar`, pointer events). El orden (`orden`) es el mismo para todo el equipo dentro de cada área y semana; solo se guardan las tareas que cambiaron de lugar.
 - En Tareas, la PM puede elegir "Todas las áreas" (crea una tarea por área) y agregar una liga común (Drive, Sheets…).
 - El perfil (`#persona/<id>`) muestra "Asignado por la Project Manager": tareas del mes creadas por `pm`/`desarrollador` (`creada_por`), con % de avance, atrasadas y avance por área (`resumenPM`).
 - Las ligas también cuentan como entregables en los reportes y en el PDF semanal (con su URL).
