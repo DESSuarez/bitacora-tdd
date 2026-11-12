@@ -2,6 +2,8 @@
 # Esto hace que el subdominio sirva solo lo que está en app/
 # y que no se puedan abrir los demás archivos (schema.sql, CLAUDE.md, .git, etc.).
 RewriteEngine On
+# Ligas limpias para registrar canciones: /cancion/<ministerio> abre el formulario (app/cancion/index.html)
+RewriteRule ^cancion/([a-z0-9-]+)/?$ app/cancion/index.html [L]
 RewriteCond %{REQUEST_URI} !^/app/
 RewriteRule ^(.*)$ app/$1 [L]
 

@@ -779,6 +779,8 @@ button.cmore:hover{color:var(--fg)}
 .ligasart li{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;background:var(--bg);border-radius:10px;padding:8px 10px;font-size:14px}
 .ligasart li b{flex:1;min-width:120px}
 .ligasart li small{font-family:var(--mono);color:var(--muted);font-size:11.5px}
+.ligasart li b{display:flex;flex-direction:column}
+.lurl{display:block;font-family:var(--mono);font-weight:500;font-size:12px;color:var(--area-ink);margin-top:2px;overflow-wrap:anywhere}
 .ligasart li.off{opacity:.55}
 .ligaform{display:flex;gap:8px;flex-wrap:wrap;width:100%}
 .ligaform .field{flex:1;min-width:180px;height:40px}
@@ -1984,7 +1986,8 @@ const ETAPA_C={intake:"var(--baby)",preproduccion:"var(--sol)",agendada:"#8E6BD8
 let canciones=[],ligas=[],loadedC=false,cancionesErr="",cancionSel=null,cancionesCh=null;
 function puedeMusica(){return esPM()||enArea(perfil,"musica")}
 function artistaDe(c){const d=c.data||{},l=ligas.find(x=>x.id===c.liga);return d.nombreArtistico||d.nombre||(l&&l.nombre)||"Artista"}
-function ligaCancion(id){return location.origin+location.pathname.replace(/[^/]*$/,"")+"cancion/?l="+id}
+/* Liga del ministerio: /cancion/<ministerio> (fija desde la migración 020); si aún no tiene dirección, la vieja ?l=<id> */
+function ligaCancion(id){const l=ligas.find(x=>x.id===id),base=location.origin+location.pathname.replace(/[^/]*$/,"")+"cancion/";return l&&l.slug?base+l.slug:base+"?l="+id}
 function cargarCanciones(){if(cancionesCh||!sb||!puedeMusica())return;
   const load=async()=>{const [c,l]=await Promise.all([sb.from("canciones").select("*").order("creado",{ascending:false}).limit(2000),sb.from("ligas_artistas").select("*").order("creado",{ascending:false}).limit(1000)]);
     const err=c.error||l.error;
@@ -2098,7 +2101,7 @@ function renderCanciones(){const V=$("vCanciones");
     ${cancionesVista==="ligas"?`<div class="eliga" style="flex-direction:column;align-items:stretch">
       <div><h3>Ligas para artistas</h3><p>Crea una liga personal para cada artista o ministerio. Con ella registra sus canciones (letra, BPM, referencias y demo). Puedes desactivarla cuando quieras.</p></div>
       <form class="ligaform" id="ligaForm"><input class="field" id="ligaNombre" maxlength="120" placeholder="Nombre del artista o ministerio" aria-label="Nombre del artista"><button class="btn" type="submit">Crear liga</button></form>
-      ${ligas.length?`<ul class="ligasart">${ligas.map(l=>`<li class="${l.activa?"":"off"}"><b>${esc(l.nombre)}</b><small>${cuenta(l.id)} canci${cuenta(l.id)===1?"ón":"ones"} · ${l.activa?"activa":"desactivada"}</small>${l.activa?`<button type="button" class="btn sm" data-copiarligac="${esc(l.id)}">Copiar liga</button>`:""}<button type="button" class="btn ghost sm" data-ligaonoff="${esc(l.id)}">${l.activa?"Desactivar":"Activar"}</button></li>`).join("")}</ul>`:""}
+      ${ligas.length?`<ul class="ligasart">${ligas.map(l=>`<li class="${l.activa?"":"off"}"><b>${esc(l.nombre)}<code class="lurl">${esc(ligaCancion(l.id).replace(/^https?:\/\//,""))}</code></b><small>${cuenta(l.id)} canci${cuenta(l.id)===1?"ón":"ones"} · ${l.activa?"activa":"desactivada"}</small>${l.activa?`<button type="button" class="btn sm" data-copiarligac="${esc(l.id)}">Copiar liga</button>`:""}<button type="button" class="btn ghost sm" data-ligaonoff="${esc(l.id)}">${l.activa?"Desactivar":"Activar"}</button></li>`).join("")}</ul>`:""}
     </div>`:!loadedC?`<div class="none">Cargando canciones…</div>`:!canciones.length?`<div class="empty"><strong>Aún no hay canciones</strong><p>Agrega las canciones que ya están en proceso con «+ Agregar canción», o crea una liga en «Ligas» para que un artista registre la suya. Cada canción tendrá su checklist, su avance y su pendiente.</p></div>`:
     cancionesVista==="etapas"?`<div class="kanban">${ETAPAS.map(([k,n])=>{const cs=canciones.filter(c=>c.etapa===k);return `<div class="kcol ${cs.length?"":"vacia"}"><h4 style="--c:${ETAPA_C[k]}"><i></i>${esc(n)}<span>${cs.length}</span></h4>${cs.length?cs.map(ccardHTML).join(""):`<span class="vacio">—</span>`}</div>`}).join("")}</div>`:vistaMinisterios()}`}
 /* Editar los datos de la canción: las mismas preguntas de campos-cancion.js (los archivos no se editan aquí) */

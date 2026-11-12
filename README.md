@@ -132,6 +132,9 @@ Corre `supabase/migraciones/016_saludo.sql`. El Dashboard saluda «Bienvenido Di
 ### 21. Activos (Finanzas → Activos)
 Corre `supabase/migraciones/019_activos.sql`. Registra todo lo que tiene Tiempo de Dios: cuentas de banco, efectivo, inversiones, cuentas por cobrar, equipo, instrumentos, vehículos, inmuebles e inventario, con su valor, a qué fecha, área, quién lo tiene y dónde está. Todos lo ven; solo Finanzas y el desarrollador lo editan. Avisa de los saldos sin actualizar en más de 45 días y se descarga en CSV.
 
+### 22. Ligas limpias por ministerio
+Corre `supabase/migraciones/020_ligas_limpias.sql`. Cada ministerio queda con una dirección fija para registrar canciones, por ejemplo `pm.tiempodedios.mx/cancion/surgit-iglessia`. Se crea sola a partir del nombre (sin acentos, con guiones) y **no cambia nunca**, aunque se cambie el nombre del ministerio. Las ligas viejas (`/cancion/?l=…`) siguen funcionando. El `.htaccess` hace que `/cancion/<ministerio>` abra el formulario.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 

@@ -7,8 +7,8 @@
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
-<link rel="icon" type="image/png" href="../favicon.png">
-<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -131,15 +131,16 @@ textarea.in{height:auto;min-height:110px;padding:12px 14px;resize:vertical;line-
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <!-- Misma configuración y mismas preguntas que la Bitácora (app/) -->
-<script src="../config.publico.js"></script>
-<script src="../campos-cancion.js"></script>
+<script src="/config.publico.js"></script>
+<script src="/campos-cancion.js"></script>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
 const SECS=window.CAMPOS_CANCION;
-/* La liga personal del artista: cancion/?l=<id de la liga> */
-const LIGA=(new URLSearchParams(location.search).get("l")||"").trim().toLowerCase();
-const DRAFT="tdd-cancion-borrador-"+LIGA;
+/* La liga del ministerio: /cancion/<ministerio> (o la vieja /cancion/?l=<id>). LIGA es el id real, ya validado. */
+const CLAVE=((new URLSearchParams(location.search).get("l"))||(location.pathname.match(/\/cancion\/([a-z0-9-]+)\/?$/i)||[])[1]||"").trim().toLowerCase();
+let LIGA="";
+const DRAFT="tdd-cancion-borrador-"+CLAVE;
 const MAX_FILES=20, MAX_MB=50;
 const EXT_MIME={mp3:"audio/mpeg",wav:"audio/wav",m4a:"audio/mp4",aac:"audio/aac",aif:"audio/aiff",aiff:"audio/aiff",flac:"audio/flac",ogg:"audio/ogg",mid:"audio/midi",midi:"audio/midi",pdf:"application/pdf",doc:"application/msword",docx:"application/vnd.openxmlformats-officedocument.wordprocessingml.document",ppt:"application/vnd.ms-powerpoint",pptx:"application/vnd.openxmlformats-officedocument.presentationml.presentation",xls:"application/vnd.ms-excel",xlsx:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",txt:"text/plain",md:"text/markdown",jpg:"image/jpeg",jpeg:"image/jpeg",png:"image/png",odt:"application/vnd.oasis.opendocument.text",odp:"application/vnd.oasis.opendocument.presentation"};
 const ACCEPT=Object.keys(EXT_MIME).map(e=>"."+e).join(",");
@@ -243,6 +244,7 @@ async function submit(e){
   if($("hp").value)return;
   const v=values();if(!validate(v))return;
   if(!sb){note("El formulario aún no está conectado. Avísale al equipo de Música.");return}
+  if(!LIGA){ligaInvalida();return}
   const btn=$("send");btn.disabled=true;
   const id=(crypto.randomUUID?crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==="x"?r:(r&3|8)).toString(16)}));
   const archivos=[];
@@ -276,9 +278,14 @@ const cfg=window.BITACORA_CONFIG||{};
 if(window.supabase&&cfg.supabaseUrl&&cfg.supabaseAnonKey&&!/TU-PROYECTO/.test(cfg.supabaseUrl))sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey,{auth:{persistSession:false}});
 /* Sin liga activa no se muestra el formulario */
 function ligaInvalida(){$("form").hidden=true;$("done").hidden=true;note("Esta liga no es válida o ya no está activa. Pide al equipo de Música de Tiempo de Dios una liga nueva para registrar tu canción.")}
-if(!/^[0-9a-f-]{36}$/.test(LIGA))ligaInvalida();
-else if(sb)sb.rpc("liga_artista",{l:LIGA}).then(({data,error})=>{if(error||!data){ligaInvalida();return}
-  $("lead").textContent=`Hola, ${data}. Gracias por confiarnos tu canción. Con esta información, el equipo de Música prepara la pre-producción y agenda contigo tu semana de producción. Escribe con tus palabras: no hace falta que esté perfecto.`});
+function bienvenida(nombre){$("lead").textContent=`Hola, ${nombre}. Gracias por confiarnos tu canción. Con esta información, el equipo de Música prepara la pre-producción y agenda contigo tu semana de producción. Escribe con tus palabras: no hace falta que esté perfecto.`;document.title=`Registra tu canción · ${nombre} · Tiempo de Dios`}
+if(!/^[a-z0-9-]{2,80}$/.test(CLAVE))ligaInvalida();
+else if(sb)sb.rpc("liga_resolver",{l:CLAVE}).then(async({data,error})=>{
+  if(error&&/^[0-9a-f-]{36}$/.test(CLAVE)){const r=await sb.rpc("liga_artista",{l:CLAVE});if(r.data){LIGA=CLAVE;bienvenida(r.data)}else ligaInvalida();return}  // antes de la migración 020
+  if(error||!data||!data.id){ligaInvalida();return}
+  LIGA=data.id;bienvenida(data.nombre);
+  if(data.slug&&/[?]l=/.test(location.search))history.replaceState(null,"","/cancion/"+data.slug);  // muestra la liga limpia
+});
 else note("Este formulario todavía no está configurado (falta config.publico.js). Puedes llenarlo y tu avance quedará guardado en este dispositivo.");
 })();
 </script>
