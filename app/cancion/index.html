@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Registra tu canción · Música Tiempo de Dios</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Formulario privado de canciones (una liga por artista): banda Night con franja Flame; una columna con secciones numeradas.
+   Usa las mismas clases que entrada/; aquí --sea toma el color de Música. */
+:root{
+  --night:#1B1C1A; --flame:#FF3D1A; --baby:#98D5E0; --sea:#E8351A;
+  --bg:#FFFFFF; --surface:#F4F7F7; --fg:#1B1C1A; --muted:#5E6766; --line:#DDE5E5;
+  --sea-ink:#C2300F; --sea-soft:#FFE7E1; --flame-soft:#FFE7E1; --band:#1B1C1A;
+  --display:"Archivo","Arial Black","Helvetica Neue",Arial,sans-serif;
+  --body:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#1B1C1A; --surface:#242623; --fg:#F5F7F6; --muted:#A3ADAC; --line:#353835;
+  --sea-ink:#FF8A70; --sea-soft:#3A2019; --flame-soft:#3A2019; --band:#121311; color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--baby);outline-offset:2px;border-radius:6px}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.band{background:var(--band);color:#fff;border-bottom:8px solid var(--sea)}
+.band .wrap{padding-block:26px 30px;display:flex;flex-direction:column;gap:14px}
+.brandrow{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#C9D2D1}
+.dots{display:flex;gap:4px}.dots i{width:10px;height:10px;border-radius:50%;display:block}
+.tag{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;background:var(--sea);color:#fff;font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px 4px 8px;border-radius:6px}
+.tag svg{width:14px;height:14px}
+h1{font-family:var(--display);font-weight:900;font-stretch:112%;font-size:clamp(32px,6.5vw,50px);line-height:1;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h1 em{font-style:normal;color:var(--baby)}
+.lead{margin:0;color:#D7DEDD;max-width:58ch;font-size:16.5px}
+.meta{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:12.5px;color:#A9B3B2}
+
+main .wrap{padding-block:28px 80px}
+form{display:flex;flex-direction:column;gap:22px}
+.sec{border:1.5px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:18px}
+.sec-h{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
+.num{width:36px;height:36px;border-radius:10px;background:var(--sea);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:17px}
+.sec-h h2{margin:0;font-family:var(--display);font-weight:900;font-size:22px;font-stretch:106%;line-height:1.15}
+.sec-h p{margin:2px 0 0;color:var(--muted);font-size:14.5px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.f{display:flex;flex-direction:column;gap:6px;min-width:0}
+.f.full{grid-column:1/-1}
+@media (max-width:600px){.fields{grid-template-columns:1fr}.sec{padding:18px 16px}}
+.f>label,.f>.lbl{font-weight:700;font-size:14.5px}
+.req{color:var(--flame);margin-left:3px}
+.help{font-size:13px;color:var(--muted);margin-top:-3px}
+.in{width:100%;min-width:0;height:46px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--bg)}
+textarea.in{height:auto;min-height:110px;padding:12px 14px;resize:vertical;line-height:1.45}
+.in:focus{border-color:var(--sea-ink);outline:none}
+.f.bad .in,.f.bad .chips,.f.bad .mods{border-color:var(--flame)}
+.err{font-size:13px;color:var(--flame);font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px;border:1.5px solid transparent;border-radius:12px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip span{display:inline-flex;align-items:center;height:38px;padding:0 15px;border-radius:99px;border:1.5px solid var(--line);font-weight:600;font-size:14.5px;cursor:pointer}
+.chip input:checked+span{background:var(--sea);border-color:var(--sea);color:#fff}
+.chip input:focus-visible+span{outline:3px solid var(--baby);outline-offset:2px}
+.mods{display:flex;flex-direction:column;gap:10px;border:1.5px solid transparent;border-radius:12px}
+.mod{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;background:var(--surface);border-radius:12px;padding:12px}
+.mod .n{font-family:var(--mono);font-size:12px;color:var(--muted);padding-top:12px;min-width:22px}
+.mod .body{display:grid;grid-template-columns:1fr 150px;gap:8px;min-width:0}
+.mod .body textarea{grid-column:1/-1;min-height:70px}
+@media (max-width:600px){.mod .body{grid-template-columns:1fr}}
+.icon{width:36px;height:36px;border:0;border-radius:8px;background:transparent;color:var(--muted);display:grid;place-items:center}
+.icon:hover{color:var(--flame);background:var(--bg)}
+.icon svg{width:18px;height:18px}
+.ghost{align-self:flex-start;height:40px;border:1.5px dashed var(--sea);background:transparent;color:var(--sea-ink);border-radius:10px;padding:0 16px;font-weight:700}
+.ghost:hover{background:var(--sea-soft)}
+.drop{border:2px dashed var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;cursor:pointer;background:var(--surface)}
+.drop.over{border-color:var(--sea);background:var(--sea-soft)}
+.drop strong{font-family:var(--display);font-size:17px}
+.drop small{color:var(--muted);font-size:13px}
+.files{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.files li{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:6px 6px 6px 12px}
+.files .ext{font-family:var(--mono);font-size:11px;font-weight:500;background:var(--sea-soft);color:var(--sea-ink);border-radius:5px;padding:2px 6px;text-transform:uppercase}
+.files .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}
+.files .sz{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:14.5px}
+.consent input{width:20px;height:20px;margin-top:2px;accent-color:var(--sea);flex:none}
+.submitbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.btn{height:52px;border:0;border-radius:12px;padding:0 26px;font-family:var(--display);font-weight:900;font-size:17px;background:var(--flame);color:#fff}
+.btn:hover{filter:brightness(.94)}
+.btn:disabled{opacity:.55;cursor:default}
+.saved{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.notice{border-radius:12px;padding:12px 16px;font-size:14.5px;background:var(--flame-soft);color:var(--fg);border:1.5px solid var(--flame)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.done{border:1.5px solid var(--line);border-radius:18px;padding:34px 26px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;border-top:8px solid var(--sea)}
+.done h2{margin:0;font-family:var(--display);font-weight:900;font-size:30px;font-stretch:110%;line-height:1.05}
+.done p{margin:0;color:var(--muted);max-width:56ch}
+.done .btn{background:var(--sea);height:46px;font-size:15px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="band">
+  <div class="wrap">
+    <div class="brandrow"><span class="dots"><i style="background:#FF3D1A"></i><i style="background:#98D5E0"></i><i style="background:#457A7F"></i></span>Tiempo de Dios</div>
+    <div class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Música</div>
+    <h1>Registra tu <em>canción</em></h1>
+    <p class="lead" id="lead">Gracias por confiarnos tu canción. Con esta información, el equipo de Música prepara la pre-producción y agenda contigo tu semana de producción. Escribe con tus palabras: no hace falta que esté perfecto.</p>
+    <div class="meta"><span>Unos 15 a 20 minutos</span><span>Tu avance se guarda en este dispositivo</span><span>Liga personal: no la compartas</span></div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="notice" id="notice" hidden></div>
+    <form id="form" novalidate></form>
+    <section class="done" id="done" hidden>
+      <h2>¡Recibimos tu canción!</h2>
+      <p id="doneMsg">El equipo de Música ya puede verla. Te contactaremos para las asesorías y para agendar tu semana de producción.</p>
+      <button class="btn" type="button" id="again">Registrar otra canción</button>
+    </section>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<!-- Misma configuración y mismas preguntas que la Bitácora (app/) -->
+<script src="../config.publico.js"></script>
+<script src="../campos-cancion.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const SECS=window.CAMPOS_CANCION;
+/* La liga personal del artista: cancion/?l=<id de la liga> */
+const LIGA=(new URLSearchParams(location.search).get("l")||"").trim().toLowerCase();
+const DRAFT="tdd-cancion-borrador-"+LIGA;
+const MAX_FILES=20, MAX_MB=50;
+const EXT_MIME={mp3:"audio/mpeg",wav:"audio/wav",m4a:"audio/mp4",aac:"audio/aac",aif:"audio/aiff",aiff:"audio/aiff",flac:"audio/flac",ogg:"audio/ogg",mid:"audio/midi",midi:"audio/midi",pdf:"application/pdf",doc:"application/msword",docx:"application/vnd.openxmlformats-officedocument.wordprocessingml.document",ppt:"application/vnd.ms-powerpoint",pptx:"application/vnd.openxmlformats-officedocument.presentationml.presentation",xls:"application/vnd.ms-excel",xlsx:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",txt:"text/plain",md:"text/markdown",jpg:"image/jpeg",jpeg:"image/jpeg",png:"image/png",odt:"application/vnd.oasis.opendocument.text",odp:"application/vnd.oasis.opendocument.presentation"};
+const ACCEPT=Object.keys(EXT_MIME).map(e=>"."+e).join(",");
+const DEL='<svg viewBox="0 0 20 20" fill="none"><path d="M5 6h10M8 6V4h4v2M6.5 6l.7 10h5.6l.7-10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function extOf(n){const m=/\.([a-z0-9]+)$/i.exec(n||"");return m?m[1].toLowerCase():""}
+function fmtSize(b){return b>1048576?(b/1048576).toFixed(1)+" MB":Math.max(1,Math.round(b/1024))+" KB"}
+
+let files=[];          // {f: File, campo} (no se guardan en el borrador)
+let mods=[{titulo:"",contenido:"",duracion:""}];
+
+/* ---------- Construir formulario ---------- */
+function fieldHTML(c){
+  const id="f_"+c.k,req=c.req?'<span class="req" aria-hidden="true">*</span>':"";
+  const help=c.ayuda?`<div class="help" id="${id}_h">${esc(c.ayuda)}</div>`:"";
+  const desc=c.ayuda?` aria-describedby="${id}_h"`:"";
+  const full=(c.tipo==="area"||c.tipo==="chips"||c.tipo==="multi"||c.tipo==="modulos"||c.tipo==="files")?" full":"";
+  let ctl="";
+  if(c.tipo==="area")ctl=`<textarea class="in" id="${id}" name="${c.k}"${desc} maxlength="6000"${c.req?" required":""}></textarea>`;
+  else if(c.tipo==="chips")ctl=`<div class="chips" role="radiogroup" aria-labelledby="${id}_l">${c.ops.map((o,i)=>`<label class="chip"><input type="radio" name="${c.k}" id="${id}_${i}" value="${esc(o)}"${c.req&&i===0?" required":""}><span>${esc(o)}</span></label>`).join("")}</div>`;
+  else if(c.tipo==="multi")ctl=`<div class="chips" role="group" aria-labelledby="${id}_l">${c.ops.map((o,i)=>`<label class="chip"><input type="checkbox" name="${c.k}" id="${id}_${i}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("")}</div>`;
+  else if(c.tipo==="modulos")ctl=`<div class="mods" id="mods"></div><button type="button" class="ghost" id="addMod">+ Agregar tema o módulo</button>`;
+  else if(c.tipo==="files")ctl=`<div class="drop" data-drop="${c.k}" tabindex="0" role="button" aria-label="${esc(c.l)}: elegir archivos"><strong>Arrastra tus archivos aquí</strong><small>o toca para elegirlos · audio (MP3, WAV, M4A), PDF, Word o imágenes · hasta ${MAX_MB} MB cada uno</small></div><input type="file" id="fileIn_${c.k}" data-filein="${c.k}" multiple accept="${ACCEPT}" hidden><ul class="files" id="fileList_${c.k}"></ul>`;
+  else ctl=`<input class="in" id="${id}" name="${c.k}" type="${c.tipo||"text"}"${desc} maxlength="300"${c.req?" required":""}${c.tipo==="email"?' autocomplete="email"':c.k==="nombre"?' autocomplete="name"':c.tipo==="tel"?' autocomplete="tel"':""}>`;
+  const lbl=(c.tipo==="chips"||c.tipo==="multi"||c.tipo==="modulos"||c.tipo==="files")?`<div class="lbl" id="${id}_l">${esc(c.l)}${req}</div>`:`<label for="${id}">${esc(c.l)}${req}</label>`;
+  return `<div class="f${full}" data-k="${c.k}"${c.si?` data-si="${esc(c.si.k)}" data-siv="${esc(c.si.v)}" hidden`:""}>${lbl}${help}${ctl}<div class="err" hidden></div></div>`}
+function build(){
+  $("form").innerHTML=SECS.map((s,i)=>`<section class="sec" aria-labelledby="sec_${s.id}"><div class="sec-h"><div class="num">${i+1}</div><div><h2 id="sec_${s.id}">${esc(s.titulo)}</h2>${s.intro?`<p>${esc(s.intro)}</p>`:""}</div></div><div class="fields">${s.campos.map(fieldHTML).join("")}</div></section>`).join("")+
+  `<input class="hp" type="text" name="sitio_web" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+   <label class="consent" for="consent"><input type="checkbox" id="consent"> <span>Autorizo a Tiempo de Dios a usar esta información y los archivos que comparto para la pre-producción y producción de mi canción.</span></label>
+   <div class="submitbar"><span class="saved" id="saved"></span><button class="btn" type="submit" id="send">Enviar canción</button></div>`;
+  renderMods();renderFiles();
+  if($("addMod"))$("addMod").onclick=()=>{mods.push({titulo:"",contenido:"",duracion:""});renderMods();saveDraft();const t=document.querySelectorAll(".mod input")[ (mods.length-1)*2 ];if(t)t.focus()};
+  document.querySelectorAll("[data-drop]").forEach(drop=>{const k=drop.dataset.drop,fi=$("fileIn_"+k);
+    drop.onclick=()=>fi.click();drop.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fi.click()}};
+    fi.onchange=()=>{addFiles(fi.files,k);fi.value=""};
+    ["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over")}));
+    ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over")}));
+    drop.addEventListener("drop",e=>addFiles(e.dataTransfer.files,k))});
+  applyCond();
+}
+/* Preguntas que aparecen según otra respuesta (campo "si") */
+function condMet(f){return [...document.querySelectorAll(`[name="${f.dataset.si}"]:checked`)].some(x=>x.value===f.dataset.siv)}
+function applyCond(){document.querySelectorAll(".f[data-si]").forEach(f=>{f.hidden=!condMet(f)})}
+function renderMods(){if(!$("mods"))return;
+  $("mods").innerHTML=mods.map((m,i)=>`<div class="mod"><span class="n">${String(i+1).padStart(2,"0")}</span><div class="body">
+    <input class="in" data-mi="${i}" data-mf="titulo" value="${esc(m.titulo)}" placeholder="Nombre del tema" aria-label="Tema ${i+1}: nombre" maxlength="200">
+    <input class="in" data-mi="${i}" data-mf="duracion" value="${esc(m.duracion)}" placeholder="Duración" aria-label="Tema ${i+1}: duración" maxlength="60">
+    <textarea class="in" data-mi="${i}" data-mf="contenido" placeholder="¿Qué se ve en este tema? Subtemas, ideas clave, dinámicas…" aria-label="Tema ${i+1}: contenido" maxlength="4000">${esc(m.contenido)}</textarea></div>
+    ${mods.length>1?`<button type="button" class="icon" data-mdel="${i}" aria-label="Quitar tema ${i+1}">${DEL}</button>`:"<span></span>"}</div>`).join("")}
+function addFiles(list,campo){
+  let skipped=[];
+  [...list].forEach(f=>{
+    if(files.length>=MAX_FILES){skipped.push(`${f.name} (máximo ${MAX_FILES} archivos)`);return}
+    if(!EXT_MIME[extOf(f.name)]){skipped.push(`${f.name} (formato no permitido)`);return}
+    if(f.size>MAX_MB*1048576){skipped.push(`${f.name} (pesa más de ${MAX_MB} MB)`);return}
+    if(files.some(x=>x.campo===campo&&x.f.name===f.name&&x.f.size===f.size))return;
+    files.push({f,campo})});
+  renderFiles();
+  if(skipped.length)note("No se agregaron: "+skipped.join("; ")+".");
+}
+function renderFiles(){
+  document.querySelectorAll("[id^=fileList_]").forEach(ul=>{const k=ul.id.slice(9);
+  ul.innerHTML=files.map((x,i)=>[x,i]).filter(([x])=>x.campo===k).map(([{f},i])=>`<li><span class="ext">${esc(extOf(f.name))}</span><span class="nm" title="${esc(f.name)}">${esc(f.name)}</span><span class="sz">${fmtSize(f.size)}</span><button type="button" class="icon" data-fdel="${i}" aria-label="Quitar ${esc(f.name)}">${DEL}</button></li>`).join("")})}
+function note(msg){const n=$("notice");n.textContent=msg;n.hidden=!msg;if(msg)n.scrollIntoView({behavior:"smooth",block:"center"})}
+
+/* ---------- Leer valores ---------- */
+function values(){
+  const fd=new FormData($("form")),out={};
+  SECS.forEach(s=>s.campos.forEach(c=>{
+    if(c.tipo==="modulos")out.modulos=mods.map(m=>({titulo:m.titulo.trim(),contenido:m.contenido.trim(),duracion:m.duracion.trim()})).filter(m=>m.titulo||m.contenido);
+    else if(c.tipo==="multi")out[c.k]=fd.getAll(c.k).map(String);
+    else if(c.tipo!=="files")out[c.k]=String(fd.get(c.k)||"").trim();
+    const fe=c.si&&document.querySelector(`.f[data-k="${c.k}"]`);if(fe&&fe.hidden)out[c.k]=""}));
+  return out}
+function validate(v){
+  let first=null;
+  document.querySelectorAll(".f").forEach(f=>{f.classList.remove("bad");const e=f.querySelector(".err");if(e)e.hidden=true});
+  SECS.forEach(s=>s.campos.forEach(c=>{
+    let msg="";const fe=document.querySelector(`.f[data-k="${c.k}"]`);if(fe&&fe.hidden)return;
+    if(c.req){if(c.tipo==="modulos"||c.tipo==="multi"?!(v[c.k]||[]).length:!v[c.k])msg=c.tipo==="chips"?"Elige una opción.":c.tipo==="modulos"?"Agrega al menos un tema.":"Este dato es necesario."}
+    if(!msg&&c.tipo==="email"&&v[c.k]&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v[c.k]))msg="Revisa que el correo esté completo, por ejemplo nombre@correo.com.";
+    if(msg){const f=document.querySelector(`.f[data-k="${c.k}"]`);f.classList.add("bad");const e=f.querySelector(".err");e.textContent=msg;e.hidden=false;if(!first)first=f}}));
+  if(!first&&!$("consent").checked){first=$("consent");note("Para enviar, marca la casilla de autorización al final.")}
+  if(first){first.scrollIntoView({behavior:"smooth",block:"center"});const i=first.querySelector?first.querySelector("input,textarea"):first;if(i)setTimeout(()=>i.focus({preventScroll:true}),350);return false}
+  return true}
+
+/* ---------- Borrador ---------- */
+let saveT;
+function saveDraft(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(DRAFT,JSON.stringify({v:values(),mods,t:Date.now()}));$("saved").textContent="Borrador guardado "+new Date().toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"})}catch(e){}},500)}
+function loadDraft(){let d;try{d=JSON.parse(localStorage.getItem(DRAFT)||"null")}catch(e){}if(!d)return;
+  if(Array.isArray(d.mods)&&d.mods.length){mods=d.mods;renderMods()}
+  Object.entries(d.v||{}).forEach(([k,val])=>{if(k==="modulos")return;const el=document.querySelector(`[name="${k}"]`);if(!el)return;
+    if(Array.isArray(val)){document.querySelectorAll(`[name="${k}"]`).forEach(x=>{x.checked=val.includes(x.value)})}else if(el.type==="radio"){const r=document.querySelector(`[name="${k}"][value="${CSS.escape(val)}"]`);if(r)r.checked=true}else el.value=val});
+  applyCond();$("saved").textContent="Continuamos donde te quedaste"}
+
+/* ---------- Envío ---------- */
+let sb=null;
+async function submit(e){
+  e.preventDefault();note("");
+  if($("hp").value)return;
+  const v=values();if(!validate(v))return;
+  if(!sb){note("El formulario aún no está conectado. Avísale al equipo de Música.");return}
+  const btn=$("send");btn.disabled=true;
+  const id=(crypto.randomUUID?crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==="x"?r:(r&3|8)).toString(16)}));
+  const archivos=[];
+  try{
+    for(let i=0;i<files.length;i++){const f=files[i].f,campo=files[i].campo;btn.textContent=`Subiendo documento ${i+1} de ${files.length}…`;
+      const ext=extOf(f.name),safe=f.name.normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-zA-Z0-9._-]+/g,"-").slice(-80);
+      const ruta=`${LIGA}/${id}/${String(i+1).padStart(2,"0")}-${safe}`;
+      const {error}=await sb.storage.from("canciones").upload(ruta,f,{contentType:f.type||EXT_MIME[ext],upsert:false});
+      if(error)throw new Error(`No se pudo subir «${f.name}». ${error.message}`);
+      archivos.push({nombre:f.name,ruta,tamano:f.size,tipo:f.type||EXT_MIME[ext],campo})}
+    btn.textContent="Enviando…";
+    const {error}=await sb.from("canciones").insert({id,liga:LIGA,data:v,archivos});
+    if(error)throw new Error(/row-level security/i.test(error.message)?"Esta liga ya no está activa. Pide una nueva al equipo de Música.":"No se pudo guardar la canción. "+error.message);
+    try{localStorage.removeItem(DRAFT)}catch(e){}
+    $("form").hidden=true;$("done").hidden=false;$("doneMsg").textContent=`El equipo de Música ya puede escuchar «${v.titulo}». Te escribiremos a ${v.correo} para las asesorías y para agendar tu semana de producción.`;
+    window.scrollTo({top:0,behavior:"smooth"});
+  }catch(err){note(err.message+" Revisa tu conexión e inténtalo de nuevo; lo que escribiste sigue aquí.")}
+  finally{btn.disabled=false;btn.textContent="Enviar canción"}
+}
+
+/* ---------- Eventos ---------- */
+build();loadDraft();
+$("form").addEventListener("input",e=>{const t=e.target;if(t.dataset.mi!==undefined)mods[+t.dataset.mi][t.dataset.mf]=t.value;const f=t.closest(".f");if(f&&f.classList.contains("bad")){f.classList.remove("bad");f.querySelector(".err").hidden=true}saveDraft()});
+$("form").addEventListener("change",()=>{applyCond();saveDraft()});
+$("form").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.mdel!==undefined){mods.splice(+b.dataset.mdel,1);renderMods();saveDraft()}
+  if(b.dataset.fdel!==undefined){files.splice(+b.dataset.fdel,1);renderFiles()}});
+$("form").addEventListener("submit",submit);
+$("again").onclick=()=>{files=[];mods=[{titulo:"",contenido:"",duracion:""}];build();$("done").hidden=true;$("form").hidden=false;window.scrollTo(0,0)};
+const cfg=window.BITACORA_CONFIG||{};
+if(window.supabase&&cfg.supabaseUrl&&cfg.supabaseAnonKey&&!/TU-PROYECTO/.test(cfg.supabaseUrl))sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey,{auth:{persistSession:false}});
+/* Sin liga activa no se muestra el formulario */
+function ligaInvalida(){$("form").hidden=true;$("done").hidden=true;note("Esta liga no es válida o ya no está activa. Pide al equipo de Música de Tiempo de Dios una liga nueva para registrar tu canción.")}
+if(!/^[0-9a-f-]{36}$/.test(LIGA))ligaInvalida();
+else if(sb)sb.rpc("liga_artista",{l:LIGA}).then(({data,error})=>{if(error||!data){ligaInvalida();return}
+  $("lead").textContent=`Hola, ${data}. Gracias por confiarnos tu canción. Con esta información, el equipo de Música prepara la pre-producción y agenda contigo tu semana de producción. Escribe con tus palabras: no hace falta que esté perfecto.`});
+else note("Este formulario todavía no está configurado (falta config.publico.js). Puedes llenarlo y tu avance quedará guardado en este dispositivo.");
+})();
+</script>
+</body>
+</html>

@@ -593,6 +593,99 @@ table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:52
 .acctmenu button.out{color:var(--flame)}
 @media (max-width:640px){.tabs{margin:0 -16px;padding:0 16px}.band .wrap{padding-top:26px;gap:16px}main .wrap{padding-block:32px 88px}}
 }
+/* Dashboard: calendario semanal */
+.dhead{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.dleyenda{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--muted)}
+.dleyenda span{display:inline-flex;align-items:center;gap:6px}
+.dleyenda i{width:10px;height:10px;border-radius:3px;background:var(--c)}
+.cal7{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border:1.5px solid var(--line);border-radius:16px;overflow:hidden;background:var(--line);gap:1px}
+.cdia{background:var(--bg);min-height:190px;display:flex;flex-direction:column;gap:6px;padding:10px 8px 12px;min-width:0;position:relative}
+.cdia.finde{background:var(--surface)}
+.cdia.hoy{box-shadow:inset 0 3px 0 var(--area)}
+.cdh{display:flex;align-items:baseline;justify-content:space-between;gap:6px;padding:0 2px 4px}
+.cdh span{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.cdh b{font-family:var(--display);font-weight:900;font-size:20px;line-height:1}
+.cdia.hoy .cdh b{background:var(--area);color:var(--on-area);border-radius:8px;padding:2px 7px}
+.cmas{position:absolute;right:6px;bottom:6px;width:28px;height:28px;border-radius:8px;border:1.5px dashed var(--line);background:var(--bg);color:var(--muted);font-size:17px;line-height:1;opacity:0;transition:opacity .15s}
+.cdia:hover .cmas,.cmas:focus-visible{opacity:1}
+@media (hover:none){.cmas{opacity:.7}}
+.cev{display:flex;flex-direction:column;gap:1px;width:100%;text-align:left;border:0;border-radius:8px;padding:6px 8px 6px 10px;background:color-mix(in srgb,var(--c) 16%,var(--bg));color:var(--fg);box-shadow:inset 3px 0 0 var(--c);font:inherit;cursor:pointer;min-width:0}
+.cev:hover{background:color-mix(in srgb,var(--c) 26%,var(--bg))}
+.cev strong{font-size:13px;font-weight:800;line-height:1.25;overflow-wrap:anywhere}
+.cev small{font-size:11.5px;color:var(--muted);line-height:1.3;overflow-wrap:anywhere}
+.cev .hr{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.ctask{display:flex;gap:6px;align-items:flex-start;font-size:12.5px;line-height:1.3;color:var(--fg);background:none;border:0;padding:2px 2px;text-align:left;font:inherit;font-size:12.5px;cursor:pointer;border-radius:6px;min-width:0}
+.ctask:hover{background:var(--surface)}
+.ctask i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c);margin-top:4px}
+.ctask span{min-width:0;overflow-wrap:anywhere}
+.ctask.atr span{color:var(--flame)}
+.cmore{font-size:11.5px;color:var(--muted);padding-left:16px}
+.dgrid{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;align-items:start}
+.dpanel{border:1.5px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.dpanel h3{margin:0;font-family:var(--display);font-weight:900;font-size:18px}
+.dpanel>p{margin:-6px 0 0;color:var(--muted);font-size:13.5px}
+.disp{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.dsem{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg);text-align:left;font:inherit;color:var(--fg);cursor:pointer;display:flex;flex-direction:column;gap:3px;min-width:0}
+.dsem:hover{border-color:var(--area-ink)}
+.dsem time{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.dsem b{font-size:13.5px;font-weight:800;overflow-wrap:anywhere}
+.dsem.libre b{color:var(--sea-text)}
+.dsem.ocupada{background:color-mix(in srgb,var(--flame) 10%,var(--bg));border-color:color-mix(in srgb,var(--flame) 40%,var(--line))}
+.dsem.doble{background:var(--flame-soft);border-color:var(--flame)}
+.dsem.doble b{color:var(--flame)}
+.dareas{display:flex;flex-direction:column;gap:10px}
+.dar{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;font-size:13.5px;font-weight:700}
+.dar .trk{height:8px;border-radius:99px;background:var(--surface);overflow:hidden}
+.dar .trk i{display:block;height:100%;background:var(--c);border-radius:99px}
+.dar small{font-family:var(--mono);font-weight:500;color:var(--muted);font-size:12px}
+.datr{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.datr li{display:flex;gap:8px;align-items:baseline;font-size:13.5px}
+.datr li i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.datr li small{margin-left:auto;font-family:var(--mono);color:var(--flame);font-size:11.5px;white-space:nowrap}
+@media (max-width:900px){.dgrid{grid-template-columns:1fr}}
+@media (max-width:760px){.cal7{grid-template-columns:1fr;border-radius:14px}.cdia{min-height:0;padding:12px}.cdia.vacio{display:none}.cdh{justify-content:flex-start;gap:10px}.cmas{opacity:.8;top:8px;bottom:auto}}
+/* Formulario para agendar */
+.evcard{max-width:540px;gap:12px}
+.evcard label{display:flex;flex-direction:column;gap:5px;font-weight:700;font-size:13.5px;min-width:0}
+.evcard label small{font-weight:500;color:var(--muted)}
+.evcard textarea{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 14px;font:inherit;font-weight:400;color:var(--fg);resize:vertical}
+.evrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.evacts{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:4px}
+.evacts .sp{flex:1}
+.evaviso{border-radius:10px;padding:10px 12px;font-size:13px;background:var(--flame-soft);color:var(--fg);border:1px solid var(--flame)}
+.evaviso.ok{background:var(--sea-soft);border-color:var(--sea)}
+@media (max-width:480px){.evrow{grid-template-columns:1fr}}
+/* Canciones (Música) */
+.kanban{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,1fr);gap:12px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.kcol{background:var(--surface);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:120px;scroll-snap-align:start}
+.kcol h4{margin:2px 4px 2px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800}
+.kcol h4 span{font-family:var(--mono);font-weight:500;font-size:12px;color:var(--muted)}
+.kcol h4 i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.kcol .vacio{font-size:12.5px;color:var(--muted);padding:4px 6px}
+.ccard{width:100%;text-align:left;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;cursor:pointer;color:var(--fg);font:inherit}
+.ccard:hover{border-color:var(--area-ink)}
+.ccard.nueva{border-color:var(--area);box-shadow:inset 4px 0 0 var(--area)}
+.ccard strong{font-family:var(--display);font-weight:800;font-size:16px;line-height:1.2;overflow-wrap:anywhere}
+.ccard .art{font-size:13px;color:var(--muted);font-weight:600}
+.ccard .mini{height:5px;border-radius:99px;background:var(--surface);overflow:hidden}
+.ccard .mini i{display:block;height:100%;background:var(--area)}
+.cpill{display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:99px;font-weight:800;font-size:11.5px;background:color-mix(in srgb,var(--c) 18%,var(--bg));color:var(--fg);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 45%,transparent);white-space:nowrap}
+.ligasart{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;width:100%}
+.ligasart li{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;background:var(--bg);border-radius:10px;padding:8px 10px;font-size:14px}
+.ligasart li b{flex:1;min-width:120px}
+.ligasart li small{font-family:var(--mono);color:var(--muted);font-size:11.5px}
+.ligasart li.off{opacity:.55}
+.ligaform{display:flex;gap:8px;flex-wrap:wrap;width:100%}
+.ligaform .field{flex:1;min-width:180px;height:40px}
+.ligaform .btn{height:40px}
+.check14{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.check14 li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:7px 4px;border-bottom:1px solid var(--line);font-size:14px}
+.check14 li:last-child{border-bottom:0}
+.check14 li.ok span{color:var(--muted);text-decoration:line-through}
+.check14 small{font-family:var(--mono);color:var(--muted);font-size:11.5px;text-align:right}
+.check14 .fase{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none}
+.chip.cvinc{cursor:pointer;background:var(--flame-soft);color:var(--flame);border-color:transparent}
+.csem{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 /* Entradas de formación */
 .eliga{display:flex;flex-wrap:wrap;gap:24px 16px;align-items:center;justify-content:space-between;background:var(--area-soft);border-radius:16px;padding:18px 20px}
 .eliga h3{margin:0;font-family:var(--display);font-weight:900;font-size:18px}
@@ -669,6 +762,20 @@ select:disabled{cursor:default;opacity:.7}
 </head>
 <body>
 
+<div class="cropper" id="evModal" role="dialog" aria-modal="true" aria-labelledby="evTitle" hidden>
+  <form class="cropcard evcard" id="evForm" autocomplete="off">
+    <h3 id="evTitle">Agendar</h3>
+    <label>Título<input class="field" id="evTitulo" maxlength="140" required placeholder="Ej. Ensayo general, Producción de «Canción»"></label>
+    <div class="evrow"><label>Tipo<select class="field" id="evTipo"></select></label><label>Área<select class="field" id="evArea"></select></label></div>
+    <label id="evCancionW" hidden>Canción<select class="field" id="evCancion"></select></label>
+    <div class="evrow"><label>Fecha<input type="date" class="field" id="evFecha" required></label><label><span>Hasta el <small>(opcional)</small></span><input type="date" class="field" id="evFin"></label></div>
+    <div class="evrow"><label><span>Hora <small>(opcional)</small></span><input type="time" class="field" id="evHora"></label><label>Repetir<select class="field" id="evRepetir"></select></label></div>
+    <label id="evHastaW" hidden><span>Repetir hasta <small>(opcional)</small></span><input type="date" class="field" id="evHasta"></label>
+    <div class="evaviso" id="evAviso" hidden></div>
+    <label><span>Notas <small>(opcional)</small></span><textarea id="evNotas" maxlength="1000" rows="2" placeholder="Lugar, quién va, qué llevar…"></textarea></label>
+    <div class="evacts"><button type="button" class="btn ghost sm" id="evBorrar">Borrar</button><button type="button" class="btn ghost sm" id="evSoloEste" hidden>Quitar solo este día</button><span class="sp"></span><button type="button" class="btn ghost" id="evCancelar">Cancelar</button><button class="btn" type="submit">Guardar</button></div>
+  </form>
+</div>
 <div class="cropper" id="cropper" role="dialog" aria-modal="true" aria-labelledby="cropTitle" hidden>
   <div class="cropcard">
     <h3 id="cropTitle">Ajusta la foto</h3>
@@ -700,6 +807,7 @@ select:disabled{cursor:default;opacity:.7}
     <button type="button" class="sideclose" id="sideClose" aria-label="Cerrar menú"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <nav class="areanav" aria-label="Secciones">
+    <a href="#dashboard" data-route="dashboard" style="--c:var(--fg);--on:var(--bg)"><span class="ic" data-ic="dashboard"></span><span class="lb">Dashboard</span><span class="cnt" data-cnt="dashboard"></span></a>
     <a href="#" data-route="yo" id="navYo" style="--c:var(--mia,var(--flame));--on:var(--mia-on,#fff)" hidden><span class="ic" data-ic="yo"></span><span class="lb">Mi trabajo</span><span class="cnt" data-cnt="yo"></span></a>
     <div class="sidesec">Áreas</div>
     <a href="#formacion" data-route="formacion" style="--c:var(--sea);--on:#fff"><span class="ic" data-ic="formacion"></span><span class="lb">Formación</span><span class="cnt" data-cnt="formacion"></span></a>
@@ -824,6 +932,12 @@ select:disabled{cursor:default;opacity:.7}
       </div>
     </section>
 
+    <!-- Dashboard: calendario semanal, disponibilidad de producción y pendientes generales -->
+    <section class="view" id="vDash" hidden></section>
+
+    <!-- Canciones: registro de canciones por producir (Música) -->
+    <section class="view" id="vCanciones" hidden></section>
+
     <!-- Entradas: respuestas del formulario público de Formación -->
     <section class="view" id="vEntradas" hidden></section>
 
@@ -926,6 +1040,8 @@ select:disabled{cursor:default;opacity:.7}
 <script src="config.js"></script>
 <!-- Preguntas del formulario público de Formación (las mismas que usa entrada/) -->
 <script src="campos-entrada.js"></script>
+<!-- Preguntas del formulario de canciones, etapas y checklist de producción -->
+<script src="campos-cancion.js"></script>
 <script>
 (function(){
 const DIAS=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
@@ -946,6 +1062,7 @@ const AREA_ICON={
  pm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
  equipo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14.5c2.4 0 4 1.5 4.5 4"/></svg>'};
 AREA_ICON.persona=AREA_ICON.equipo;
+AREA_ICON.dashboard='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16.5" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4M7.5 13.5h3M13.5 13.5h3M7.5 17h3"/></svg>';
 const AREA_TABS=[["tasks","Pendientes"],["report","Reporte diario"],["month","Mes"],["logros","Logros"]];
 const PM_TABS=[["week","Semana"],["month","Mes"],["year","Año"],["tasks","Tareas"],["team","Equipo"]];
 const PM_SOLO=["tasks","team"];
@@ -1110,10 +1227,10 @@ function shortRange(ws,ms){const r=monthRange(ms);let a=ws,b=addDays(ws,6);if(ke
 function heat(n){return n<=0?"":n<=2?"h1":n<=4?"h2":"h3"}
 
 /* Navegación */
-function scope(){if(route==="equipo")return "team";if(route==="persona")return "week";if(route==="pm")return pmView==="tasks"?"week":pmView;const v=areaView[route];if(v==="entradas")return "entradas";return v==="tasks"||v==="report"?"week":"month"}
+function scope(){if(route==="equipo")return "team";if(route==="dashboard")return "week";if(route==="persona")return "week";if(route==="pm")return pmView==="tasks"?"week":pmView;const v=areaView[route];if(v==="entradas"||v==="canciones")return v;return v==="tasks"||v==="report"?"week":"month"}
 function readHash(){const h=decodeURIComponent((location.hash||"").replace("#","").split("&")[0]);
   if(h.startsWith("persona/")){route="persona";personaId=h.slice(8);return}
-  route=(AREAS[h]||h==="pm"||h==="equipo")?h:"formacion"}
+  route=(AREAS[h]||h==="pm"||h==="equipo"||h==="dashboard")?h:"formacion"}
 window.addEventListener("hashchange",()=>{readHash();render();window.scrollTo(0,0)});
 
 /* Acciones de tareas */
@@ -1164,7 +1281,7 @@ function confirmDel(btn,id,fn){
 /* ---------- Render ---------- */
 /* Cambios que llegan en tiempo real: vuelve a pintar sin perder el campo que se está escribiendo */
 function renderKeep(){const ae=document.activeElement;
-  if((ae&&ae.id==="eNotas")||arrastre){esperaRender=true;return}
+  if((ae&&(ae.id==="eNotas"||ae.id==="cNotas"))||arrastre||!$("evModal").hidden){esperaRender=true;return}
   if(ae&&ae.dataset&&ae.dataset.grip){const g=ae.dataset.grip;render();const n=document.querySelector(`[data-grip="${g}"]`);if(n)n.focus();return}
   const sel=!ae||!ae.matches("input,textarea")||ae.classList.contains("otro-in")?null:ae.id?"#"+CSS.escape(ae.id):
     ["tedit","snota","hecha"].map(k=>ae.dataset[k]!=null?`[data-${k}="${CSS.escape(ae.dataset[k])}"]`+(k==="tedit"?`[data-f="${ae.dataset.f}"]`:""):"").find(Boolean)||null;
@@ -1173,17 +1290,18 @@ function renderKeep(){const ae=document.activeElement;
   const v=ae.value,a=ae.selectionStart,b=ae.selectionEnd;render();const n=document.querySelector(sel);
   if(n&&n!==ae){n.value=v;n.focus();try{n.setSelectionRange(a,b)}catch(e){}}}
 function render(){
-  const isPM=route==="pm",P=route==="equipo"||route==="persona",A=!isPM&&!P;
+  const isPM=route==="pm",D=route==="dashboard",P=route==="equipo"||route==="persona"||D,A=!isPM&&!P;
   const pp=route==="persona"?perfiles.find(x=>x.id===personaId):null;
-  document.body.dataset.area=P?(pp&&pp.id!==(perfil&&perfil.id)?areaPrincipal(pp):miArea()):isPM?miArea():route;
+  document.body.dataset.area=D?miArea():P?(pp&&pp.id!==(perfil&&perfil.id)?areaPrincipal(pp):miArea()):isPM?miArea():route;
   pintarMenu();
-  const nombre=P?(route==="equipo"?"Equipo":pp?pp.nombre:"Perfil"):isPM?"Project Manager":AREAS[route].n;
+  const nombre=D?"Dashboard":P?(route==="equipo"?"Equipo":pp?pp.nombre:"Perfil"):isPM?"Project Manager":AREAS[route].n;
   $("areaTag").innerHTML=(AREA_ICON[route]||"")+esc(route==="persona"?"Perfil":nombre);
-  $("h1").innerHTML=route==="equipo"?`El equipo <em>en orden</em>`:route==="persona"?esc(nombre):isPM?`Las áreas <em>en orden</em>`:`La semana <em>en orden</em>`;
+  $("h1").innerHTML=D?`Todo el proyecto <em>en un vistazo</em>`:route==="equipo"?`El equipo <em>en orden</em>`:route==="persona"?esc(nombre):isPM?`Las áreas <em>en orden</em>`:`La semana <em>en orden</em>`;
   document.title=nombre+" · Bitácora Tiempo de Dios";
   // pestañas
   if(PM_SOLO.includes(pmView)&&!esPM())pmView="week";
   if(areaView.formacion==="entradas"&&!puedeEntradas())areaView.formacion="tasks";
+  if(areaView.musica==="canciones"&&!puedeMusica())areaView.musica="tasks";
   const tabs=P?[]:isPM?PM_TABS.filter(([k])=>!PM_SOLO.includes(k)||esPM()):areaTabs(route);const cur=P?route:isPM?pmView:areaView[route];
   const counts=P?{}:isPM?{tasks:tasks.filter(t=>t.semana===key(weekStart())&&!t.hecha).length}:tabCounts(route);
   $("tabs").innerHTML=tabs.map(([k,l])=>`<button class="tab" role="tab" data-tab="${k}" aria-selected="${k===cur}">${l}${counts[k]?`<span class="count">${counts[k]}</span>`:""}</button>`).join("");
@@ -1193,21 +1311,21 @@ function render(){
   const same=sc==="week"?key(weekStart())===key(mondayOf(now)):sc==="month"?(anchor.getFullYear()===now.getFullYear()&&anchor.getMonth()===now.getMonth()):anchor.getFullYear()===now.getFullYear();
   $("todayP").textContent=sc==="week"?"Esta semana":sc==="month"?"Este mes":"Este año";
   $("todayP").disabled=same;$("todayP").style.opacity=same?.45:1;
-  $("todayP").parentElement.style.display=sc==="team"||sc==="entradas"?"none":"";if(sc==="entradas")$("periodLabel").textContent=`Formulario para formadores · ${entradas.length} entrada${entradas.length===1?"":"s"}`;if(sc==="team")$("periodLabel").textContent=route==="equipo"?`${perfiles.length} persona${perfiles.length===1?"":"s"} en la bitácora`:"Administración del equipo";
+  $("todayP").parentElement.style.display=sc==="team"||sc==="entradas"||sc==="canciones"?"none":"";if(sc==="canciones")$("periodLabel").textContent=`Canciones por producir · ${canciones.filter(c=>c.etapa!=="completado").length} en proceso`;if(sc==="entradas")$("periodLabel").textContent=`Formulario para formadores · ${entradas.length} entrada${entradas.length===1?"":"s"}`;if(sc==="team")$("periodLabel").textContent=route==="equipo"?`${perfiles.length} persona${perfiles.length===1?"":"s"} en la bitácora`:"Administración del equipo";
   // datalists
   const projs=[...new Set(tasks.map(t=>t.proyecto).filter(Boolean))];
   $("projList").innerHTML=projs.map(p=>`<option value="${esc(p)}">`).join("");
   const people=[...new Set(tasks.flatMap(t=>[t.responsable,...t.subtareas.map(s=>s.responsable)]).concat(logros.map(l=>l.responsable)).concat(perfiles.map(p=>p.nombre)).filter(Boolean))];
   $("whoList").innerHTML=people.map(p=>`<option value="${esc(p)}">`).join("");
   // vistas
-  const show={vTasks:A&&cur==="tasks",vReport:A&&cur==="report",vMonth:A&&cur==="month",vLogros:A&&cur==="logros",vEntradas:A&&cur==="entradas",vPM:isPM&&!PM_SOLO.includes(cur),vPMTasks:isPM&&cur==="tasks",vTeam:isPM&&cur==="team",vPeople:route==="equipo",vPerson:route==="persona"};
+  const show={vTasks:A&&cur==="tasks",vReport:A&&cur==="report",vMonth:A&&cur==="month",vLogros:A&&cur==="logros",vEntradas:A&&cur==="entradas",vPM:isPM&&!PM_SOLO.includes(cur),vPMTasks:isPM&&cur==="tasks",vTeam:isPM&&cur==="team",vPeople:route==="equipo",vPerson:route==="persona",vDash:D,vCanciones:A&&cur==="canciones"};
   Object.entries(show).forEach(([id,v])=>{$(id).hidden=!v});
   if(A){const ro=!canEdit(route);const msg=ro?`Vista de solo lectura. Solo el equipo de ${AREAS[route].n} y la project manager pueden registrar aquí.`:"";
     $("roTasks").hidden=$("roLogros").hidden=!ro;$("roTasks").textContent=$("roLogros").textContent=msg;$("addForm").hidden=ro;$("logroForm").hidden=ro}
-  if(route==="equipo")renderPeople();else if(route==="persona")renderPerson();else if(isPM&&cur==="team")renderTeam();else if(isPM&&cur==="tasks")renderPMTasks();else if(isPM)renderPM();else if(cur==="tasks")renderTasks();else if(cur==="report")renderReport();else if(cur==="month")renderMonth();else if(cur==="entradas")renderEntradas();else renderLogros();
+  if(D)renderDashboard();else if(route==="equipo")renderPeople();else if(route==="persona")renderPerson();else if(isPM&&cur==="team")renderTeam();else if(isPM&&cur==="tasks")renderPMTasks();else if(isPM)renderPM();else if(cur==="tasks")renderTasks();else if(cur==="report")renderReport();else if(cur==="month")renderMonth();else if(cur==="entradas")renderEntradas();else if(cur==="canciones")renderCanciones();else renderLogros();
 }
 function tabCounts(a){const ws=weekStart(),ms=monthStart(),r=monthRange(ms);
-  return {tasks:weekTasksOf(a,ws).filter(t=>!t.hecha).length,report:logRange(key(ws),key(addDays(ws,6)),a).length,month:logRange(r.s,r.e,a).length,logros:logrosRange(r.s,r.e,a).length,entradas:a==="formacion"?entradas.filter(e=>e.estado==="nueva").length:0}}
+  return {tasks:weekTasksOf(a,ws).filter(t=>!t.hecha).length,report:logRange(key(ws),key(addDays(ws,6)),a).length,month:logRange(r.s,r.e,a).length,logros:logrosRange(r.s,r.e,a).length,entradas:a==="formacion"?entradas.filter(e=>e.estado==="nueva").length:0,canciones:a==="musica"?canciones.filter(c=>c.etapa==="intake").length:0}}
 
 /* Pendientes */
 function renderTasks(){
@@ -1296,7 +1414,7 @@ function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen
         <button class="check" role="checkbox" aria-checked="${!!t.hecha}" aria-label="Marcar ${esc(t.titulo)}" data-tt="${t.id}" ${ed?"":"disabled"}>${CHECK}</button>
         <div class="tbody">
           <button class="ttitle" data-open="${t.id}" aria-expanded="${isOpen}">${esc(t.titulo)}</button>
-          <div class="tmeta">${whoChip(t.responsable,t.responsable_id)}${t.proyecto?`<span class="chip">${esc(t.proyecto)}</span>`:""}${chipVence(t)}${t.subtareas.length?`<span>${subsDone}/${t.subtareas.length} subtareas</span>`:""}${t.hecha?`<span class="when">✓ ${DIAS[new Date(t.hecha).getDay()]} ${new Date(t.hecha).getDate()} ${MESES[new Date(t.hecha).getMonth()]} · ${hhmm(t.hecha)}</span>`:""}${t.nota&&!isOpen?`<button class="chip" type="button" data-open="${t.id}" style="cursor:pointer">📝 Nota</button>`:""}</div>
+          <div class="tmeta">${whoChip(t.responsable,t.responsable_id)}${t.proyecto?`<span class="chip">${esc(t.proyecto)}</span>`:""}${chipVence(t)}${t.subtareas.length?`<span>${subsDone}/${t.subtareas.length} subtareas</span>`:""}${t.hecha?`<span class="when">✓ ${DIAS[new Date(t.hecha).getDay()]} ${new Date(t.hecha).getDate()} ${MESES[new Date(t.hecha).getMonth()]} · ${hhmm(t.hecha)}</span>`:""}${t.nota&&!isOpen?`<button class="chip" type="button" data-open="${t.id}" style="cursor:pointer">📝 Nota</button>`:""}${t.cancion_id?`<button class="chip cvinc" type="button" data-vercancion="${esc(t.cancion_id)}">🎵 Ver canción</button>`:""}</div>
           ${ligasDe(t,eo?t.id+"|":"")}
         </div>
         <div class="tactions">
@@ -1398,29 +1516,30 @@ const ESTADOS=window.ESTADOS_ENTRADA||[["nueva","Nueva"],["revision","En revisi�
 const ESTADO_N=Object.fromEntries(ESTADOS);
 let entradas=[],loadedE=false,entradasErr="",entradaSel=null,filtroE="todas",esperaRender=false,entradasCh=null;
 function puedeEntradas(){return esPM()||enArea(perfil,"formacion")}
-function areaTabs(a){return a==="formacion"&&puedeEntradas()?[...AREA_TABS,["entradas","Entradas"]]:AREA_TABS}
+function areaTabs(a){return a==="formacion"&&puedeEntradas()?[...AREA_TABS,["entradas","Entradas"]]:a==="musica"&&puedeMusica()?[...AREA_TABS,["canciones","Canciones"]]:AREA_TABS}
 function ligaFormulario(){return location.origin+location.pathname.replace(/[^/]*$/,"")+"entrada/"}
 function vacioE(v){return v==null||(Array.isArray(v)?!v.length:String(v).trim()==="")}
 function aplicaE(c,d){if(!c.si)return true;const v=d[c.si.k];return Array.isArray(v)?v.includes(c.si.v):v===c.si.v}
 function fechaHora(iso){const d=new Date(iso);return `${d.getDate()} ${MESES[d.getMonth()]} ${d.getFullYear()} · ${hhmm(iso)}`}
 function estadoPill(k){return `<span class="epill e-${esc(k)}">${esc(ESTADO_N[k]||k)}</span>`}
 /* Documentos de un campo "files"; los que no traen un campo conocido van al último */
-function docsDe(e,k){const fk=CAMPOS.flatMap(s=>s.campos).filter(c=>c.tipo==="files").map(c=>c.k);
+function docsDe(e,k,campos){const fk=(campos||CAMPOS).flatMap(s=>s.campos).filter(c=>c.tipo==="files").map(c=>c.k);
   return (e.archivos||[]).filter(a=>(fk.includes(a.campo)?a.campo:fk[fk.length-1])===k)}
-function docChip(a){return `<button type="button" class="chip arch" data-earch="${esc(a.ruta)}" title="Abrir ${esc(a.nombre)}">${iconoArch({nombre:a.nombre,tipo:a.tipo})} ${esc(a.nombre)} <small>${tamDe(a.tamano||0)}</small></button>`}
+function docChip(a,attr){return `<button type="button" class="chip arch" data-${attr||"earch"}="${esc(a.ruta)}" title="Abrir ${esc(a.nombre)}">${iconoArch({nombre:a.nombre,tipo:a.tipo})} ${esc(a.nombre)} <small>${tamDe(a.tamano||0)}</small></button>`}
 function entradaCard(e){const d=e.data||{},n=(e.archivos||[]).length;
   return `<li><button type="button" class="ecard ${e.estado==="nueva"?"nueva":""}" data-entrada="${esc(e.id)}">
     <div class="etop">${estadoPill(e.estado)}${d.tipo?`<span class="chip tipo">${esc(d.tipo)}</span>`:""}<time datetime="${esc(e.creado)}">${fechaHora(e.creado)}</time></div>
     <strong>${esc(d.titulo||"Sin título")}</strong>
     <div class="tmeta"><span>${esc(d.nombre||"Sin nombre")}${d.organizacion?" · "+esc(d.organizacion):""}</span>${d.modalidad?`<span>${esc(d.modalidad)}</span>`:""}${d.duracion?`<span>${esc(d.duracion)}</span>`:""}<span>📎 ${n} documento${n===1?"":"s"}</span></div></button></li>`}
 const SIN_RESP=`<span class="esin">Sin respuesta</span>`;
-function valorE(c,v,e){
-  if(c.tipo==="files"){const fs=docsDe(e,c.k);return fs.length?`<div class="edocs">${fs.map(docChip).join("")}</div>`:`<span class="esin">Sin documentos</span>`}
+function valorE(c,v,e,campos,attr){
+  if(c.tipo==="files"){const fs=docsDe(e,c.k,campos);return fs.length?`<div class="edocs">${fs.map(a=>docChip(a,attr)).join("")}</div>`:`<span class="esin">Sin documentos</span>`}
   if(vacioE(v))return SIN_RESP;
   if(c.tipo==="multi")return `<div class="etags">${[].concat(v).map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div>`;
   if(c.tipo==="chips")return `<div class="etags"><span class="chip tipo">${esc(v)}</span></div>`;
   if(c.tipo==="modulos")return `<ol class="etemario">${[].concat(v).map(m=>`<li><div><strong>${esc(m.titulo||"Sin nombre")}</strong>${m.duracion?`<span>${esc(m.duracion)}</span>`:""}</div>${m.contenido?`<p>${esc(m.contenido)}</p>`:""}</li>`).join("")}</ol>`;
   if(c.tipo==="email")return `<a href="mailto:${esc(v)}">${esc(v)}</a>`;
+  if(/^https?:\/\/\S+$/.test(String(v).trim()))return `<a href="${esc(safeUrl(v))}" target="_blank" rel="noopener">${esc(v)} ↗</a>`;
   if(c.tipo==="tel")return `<a href="tel:${esc(String(v).replace(/[^\d+]/g,""))}">${esc(v)}</a>`;
   return `<p class="etexto">${esc(v)}</p>`}
 function detalleEntrada(e){const d=e.data||{};
@@ -1468,7 +1587,7 @@ function cargarEntradas(){if(entradasCh||!sb||!puedeEntradas())return;
 document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset.eestado){guardarEntrada(t.dataset.eestado,{estado:t.value},true);return}
   if(t.dataset.enotas){guardarEntrada(t.dataset.enotas,{notas:t.value.slice(0,5000)},false)}});
-document.addEventListener("focusout",e=>{if(e.target.id==="eNotas"&&esperaRender){esperaRender=false;setTimeout(renderKeep,0)}});
+document.addEventListener("focusout",e=>{if((e.target.id==="eNotas"||e.target.id==="cNotas")&&esperaRender){esperaRender=false;setTimeout(renderKeep,0)}});
 /* PDF de una entrada: todas las respuestas, el temario, los documentos y las notas */
 function entradaPDF(e){const d=e.data||{};
   const P=pdfWriter("Entrada de formación",clean(`${d.titulo||"Sin título"}${d.nombre?" · "+d.nombre:""}`).slice(0,86));
@@ -1488,6 +1607,206 @@ function descargarEntradaPDF(id){const e=entradas.find(x=>x.id===id);if(!e)retur
   try{const blob=entradaPDF(e),d=e.data||{},slug=nombreSeguro((d.titulo||"entrada").toLowerCase()).replace(/\./g,"-").slice(0,50);
     const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`TdD-entrada-${slug}-${String(e.creado).slice(0,10)}.pdf`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);toast("PDF descargado.")}
   catch(err){console.error(err);toast("No se pudo generar el PDF.")}}
+
+/* ---------- Calendario interno (Dashboard) ----------
+   Tabla "eventos" (migración 013). Cada evento: {titulo, tipo, fecha, fin?, hora?, repetir?, hasta?,
+   excepciones:[fechas], area, notas, cancion_id?, creado, creado_por}. Todo el equipo agenda.
+   Una producción ocupa una semana (lunes a viernes); la disponibilidad muestra las semanas libres. */
+const TIPOS_EV={produccion:["Producción","var(--flame)"],fijo:["Fecha fija","var(--sea)"],reunion:["Reunión","var(--baby)"],ensayo:["Ensayo","var(--sol)"],evento:["Evento","#8E6BD8"],grabacion:["Grabación o contenido","#D9558E"],otro:["Otro","#7C8786"]};
+const REPETIR={"":"No se repite",semanal:"Cada semana",quincenal:"Cada 2 semanas",mensual:"Cada mes",anual:"Cada año"};
+const DIAS_PROD=window.DIAS_PRODUCCION||["Maqueteo","Instrumentación","Creación de contenido","Cierre de instrumentación y voces","Edición, mezcla y master"];
+let eventos=[],loadedEv=false,eventosErr="",eventosCol=null,evEdit=null;
+function cargarCalendario(){if(eventosCol||!sb)return;eventosCol=makeCol("eventos");
+  eventosCol.onSnapshot(snap=>{eventos=snap.docs.map(d=>({...(d.data()||{}),id:d.id}));eventosErr="";loadedEv=true;renderKeep()},
+    err=>{eventosErr=/eventos|PGRST205|42P01/.test(err&&err.message||"")?"Falta correr la migración 013 en Supabase para usar el calendario.":"No se pudo leer el calendario: "+(err&&err.message||"");loadedEv=true;renderKeep()})}
+/* Fechas en que ocurre un evento entre desde y hasta (YYYY-MM-DD, inclusive) */
+function ocurrencias(ev,desde,hasta){const out=[];if(!ev.fecha)return out;
+  const ini0=fromKey(ev.fecha),dur=ev.fin&&ev.fin>ev.fecha?Math.round((fromKey(ev.fin)-ini0)/864e5):0,ex=ev.excepciones||[];
+  const lim=ev.hasta&&ev.hasta<hasta?ev.hasta:hasta;
+  const push=d=>{const a=key(d),b=key(addDays(d,dur));if(b>=desde&&a<=hasta&&!ex.includes(a))out.push({ev,ini:a,fin:b})};
+  if(!ev.repetir){push(ini0);return out}
+  for(let n=0;n<3000;n++){let d;
+    if(ev.repetir==="semanal")d=addDays(ini0,7*n);else if(ev.repetir==="quincenal")d=addDays(ini0,14*n);
+    else if(ev.repetir==="mensual")d=new Date(ini0.getFullYear(),ini0.getMonth()+n,ini0.getDate());
+    else if(ev.repetir==="anual")d=new Date(ini0.getFullYear()+n,ini0.getMonth(),ini0.getDate());else break;
+    if(key(d)>lim)break;
+    if(d.getDate()!==ini0.getDate())continue;  // 31 de un mes que no lo tiene: se salta
+    if(key(addDays(d,dur))<desde)continue;push(d)}
+  return out}
+function ocurrenciasRango(desde,hasta){return eventos.flatMap(ev=>ocurrencias(ev,desde,hasta))}
+function producciones(lunes){const v=key(addDays(fromKey(lunes),4));return ocurrenciasRango(lunes,v).filter(o=>o.ev.tipo==="produccion")}
+function colorEv(ev){return (TIPOS_EV[ev.tipo]||TIPOS_EV.otro)[1]}
+function cevHTML(o,k){const ev=o.ev,dia=Math.round((fromKey(k)-fromKey(o.ini))/864e5);
+  const sub=ev.tipo==="produccion"&&dia<5?DIAS_PROD[dia]:ev.fin&&ev.fin>ev.fecha?`Día ${dia+1} de ${Math.round((fromKey(o.fin)-fromKey(o.ini))/864e5)+1}`:"";
+  return `<button type="button" class="cev" style="--c:${colorEv(ev)}" data-evabrir="${esc(ev.id)}|${o.ini}">${ev.hora?`<span class="hr">${esc(ev.hora)}</span>`:""}<strong>${esc(ev.titulo||"Sin título")}</strong>${sub||ev.repetir?`<small>${sub?esc(sub):""}${ev.repetir?`${sub?" · ":""}↻ ${esc(REPETIR[ev.repetir].toLowerCase())}`:""}</small>`:""}</button>`}
+function renderDashboard(){const V=$("vDash"),ws=weekStart(),hoy=key(new Date());
+  const ks=[...Array(7)].map((_,i)=>key(addDays(ws,i))),occ=ocurrenciasRango(ks[0],ks[6]);
+  const abiertas=tasks.filter(t=>!t.hecha);
+  const dias=ks.map((k,i)=>{const d=fromKey(k),evs=occ.filter(o=>o.ini<=k&&o.fin>=k).sort((a,b)=>(a.ev.hora||"99").localeCompare(b.ev.hora||"99"));
+    const ts=abiertas.filter(t=>venceDe(t)===k),max=6;
+    return `<div class="cdia ${i>4?"finde":""} ${k===hoy?"hoy":""} ${!evs.length&&!ts.length&&k!==hoy?"vacio":""}"><div class="cdh"><span>${DIAS[d.getDay()].slice(0,3)}</span><b>${d.getDate()}</b></div>
+      ${evs.map(o=>cevHTML(o,k)).join("")}
+      ${ts.slice(0,max).map(t=>`<button type="button" class="ctask ${k<hoy?"atr":""}" style="--c:${AREAS[areaOf(t)].c}" data-irtarea="${esc(areaOf(t))}" title="${esc(AREAS[areaOf(t)].n)} · ${esc(t.responsable||"")}"><i></i><span>${esc(t.titulo)}</span></button>`).join("")}
+      ${ts.length>max?`<span class="cmore">+${ts.length-max} pendientes más</span>`:""}
+      <button type="button" class="cmas" data-evnuevo="${k}" aria-label="Agendar el ${DIAS[d.getDay()]} ${d.getDate()}" title="Agendar este día">+</button></div>`}).join("");
+  // disponibilidad de producción: 12 semanas desde la actual
+  const l0=mondayOf(new Date());
+  const disp=[...Array(12)].map((_,i)=>{const l=key(addDays(l0,7*i)),ps=producciones(l),v=addDays(fromKey(l),4);
+    const rango=`${fromKey(l).getDate()} ${MESES[fromKey(l).getMonth()]} – ${v.getDate()} ${MESES[v.getMonth()]}`;
+    return ps.length?`<button type="button" class="dsem ${ps.length>1?"doble":"ocupada"}" data-evabrir="${esc(ps[0].ev.id)}|${ps[0].ini}"><time>${rango}</time><b>${ps.length>1?`Doble agenda · ${ps.length}`:esc(ps[0].ev.titulo)}</b></button>`
+      :`<button type="button" class="dsem libre" data-evprod="${l}"><time>${rango}</time><b>Libre</b></button>`}).join("");
+  // pendientes generales de la semana
+  const wk=key(ws),porArea=AREA_IDS.map(a=>{const t=tasks.filter(x=>x.semana===wk&&areaOf(x)===a),h=t.filter(x=>x.hecha).length;return {a,n:t.length,h}});
+  const atr=abiertas.filter(t=>venceDe(t)<hoy).sort((a,b)=>venceDe(a)<venceDe(b)?-1:1);
+  V.innerHTML=`<div class="dhead"><div class="dleyenda">${Object.values(TIPOS_EV).map(([n,c])=>`<span><i style="--c:${c}"></i>${n}</span>`).join("")}<span><i style="--c:var(--muted);border-radius:50%"></i>Pendiente que vence ese día</span></div>
+      <button type="button" class="btn" data-evnuevo="">+ Agendar</button></div>
+    ${eventosErr?`<div class="readonly">${esc(eventosErr)}</div>`:""}
+    <div class="cal7" aria-label="Calendario de la semana">${dias}</div>
+    <div class="dgrid">
+      <div class="dpanel"><h3>Disponibilidad de producción</h3><p>Una canción ocupa una semana completa, de lunes a viernes. Toca una semana libre para agendarla.</p><div class="disp">${disp}</div></div>
+      <div class="dpanel"><h3>Pendientes de la semana</h3>
+        <div class="dareas">${porArea.map(x=>`<div class="dar" style="--c:${AREAS[x.a].c}"><span>${AREAS[x.a].n}</span><div class="trk"><i style="width:${x.n?Math.round(x.h/x.n*100):0}%"></i></div><small>${x.h}/${x.n}</small></div>`).join("")}</div>
+        ${atr.length?`<h3 style="font-size:15px;margin-top:6px">Atrasadas · ${atr.length}</h3><ul class="datr">${atr.slice(0,8).map(t=>`<li style="--c:${AREAS[areaOf(t)].c}"><i></i><span>${esc(t.titulo)}</span><small>${Math.round((fromKey(hoy)-fromKey(venceDe(t)))/864e5)} d</small></li>`).join("")}</ul>${atr.length>8?`<span class="cmore" style="padding:0">+${atr.length-8} más</span>`:""}`:`<p class="none" style="margin:0">Nada atrasado. 🙌</p>`}
+      </div>
+    </div>`}
+/* ---------- Formulario para agendar ---------- */
+function abrirEvento(id,fecha,base){const ev=id?eventos.find(x=>x.id===id):null;if(id&&!ev)return;
+  evEdit={id:ev?ev.id:null,ocurrencia:fecha||null};const v=ev||Object.assign({titulo:"",tipo:"fijo",fecha:fecha||key(new Date()),fin:"",hora:"",repetir:"",hasta:"",area:"general",notas:""},base||{});
+  $("evTitle").textContent=ev?"Editar fecha":"Agendar";
+  $("evTipo").innerHTML=Object.entries(TIPOS_EV).map(([k,[n]])=>`<option value="${k}">${n}</option>`).join("");
+  $("evArea").innerHTML=`<option value="general">General</option>`+AREA_IDS.map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("");
+  $("evRepetir").innerHTML=Object.entries(REPETIR).map(([k,n])=>`<option value="${k}">${n}</option>`).join("");
+  $("evCancion").innerHTML=`<option value="">Sin canción ligada</option>`+canciones.filter(c=>c.etapa!=="completado").map(c=>`<option value="${esc(c.id)}">${esc((c.data||{}).titulo||"Sin título")} · ${esc(artistaDe(c))}</option>`).join("");
+  $("evTitulo").value=v.titulo||"";$("evTipo").value=TIPOS_EV[v.tipo]?v.tipo:"otro";$("evArea").value=v.area||"general";$("evFecha").value=v.fecha||"";$("evFin").value=v.fin||"";
+  $("evHora").value=v.hora||"";$("evRepetir").value=v.repetir||"";$("evHasta").value=v.hasta||"";$("evNotas").value=v.notas||"";$("evCancion").value=v.cancion_id||"";
+  $("evBorrar").hidden=!ev;$("evBorrar").textContent=ev&&ev.repetir?"Borrar toda la serie":"Borrar";$("evSoloEste").hidden=!(ev&&ev.repetir&&fecha);
+  evCampos();$("evModal").hidden=false;setTimeout(()=>$("evTitulo").focus(),30)}
+function cerrarEvento(){$("evModal").hidden=true;evEdit=null;if(esperaRender){esperaRender=false;render()}}
+/* Muestra u oculta campos y avisa si la semana de producción ya está ocupada */
+function evCampos(){const tipo=$("evTipo").value,prod=tipo==="produccion";
+  $("evCancionW").hidden=!prod||!puedeMusica()&&!$("evCancion").value;$("evHastaW").hidden=!$("evRepetir").value;
+  if(prod&&$("evFecha").value){const l=mondayOf(fromKey($("evFecha").value));if(!$("evFin").value||$("evFin").value<$("evFecha").value)$("evFin").value=key(addDays(l,4));
+    if($("evFecha").value!==key(l)&&!evEdit.id)$("evFecha").value=key(l);
+    const otras=producciones(key(l)).filter(o=>o.ev.id!==evEdit.id);
+    $("evAviso").hidden=false;$("evAviso").className="evaviso"+(otras.length?"":" ok");
+    $("evAviso").textContent=otras.length?`Esa semana ya tiene producción: ${otras.map(o=>o.ev.titulo).join(", ")}. Una canción ocupa la semana completa.`:"Semana libre para producir (lunes a viernes)."}
+  else $("evAviso").hidden=true}
+["evTipo","evFecha","evRepetir"].forEach(i=>$(i).addEventListener("change",evCampos));
+$("evCancion").addEventListener("change",()=>{const c=canciones.find(x=>x.id===$("evCancion").value);if(c&&(!$("evTitulo").value||/^Producción/.test($("evTitulo").value)))$("evTitulo").value=`Producción · «${(c.data||{}).titulo||"Sin título"}»`});
+$("evCancelar").onclick=cerrarEvento;
+$("evModal").addEventListener("click",e=>{if(e.target===$("evModal"))cerrarEvento()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("evModal").hidden)cerrarEvento()});
+function guardarEvento(ev){const {id,...b}=ev;return write(id,()=>eventosCol.doc(id).set(b))}
+$("evForm").addEventListener("submit",e=>{e.preventDefault();if(!eventosCol||!evEdit)return;
+  const fecha=$("evFecha").value,fin=$("evFin").value;if(!fecha||!$("evTitulo").value.trim())return;
+  if(fin&&fin<fecha){toast("«Hasta el» no puede ser antes de la fecha.");return}
+  const prev=evEdit.id?eventos.find(x=>x.id===evEdit.id):null;
+  const ev={...(prev||{}),id:evEdit.id||uid(),titulo:$("evTitulo").value.trim().slice(0,140),tipo:$("evTipo").value,fecha,fin:fin&&fin>fecha?fin:"",hora:$("evHora").value,
+    repetir:$("evRepetir").value,hasta:$("evRepetir").value?$("evHasta").value:"",area:$("evArea").value,notas:$("evNotas").value.trim().slice(0,1000),
+    cancion_id:$("evTipo").value==="produccion"?$("evCancion").value||null:null};
+  if(!prev){ev.creado=new Date().toISOString();ev.creado_por=perfil?perfil.id:null;ev.excepciones=[]}
+  const i=eventos.findIndex(x=>x.id===ev.id);if(i>=0)eventos[i]=ev;else eventos.push(ev);
+  guardarEvento(ev);
+  if(ev.cancion_id)agendarCancion(ev.cancion_id,mondayOf(fromKey(ev.fecha)));
+  cerrarEvento();render();toast(prev?"Cambios guardados.":"Agendado.")});
+$("evBorrar").onclick=()=>{const id=evEdit&&evEdit.id;if(!id)return;const ev=eventos.find(x=>x.id===id);
+  if(!confirm(ev&&ev.repetir?"¿Borrar todas las fechas de esta serie?":"¿Borrar esta fecha del calendario?"))return;
+  eventos=eventos.filter(x=>x.id!==id);write(id,()=>eventosCol.doc(id).delete());cerrarEvento();render();toast("Borrado del calendario.")};
+$("evSoloEste").onclick=()=>{const ev=evEdit&&eventos.find(x=>x.id===evEdit.id);if(!ev||!evEdit.ocurrencia)return;
+  ev.excepciones=[...new Set([...(ev.excepciones||[]),evEdit.ocurrencia])];guardarEvento(ev);cerrarEvento();render();toast("Se quitó solo ese día.")};
+
+/* ---------- Canciones por producir (Música) ----------
+   Tablas "canciones" y "ligas_artistas" (migración 013). Las preguntas salen de campos-cancion.js. */
+const CAMPOS_C=window.CAMPOS_CANCION||[],ETAPAS=window.ETAPAS_CANCION||[],CHECK14=window.CHECKLIST_CANCION||[];
+const ETAPA_N=Object.fromEntries(ETAPAS.map(([k,n])=>[k,n]));
+const ETAPA_C={intake:"var(--baby)",preproduccion:"var(--sol)",agendada:"#8E6BD8",produccion:"var(--flame)",registro:"#D9558E",marketing:"var(--sea)",completado:"#4CAF7A",bloqueado:"#7C8786"};
+let canciones=[],ligas=[],loadedC=false,cancionesErr="",cancionSel=null,cancionesCh=null;
+function puedeMusica(){return esPM()||enArea(perfil,"musica")}
+function artistaDe(c){const d=c.data||{},l=ligas.find(x=>x.id===c.liga);return d.nombreArtistico||d.nombre||(l&&l.nombre)||"Artista"}
+function ligaCancion(id){return location.origin+location.pathname.replace(/[^/]*$/,"")+"cancion/?l="+id}
+function cargarCanciones(){if(cancionesCh||!sb||!puedeMusica())return;
+  const load=async()=>{const [c,l]=await Promise.all([sb.from("canciones").select("*").order("creado",{ascending:false}).limit(2000),sb.from("ligas_artistas").select("*").order("creado",{ascending:false}).limit(1000)]);
+    const err=c.error||l.error;
+    if(err)cancionesErr=/canciones|ligas_artistas|PGRST205|42P01/.test((err.message||"")+(err.code||""))?"Falta correr la migración 013 en Supabase para registrar canciones.":"No se pudieron leer las canciones: "+err.message;
+    else{canciones=c.data||[];ligas=l.data||[];cancionesErr=""}
+    loadedC=true;renderKeep()};
+  const upd=(arr,p,nueva)=>{if(p.eventType==="DELETE")return arr.filter(x=>x.id!==(p.old&&p.old.id));const i=arr.findIndex(x=>x.id===p.new.id);if(i>=0){arr[i]=p.new;return arr}nueva&&nueva(p.new);return [p.new,...arr]};
+  cancionesCh=sb.channel("rt-canciones")
+    .on("postgres_changes",{event:"*",schema:"public",table:"canciones"},p=>{canciones=upd(canciones,p,c=>{if(p.eventType==="INSERT")toast(`Nueva canción registrada: «${(c.data||{}).titulo||"Sin título"}»`)});renderKeep()})
+    .on("postgres_changes",{event:"*",schema:"public",table:"ligas_artistas"},p=>{ligas=upd(ligas,p);renderKeep()})
+    .subscribe(st=>{if(st==="SUBSCRIBED")load()})}
+function etapaPill(k){return `<span class="cpill" style="--c:${ETAPA_C[k]||"var(--muted)"}">${esc(ETAPA_N[k]||k)}</span>`}
+function semanaTxt(k){const l=fromKey(k),v=addDays(l,4);return `${l.getDate()} ${MESES[l.getMonth()]} – ${v.getDate()} ${MESES[v.getMonth()]}`}
+function ccardHTML(c){const d=c.data||{},n=Object.keys(c.checklist||{}).length;
+  return `<button type="button" class="ccard ${c.etapa==="intake"?"nueva":""}" data-cancion="${esc(c.id)}"><strong>${esc(d.titulo||"Sin título")}</strong><span class="art">${esc(artistaDe(c))}</span>
+    <div class="tmeta">${d.bpm?`<span>${esc(d.bpm)} BPM</span>`:""}${d.tonalidad?`<span>${esc(d.tonalidad)}</span>`:""}${c.semana?`<span class="chip tipo">🗓 ${semanaTxt(c.semana)}</span>`:""}${(c.archivos||[]).length?`<span>📎 ${(c.archivos||[]).length}</span>`:""}</div>
+    <div class="mini" title="${n} de ${CHECK14.length} pasos"><i style="width:${Math.round(n/CHECK14.length*100)}%"></i></div></button>`}
+function renderCanciones(){const V=$("vCanciones");
+  if(!puedeMusica()){V.innerHTML=`<div class="readonly">Solo el equipo de Música y la project manager pueden ver las canciones.</div>`;return}
+  if(cancionSel){const c=canciones.find(x=>x.id===cancionSel);if(c){V.innerHTML=detalleCancion(c);return}if(loadedC)cancionSel=null}
+  const cuenta=id=>canciones.filter(c=>c.liga===id).length;
+  V.innerHTML=`<div class="eliga" style="flex-direction:column;align-items:stretch">
+      <div><h3>Ligas para artistas</h3><p>Crea una liga personal para cada artista. Con ella registra sus canciones (letra, BPM, referencias y demo). Puedes desactivarla cuando quieras.</p></div>
+      <form class="ligaform" id="ligaForm"><input class="field" id="ligaNombre" maxlength="120" placeholder="Nombre del artista o ministerio" aria-label="Nombre del artista"><button class="btn" type="submit">Crear liga</button></form>
+      ${ligas.length?`<ul class="ligasart">${ligas.map(l=>`<li class="${l.activa?"":"off"}"><b>${esc(l.nombre)}</b><small>${cuenta(l.id)} canci${cuenta(l.id)===1?"ón":"ones"} · ${l.activa?"activa":"desactivada"}</small>${l.activa?`<button type="button" class="btn sm" data-copiarligac="${esc(l.id)}">Copiar liga</button>`:""}<button type="button" class="btn ghost sm" data-ligaonoff="${esc(l.id)}">${l.activa?"Desactivar":"Activar"}</button></li>`).join("")}</ul>`:""}
+    </div>
+    ${cancionesErr?`<div class="readonly">${esc(cancionesErr)}</div>`:""}
+    ${!loadedC?`<div class="none">Cargando canciones…</div>`:!canciones.length?`<div class="empty"><strong>Aún no hay canciones registradas</strong><p>Crea una liga para un artista y compártesela. Cuando registre su canción aparecerá aquí, y a Ariel y a Memo les llegará la tarea de agendar su producción.</p></div>`:
+    `<div class="kanban">${ETAPAS.map(([k,n])=>{const cs=canciones.filter(c=>c.etapa===k);return `<div class="kcol"><h4 style="--c:${ETAPA_C[k]}"><i></i>${esc(n)}<span>${cs.length}</span></h4>${cs.length?cs.map(ccardHTML).join(""):`<span class="vacio">—</span>`}</div>`}).join("")}</div>`}`}
+function detalleCancion(c){const d=c.data||{},ck=c.checklist||{},hechos=Object.keys(ck).length;
+  return `<div class="edet">
+    <button type="button" class="btn ghost sm eback" data-cvolver="1">← Todas las canciones</button>
+    <div class="ehead"><div class="etop">${etapaPill(c.etapa)}${d.tipo?`<span class="chip tipo">${esc(d.tipo)}</span>`:""}<time datetime="${esc(c.creado)}">Registrada el ${fechaHora(c.creado)}</time></div>
+      <h2>${esc(d.titulo||"Sin título")}</h2><p>${esc(artistaDe(c))}${d.nombre&&d.nombreArtistico?" · "+esc(d.nombre):""}${d.bpm?" · "+esc(d.bpm)+" BPM":""}${d.tonalidad?" · "+esc(d.tonalidad):""}</p>
+      <div class="rbtns"><button type="button" class="btn" data-cagendar="${esc(c.id)}">${c.semana?"Cambiar semana de producción":"Agendar semana de producción"}</button>${esPM()?`<button type="button" class="icon del" data-cdel="${esc(c.id)}" aria-label="Borrar canción" title="Borrar canción y sus archivos">${ICON_DEL}</button>`:""}</div></div>
+    <div class="egestion">
+      <label for="cEtapa">Etapa<select class="field" id="cEtapa" data-cetapa="${esc(c.id)}">${ETAPAS.map(([k,n])=>`<option value="${k}" ${c.etapa===k?"selected":""}>${esc(n)}</option>`).join("")}</select><small class="ehint">${esc((ETAPAS.find(x=>x[0]===c.etapa)||[])[2]||"")}</small></label>
+      <label for="cNotas">Notas internas del equipo<textarea id="cNotas" data-cnotas="${esc(c.id)}" maxlength="5000" rows="4" placeholder="Acuerdos de las asesorías, costos de stems, motivo si está bloqueada… Solo las ve el equipo.">${esc(c.notas||"")}</textarea><small class="ehint">Se guardan al salir del campo. El artista no las ve.</small></label>
+    </div>
+    <section class="esec"><h3><span class="n">✓</span>Checklist de producción · ${hechos}/${CHECK14.length}</h3>
+      <div class="dpanel"><div class="csem"><b>Semana de producción:</b> ${c.semana?`<span class="chip tipo">${semanaTxt(c.semana)}</span>`:`<span class="esin">Sin agendar</span>`}</div>
+      <ul class="check14">${CHECK14.map(([t,f,r],i)=>{const n=String(i+1),h=ck[n];return `<li class="${h?"ok":""}"><button type="button" class="check" role="checkbox" aria-checked="${!!h}" aria-label="${esc(t)}" data-cpaso="${esc(c.id)}|${n}">${CHECK}</button><span>${n}. ${esc(t)}<span class="fase">${esc(f)} · ${esc(r)}</span></span><small>${h?shortDate(h.slice(0,10)):""}</small></li>`}).join("")}</ul></div></section>
+    ${CAMPOS_C.map((s,i)=>`<section class="esec"><h3><span class="n">${i+1}</span>${esc(s.titulo)}</h3><dl>${s.campos.filter(x=>aplicaE(x,d)).map(x=>`<div class="eq"><dt>${esc(x.l)}</dt><dd>${valorE(x,d[x.k],c,CAMPOS_C,"carch")}</dd></div>`).join("")}</dl></section>`).join("")}
+  </div>`}
+async function guardarCancion(id,cambios,repintar,msg){const c=canciones.find(x=>x.id===id);if(!c||!sb)return;const antes={...c};Object.assign(c,cambios);if(repintar)render();
+  const {data,error}=await sb.from("canciones").update(cambios).eq("id",id).select("id");
+  if(error||!data||!data.length){Object.assign(c,antes);render();toast("No se pudo guardar el cambio"+(error?": "+error.message:"."));return}
+  if(msg)toast(msg)}
+/* Al agendar su producción: guarda la semana, marca el paso 5 y la pasa a "Agendada" si iba antes */
+function agendarCancion(id,lunes){const c=canciones.find(x=>x.id===id);if(!c)return;
+  const cambios={semana:key(lunes),checklist:{...(c.checklist||{}),"5":(c.checklist||{})["5"]||new Date().toISOString()}};
+  if(["intake","preproduccion"].includes(c.etapa))cambios.etapa="agendada";
+  guardarCancion(id,cambios,true)}
+function proximaLibre(){let l=mondayOf(new Date());for(let i=0;i<52;i++){const k=key(addDays(l,7*i));if(!producciones(k).length)return k}return key(l)}
+document.addEventListener("change",e=>{const t=e.target;
+  if(t.dataset.cetapa){guardarCancion(t.dataset.cetapa,{etapa:t.value},true,`Etapa: ${ETAPA_N[t.value]}.`);return}
+  if(t.dataset.cnotas){guardarCancion(t.dataset.cnotas,{notas:t.value.slice(0,5000)},false,"Notas guardadas.")}});
+document.addEventListener("submit",async e=>{if(e.target.id!=="ligaForm")return;e.preventDefault();const n=$("ligaNombre").value.trim();if(!n||!sb)return;
+  const {data,error}=await sb.from("ligas_artistas").insert({nombre:n.slice(0,120)}).select().single();
+  if(error){toast("No se pudo crear la liga: "+error.message);return}
+  if(!ligas.some(x=>x.id===data.id))ligas.unshift(data);render();copiarTexto(ligaCancion(data.id),`Liga de ${n} creada y copiada. Compártela solo con esa persona.`)});
+function copiarTexto(txt,ok){(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast(ok),()=>window.prompt("Copia la liga:",txt))}
+async function borrarCancion(id){const c=canciones.find(x=>x.id===id);if(!c||!sb)return;
+  const {error}=await sb.from("canciones").delete().eq("id",id);if(error){toast("No se pudo borrar: "+error.message);return}
+  const rutas=(c.archivos||[]).map(a=>a.ruta).filter(Boolean);if(rutas.length)sb.storage.from("canciones").remove(rutas).catch(()=>{});
+  canciones=canciones.filter(x=>x.id!==id);cancionSel=null;render();toast("Canción borrada, con sus archivos.")}
+/* Clics del calendario y de canciones */
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const ds=b.dataset;
+  if(ds.evnuevo!==undefined){abrirEvento(null,ds.evnuevo||key(new Date()));return}
+  if(ds.evabrir){const [id,f]=ds.evabrir.split("|");abrirEvento(id,f);return}
+  if(ds.evprod){abrirEvento(null,ds.evprod,{tipo:"produccion",area:"musica",titulo:"Producción · ",fin:key(addDays(fromKey(ds.evprod),4))});return}
+  if(ds.irtarea){areaView[ds.irtarea]="tasks";location.hash=ds.irtarea;return}
+  if(ds.cancion){cancionSel=ds.cancion;render();window.scrollTo(0,0);return}
+  if(ds.cvolver){cancionSel=null;render();window.scrollTo(0,0);return}
+  if(ds.vercancion){cancionSel=ds.vercancion;areaView.musica="canciones";if(location.hash==="#musica")render();else location.hash="musica";window.scrollTo(0,0);return}
+  if(ds.copiarligac){const l=ligas.find(x=>x.id===ds.copiarligac);copiarTexto(ligaCancion(ds.copiarligac),`Liga de ${l?l.nombre:"el artista"} copiada.`);return}
+  if(ds.ligaonoff){const l=ligas.find(x=>x.id===ds.ligaonoff);if(!l)return;const activa=!l.activa;l.activa=activa;render();
+    sb.from("ligas_artistas").update({activa}).eq("id",l.id).then(({error})=>{if(error){l.activa=!activa;render();toast("No se pudo cambiar: "+error.message)}else toast(activa?"Liga activada.":"Liga desactivada: ya no sirve para registrar.")});return}
+  if(ds.carch){abrirArchivo(ds.carch,"canciones");return}
+  if(ds.cpaso){const [id,n]=ds.cpaso.split("|"),c=canciones.find(x=>x.id===id);if(!c)return;const ck={...(c.checklist||{})};if(ck[n])delete ck[n];else ck[n]=new Date().toISOString();guardarCancion(id,{checklist:ck},true);return}
+  if(ds.cagendar){const c=canciones.find(x=>x.id===ds.cagendar);if(!c)return;const ev=eventos.find(x=>x.cancion_id===c.id&&x.tipo==="produccion");
+    if(ev)abrirEvento(ev.id,null);else{const l=proximaLibre();abrirEvento(null,l,{tipo:"produccion",area:"musica",titulo:`Producción · «${(c.data||{}).titulo||"Sin título"}»`,fin:key(addDays(fromKey(l),4)),cancion_id:c.id})}return}
+  if(ds.cdel){const id=ds.cdel;confirmDel(b,id,()=>borrarCancion(id));return}});
 
 /* ---------- Tareas de todas las áreas (PM) ---------- */
 function renderPMTasks(){const ws=weekStart(),wk=key(ws);
@@ -1821,7 +2140,7 @@ $("logroForm").addEventListener("submit",e=>{e.preventDefault();if(!logrosCol){t
   render();saveLogro(l);toast("Logro guardado.")});
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
-  if(b.dataset.tab){if(b.dataset.tab==="entradas")entradaSel=null;if(route==="pm"){pmView=b.dataset.tab}else{const prev=scope();areaView[route]=b.dataset.tab}render();return}
+  if(b.dataset.tab){if(b.dataset.tab==="entradas")entradaSel=null;if(b.dataset.tab==="canciones")cancionSel=null;if(route==="pm"){pmView=b.dataset.tab}else{const prev=scope();areaView[route]=b.dataset.tab}render();return}
   if(b.dataset.goweek){anchor=fromKey(b.dataset.goweek);areaView[route]="report";render();window.scrollTo({top:0,behavior:"smooth"});return}
   if(b.dataset.goarea){const [a,v]=b.dataset.goarea.split("|");areaView[a]=v;location.hash=a;return}
   if(b.dataset.ajustar){const p=perfiles.find(x=>x.id===b.dataset.ajustar);if(p&&p.foto)abrirRecorte(p.id,p.foto);return}
@@ -1956,6 +2275,7 @@ function pintarMenu(){const yo=perfil&&perfil.id,esYo=route==="persona"&&persona
   const ny=$("navYo");if(yo){ny.hidden=false;ny.href="#persona/"+yo}
   if(!loadedT)return;
   AREA_IDS.forEach(a=>{const n=areaTasks(a).filter(t=>!t.hecha&&t.semana<=wk).length,c=document.querySelector(`[data-cnt="${a}"]`);if(c){c.textContent=n||"";c.title=n?`${n} pendiente${n>1?"s":""}`:""}});
+  const cd=document.querySelector('[data-cnt="dashboard"]');if(cd){const n=tasks.filter(t=>!t.hecha&&venceDe(t)<key(new Date())).length;cd.textContent=n||"";cd.title=n?`${n} atrasada${n>1?"s":""}`:""}
   const cy=document.querySelector('[data-cnt="yo"]');if(cy&&yo){const n=pendientesDe(yo).length;cy.textContent=n||"";cy.title=n?`${n} pendiente${n>1?"s":""}`:""}}
 document.querySelectorAll("[data-ic]").forEach(i=>{i.innerHTML=i.dataset.ic==="yo"?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>':AREA_ICON[i.dataset.ic]||""});
 function menuLateral(abierto){document.body.classList.toggle("menu-abierto",abierto);$("sideBack").hidden=!abierto;$("sideOpen").setAttribute("aria-expanded",abierto);
@@ -2047,7 +2367,7 @@ async function start(){
   if(started){render();return}started=true;
   sb.from("perfiles").select("*").then(({data})=>{perfiles=data||[];render()});
   tasksCol=makeCol("tareas");logrosCol=makeCol("logros");
-  cargarEntradas();
+  cargarEntradas();cargarCalendario();cargarCanciones();
   let gotT=false,gotL=false;
   const timer=setTimeout(()=>setStatus("No se pudo conectar todavía; revisa tu conexión.",true),10000);
   const done=()=>{if(gotT&&gotL){clearTimeout(timer);setStatus("")}};

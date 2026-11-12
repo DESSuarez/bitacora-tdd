@@ -97,6 +97,12 @@ Corre `supabase/migraciones/011_perfil_propio.sql`. Nombre, usuario, foto y "Sob
 2. El formulario queda en `https://pm.tiempodedios.mx/entrada/` (carpeta `app/entrada/`). No pide sesión: cualquiera con la liga puede enviar, pero solo la PM y Formación pueden leer las respuestas.
 3. Las respuestas llegan a **Formación → Entradas**. Las preguntas están en `app/campos-entrada.js`, que comparten el formulario y la Bitácora: para cambiar una pregunta, edítala solo ahí.
 
+### 15. Calendario (Dashboard) y canciones por producir
+1. Corre `supabase/migraciones/013_calendario_y_canciones.sql`. Crea las tablas `eventos`, `ligas_artistas` y `canciones`, el bucket privado `canciones` (hasta 50 MB por archivo) y la tarea automática.
+2. **Dashboard** (`#dashboard`): calendario semanal con fechas únicas, de varios días o repetidas (cada semana, cada 2 semanas, cada mes, cada año), disponibilidad de producción de las próximas 12 semanas y pendientes de la semana. Todo el equipo puede agendar.
+3. **Música → Canciones**: crea una liga personal por artista (`pm.tiempodedios.mx/cancion/?l=…`). Lo que registren llega a un tablero por etapas, con checklist de 14 pasos, notas internas y archivos.
+4. Cada canción registrada crea una tarea en Música, "Agendar producción", para Ariel, con subtareas para Memo. Se buscan por usuario (`ariel`, `memo`) o por nombre que empiece así; si Memo no tiene cuenta, la subtarea queda con su nombre.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 
