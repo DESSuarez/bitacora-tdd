@@ -721,8 +721,9 @@ button.cmore:hover{color:var(--fg)}
 .evaviso.ok{background:var(--sea-soft);border-color:var(--sea)}
 @media (max-width:480px){.evrow{grid-template-columns:1fr}}
 /* Canciones (Música) */
-.kanban{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,1fr);gap:12px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x proximity;scrollbar-width:thin}
-.kcol{background:var(--surface);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:120px;scroll-snap-align:start}
+.kanban{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;align-items:start}
+.kcol{background:var(--surface);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:84px}
+.kcol.vacia{opacity:.7}
 .kcol h4{margin:2px 4px 2px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800}
 .kcol h4 span{font-family:var(--mono);font-weight:500;font-size:12px;color:var(--muted)}
 .kcol h4 i{width:8px;height:8px;border-radius:50%;background:var(--c)}
@@ -751,6 +752,17 @@ button.cmore:hover{color:var(--fg)}
 .check14 .fase{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none}
 .chip.cvinc{cursor:pointer;background:var(--flame-soft);color:var(--flame);border-color:transparent}
 .csem{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cdatosh{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
+.cdatosh h3{margin:0;font-family:var(--display);font-weight:900;font-size:20px}
+.cedit{display:flex;flex-direction:column;gap:22px;border:1.5px solid var(--area);border-radius:18px;padding:18px;background:color-mix(in srgb,var(--area-soft) 45%,var(--bg))}
+.cecampos{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.cecampos label{display:flex;flex-direction:column;gap:5px;min-width:0}
+.cecampos label>span{font-weight:700;font-size:13.5px;color:var(--muted)}
+.cecampos label.full{grid-column:1/-1}
+.cecampos textarea{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 14px;font:inherit;color:var(--fg);resize:vertical;height:auto}
+.cemulti{display:flex;flex-wrap:wrap;gap:6px}
+.cebar{display:flex;gap:8px;justify-content:flex-end;position:sticky;bottom:12px;background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:10px;box-shadow:0 10px 30px -14px rgba(0,0,0,.35)}
+@media (max-width:640px){.cecampos{grid-template-columns:1fr}}
 .cbar{flex:1;height:8px;border-radius:99px;background:var(--surface);overflow:hidden;min-width:60px}
 .cbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--c,var(--area)),color-mix(in srgb,var(--c,var(--area)) 70%,#fff))}
 .cprog{display:flex;align-items:center;gap:10px}
@@ -1396,7 +1408,7 @@ function confirmDel(btn,id,fn){
 /* ---------- Render ---------- */
 /* Cambios que llegan en tiempo real: vuelve a pintar sin perder el campo que se está escribiendo */
 function renderKeep(){const ae=document.activeElement;
-  if((ae&&(ae.id==="eNotas"||ae.id==="cNotas"))||arrastre||ajPortada||!$("evModal").hidden){esperaRender=true;return}
+  if((ae&&(ae.id==="eNotas"||ae.id==="cNotas"))||arrastre||ajPortada||cancionEdit||!$("evModal").hidden){esperaRender=true;return}
   if(ae&&ae.dataset&&ae.dataset.grip){const g=ae.dataset.grip;render();const n=document.querySelector(`[data-grip="${g}"]`);if(n)n.focus();return}
   const sel=!ae||!ae.matches("input,textarea")||ae.classList.contains("otro-in")?null:ae.id?"#"+CSS.escape(ae.id):
     ["tedit","snota","hecha"].map(k=>ae.dataset[k]!=null?`[data-${k}="${CSS.escape(ae.dataset[k])}"]`+(k==="tedit"?`[data-f="${ae.dataset.f}"]`:""):"").find(Boolean)||null;
@@ -1979,7 +1991,29 @@ function renderCanciones(){const V=$("vCanciones");
       <form class="ligaform" id="ligaForm"><input class="field" id="ligaNombre" maxlength="120" placeholder="Nombre del artista o ministerio" aria-label="Nombre del artista"><button class="btn" type="submit">Crear liga</button></form>
       ${ligas.length?`<ul class="ligasart">${ligas.map(l=>`<li class="${l.activa?"":"off"}"><b>${esc(l.nombre)}</b><small>${cuenta(l.id)} canci${cuenta(l.id)===1?"ón":"ones"} · ${l.activa?"activa":"desactivada"}</small>${l.activa?`<button type="button" class="btn sm" data-copiarligac="${esc(l.id)}">Copiar liga</button>`:""}<button type="button" class="btn ghost sm" data-ligaonoff="${esc(l.id)}">${l.activa?"Desactivar":"Activar"}</button></li>`).join("")}</ul>`:""}
     </div>`:!loadedC?`<div class="none">Cargando canciones…</div>`:!canciones.length?`<div class="empty"><strong>Aún no hay canciones</strong><p>Agrega las canciones que ya están en proceso con «+ Agregar canción», o crea una liga en «Ligas» para que un artista registre la suya. Cada canción tendrá su checklist, su avance y su pendiente.</p></div>`:
-    cancionesVista==="etapas"?`<div class="kanban">${ETAPAS.map(([k,n])=>{const cs=canciones.filter(c=>c.etapa===k);return `<div class="kcol"><h4 style="--c:${ETAPA_C[k]}"><i></i>${esc(n)}<span>${cs.length}</span></h4>${cs.length?cs.map(ccardHTML).join(""):`<span class="vacio">—</span>`}</div>`}).join("")}</div>`:vistaMinisterios()}`}
+    cancionesVista==="etapas"?`<div class="kanban">${ETAPAS.map(([k,n])=>{const cs=canciones.filter(c=>c.etapa===k);return `<div class="kcol ${cs.length?"":"vacia"}"><h4 style="--c:${ETAPA_C[k]}"><i></i>${esc(n)}<span>${cs.length}</span></h4>${cs.length?cs.map(ccardHTML).join(""):`<span class="vacio">—</span>`}</div>`}).join("")}</div>`:vistaMinisterios()}`}
+/* Editar los datos de la canción: las mismas preguntas de campos-cancion.js (los archivos no se editan aquí) */
+let cancionEdit=null;
+function formEditarCancion(c){const d=c.data||{};
+  const campo=x=>{const v=d[x.k],id="ce_"+x.k;
+    if(x.tipo==="area")return `<textarea class="field" id="${id}" name="${x.k}" rows="${x.k==="letra"?10:3}" maxlength="6000">${esc(v||"")}</textarea>`;
+    if(x.tipo==="chips")return `<select class="field" id="${id}" name="${x.k}"><option value="">Sin respuesta</option>${x.ops.map(o=>`<option ${v===o?"selected":""}>${esc(o)}</option>`).join("")}${v&&!x.ops.includes(v)?`<option selected>${esc(v)}</option>`:""}</select>`;
+    if(x.tipo==="multi")return `<div class="cemulti">${x.ops.map(o=>`<label class="tchip ${[].concat(v||[]).includes(o)?"on":""}" style="--c:var(--area);--on:var(--on-area)"><input type="checkbox" name="${x.k}" value="${esc(o)}" ${[].concat(v||[]).includes(o)?"checked":""}>${esc(o)}</label>`).join("")}</div>`;
+    return `<input class="field" id="${id}" name="${x.k}" type="${x.tipo==="email"?"email":x.tipo==="tel"?"tel":"text"}" value="${esc(v||"")}" maxlength="300">`};
+  return `<form class="cedit" id="cEditForm" data-cid="${esc(c.id)}" autocomplete="off"><div class="cdatosh"><h3>Editar datos de la canción</h3><span class="ehint">Los archivos que subió el artista no cambian.</span></div>
+    ${CAMPOS_C.map((s,i)=>{const cs=s.campos.filter(x=>x.tipo!=="files");if(!cs.length)return "";return `<section class="esec"><h3><span class="n">${i+1}</span>${esc(s.titulo)}</h3><div class="cecampos">${cs.map(x=>`<label class="${x.tipo==="area"||x.tipo==="multi"?"full":""}"><span>${esc(x.l)}</span>${campo(x)}</label>`).join("")}</div></section>`}).join("")}
+    <div class="cebar"><button type="button" class="btn ghost" data-ceditar="">Cancelar</button><button class="btn" type="submit">Guardar cambios</button></div></form>`}
+document.addEventListener("submit",e=>{if(e.target.id!=="cEditForm")return;e.preventDefault();const f=e.target,c=canciones.find(x=>x.id===f.dataset.cid);if(!c)return;
+  const fd=new FormData(f),d={...(c.data||{})};
+  CAMPOS_C.forEach(s=>s.campos.forEach(x=>{if(x.tipo==="files")return;d[x.k]=x.tipo==="multi"?fd.getAll(x.k).map(String):String(fd.get(x.k)||"").trim()}));
+  if(!d.titulo){toast("La canción necesita un título.");return}
+  const cambioTitulo=d.titulo!==(c.data||{}).titulo;cancionEdit=null;esperaRender=false;
+  guardarCancion(c.id,{data:d},true,"Datos de la canción guardados.");
+  if(cambioTitulo){if(c.lanzamiento)eventoLanzamiento(c);const t=pendienteAbierto(c);if(t&&t.paso){t.titulo=`«${d.titulo}» · ${PASOS[t.paso-1][0]}`;saveTask(t)}}
+  window.scrollTo({top:document.querySelector(".cpendiente")?document.querySelector(".cpendiente").getBoundingClientRect().top+scrollY-20:0,behavior:"smooth"})});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-ceditar]");if(!b)return;cancionEdit=b.dataset.ceditar||null;esperaRender=false;render();
+  if(cancionEdit)setTimeout(()=>{const f=$("cEditForm");if(f){f.scrollIntoView({behavior:"smooth",block:"start"});const t=$("ce_titulo");if(t)t.focus({preventScroll:true})}},50)});
+document.addEventListener("change",e=>{const cb=e.target.closest&&e.target.closest(".cemulti input");if(cb)cb.closest("label").classList.toggle("on",cb.checked)});
 function detalleCancion(c){const d=c.data||{},ck=c.checklist||{},hechos=pasosHechos(c),p=avance(c),n=siguientePaso(c),pend=pendienteAbierto(c);
   let fase="";
   return `<div class="edet">
@@ -2001,7 +2035,8 @@ function detalleCancion(c){const d=c.data||{},ck=c.checklist||{},hechos=pasosHec
       <div class="dpanel"><div class="csem"><b>Semana de producción:</b> ${c.semana?`<span class="chip tipo">${semanaTxt(c.semana)}</span>`:`<span class="esin">Sin agendar</span>`}${c.lanzamiento?` <b style="margin-left:10px">Lanzamiento:</b> <span class="chip tipo">🚀 ${shortDate(c.lanzamiento)}</span>`:""}</div>
       <ul class="check14">${PASOS.map(([t,f,r,dd],i)=>{const k=String(i+1),h=ck[k],v=fechaPaso(c,i+1),sep=f!==fase?`<li class="cfase">${esc(f)}</li>`:"";fase=f;
         return `${sep}<li class="${h?"ok":""} ${!h&&i+1===n?"sig":""}"><button type="button" class="check" role="checkbox" aria-checked="${!!h}" aria-label="${esc(t)}" data-cpaso="${esc(c.id)}|${k}">${CHECK}</button><span>${k}. ${esc(t)}<span class="fase">${esc(r)}${v&&!h?` · vence ${shortDate(v)}`:""}</span></span><small>${h?shortDate(h.slice(0,10)):!h&&i+1===n?"siguiente":""}</small></li>`}).join("")}</ul></div></section>
-    ${CAMPOS_C.map((s,i)=>{const cs=s.campos.filter(x=>aplicaE(x,d));if(!cs.some(x=>x.tipo==="files"?docsDe(c,x.k,CAMPOS_C).length:!vacioE(d[x.k])))return "";return `<section class="esec"><h3><span class="n">${i+1}</span>${esc(s.titulo)}</h3><dl>${cs.map(x=>`<div class="eq"><dt>${esc(x.l)}</dt><dd>${valorE(x,d[x.k],c,CAMPOS_C,"carch")}</dd></div>`).join("")}</dl></section>`}).join("")}
+    ${cancionEdit===c.id?formEditarCancion(c):`<div class="cdatosh"><h3>Datos de la canción</h3><button type="button" class="btn ghost sm" data-ceditar="${esc(c.id)}">✎ Editar datos</button></div>
+    ${CAMPOS_C.map((s,i)=>{const cs=s.campos.filter(x=>aplicaE(x,d));if(!cs.some(x=>x.tipo==="files"?docsDe(c,x.k,CAMPOS_C).length:!vacioE(d[x.k])))return "";return `<section class="esec"><h3><span class="n">${i+1}</span>${esc(s.titulo)}</h3><dl>${cs.map(x=>`<div class="eq"><dt>${esc(x.l)}</dt><dd>${valorE(x,d[x.k],c,CAMPOS_C,"carch")}</dd></div>`).join("")}</dl></section>`}).join("")}`}
   </div>`}
 async function guardarCancion(id,cambios,repintar,msg){const c=canciones.find(x=>x.id===id);if(!c||!sb)return;const antes={...c};Object.assign(c,cambios);if(repintar)render();
   const {data,error}=await sb.from("canciones").update(cambios).eq("id",id).select("id");
@@ -2053,7 +2088,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)r
   if(ds.evprod){abrirEvento(null,ds.evprod,{tipo:"produccion",area:"musica",titulo:"Producción · ",fin:key(addDays(fromKey(ds.evprod),4))});return}
   if(ds.irtarea){areaView[ds.irtarea]="tasks";location.hash=ds.irtarea;return}
   if(ds.cancion){cancionSel=ds.cancion;render();window.scrollTo(0,0);return}
-  if(ds.cvolver){cancionSel=null;render();window.scrollTo(0,0);return}
+  if(ds.cvolver){cancionSel=null;cancionEdit=null;render();window.scrollTo(0,0);return}
   if(ds.vercancion){cancionSel=ds.vercancion;areaView.musica="canciones";if(location.hash==="#musica")render();else location.hash="musica";window.scrollTo(0,0);return}
   if(ds.copiarligac){const l=ligas.find(x=>x.id===ds.copiarligac);copiarTexto(ligaCancion(ds.copiarligac),`Liga de ${l?l.nombre:"el artista"} copiada.`);return}
   if(ds.ligaonoff){const l=ligas.find(x=>x.id===ds.ligaonoff);if(!l)return;const activa=!l.activa;l.activa=activa;render();
