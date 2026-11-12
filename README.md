@@ -89,6 +89,14 @@ Reglas: una actividad vence el viernes de su semana o en la fecha que se elija a
 ### 12. Carta de presentación en el perfil
 Corre `supabase/migraciones/009_presentacion.sql`. Agrega el campo **Sobre mí** (`bio`) que cada quien escribe en su perfil.
 
+### 13. Cada quien edita solo su perfil
+Corre `supabase/migraciones/011_perfil_propio.sql`. Nombre, usuario, foto y "Sobre mí" solo los cambia la persona dueña del perfil (ni la PM). La PM sigue cambiando rol, área y "También en" en la pestaña **Equipo**.
+
+### 14. Entradas de formación (formulario público)
+1. Corre `supabase/migraciones/012_entradas_formacion.sql`. Crea la tabla `entradas_formacion`, el bucket privado `entradas-formacion`, sus permisos y el tiempo real.
+2. El formulario queda en `https://pm.tiempodedios.mx/entrada/` (carpeta `app/entrada/`). No pide sesión: cualquiera con la liga puede enviar, pero solo la PM y Formación pueden leer las respuestas.
+3. Las respuestas llegan a **Formación → Entradas**. Las preguntas están en `app/campos-entrada.js`, que comparten el formulario y la Bitácora: para cambiar una pregunta, edítala solo ahí.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 
