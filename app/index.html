@@ -1408,7 +1408,7 @@ function render(){
   pintarMenu();
   const nombre=D?"Dashboard":P?(route==="equipo"?"Equipo":pp?pp.nombre:"Perfil"):isPM?"Project Manager":AREAS[route].n;
   $("areaTag").innerHTML=(AREA_ICON[route]||"")+esc(route==="persona"?"Perfil":nombre);
-  $("h1").innerHTML=D?`Todo el proyecto <em>en un vistazo</em>`:route==="equipo"?`El equipo <em>en orden</em>`:route==="persona"?esc(nombre):isPM?`Las áreas <em>en orden</em>`:`La semana <em>en orden</em>`;
+  $("h1").innerHTML=D?`Bienvenido <em>hijo de Dios</em>`:route==="equipo"?`El equipo <em>en orden</em>`:route==="persona"?esc(nombre):isPM?`Las áreas <em>en orden</em>`:`La semana <em>en orden</em>`;
   document.title=nombre+" · Bitácora Tiempo de Dios";
   // pestañas
   if(PM_SOLO.includes(pmView)&&!esPM())pmView="week";
