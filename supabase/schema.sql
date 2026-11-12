@@ -258,6 +258,9 @@ alter table public.perfiles add column if not exists bio text;
 alter table public.perfiles drop constraint if exists perfiles_bio_largo;
 alter table public.perfiles add constraint perfiles_bio_largo check (bio is null or char_length(bio) <= 600);
 
+-- Portada de la carta de presentación (migración 014)
+alter table public.perfiles add column if not exists portada text;
+
 -- Solo la PM cambia rol, área y áreas adicionales; nombre, usuario, foto y bio solo los cambia cada quien (migración 011)
 create or replace function public.proteger_rol()
 returns trigger language plpgsql security definer set search_path = public as $$
@@ -269,7 +272,8 @@ begin
   end if;
   if auth.uid() is not null and auth.uid() <> old.id
      and (new.nombre is distinct from old.nombre or new.usuario is distinct from old.usuario
-          or new.foto is distinct from old.foto or new.bio is distinct from old.bio) then
+          or new.foto is distinct from old.foto or new.bio is distinct from old.bio
+          or new.portada is distinct from old.portada) then
     raise exception 'Solo puedes editar tu propio perfil';
   end if;
   return new;

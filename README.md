@@ -103,6 +103,9 @@ Corre `supabase/migraciones/011_perfil_propio.sql`. Nombre, usuario, foto y "Sob
 3. **Música → Canciones**: crea una liga personal por artista (`pm.tiempodedios.mx/cancion/?l=…`). Lo que registren llega a un tablero por etapas, con checklist de 14 pasos, notas internas y archivos.
 4. Cada canción registrada crea una tarea en Música, "Agendar producción", para Ariel, con subtareas para Memo. Se buscan por usuario (`ariel`, `memo`) o por nombre que empiece así; si Memo no tiene cuenta, la subtarea queda con su nombre.
 
+### 16. Portada en la carta de presentación
+Corre `supabase/migraciones/014_portada.sql`. Agrega `perfiles.portada`: cada quien puede poner una imagen de portada en su perfil ("Poner portada"); si no pone ninguna, se usan los colores de sus áreas. Solo la persona dueña la cambia.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 

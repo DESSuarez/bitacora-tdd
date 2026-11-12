@@ -350,8 +350,13 @@ a.chip.who{text-decoration:none}a.chip.who:hover{filter:brightness(.95)}
 .profile .pinfo .mail{font-family:var(--mono);font-size:13px;color:var(--muted)}
 .pcard .bio{font-size:12.5px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:center;line-height:1.4}
 .carta{display:block;padding:0;overflow:hidden}
-.carta .pcover{height:120px;position:relative}
+.carta .pcover{height:150px;position:relative}
 .carta .pcover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.18))}
+.carta .pcover.conimg::after{background:linear-gradient(180deg,rgba(0,0,0,.28),transparent 45%,rgba(0,0,0,.25))}
+.pcoveracts{position:absolute;left:16px;top:14px;z-index:3;display:flex;gap:6px}
+.pcoverbtn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:99px;border:0;background:rgba(27,28,26,.55);color:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .15s}
+.pcoverbtn:hover{background:rgba(27,28,26,.8)}
+.pcoverbtn svg{width:16px;height:16px}
 .carta .pmarca{position:absolute;right:20px;top:16px;z-index:1;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.85);mix-blend-mode:luminosity}
 .carta .pbody{display:flex;align-items:flex-end;gap:26px;padding:0 28px;margin-top:-84px;position:relative;z-index:2;flex-wrap:wrap}
 .carta .pfoto{position:relative;padding:0;border:0;border-radius:50%;flex:none}
@@ -377,7 +382,8 @@ a.chip.who{text-decoration:none}a.chip.who:hover{filter:brightness(.95)}
 .carta .pacts .drophint{text-align:left}
 @media (max-width:640px){
   .profile.carta{padding:0}
-  .carta .pcover{height:96px}
+  .carta .pcover{height:120px}
+  .pcoverbtn span{display:none}.pcoverbtn{padding:0 10px}
   .carta .pmarca{display:none}
   .carta .uedit input{flex:0 1 auto;width:14ch}
   .carta .pbody{flex-direction:column;align-items:center;text-align:center;margin-top:-80px;gap:12px;padding:0 18px}
@@ -619,6 +625,14 @@ table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:52
 .dpanel{border:1.5px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .dpanel h3{margin:0;font-family:var(--display);font-weight:900;font-size:18px}
 .dpanel>p{margin:-6px 0 0;color:var(--muted);font-size:13.5px}
+.disph{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-start}
+.disph p{margin:4px 0 0;color:var(--muted);font-size:13.5px}
+.dispnav{display:flex;gap:6px;flex:none}
+.dispnav .navbtn{border-color:var(--line);color:var(--fg);background:var(--bg)}
+.dispnav .navbtn:disabled{opacity:.4;cursor:default}
+.dispr{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;font-size:14px}
+.dispr b{font-family:var(--mono);font-weight:500;font-size:13px}
+.dispr span{color:var(--muted);font-size:13px}
 .disp{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
 .dsem{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg);text-align:left;font:inherit;color:var(--fg);cursor:pointer;display:flex;flex-direction:column;gap:3px;min-width:0}
 .dsem:hover{border-color:var(--area-ink)}
@@ -1683,7 +1697,7 @@ function colorEv(ev){return (TIPOS_EV[ev.tipo]||TIPOS_EV.otro)[1]}
 function cevHTML(o,k){const ev=o.ev,dia=Math.round((fromKey(k)-fromKey(o.ini))/864e5);
   const sub=ev.tipo==="produccion"&&dia<5?DIAS_PROD[dia]:ev.fin&&ev.fin>ev.fecha?`Día ${dia+1} de ${Math.round((fromKey(o.fin)-fromKey(o.ini))/864e5)+1}`:"";
   return `<button type="button" class="cev" style="--c:${colorEv(ev)}" data-evabrir="${esc(ev.id)}|${o.ini}">${ev.hora?`<span class="hr">${esc(ev.hora)}</span>`:""}<strong>${esc(ev.titulo||"Sin título")}</strong>${sub||ev.repetir?`<small>${sub?esc(sub):""}${ev.repetir?`${sub?" · ":""}↻ ${esc(REPETIR[ev.repetir].toLowerCase())}`:""}</small>`:""}</button>`}
-let dashView="semana";  // dia | semana | mes | ano (la semana es la vista de inicio)
+let dashView="semana",dispOff=0;  // dispOff: bloques de 12 semanas hacia adelante (o atrás) en la disponibilidad  // dia | semana | mes | ano (la semana es la vista de inicio)
 const VISTAS=[["dia","Día"],["semana","Semana"],["mes","Mes"],["ano","Año"]];
 function fechaLarga(d){const s=`${DIAS[d.getDay()]} ${d.getDate()} de ${MESES_L[d.getMonth()]} ${d.getFullYear()}`;return s[0].toUpperCase()+s.slice(1)}
 function eventosDia(occ,k){return occ.filter(o=>o.ini<=k&&o.fin>=k).sort((a,b)=>(a.ev.hora||"99").localeCompare(b.ev.hora||"99"))}
@@ -1740,12 +1754,16 @@ function renderDashboard(){const V=$("vDash"),hoy=key(new Date());
   let cuerpo=dashView==="dia"?vistaDia(hoy):dashView==="mes"?vistaMes(hoy):dashView==="ano"?vistaAno(hoy):vistaSemana(hoy);
   // disponibilidad de producción y pendientes de la semana (debajo de día y semana)
   let extra="";
-  if(dashView==="semana"||dashView==="dia"){const l0=mondayOf(new Date());
+  if(dashView==="semana"||dashView==="dia"){const l0=addDays(mondayOf(new Date()),7*12*dispOff),lf=addDays(l0,7*11+4);
     const disp=[...Array(12)].map((_,i)=>{const l=key(addDays(l0,7*i)),ps=producciones(l),v=addDays(fromKey(l),4);
       const rango=`${fromKey(l).getDate()} ${MESES[fromKey(l).getMonth()]} – ${v.getDate()} ${MESES[v.getMonth()]}`;
       return ps.length?`<button type="button" class="dsem ${ps.length>1?"doble":"ocupada"}" data-evabrir="${esc(ps[0].ev.id)}|${ps[0].ini}"><time>${rango}</time><b>${ps.length>1?`Doble agenda · ${ps.length}`:esc(ps[0].ev.titulo)}</b></button>`
         :`<button type="button" class="dsem libre" data-evprod="${l}"><time>${rango}</time><b>Libre</b></button>`}).join("");
-    extra=`<div class="dpanel"><h3>Disponibilidad de producción</h3><p>Una canción ocupa una semana completa, de lunes a viernes. Toca una semana libre para agendarla.</p><div class="disp">${disp}</div></div>`}
+    const libres=[...Array(12)].filter((_,i)=>!producciones(key(addDays(l0,7*i))).length).length;
+    extra=`<div class="dpanel"><div class="disph"><div><h3>Disponibilidad de producción</h3><p>Una canción ocupa una semana completa, de lunes a viernes. Toca una semana libre para agendarla.</p></div>
+      <div class="dispnav"><button type="button" class="navbtn" data-disp="-1" aria-label="12 semanas antes" ${dispOff<=0?"disabled":""}>←</button><button type="button" class="navbtn" data-disp="0" ${dispOff===0?"disabled":""}>Hoy</button><button type="button" class="navbtn" data-disp="1" aria-label="12 semanas después">→</button></div></div>
+      <div class="dispr"><b>${l0.getDate()} ${MESES[l0.getMonth()]} ${l0.getFullYear()} – ${lf.getDate()} ${MESES[lf.getMonth()]} ${lf.getFullYear()}</b><span>${libres} de 12 semanas libres</span></div>
+      <div class="disp">${disp}</div></div>`}
   V.innerHTML=`${evangelioHTML(fEv)}
     <div class="dhead"><div class="vistas" role="tablist" aria-label="Vista del calendario">${VISTAS.map(([k,n])=>`<button type="button" role="tab" class="vista" data-vista="${k}" aria-selected="${dashView===k}">${n}</button>`).join("")}</div>
       <button type="button" class="btn" data-evnuevo="${dashView==="dia"?key(anchor):""}">+ Agendar</button></div>
@@ -1754,6 +1772,7 @@ function renderDashboard(){const V=$("vDash"),hoy=key(new Date());
     ${cuerpo}${extra}`}
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const ds=b.dataset;
   if(ds.vista){dashView=ds.vista;render();return}
+  if(ds.disp!==undefined){dispOff=ds.disp==="0"?0:Math.max(0,dispOff+Number(ds.disp));render();return}
   if(ds.irdia){anchor=fromKey(ds.irdia);dashView="dia";render();window.scrollTo({top:0,behavior:"smooth"});return}
   if(ds.irmes){anchor=fromKey(ds.irmes+"-01");dashView="mes";render();return}
   if(ds.evangelio){evangelioAbierto=!evangelioAbierto;render();return}});
@@ -1948,7 +1967,8 @@ function cartaPersona(p,self,puede,email){const ar=[p.area,...(p.areas||[])].fil
   const chips=ar.length?ar.map(a=>`<a class="chip area" href="#${a}" style="background:${AREAS[a].c};color:${AREAS[a].on}">${AREA_ICON[a]||""}${AREAS[a].n}</a>`).join(""):ACCESO_TOTAL.includes(p.rol)?`<span class="chip">Todas las áreas</span>`:`<span class="chip">Sin área asignada</span>`;
   const CAM='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
   return `<article class="profile carta">
-    <div class="pcover" style="background:${cover}"><span class="pmarca">Tiempo de Dios</span></div>
+    <div class="pcover ${p.portada?"conimg":""}" style="background:${p.portada?`url(&quot;${esc(p.portada)}&quot;) center/cover no-repeat, `:""}${cover}"><span class="pmarca">Tiempo de Dios</span>
+      ${self?`<div class="pcoveracts"><label class="pcoverbtn" title="Sube una imagen horizontal; se recorta a lo ancho">${CAM}<span>${p.portada?"Cambiar portada":"Poner portada"}</span><input type="file" accept="image/*" data-portada="${p.id}" hidden></label>${p.portada?`<button type="button" class="pcoverbtn" data-quitarportada="${p.id}" title="Volver a los colores de tus áreas">Quitar</button>`:""}</div>`:""}</div>
     <div class="pbody">
       <div class="pfoto" ${puede?`data-drop="${p.id}" title="Arrastra o pega una imagen aquí"`:""}>${av(p,"xxl")}${puede?`<label class="fotobtn" title="${p.foto?"Cambiar foto":"Subir foto"}" aria-label="${p.foto?"Cambiar foto":"Subir foto"}">${CAM}<input type="file" accept="image/*" data-foto="${p.id}" hidden></label>`:""}</div>
       <div class="pinfo">${puede?`<input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre" title="Nombre: como te ve el equipo">`:`<h2>${esc(p.nombre)}</h2>`}
@@ -2030,6 +2050,24 @@ async function subirFoto(id,blob){if(!sb)return;toast("Subiendo foto…");
     const vieja=(antes.split("/object/public/fotos/")[1]||"").split("?")[0];
     if(vieja&&vieja.startsWith(id+"/"))sb.storage.from("fotos").remove([vieja]).catch(()=>{})}
   catch(e){console.error(e);toast("No se pudo subir la foto: "+(/row-level security|Unauthorized|403/i.test(e.message||"")?"no tienes permiso (revisa la migración 002).":e.message||e))}}
+
+/* Portada de la carta de presentación: se recorta a 3:1 (máx. 1800 px de ancho) y se guarda en fotos/<id>/portada-<fecha>.jpg */
+function recortarPortada(file){return new Promise((ok,ko)=>{const img=new Image(),url=URL.createObjectURL(file);
+  img.onload=()=>{const W=Math.min(1800,img.naturalWidth),H=Math.round(W/3),c=document.createElement("canvas");c.width=W;c.height=H;
+    const r=Math.max(W/img.naturalWidth,H/img.naturalHeight),w=img.naturalWidth*r,h=img.naturalHeight*r;
+    c.getContext("2d").drawImage(img,(W-w)/2,(H-h)/2,w,h);URL.revokeObjectURL(url);c.toBlob(b=>b?ok(b):ko(new Error("No se pudo preparar la imagen")),"image/jpeg",.86)};
+  img.onerror=()=>{URL.revokeObjectURL(url);ko(new Error("Ese archivo no es una imagen que el navegador pueda abrir"))};img.src=url})}
+function rutaFoto(u){return ((u||"").split("/object/public/fotos/")[1]||"").split("?")[0]}
+async function subirPortada(id,file){if(!sb||!perfil||id!==perfil.id)return;toast("Subiendo portada…");
+  try{const blob=await recortarPortada(file),path=`${id}/portada-${Date.now()}.jpg`,antes=(perfiles.find(x=>x.id===id)||{}).portada||"";
+    const {error}=await sb.storage.from("fotos").upload(path,blob,{contentType:"image/jpeg",cacheControl:"31536000"});if(error)throw error;
+    await actualizarPerfil(id,{portada:sb.storage.from("fotos").getPublicUrl(path).data.publicUrl});
+    const vieja=rutaFoto(antes);if(vieja&&vieja.startsWith(id+"/"))sb.storage.from("fotos").remove([vieja]).catch(()=>{})}
+  catch(e){console.error(e);toast("No se pudo subir la portada: "+(/portada/.test(e.message||"")&&/column|schema/.test(e.message||"")?"falta correr la migración 014.":e.message||e))}}
+async function quitarPortada(id){const antes=(perfiles.find(x=>x.id===id)||{}).portada||"";await actualizarPerfil(id,{portada:null});
+  const vieja=rutaFoto(antes);if(vieja&&vieja.startsWith(id+"/"))sb.storage.from("fotos").remove([vieja]).catch(()=>{})}
+document.addEventListener("change",e=>{const f=e.target.closest&&e.target.closest("[data-portada]");if(f&&f.files&&f.files[0]){subirPortada(f.dataset.portada,f.files[0]);f.value=""}});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-quitarportada]");if(b)quitarPortada(b.dataset.quitarportada)});
 
 /* ---------- Equipo (solo PM) ---------- */
 /* Invitar y quitar usa la Edge Function "equipo" (supabase/functions/equipo).
