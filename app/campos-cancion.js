@@ -58,7 +58,10 @@ window.ETAPAS_CANCION = [
   ["bloqueado", "Bloqueado", "Algo detiene el proceso; anota el motivo en las notas."]
 ];
 
-// Checklist de 14 pasos (fase y responsable)
+// Checklist definitivo: 14 pasos de producción + 8 de marketing (pipeline D-Day).
+// [paso, fase, responsable, días respecto al lanzamiento (solo marketing)]
+// El avance de cada canción (0 a 100 %) es cuántos de estos pasos están completos.
+// Ojo: el orden importa (el avance guardado usa el número de paso); agrega pasos nuevos al final.
 window.CHECKLIST_CANCION = [
   ["Primera sesión de asesoría", "Pre-producción", "Ariel"],
   ["Aprobación de la composición", "Pre-producción", "Ariel"],
@@ -73,8 +76,19 @@ window.CHECKLIST_CANCION = [
   ["Aprobación del master por el artista", "Producción", "Memo"],
   ["Registro INDAUTOR / SACM", "Registro", "Ariel"],
   ["Splitsheet firmado", "Registro", "Memo"],
-  ["Handoff a Marketing", "Marketing", "Memo"]
+  ["Handoff a Marketing", "Marketing", "Memo"],
+  ["D-42 · Brief creativo", "Marketing", "Marketing", -42],
+  ["D-35 · Briefing de artwork", "Marketing", "Marketing", -35],
+  ["D-28 · DistroKid y pre-save", "Marketing", "Marketing", -28],
+  ["D-14 · Copies", "Marketing", "Marketing", -14],
+  ["D-7 · Artwork final", "Marketing", "Marketing", -7],
+  ["D0 · Lanzamiento en Spotify y plataformas", "Lanzamiento", "Marketing", 0],
+  ["D+7 · Carrusel y reels", "Lanzamiento", "Marketing", 7],
+  ["D+30 · Reporte", "Lanzamiento", "Marketing", 30]
 ];
+
+// Al completar estos pasos, la canción avanza sola a la etapa indicada (nunca retrocede ni sale de "Bloqueado")
+window.ETAPA_POR_PASO = { 1: "preproduccion", 5: "agendada", 6: "produccion", 11: "registro", 14: "marketing", 22: "completado" };
 
 // Semana de producción: lo que se hace cada día (lunes a viernes)
 window.DIAS_PRODUCCION = ["Maqueteo", "Instrumentación", "Creación de contenido", "Cierre de instrumentación y voces", "Edición, mezcla y master"];

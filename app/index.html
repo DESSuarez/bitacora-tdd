@@ -743,6 +743,55 @@ button.cmore:hover{color:var(--fg)}
 .check14 .fase{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none}
 .chip.cvinc{cursor:pointer;background:var(--flame-soft);color:var(--flame);border-color:transparent}
 .csem{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cbar{flex:1;height:8px;border-radius:99px;background:var(--surface);overflow:hidden;min-width:60px}
+.cbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--c,var(--area)),color-mix(in srgb,var(--c,var(--area)) 70%,#fff))}
+.cprog{display:flex;align-items:center;gap:10px}
+.cprog b{font-family:var(--mono);font-weight:500;font-size:12.5px;min-width:38px;text-align:right}
+.cprog.grande .cbar{height:12px}.cprog.grande b{font-family:var(--display);font-weight:900;font-size:24px;min-width:64px}
+.ccard .cbar{background:var(--surface)}
+.cavance{display:flex;flex-direction:column;gap:4px;max-width:560px;margin-top:6px}
+.cavance small{color:var(--muted);font-size:12.5px}
+.cpendiente{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;border:1.5px solid var(--area);background:var(--area-soft);border-radius:14px;padding:14px 16px}
+.cpendiente>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cpendiente strong{font-size:16px;overflow-wrap:anywhere}
+.cpendiente small{color:var(--muted);font-size:13px}
+.evk2{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--area-ink)}
+.egestion.cgest{grid-template-columns:1fr 1fr 1fr}
+.egestion.cgest .cnot{grid-column:1/-1}
+.check14 li.cfase{display:block;border:0;padding:12px 4px 2px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.check14 li.sig{background:var(--area-soft);border-radius:8px}
+.check14 li.sig small{color:var(--area-ink);font-weight:700}
+.ctot{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.ctot div{border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column}
+.ctot b{font-family:var(--display);font-weight:900;font-size:26px;line-height:1.1}
+.ctot span{font-size:12.5px;color:var(--muted)}
+.minis{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;align-items:start}
+.mini{border:1.5px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:inset 0 4px 0 var(--c);background:var(--bg)}
+.mini header{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:start}
+.mtit{display:flex;align-items:center;gap:8px;min-width:0}
+.mtit i{width:12px;height:12px;border-radius:4px;background:var(--c);flex:none}
+.mtit h3{margin:0;font-family:var(--display);font-weight:900;font-size:19px;overflow-wrap:anywhere}
+.mstats{grid-column:1;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--muted)}
+.mstats b{color:var(--fg);font-size:14px}
+.mavg{grid-column:2;grid-row:1/3;text-align:right;display:flex;flex-direction:column}
+.mavg b{font-family:var(--display);font-weight:900;font-size:28px;line-height:1;color:var(--c)}
+.mavg span{font-size:11px;color:var(--muted)}
+.mlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.mrow{width:100%;text-align:left;font:inherit;color:var(--fg);background:var(--surface);border:1.5px solid transparent;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;cursor:pointer;--c:var(--area)}
+.mrow:hover{border-color:var(--area-ink)}
+.mrt{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}
+.mrt strong{font-size:15px;margin-right:auto}
+.mlz{font-size:12px;color:var(--muted)}
+.mrow small{font-size:12px;color:var(--muted)}
+.mini .mrow{--c:var(--c)}
+.cnueva{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;border:1.5px solid var(--area);border-radius:16px;padding:18px;background:var(--area-soft)}
+.cnueva h3{grid-column:1/-1;margin:0;font-family:var(--display);font-weight:900;font-size:18px}
+.cnueva label{display:flex;flex-direction:column;gap:5px;font-weight:700;font-size:13.5px;min-width:0}
+.cnueva label small{font-weight:500;color:var(--muted)}
+.cnueva .c2{grid-column:span 2}.cnueva .c3{grid-column:span 3}.cnueva .c4{grid-column:span 4}
+.cnueva .row{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end}
+.cnueva .dlnote{margin-right:auto;font-size:12.5px;color:var(--muted)}
+@media (max-width:760px){.ctot{grid-template-columns:1fr 1fr}.egestion.cgest{grid-template-columns:1fr}.cnueva{grid-template-columns:1fr}.cnueva .c2,.cnueva .c3,.cnueva .c4{grid-column:1}.minis{grid-template-columns:1fr}}
 /* Entradas de formación */
 .eliga{display:flex;flex-wrap:wrap;gap:24px 16px;align-items:center;justify-content:space-between;background:var(--area-soft);border-radius:16px;padding:18px 20px}
 .eliga h3{margin:0;font-family:var(--display);font-weight:900;font-size:18px}
@@ -1299,11 +1348,11 @@ function addTask(titulo,proyecto,respVal,area,semana,extra){area=area||route;con
 function findT(id){return tasks.find(x=>x.id===id)}
 function toggleTask(id){const t=findT(id);if(!t)return;const now=new Date().toISOString();
   if(t.hecha)t.hecha=null;else{t.hecha=now;t.subtareas=t.subtareas.map(s=>s.hecha?s:{...s,hecha:now})}
-  render();saveTask(t)}
+  render();saveTask(t);pasoDeTarea(t)}
 function toggleSub(id,sid){const t=findT(id);if(!t)return;const now=new Date().toISOString();
   t.subtareas=t.subtareas.map(s=>s.id===sid?{...s,hecha:s.hecha?null:now}:s);
   const all=t.subtareas.length&&t.subtareas.every(s=>s.hecha);
-  if(all&&!t.hecha)t.hecha=now;if(!all&&t.hecha)t.hecha=null;render();saveTask(t)}
+  const antes=!!t.hecha;if(all&&!t.hecha)t.hecha=now;if(!all&&t.hecha)t.hecha=null;render();saveTask(t);if(antes!==!!t.hecha)pasoDeTarea(t)}
 function addSub(id,titulo,respVal){const t=findT(id);if(!t)return;const p=respDe(respVal);t.subtareas=[...t.subtareas,{id:uid(),titulo,responsable:p.nombre,responsable_id:p.id,hecha:null}];if(t.hecha)t.hecha=null;open.add(id);render();saveTask(t)}
 function delSub(id,sid){const t=findT(id);if(!t)return;t.subtareas=t.subtareas.filter(s=>s.id!==sid);render();saveTask(t)}
 function setOwner(id,val){const t=findT(id);if(!t||val==="__otro")return;const p=respDe(val);
@@ -1670,7 +1719,7 @@ function descargarEntradaPDF(id){const e=entradas.find(x=>x.id===id);if(!e)retur
    Tabla "eventos" (migración 013). Cada evento: {titulo, tipo, fecha, fin?, hora?, repetir?, hasta?,
    excepciones:[fechas], area, notas, cancion_id?, creado, creado_por}. Todo el equipo agenda.
    Una producción ocupa una semana (lunes a viernes); la disponibilidad muestra las semanas libres. */
-const TIPOS_EV={produccion:["Producción","var(--flame)"],fijo:["Fecha fija","var(--sea)"],reunion:["Reunión","var(--baby)"],ensayo:["Ensayo","var(--sol)"],evento:["Evento","#8E6BD8"],grabacion:["Grabación o contenido","#D9558E"],otro:["Otro","#7C8786"]};
+const TIPOS_EV={produccion:["Producción","var(--flame)"],fijo:["Fecha fija","var(--sea)"],reunion:["Reunión","var(--baby)"],ensayo:["Ensayo","var(--sol)"],evento:["Evento","#8E6BD8"],grabacion:["Grabación o contenido","#D9558E"],lanzamiento:["Lanzamiento","#1DB954"],otro:["Otro","#7C8786"]};
 const REPETIR={"":"No se repite",semanal:"Cada semana",quincenal:"Cada 2 semanas",mensual:"Cada mes",anual:"Cada año"};
 const DIAS_PROD=window.DIAS_PRODUCCION||["Maqueteo","Instrumentación","Creación de contenido","Cierre de instrumentación y voces","Edición, mezcla y master"];
 let eventos=[],loadedEv=false,eventosErr="",eventosCol=null,evEdit=null;
@@ -1824,7 +1873,7 @@ $("evSoloEste").onclick=()=>{const ev=evEdit&&eventos.find(x=>x.id===evEdit.id);
 
 /* ---------- Canciones por producir (Música) ----------
    Tablas "canciones" y "ligas_artistas" (migración 013). Las preguntas salen de campos-cancion.js. */
-const CAMPOS_C=window.CAMPOS_CANCION||[],ETAPAS=window.ETAPAS_CANCION||[],CHECK14=window.CHECKLIST_CANCION||[];
+const CAMPOS_C=window.CAMPOS_CANCION||[],ETAPAS=window.ETAPAS_CANCION||[],PASOS=window.CHECKLIST_CANCION||[];
 const ETAPA_N=Object.fromEntries(ETAPAS.map(([k,n])=>[k,n]));
 const ETAPA_C={intake:"var(--baby)",preproduccion:"var(--sol)",agendada:"#8E6BD8",produccion:"var(--flame)",registro:"#D9558E",marketing:"var(--sea)",completado:"#4CAF7A",bloqueado:"#7C8786"};
 let canciones=[],ligas=[],loadedC=false,cancionesErr="",cancionSel=null,cancionesCh=null;
@@ -1844,36 +1893,107 @@ function cargarCanciones(){if(cancionesCh||!sb||!puedeMusica())return;
     .subscribe(st=>{if(st==="SUBSCRIBED")load()})}
 function etapaPill(k){return `<span class="cpill" style="--c:${ETAPA_C[k]||"var(--muted)"}">${esc(ETAPA_N[k]||k)}</span>`}
 function semanaTxt(k){const l=fromKey(k),v=addDays(l,4);return `${l.getDate()} ${MESES[l.getMonth()]} – ${v.getDate()} ${MESES[v.getMonth()]}`}
-function ccardHTML(c){const d=c.data||{},n=Object.keys(c.checklist||{}).length;
-  return `<button type="button" class="ccard ${c.etapa==="intake"?"nueva":""}" data-cancion="${esc(c.id)}"><strong>${esc(d.titulo||"Sin título")}</strong><span class="art">${esc(artistaDe(c))}</span>
-    <div class="tmeta">${d.bpm?`<span>${esc(d.bpm)} BPM</span>`:""}${d.tonalidad?`<span>${esc(d.tonalidad)}</span>`:""}${c.semana?`<span class="chip tipo">🗓 ${semanaTxt(c.semana)}</span>`:""}${(c.archivos||[]).length?`<span>📎 ${(c.archivos||[]).length}</span>`:""}</div>
-    <div class="mini" title="${n} de ${CHECK14.length} pasos"><i style="width:${Math.round(n/CHECK14.length*100)}%"></i></div></button>`}
+/* ---------- Avance, siguiente paso y pendiente de cada canción ----------
+   El checklist definitivo (PASOS, en campos-cancion.js) va desde la primera asesoría hasta el reporte D+30.
+   Avance = pasos completos / total. Cada canción tiene siempre un pendiente en Música: su siguiente paso,
+   asignado a quien le toca. Al completarlo (aquí o en Pendientes) se marca en el checklist y se crea el siguiente. */
+const ETAPA_POR_PASO=window.ETAPA_POR_PASO||{},ORDEN_ETAPAS=ETAPAS.map(e=>e[0]).filter(k=>k!=="bloqueado");
+function pasosHechos(c){const ck=c.checklist||{};return PASOS.filter((_,i)=>ck[String(i+1)]).length}
+function avance(c){return PASOS.length?Math.round(pasosHechos(c)/PASOS.length*100):0}
+function siguientePaso(c){const ck=c.checklist||{},i=PASOS.findIndex((_,i)=>!ck[String(i+1)]);return i<0?null:i+1}
+function ministerioDe(c){return (c.ministerio||"").trim()||artistaDe(c)}
+function tituloDe(c){return (c.data||{}).titulo||"Sin título"}
+function fechaPaso(c,n){const d=(PASOS[n-1]||[])[3];return c.lanzamiento&&d!=null?key(addDays(fromKey(c.lanzamiento),d)):null}
+function personaPorNombre(n){const l=String(n||"").toLowerCase();return perfiles.find(p=>(p.usuario||"").toLowerCase()===l)||perfiles.find(p=>(p.nombre||"").toLowerCase().startsWith(l))}
+function pendienteAbierto(c){return tasks.find(t=>t.cancion_id===c.id&&!t.hecha)}
+function etapaSegun(actual,ck){if(actual==="bloqueado")return actual;let e=actual,ie=ORDEN_ETAPAS.indexOf(actual);
+  Object.entries(ETAPA_POR_PASO).forEach(([n,et])=>{const i=ORDEN_ETAPAS.indexOf(et);if(ck[String(n)]&&i>ie){e=et;ie=i}});return e}
+function crearPendiente(c){if(!puedeMusica()||!tasksCol||pendienteAbierto(c))return;const n=siguientePaso(c);if(!n)return;
+  const id=`cancion-${c.id}-p${n}`;if(findT(id))return;
+  const [t,f,r]=PASOS[n-1],p=personaPorNombre(r),v=fechaPaso(c,n),hoy=key(new Date());
+  const extra={id,cancion_id:c.id,paso:n,nota:`Paso ${n} de ${PASOS.length} (${f}) de «${tituloDe(c)}» · ${ministerioDe(c)}. Al completarlo se marca en su checklist y se crea el siguiente paso.`};
+  if(v&&v>hoy){extra.vence=v;extra.semana=key(mondayOf(fromKey(v)))}
+  addTask(`«${tituloDe(c)}» · ${t}`,"Canciones",p?p.id:"txt:"+r,"musica",extra.semana||key(mondayOf(new Date())),extra)}
+/* Guarda el checklist, avanza la etapa si toca y deja creado el siguiente pendiente */
+function guardarPasos(c,ck){const cambios={checklist:ck},e=etapaSegun(c.etapa,ck);if(e!==c.etapa)cambios.etapa=e;
+  guardarCancion(c.id,cambios,true,e!==c.etapa?`Avanzó a «${ETAPA_N[e]}».`:"");crearPendiente(c)}
+/* Una tarea ligada a una canción se completó o se reabrió (desde Pendientes, Mi trabajo o aquí) */
+function pasoDeTarea(t){if(!t.cancion_id||!puedeMusica())return;const c=canciones.find(x=>x.id===t.cancion_id);if(!c)return;
+  if(!t.paso){if(t.hecha)crearPendiente(c);return}
+  const ck={...(c.checklist||{})},k=String(t.paso);
+  if(t.hecha&&!ck[k])ck[k]=t.hecha;else if(!t.hecha&&ck[k])delete ck[k];else{if(t.hecha)crearPendiente(c);return}
+  guardarPasos(c,ck)}
+function barra(p){return `<div class="cbar" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100"><i style="width:${p}%"></i></div>`}
+function ccardHTML(c){const d=c.data||{},p=avance(c);
+  return `<button type="button" class="ccard ${c.etapa==="intake"?"nueva":""}" data-cancion="${esc(c.id)}"><strong>${esc(tituloDe(c))}</strong><span class="art">${esc(ministerioDe(c))}</span>
+    <div class="tmeta">${d.bpm?`<span>${esc(d.bpm)} BPM</span>`:""}${c.semana?`<span class="chip tipo">🗓 ${semanaTxt(c.semana)}</span>`:""}${c.lanzamiento?`<span>🚀 ${shortDate(c.lanzamiento)}</span>`:""}</div>
+    <div class="cprog">${barra(p)}<b>${p}%</b></div></button>`}
+/* ---------- Dashboard por ministerio ---------- */
+let cancionesVista="ministerios",nuevaCancion=false;
+const COLORES_MIN=["var(--flame)","var(--sea)","#8E6BD8","#D69A1E","#D9558E","#2B8FA3","#3F9E6A","#7C8786"];
+function colorMin(n){let h=0;for(const ch of String(n))h=(h*31+ch.charCodeAt(0))>>>0;return COLORES_MIN[h%COLORES_MIN.length]}
+function filaCancion(c){const n=siguientePaso(c),p=avance(c),pa=n?PASOS[n-1]:null,v=n?fechaPaso(c,n):null;
+  return `<li><button type="button" class="mrow" data-cancion="${esc(c.id)}"><div class="mrt"><strong>${esc(tituloDe(c))}</strong>${etapaPill(c.etapa)}${c.lanzamiento?`<span class="mlz">🚀 ${shortDate(c.lanzamiento)}</span>`:""}</div>
+    <div class="cprog">${barra(p)}<b>${p}%</b></div>
+    <small>${pa?`Sigue: paso ${n} · ${esc(pa[0])} · ${esc(pa[2])}${v?` · ${shortDate(v)}`:""}`:"✓ Proceso completo"}</small></button></li>`}
+function vistaMinisterios(){const grupos={};canciones.forEach(c=>{const m=ministerioDe(c);(grupos[m]=grupos[m]||[]).push(c)});
+  ligas.filter(l=>l.activa&&!grupos[l.nombre]).forEach(l=>grupos[l.nombre]=[]);
+  const nombres=Object.keys(grupos).sort((a,b)=>grupos[b].filter(c=>c.etapa!=="completado").length-grupos[a].filter(c=>c.etapa!=="completado").length||a.localeCompare(b));
+  if(!nombres.length)return "";
+  return `<div class="minis">${nombres.map(m=>{const cs=grupos[m].slice().sort((a,b)=>avance(b)-avance(a)),act=cs.filter(c=>c.etapa!=="completado");
+    const prod=cs.filter(c=>c.etapa==="produccion").length,lanz=cs.filter(c=>c.etapa==="completado").length,prom=act.length?Math.round(act.reduce((s,c)=>s+avance(c),0)/act.length):0;
+    return `<section class="mini" style="--c:${colorMin(m)}"><header><div class="mtit"><i></i><h3>${esc(m)}</h3></div>
+      <div class="mstats"><span><b>${act.length}</b> activa${act.length===1?"":"s"}</span><span><b>${prod}</b> en producción</span><span><b>${lanz}</b> lanzada${lanz===1?"":"s"}</span></div>
+      <div class="mavg"><b>${prom}%</b><span>avance promedio</span></div></header>
+      ${cs.length?`<ul class="mlist">${cs.map(filaCancion).join("")}</ul>`:`<p class="none" style="margin:0">Aún sin canciones registradas.</p>`}</section>`}).join("")}</div>`}
+function formNuevaCancion(){const mins=[...new Set([...canciones.map(ministerioDe),...ligas.map(l=>l.nombre)])].sort();
+  return `<form class="cnueva" id="cancionForm" autocomplete="off"><h3>Agregar una canción que ya está en proceso</h3>
+    <label class="c3">Título<input class="field" id="cnTitulo" maxlength="140" required placeholder="Ej. Surgit Iglesia"></label>
+    <label class="c3">Ministerio<input class="field" id="cnMinisterio" maxlength="120" list="cnMinList" required placeholder="Ministerio del colectivo"><datalist id="cnMinList">${mins.map(m=>`<option value="${esc(m)}">`).join("")}</datalist></label>
+    <label class="c4">¿Hasta qué paso van?<select class="field" id="cnPaso"><option value="0">Ninguno todavía (empieza en la primera asesoría)</option>${PASOS.map(([t],i)=>`<option value="${i+1}">${i+1}. ${esc(t)}</option>`).join("")}</select></label>
+    <label class="c2">Fecha de lanzamiento <small>(opcional)</small><input class="field" type="date" id="cnLanz"></label>
+    <label class="c2">Semana de producción <small>(opcional)</small><input class="field" type="date" id="cnSemana"></label>
+    <label class="c2">BPM <small>(opcional)</small><input class="field" id="cnBpm" maxlength="20"></label>
+    <label class="c2">Tonalidad <small>(opcional)</small><input class="field" id="cnTono" maxlength="40"></label>
+    <div class="row"><span class="dlnote">Se marcan como hechos los pasos hasta el que elijas y se crea el pendiente del siguiente.</span><button type="button" class="btn ghost" data-cnueva="0">Cancelar</button><button class="btn" type="submit">Agregar canción</button></div></form>`}
 function renderCanciones(){const V=$("vCanciones");
   if(!puedeMusica()){V.innerHTML=`<div class="readonly">Solo el equipo de Música y la project manager pueden ver las canciones.</div>`;return}
   if(cancionSel){const c=canciones.find(x=>x.id===cancionSel);if(c){V.innerHTML=detalleCancion(c);return}if(loadedC)cancionSel=null}
   const cuenta=id=>canciones.filter(c=>c.liga===id).length;
-  V.innerHTML=`<div class="eliga" style="flex-direction:column;align-items:stretch">
-      <div><h3>Ligas para artistas</h3><p>Crea una liga personal para cada artista. Con ella registra sus canciones (letra, BPM, referencias y demo). Puedes desactivarla cuando quieras.</p></div>
+  const act=canciones.filter(c=>c.etapa!=="completado"),prom=act.length?Math.round(act.reduce((s,c)=>s+avance(c),0)/act.length):0;
+  V.innerHTML=`<div class="dhead"><div class="vistas" role="tablist" aria-label="Vista de canciones">${[["ministerios","Por ministerio"],["etapas","Por etapa"],["ligas","Ligas"]].map(([k,n])=>`<button type="button" role="tab" class="vista" data-cvista="${k}" aria-selected="${cancionesVista===k}">${n}</button>`).join("")}</div>
+      <button type="button" class="btn" data-cnueva="1">+ Agregar canción</button></div>
+    ${nuevaCancion?formNuevaCancion():""}
+    ${cancionesErr?`<div class="readonly">${esc(cancionesErr)}</div>`:""}
+    ${loadedC&&canciones.length?`<div class="ctot"><div><b>${act.length}</b><span>activas</span></div><div><b>${canciones.filter(c=>c.etapa==="produccion").length}</b><span>en producción</span></div><div><b>${canciones.filter(c=>c.etapa==="completado").length}</b><span>lanzadas</span></div><div><b>${prom}%</b><span>avance promedio</span></div></div>`:""}
+    ${cancionesVista==="ligas"?`<div class="eliga" style="flex-direction:column;align-items:stretch">
+      <div><h3>Ligas para artistas</h3><p>Crea una liga personal para cada artista o ministerio. Con ella registra sus canciones (letra, BPM, referencias y demo). Puedes desactivarla cuando quieras.</p></div>
       <form class="ligaform" id="ligaForm"><input class="field" id="ligaNombre" maxlength="120" placeholder="Nombre del artista o ministerio" aria-label="Nombre del artista"><button class="btn" type="submit">Crear liga</button></form>
       ${ligas.length?`<ul class="ligasart">${ligas.map(l=>`<li class="${l.activa?"":"off"}"><b>${esc(l.nombre)}</b><small>${cuenta(l.id)} canci${cuenta(l.id)===1?"ón":"ones"} · ${l.activa?"activa":"desactivada"}</small>${l.activa?`<button type="button" class="btn sm" data-copiarligac="${esc(l.id)}">Copiar liga</button>`:""}<button type="button" class="btn ghost sm" data-ligaonoff="${esc(l.id)}">${l.activa?"Desactivar":"Activar"}</button></li>`).join("")}</ul>`:""}
-    </div>
-    ${cancionesErr?`<div class="readonly">${esc(cancionesErr)}</div>`:""}
-    ${!loadedC?`<div class="none">Cargando canciones…</div>`:!canciones.length?`<div class="empty"><strong>Aún no hay canciones registradas</strong><p>Crea una liga para un artista y compártesela. Cuando registre su canción aparecerá aquí, y a Ariel y a Memo les llegará la tarea de agendar su producción.</p></div>`:
-    `<div class="kanban">${ETAPAS.map(([k,n])=>{const cs=canciones.filter(c=>c.etapa===k);return `<div class="kcol"><h4 style="--c:${ETAPA_C[k]}"><i></i>${esc(n)}<span>${cs.length}</span></h4>${cs.length?cs.map(ccardHTML).join(""):`<span class="vacio">—</span>`}</div>`}).join("")}</div>`}`}
-function detalleCancion(c){const d=c.data||{},ck=c.checklist||{},hechos=Object.keys(ck).length;
+    </div>`:!loadedC?`<div class="none">Cargando canciones…</div>`:!canciones.length?`<div class="empty"><strong>Aún no hay canciones</strong><p>Agrega las canciones que ya están en proceso con «+ Agregar canción», o crea una liga en «Ligas» para que un artista registre la suya. Cada canción tendrá su checklist, su avance y su pendiente.</p></div>`:
+    cancionesVista==="etapas"?`<div class="kanban">${ETAPAS.map(([k,n])=>{const cs=canciones.filter(c=>c.etapa===k);return `<div class="kcol"><h4 style="--c:${ETAPA_C[k]}"><i></i>${esc(n)}<span>${cs.length}</span></h4>${cs.length?cs.map(ccardHTML).join(""):`<span class="vacio">—</span>`}</div>`}).join("")}</div>`:vistaMinisterios()}`}
+function detalleCancion(c){const d=c.data||{},ck=c.checklist||{},hechos=pasosHechos(c),p=avance(c),n=siguientePaso(c),pend=pendienteAbierto(c);
+  let fase="";
   return `<div class="edet">
     <button type="button" class="btn ghost sm eback" data-cvolver="1">← Todas las canciones</button>
     <div class="ehead"><div class="etop">${etapaPill(c.etapa)}${d.tipo?`<span class="chip tipo">${esc(d.tipo)}</span>`:""}<time datetime="${esc(c.creado)}">Registrada el ${fechaHora(c.creado)}</time></div>
-      <h2>${esc(d.titulo||"Sin título")}</h2><p>${esc(artistaDe(c))}${d.nombre&&d.nombreArtistico?" · "+esc(d.nombre):""}${d.bpm?" · "+esc(d.bpm)+" BPM":""}${d.tonalidad?" · "+esc(d.tonalidad):""}</p>
+      <h2>${esc(tituloDe(c))}</h2><p>${esc(ministerioDe(c))}${d.nombre&&d.nombre!==ministerioDe(c)?" · "+esc(d.nombre):""}${d.bpm?" · "+esc(d.bpm)+" BPM":""}${d.tonalidad?" · "+esc(d.tonalidad):""}</p>
+      <div class="cavance"><div class="cprog grande">${barra(p)}<b>${p}%</b></div><small>${hechos} de ${PASOS.length} pasos, desde la primera asesoría hasta el reporte D+30 de la campaña</small></div>
       <div class="rbtns"><button type="button" class="btn" data-cagendar="${esc(c.id)}">${c.semana?"Cambiar semana de producción":"Agendar semana de producción"}</button>${esPM()?`<button type="button" class="icon del" data-cdel="${esc(c.id)}" aria-label="Borrar canción" title="Borrar canción y sus archivos">${ICON_DEL}</button>`:""}</div></div>
-    <div class="egestion">
-      <label for="cEtapa">Etapa<select class="field" id="cEtapa" data-cetapa="${esc(c.id)}">${ETAPAS.map(([k,n])=>`<option value="${k}" ${c.etapa===k?"selected":""}>${esc(n)}</option>`).join("")}</select><small class="ehint">${esc((ETAPAS.find(x=>x[0]===c.etapa)||[])[2]||"")}</small></label>
-      <label for="cNotas">Notas internas del equipo<textarea id="cNotas" data-cnotas="${esc(c.id)}" maxlength="5000" rows="4" placeholder="Acuerdos de las asesorías, costos de stems, motivo si está bloqueada… Solo las ve el equipo.">${esc(c.notas||"")}</textarea><small class="ehint">Se guardan al salir del campo. El artista no las ve.</small></label>
+    <div class="cpendiente">${pend?`<div><span class="evk2">Pendiente actual</span><strong>${esc(pend.titulo)}</strong><small>${esc(pend.responsable||"Sin responsable")} · vence ${shortDate(venceDe(pend))}</small></div><button type="button" class="btn ghost sm" data-irtarea="musica">Ver en Pendientes</button>`
+      :n?`<div><span class="evk2">Siguiente paso</span><strong>${n}. ${esc(PASOS[n-1][0])}</strong><small>${esc(PASOS[n-1][2])} · todavía sin pendiente</small></div><button type="button" class="btn sm" data-cpend="${esc(c.id)}">Crear pendiente</button>`
+      :`<div><span class="evk2">Proceso completo</span><strong>Canción lanzada y reportada 🎉</strong></div>`}</div>
+    <div class="egestion cgest">
+      <label for="cEtapa">Etapa<select class="field" id="cEtapa" data-cetapa="${esc(c.id)}">${ETAPAS.map(([k,n])=>`<option value="${k}" ${c.etapa===k?"selected":""}>${esc(n)}</option>`).join("")}</select><small class="ehint">${esc((ETAPAS.find(x=>x[0]===c.etapa)||[])[2]||"")} Avanza sola al completar pasos.</small></label>
+      <label for="cMin">Ministerio<input class="field" id="cMin" data-cmin="${esc(c.id)}" value="${esc(c.ministerio||"")}" maxlength="120" placeholder="${esc(artistaDe(c))}"></label>
+      <label for="cLanz">Fecha de lanzamiento (D0)<input class="field" type="date" id="cLanz" data-clanz="${esc(c.id)}" value="${esc(c.lanzamiento||"")}"><small class="ehint">Con esta fecha se calculan los pasos de Marketing y aparece en el calendario.</small></label>
+      <label for="cNotas" class="cnot">Notas internas del equipo<textarea id="cNotas" data-cnotas="${esc(c.id)}" maxlength="5000" rows="3" placeholder="Acuerdos de las asesorías, costos de stems, motivo si está bloqueada… Solo las ve el equipo.">${esc(c.notas||"")}</textarea><small class="ehint">Se guardan al salir del campo. El artista no las ve.</small></label>
     </div>
-    <section class="esec"><h3><span class="n">✓</span>Checklist de producción · ${hechos}/${CHECK14.length}</h3>
-      <div class="dpanel"><div class="csem"><b>Semana de producción:</b> ${c.semana?`<span class="chip tipo">${semanaTxt(c.semana)}</span>`:`<span class="esin">Sin agendar</span>`}</div>
-      <ul class="check14">${CHECK14.map(([t,f,r],i)=>{const n=String(i+1),h=ck[n];return `<li class="${h?"ok":""}"><button type="button" class="check" role="checkbox" aria-checked="${!!h}" aria-label="${esc(t)}" data-cpaso="${esc(c.id)}|${n}">${CHECK}</button><span>${n}. ${esc(t)}<span class="fase">${esc(f)} · ${esc(r)}</span></span><small>${h?shortDate(h.slice(0,10)):""}</small></li>`}).join("")}</ul></div></section>
-    ${CAMPOS_C.map((s,i)=>`<section class="esec"><h3><span class="n">${i+1}</span>${esc(s.titulo)}</h3><dl>${s.campos.filter(x=>aplicaE(x,d)).map(x=>`<div class="eq"><dt>${esc(x.l)}</dt><dd>${valorE(x,d[x.k],c,CAMPOS_C,"carch")}</dd></div>`).join("")}</dl></section>`).join("")}
+    <section class="esec"><h3><span class="n">✓</span>Checklist · ${hechos}/${PASOS.length}</h3>
+      <div class="dpanel"><div class="csem"><b>Semana de producción:</b> ${c.semana?`<span class="chip tipo">${semanaTxt(c.semana)}</span>`:`<span class="esin">Sin agendar</span>`}${c.lanzamiento?` <b style="margin-left:10px">Lanzamiento:</b> <span class="chip tipo">🚀 ${shortDate(c.lanzamiento)}</span>`:""}</div>
+      <ul class="check14">${PASOS.map(([t,f,r,dd],i)=>{const k=String(i+1),h=ck[k],v=fechaPaso(c,i+1),sep=f!==fase?`<li class="cfase">${esc(f)}</li>`:"";fase=f;
+        return `${sep}<li class="${h?"ok":""} ${!h&&i+1===n?"sig":""}"><button type="button" class="check" role="checkbox" aria-checked="${!!h}" aria-label="${esc(t)}" data-cpaso="${esc(c.id)}|${k}">${CHECK}</button><span>${k}. ${esc(t)}<span class="fase">${esc(r)}${v&&!h?` · vence ${shortDate(v)}`:""}</span></span><small>${h?shortDate(h.slice(0,10)):!h&&i+1===n?"siguiente":""}</small></li>`}).join("")}</ul></div></section>
+    ${CAMPOS_C.map((s,i)=>{const cs=s.campos.filter(x=>aplicaE(x,d));if(!cs.some(x=>x.tipo==="files"?docsDe(c,x.k,CAMPOS_C).length:!vacioE(d[x.k])))return "";return `<section class="esec"><h3><span class="n">${i+1}</span>${esc(s.titulo)}</h3><dl>${cs.map(x=>`<div class="eq"><dt>${esc(x.l)}</dt><dd>${valorE(x,d[x.k],c,CAMPOS_C,"carch")}</dd></div>`).join("")}</dl></section>`}).join("")}
   </div>`}
 async function guardarCancion(id,cambios,repintar,msg){const c=canciones.find(x=>x.id===id);if(!c||!sb)return;const antes={...c};Object.assign(c,cambios);if(repintar)render();
   const {data,error}=await sb.from("canciones").update(cambios).eq("id",id).select("id");
@@ -1887,7 +2007,28 @@ function agendarCancion(id,lunes){const c=canciones.find(x=>x.id===id);if(!c)ret
 function proximaLibre(){let l=mondayOf(new Date());for(let i=0;i<52;i++){const k=key(addDays(l,7*i));if(!producciones(k).length)return k}return key(l)}
 document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset.cetapa){guardarCancion(t.dataset.cetapa,{etapa:t.value},true,`Etapa: ${ETAPA_N[t.value]}.`);return}
-  if(t.dataset.cnotas){guardarCancion(t.dataset.cnotas,{notas:t.value.slice(0,5000)},false,"Notas guardadas.")}});
+  if(t.dataset.cnotas){guardarCancion(t.dataset.cnotas,{notas:t.value.slice(0,5000)},false,"Notas guardadas.");return}
+  if(t.dataset.cmin){guardarCancion(t.dataset.cmin,{ministerio:t.value.trim().slice(0,120)||null},true,"Ministerio guardado.");return}
+  if(t.dataset.clanz){const c=canciones.find(x=>x.id===t.dataset.clanz);if(!c)return;guardarCancion(c.id,{lanzamiento:t.value||null},true,t.value?"Fecha de lanzamiento guardada.":"Se quitó la fecha de lanzamiento.");eventoLanzamiento(c)}});
+/* El lanzamiento (D0) aparece en el calendario como evento propio de la canción */
+function eventoLanzamiento(c){if(!eventosCol)return;const id="lanz-"+c.id,ev=eventos.find(x=>x.id===id);
+  if(!c.lanzamiento){if(ev){eventos=eventos.filter(x=>x.id!==id);write(id,()=>eventosCol.doc(id).delete())}return}
+  const nuevo={...(ev||{creado:new Date().toISOString(),creado_por:perfil?perfil.id:null,excepciones:[]}),id,titulo:`Lanzamiento · «${tituloDe(c)}» · ${ministerioDe(c)}`,tipo:"lanzamiento",fecha:c.lanzamiento,fin:"",hora:"",repetir:"",hasta:"",area:"musica",notas:"D0: sale en Spotify y plataformas.",cancion_id:null,lanz_de:c.id};
+  const i=eventos.findIndex(x=>x.id===id);if(i>=0)eventos[i]=nuevo;else eventos.push(nuevo);guardarEvento(nuevo)}
+/* Agregar a mano una canción que ya está en proceso */
+document.addEventListener("submit",async e=>{if(e.target.id!=="cancionForm")return;e.preventDefault();if(!sb)return;
+  const titulo=$("cnTitulo").value.trim(),min=$("cnMinisterio").value.trim(),hasta=+$("cnPaso").value,now=new Date().toISOString();if(!titulo||!min)return;
+  const ck={};for(let i=1;i<=hasta;i++)ck[String(i)]=now;
+  const sem=$("cnSemana").value?key(mondayOf(fromKey($("cnSemana").value))):null;
+  const fila={id:crypto.randomUUID(),ministerio:min.slice(0,120),etapa:etapaSegun("intake",ck),checklist:ck,semana:sem,lanzamiento:$("cnLanz").value||null,
+    data:{titulo:titulo.slice(0,140),nombreArtistico:min.slice(0,120),bpm:$("cnBpm").value.trim(),tonalidad:$("cnTono").value.trim()}};
+  const btn=e.target.querySelector("[type=submit]");btn.disabled=true;
+  const {data,error}=await sb.from("canciones").insert(fila).select().single();btn.disabled=false;
+  if(error){toast("No se pudo agregar: "+(/ministerio|lanzamiento/.test(error.message)?"falta correr la migración 015.":error.message));return}
+  const c=data||fila;if(!canciones.some(x=>x.id===c.id))canciones.unshift(c);
+  nuevaCancion=false;cancionSel=c.id;crearPendiente(c);eventoLanzamiento(c);
+  if(c.semana&&!eventos.some(x=>x.cancion_id===c.id&&x.tipo==="produccion")){const ev={id:uid(),titulo:`Producción · «${tituloDe(c)}»`,tipo:"produccion",fecha:c.semana,fin:key(addDays(fromKey(c.semana),4)),hora:"",repetir:"",hasta:"",area:"musica",notas:"",cancion_id:c.id,creado:now,creado_por:perfil?perfil.id:null,excepciones:[]};eventos.push(ev);guardarEvento(ev)}
+  render();window.scrollTo(0,0);toast(`«${titulo}» agregada con su pendiente.`)});
 document.addEventListener("submit",async e=>{if(e.target.id!=="ligaForm")return;e.preventDefault();const n=$("ligaNombre").value.trim();if(!n||!sb)return;
   const {data,error}=await sb.from("ligas_artistas").insert({nombre:n.slice(0,120)}).select().single();
   if(error){toast("No se pudo crear la liga: "+error.message);return}
@@ -1910,7 +2051,12 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)r
   if(ds.ligaonoff){const l=ligas.find(x=>x.id===ds.ligaonoff);if(!l)return;const activa=!l.activa;l.activa=activa;render();
     sb.from("ligas_artistas").update({activa}).eq("id",l.id).then(({error})=>{if(error){l.activa=!activa;render();toast("No se pudo cambiar: "+error.message)}else toast(activa?"Liga activada.":"Liga desactivada: ya no sirve para registrar.")});return}
   if(ds.carch){abrirArchivo(ds.carch,"canciones");return}
-  if(ds.cpaso){const [id,n]=ds.cpaso.split("|"),c=canciones.find(x=>x.id===id);if(!c)return;const ck={...(c.checklist||{})};if(ck[n])delete ck[n];else ck[n]=new Date().toISOString();guardarCancion(id,{checklist:ck},true);return}
+  if(ds.cpaso){const [id,n]=ds.cpaso.split("|"),c=canciones.find(x=>x.id===id);if(!c)return;const ck={...(c.checklist||{})},now=new Date().toISOString();
+    if(ck[n])delete ck[n];else{ck[n]=now;const t=tasks.find(x=>x.cancion_id===c.id&&String(x.paso)===n&&!x.hecha);if(t){t.hecha=now;saveTask(t)}}
+    guardarPasos(c,ck);return}
+  if(ds.cpend){const c=canciones.find(x=>x.id===ds.cpend);if(c){crearPendiente(c);render();toast("Pendiente creado en Música.")}return}
+  if(ds.cvista){cancionesVista=ds.cvista;render();return}
+  if(ds.cnueva!==undefined){nuevaCancion=ds.cnueva==="1";render();if(nuevaCancion)setTimeout(()=>$("cnTitulo").focus(),30);return}
   if(ds.cagendar){const c=canciones.find(x=>x.id===ds.cagendar);if(!c)return;const ev=eventos.find(x=>x.cancion_id===c.id&&x.tipo==="produccion");
     if(ev)abrirEvento(ev.id,null);else{const l=proximaLibre();abrirEvento(null,l,{tipo:"produccion",area:"musica",titulo:`Producción · «${(c.data||{}).titulo||"Sin título"}»`,fin:key(addDays(fromKey(l),4)),cancion_id:c.id})}return}
   if(ds.cdel){const id=ds.cdel;confirmDel(b,id,()=>borrarCancion(id));return}});

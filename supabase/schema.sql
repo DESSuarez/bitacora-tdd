@@ -445,6 +445,8 @@ alter table public.canciones drop constraint if exists canciones_archivos_check;
 alter table public.canciones add constraint canciones_archivos_check
   check (jsonb_typeof(archivos) = 'array' and jsonb_array_length(archivos) <= 20);
 create index if not exists canciones_creado on public.canciones (creado desc);
+alter table public.canciones add column if not exists ministerio text check (ministerio is null or char_length(ministerio) <= 120);  -- migración 015
+alter table public.canciones add column if not exists lanzamiento date;  -- migración 015
 
 drop trigger if exists canciones_actualizado on public.canciones;
 create trigger canciones_actualizado before update on public.canciones
@@ -472,10 +474,15 @@ declare
   sub jsonb;
 begin
   new.creado = now(); new.actualizado = now(); new.actualizado_por = auth.uid();
+  -- Las que llegan por liga toman el nombre de la liga como ministerio
+  new.ministerio := coalesce((select nombre from public.ligas_artistas where id = new.liga), nullif(new.ministerio, ''), nullif(new.data->>'nombreArtistico',''));
   if exists (select 1 from jsonb_array_elements(new.archivos) a
              where coalesce(a->>'ruta','') not like coalesce(new.liga::text,'-') || '/' || new.id::text || '/%') then
     raise exception 'Cada archivo debe estar en la carpeta de su canción';
   end if;
+
+  -- Las canciones que el equipo agrega a mano no traen liga: su pendiente lo crea la app (siguiente paso del checklist)
+  if new.liga is null then return new; end if;
 
   ariel := public.persona_equipo('ariel');
   memo := public.persona_equipo('memo');
@@ -498,7 +505,7 @@ begin
     'creada', to_char(now() at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'),
     'creada_por', null, 'hecha', null, 'orden', orden,
     'nota', 'Canción registrada por ' || artista || ' desde su liga. Revísala en Música → Canciones y agenda su semana de producción.',
-    'cancion_id', new.id,
+    'cancion_id', new.id, 'vence', null,
     'subtareas', sub))
   on conflict (id) do nothing;
   return new;

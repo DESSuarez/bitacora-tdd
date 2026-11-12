@@ -106,6 +106,12 @@ Corre `supabase/migraciones/011_perfil_propio.sql`. Nombre, usuario, foto y "Sob
 ### 16. Portada en la carta de presentación
 Corre `supabase/migraciones/014_portada.sql`. Agrega `perfiles.portada`: cada quien puede poner una imagen de portada en su perfil ("Poner portada"); si no pone ninguna, se usan los colores de sus áreas. Solo la persona dueña la cambia.
 
+### 17. Ministerios, avance y pendiente de cada canción
+1. Corre `supabase/migraciones/015_ministerios_y_lanzamiento.sql`. Agrega a `canciones` el ministerio y la fecha de lanzamiento, y permite agregar a mano canciones que ya están en proceso.
+2. **Música → Canciones → Por ministerio:** un tablero por cada ministerio del colectivo (las ligas activas) con sus canciones activas, en producción y lanzadas, y el avance de 0 a 100 % de cada una.
+3. **Checklist definitivo (22 pasos):** los 14 de producción y los 8 del pipeline de Marketing (D-42 a D+30). Las fechas de Marketing salen de la fecha de lanzamiento.
+4. **Pendiente de cada canción:** siempre es su siguiente paso, asignado a quien le toca (Ariel, Memo o Marketing). Al completarlo, aquí o en Pendientes, se marca en el checklist, la etapa avanza sola y se crea el siguiente.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 
