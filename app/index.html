@@ -735,6 +735,7 @@ button.cmore:hover{color:var(--fg)}
 .gpago h4{grid-column:1/-1;margin:0;font-size:15px}
 .gpago label{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:13px}.gpago label small{font-weight:500;color:var(--muted)}
 .gpago .full{grid-column:1/-1}.gpago .row{display:flex;gap:8px;justify-content:flex-end}
+.agrupo h3{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.agrupo h3 span{font-family:var(--mono);font-weight:500;font-size:14px;color:var(--fg)}
 .fbal .ing b{color:#3F9E6A}.fbal .egr b{color:var(--flame)}
 .fbar{display:grid;grid-template-columns:120px 1fr auto;gap:10px;align-items:center;font-size:13.5px;font-weight:700}
 .fbar .trk{height:8px;border-radius:99px;background:var(--surface);overflow:hidden}.fbar .trk i{display:block;height:100%;border-radius:99px}
@@ -1487,7 +1488,7 @@ function confirmDel(btn,id,fn){
 /* ---------- Render ---------- */
 /* Cambios que llegan en tiempo real: vuelve a pintar sin perder el campo que se está escribiendo */
 function renderKeep(){const ae=document.activeElement;
-  if((ae&&(ae.id==="eNotas"||ae.id==="cNotas"))||arrastre||ajPortada||cancionEdit||(ae&&ae.closest&&ae.closest("#gastoForm,#pagoForm,#ingresoForm"))||!$("evModal").hidden){esperaRender=true;return}
+  if((ae&&(ae.id==="eNotas"||ae.id==="cNotas"))||arrastre||ajPortada||cancionEdit||(ae&&ae.closest&&ae.closest("#gastoForm,#pagoForm,#ingresoForm,#activoForm"))||!$("evModal").hidden){esperaRender=true;return}
   if(ae&&ae.dataset&&ae.dataset.grip){const g=ae.dataset.grip;render();const n=document.querySelector(`[data-grip="${g}"]`);if(n)n.focus();return}
   const sel=!ae||!ae.matches("input,textarea")||ae.classList.contains("otro-in")?null:ae.id?"#"+CSS.escape(ae.id):
     ["tedit","snota","hecha"].map(k=>ae.dataset[k]!=null?`[data-${k}="${CSS.escape(ae.dataset[k])}"]`+(k==="tedit"?`[data-f="${ae.dataset.f}"]`:""):"").find(Boolean)||null;
@@ -1517,7 +1518,7 @@ function render(){
   const same=sc==="day"?key(anchor)===key(now):sc==="week"?key(weekStart())===key(mondayOf(now)):sc==="month"?(anchor.getFullYear()===now.getFullYear()&&anchor.getMonth()===now.getMonth()):anchor.getFullYear()===now.getFullYear();
   $("todayP").textContent=sc==="day"?"Hoy":sc==="week"?"Esta semana":sc==="month"?"Este mes":"Este año";
   $("todayP").disabled=same;$("todayP").style.opacity=same?.45:1;
-  $("todayP").parentElement.style.display=sc==="team"||sc==="entradas"||sc==="canciones"||sc==="finsol"?"none":"";if(sc==="finsol")$("periodLabel").textContent=`Solicitudes de gasto · ${gastos.filter(g=>g.estado==="pendiente").length} por revisar`;if(sc==="canciones")$("periodLabel").textContent=`Canciones por producir · ${canciones.filter(c=>c.etapa!=="completado").length} en proceso`;if(sc==="entradas")$("periodLabel").textContent=`Formulario para formadores · ${entradas.length} entrada${entradas.length===1?"":"s"}`;if(sc==="team")$("periodLabel").textContent=route==="equipo"?`${perfiles.length} persona${perfiles.length===1?"":"s"} en la bitácora`:"Administración del equipo";
+  $("todayP").parentElement.style.display=sc==="team"||sc==="entradas"||sc==="canciones"||sc==="finsol"?"none":"";if(sc==="finsol")$("periodLabel").textContent=finView==="activos"?`Activos · ${dinero(activos.reduce((s,a)=>s+(Number(a.valor)||0),0))} en total`:`Solicitudes de gasto · ${gastos.filter(g=>g.estado==="pendiente").length} por revisar`;if(sc==="canciones")$("periodLabel").textContent=`Canciones por producir · ${canciones.filter(c=>c.etapa!=="completado").length} en proceso`;if(sc==="entradas")$("periodLabel").textContent=`Formulario para formadores · ${entradas.length} entrada${entradas.length===1?"":"s"}`;if(sc==="team")$("periodLabel").textContent=route==="equipo"?`${perfiles.length} persona${perfiles.length===1?"":"s"} en la bitácora`:"Administración del equipo";
   // datalists
   const projs=[...new Set(tasks.map(t=>t.proyecto).filter(Boolean))];
   $("projList").innerHTML=projs.map(p=>`<option value="${esc(p)}">`).join("");
@@ -1793,7 +1794,7 @@ function cargarEntradas(){if(entradasCh||!sb||!puedeEntradas())return;
 document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset.eestado){guardarEntrada(t.dataset.eestado,{estado:t.value},true);return}
   if(t.dataset.enotas){guardarEntrada(t.dataset.enotas,{notas:t.value.slice(0,5000)},false)}});
-document.addEventListener("focusout",e=>{if((e.target.id==="eNotas"||e.target.id==="cNotas"||(e.target.closest&&e.target.closest("#gastoForm,#pagoForm,#ingresoForm")))&&esperaRender){esperaRender=false;setTimeout(renderKeep,0)}});
+document.addEventListener("focusout",e=>{if((e.target.id==="eNotas"||e.target.id==="cNotas"||(e.target.closest&&e.target.closest("#gastoForm,#pagoForm,#ingresoForm,#activoForm")))&&esperaRender){esperaRender=false;setTimeout(renderKeep,0)}});
 /* PDF de una entrada: todas las respuestas, el temario, los documentos y las notas */
 function entradaPDF(e){const d=e.data||{};
   const P=pdfWriter("Entrada de formación",clean(`${d.titulo||"Sin título"}${d.nombre?" · "+d.nombre:""}`).slice(0,86));
@@ -2215,7 +2216,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)r
    Tablas "gastos" e "ingresos" (migración 017). Todo el equipo ve; cualquiera pide un gasto;
    solo Finanzas (perfiles.finanzas) y el desarrollador aprueban, rechazan, pagan y registran ingresos.
    Un gasto "pagada" (con fecha_pago) es un egreso del mes; los ingresos se registran aparte. */
-const FIN_TABS=[["solicitudes","Solicitudes de gasto"],["mes","Ingresos y egresos"]];
+const FIN_TABS=[["solicitudes","Solicitudes de gasto"],["mes","Ingresos y egresos"],["activos","Activos"]];
 const ESTADOS_G=[["pendiente","Pendiente","var(--sol)"],["aprobada","Aprobada","#8E6BD8"],["pagada","Pagada","#3F9E6A"],["rechazada","Rechazada","var(--flame)"],["cancelada","Cancelada","#7C8786"]];
 const ESTADO_G=Object.fromEntries(ESTADOS_G.map(([k,n,c])=>[k,{n,c}]));
 const CATS_GASTO=["Materiales","Equipo","Producción","Transporte","Alimentos","Hospedaje","Honorarios","Servicios","Publicidad","Eventos","Otro"];
@@ -2299,7 +2300,7 @@ function detalleGasto(g){const d=g.data||{},fin=puedeFin(),yo=perfil&&g.solicita
 function renderFinanzas(){const V=$("vFinanzas");
   if(finErr){V.innerHTML=`<div class="readonly">${esc(finErr)}</div>`;return}
   if(!loadedF){V.innerHTML=`<div class="none">Cargando Finanzas…</div>`;return}
-  V.innerHTML=finView==="mes"?vistaMovimientos():vistaSolicitudes()}
+  V.innerHTML=finView==="mes"?vistaMovimientos():finView==="activos"?vistaActivos():vistaSolicitudes()}
 function vistaSolicitudes(){const yo=perfil&&perfil.id,ms=key(new Date()).slice(0,7);
   const base=soloMias?gastos.filter(g=>g.solicitante===yo):gastos;
   const cnt=k=>k==="activas"?base.filter(g=>g.estado==="pendiente"||g.estado==="aprobada").length:k==="todas"?base.length:base.filter(g=>g.estado===k).length;
@@ -2464,6 +2465,67 @@ async function cargarCarpetas(pid){try{const r=await samplyFn({accion:"carpetas"
 document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset.sproy!==undefined&&samplyVinc){samplyVinc.projectid=t.value||null;samplyVinc.carpetas=null;samplyVinc.folderid=null;render();if(t.value)cargarCarpetas(t.value);return}
   if(t.dataset.scarp!==undefined&&samplyVinc){samplyVinc.folderid=t.value||null;render()}});
+/* ---------- Finanzas → Activos: todo lo que tiene Tiempo de Dios hoy (tabla "activos", migración 019) ---------- */
+const TIPOS_ACTIVO=[["banco","Cuentas de banco","🏦","liquido"],["efectivo","Efectivo y caja chica","💵","liquido"],["inversion","Inversiones","📈","liquido"],["por_cobrar","Cuentas por cobrar","🧾","liquido"],
+  ["equipo","Equipo (audio, video, cómputo)","🎛️","bien"],["instrumento","Instrumentos","🎸","bien"],["vehiculo","Vehículos","🚐","bien"],["inmueble","Inmuebles","🏠","bien"],["inventario","Inventario y mercancía","📦","bien"],["otro","Otros","✳️","bien"]];
+const TIPO_A=Object.fromEntries(TIPOS_ACTIVO.map(([k,n,i,g])=>[k,{n,i,g}]));
+let activos=[],loadedA=false,activosErr="",activosCh=null,activoEdit=null,nuevoActivo=false,filtroA="todos";
+function cargarActivos(){if(activosCh||!sb)return;
+  const load=async()=>{const {data,error}=await sb.from("activos").select("*").order("tipo").order("valor",{ascending:false}).limit(5000);
+    if(error)activosErr=/activos|PGRST205|42P01/.test((error.message||"")+(error.code||""))?"Falta correr la migración 019 en Supabase para registrar activos.":"No se pudieron leer los activos: "+error.message;else{activos=data||[];activosErr=""}
+    loadedA=true;renderKeep()};
+  activosCh=sb.channel("rt-activos").on("postgres_changes",{event:"*",schema:"public",table:"activos"},p=>{
+    if(p.eventType==="DELETE")activos=activos.filter(x=>x.id!==(p.old&&p.old.id));else{const i=activos.findIndex(x=>x.id===p.new.id);if(i>=0)activos[i]=p.new;else activos.push(p.new)}renderKeep()})
+    .subscribe(st=>{if(st==="SUBSCRIBED")load()})}
+function totalActivo(a){return Number(a.valor)||0}
+function formActivo(a){const v=a||{tipo:"equipo",nombre:"",valor:"",cantidad:1,area:"general",responsable:"",ubicacion:"",fecha_valor:key(new Date()),data:{}},d=v.data||{};
+  return `<form class="cnueva fform" id="activoForm" data-aid="${esc(a?a.id:"")}" autocomplete="off"><h3>${a?"Editar activo":"Agregar activo"}</h3>
+    <label class="c2">Tipo<select class="field" id="aTipo">${TIPOS_ACTIVO.map(([k,n,i])=>`<option value="${k}" ${v.tipo===k?"selected":""}>${i} ${n}</option>`).join("")}</select></label>
+    <label class="c4">Nombre<input class="field" id="aNombre" maxlength="160" required value="${esc(v.nombre)}" placeholder="Ej. Cuenta BBVA operativa, Consola Yamaha TF1, Cámara Sony FX3"></label>
+    <label class="c2">Valor total (MXN)<input class="field" id="aValor" type="number" min="0" step="0.01" required value="${esc(v.valor)}" placeholder="Saldo o valor estimado"></label>
+    <label class="c2">Cantidad<input class="field" id="aCant" type="number" min="1" step="1" value="${esc(v.cantidad||1)}"></label>
+    <label class="c2">Valor al día<input class="field" id="aFecha" type="date" value="${esc(v.fecha_valor||key(new Date()))}"></label>
+    <label class="c2">Área<select class="field" id="aArea"><option value="general">General</option>${AREA_IDS.map(x=>`<option value="${x}" ${v.area===x?"selected":""}>${AREAS[x].n}</option>`).join("")}</select></label>
+    <label class="c2">A cargo de <small>(opcional)</small><input class="field" id="aResp" maxlength="80" value="${esc(v.responsable||"")}" list="whoList"></label>
+    <label class="c2">Dónde está <small>(opcional)</small><input class="field" id="aUbic" maxlength="120" value="${esc(v.ubicacion||"")}" placeholder="Oficina, bodega, banco…"></label>
+    <label class="c3">Marca, modelo o cuenta <small>(opcional)</small><input class="field" id="aDet" maxlength="160" value="${esc(d.detalle||"")}" placeholder="Ej. terminación 4821, Sony FX3"></label>
+    <label class="c3">Estado <small>(opcional)</small><select class="field" id="aEstado">${["","Nuevo","Bueno","Regular","Necesita reparación","Fuera de uso"].map(x=>`<option ${d.estado===x?"selected":""} value="${x}">${x||"Sin indicar"}</option>`).join("")}</select></label>
+    <label class="c6">Notas <small>(opcional)</small><input class="field" id="aNotas" maxlength="400" value="${esc(d.notas||"")}" placeholder="Número de serie, garantía, a quién se le prestó…"></label>
+    <div class="row">${a?`<button type="button" class="btn ghost" data-aborrar="${esc(a.id)}">Borrar activo</button>`:""}<span class="dlnote"></span><button type="button" class="btn ghost" data-anuevo="0">Cancelar</button><button class="btn" type="submit">Guardar</button></div></form>`}
+function vistaActivos(){const fin=puedeFin(),sum=f=>activos.filter(f).reduce((s,a)=>s+totalActivo(a),0);
+  const total=sum(()=>true),liq=sum(a=>(TIPO_A[a.tipo]||{}).g==="liquido"),bien=total-liq,pc=sum(a=>a.tipo==="por_cobrar");
+  const grupos=TIPOS_ACTIVO.map(([k,n,i])=>({k,n,i,items:activos.filter(a=>a.tipo===k).sort((x,y)=>totalActivo(y)-totalActivo(x))})).filter(g=>g.items.length&&(filtroA==="todos"||g.k===filtroA));
+  const ae=activoEdit&&activos.find(x=>x.id===activoEdit);
+  const viejo=activos.filter(a=>(TIPO_A[a.tipo]||{}).g==="liquido"&&a.fecha_valor&&(Date.now()-fromKey(a.fecha_valor))>45*864e5);
+  return `<div class="dhead"><div><h2 class="fh2">Activos de Tiempo de Dios</h2><p class="fsub">Todo lo que tenemos hoy: dinero en bancos y caja, lo que nos deben, equipo, instrumentos e inventario. ${fin?"Actualiza los saldos de vez en cuando.":"Solo Finanzas los registra."}</p></div>
+      <div class="rbtns">${fin?`<button type="button" class="btn" data-anuevo="1">+ Agregar activo</button>`:""}<button type="button" class="btn ghost" data-acsv="1">Descargar CSV</button></div></div>
+    ${nuevoActivo||ae?formActivo(ae||null):""}
+    <div class="ctot fbal"><div class="ing"><b>${dinero(total)}</b><span>total de activos</span></div><div><b>${dinero(liq)}</b><span>bancos, efectivo, inversiones y por cobrar</span></div><div><b>${dinero(bien)}</b><span>equipo, instrumentos y otros bienes</span></div><div><b>${activos.reduce((n,a)=>n+(a.cantidad||1),0)}</b><span>artículos registrados</span></div></div>
+    ${viejo.length?`<div class="readonly">⏰ ${viejo.length} saldo${viejo.length>1?"s":""} sin actualizar en más de 45 días: ${viejo.slice(0,4).map(a=>esc(a.nombre)).join(", ")}${viejo.length>4?"…":""}.</div>`:""}
+    ${activos.length?`<div class="dgrid"><div class="dpanel"><h3>Por tipo</h3>${TIPOS_ACTIVO.map(([k,n,i])=>{const v=sum(a=>a.tipo===k);return v?`<div class="fbar"><span>${i} ${esc(n)}</span><div class="trk"><i style="width:${total?Math.round(v/total*100):0}%;background:${(TIPO_A[k].g==="liquido")?"#3F9E6A":"var(--sea)"}"></i></div><b>${dinero(v)}</b></div>`:""}).join("")}</div>
+      <div class="dpanel"><h3>Por área</h3>${["general",...AREA_IDS].map(x=>{const v=sum(a=>(a.area||"general")===x);return v?`<div class="fbar"><span>${x==="general"?"General":AREAS[x].n}</span><div class="trk"><i style="width:${total?Math.round(v/total*100):0}%;background:${x==="general"?"var(--muted)":AREAS[x].c}"></i></div><b>${dinero(v)}</b></div>`:""}).join("")}</div></div>`:""}
+    <div class="efiltros">${[["todos","Todos",""],...TIPOS_ACTIVO.filter(([k])=>activos.some(a=>a.tipo===k))].map(([k,n,i])=>`<button type="button" class="efil" data-afiltro="${k}" aria-pressed="${filtroA===k}">${i?i+" ":""}${esc(n)}<span>${k==="todos"?activos.length:activos.filter(a=>a.tipo===k).length}</span></button>`).join("")}</div>
+    ${activosErr?`<div class="readonly">${esc(activosErr)}</div>`:!loadedA?`<div class="none">Cargando activos…</div>`:!activos.length?`<div class="empty"><strong>Aún no hay activos registrados</strong><p>${fin?"Empieza por las cuentas de banco y la caja chica, y luego el equipo e instrumentos más valiosos. Con «Valor al día» queda claro de cuándo es cada saldo.":"Finanzas todavía no ha registrado los activos."}</p></div>`:
+    grupos.map(g=>`<section class="dpanel agrupo"><h3>${g.i} ${esc(g.n)} <span>${dinero(g.items.reduce((s,a)=>s+totalActivo(a),0))}</span></h3><ul class="fmov">${g.items.map(a=>{const d=a.data||{};return `<li><time>${a.cantidad>1?a.cantidad+" ×":""}</time><div><strong>${esc(a.nombre)}</strong><small>${[d.detalle,a.area&&AREAS[a.area]?AREAS[a.area].n:"",a.responsable?"a cargo de "+a.responsable:"",a.ubicacion,d.estado,a.fecha_valor?"valor al "+shortDate(a.fecha_valor):""].filter(Boolean).map(esc).join(" · ")}</small>${d.notas?`<small>${esc(d.notas)}</small>`:""}</div><b>${dinero(a.valor)}</b>${fin?`<button type="button" class="icon" data-aedit="${esc(a.id)}" aria-label="Editar activo" title="Editar">✎</button>`:"<span></span>"}</li>`}).join("")}</ul></section>`).join("")}`}
+function csvActivos(){const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+  const filas=[["Tipo","Nombre","Cantidad","Valor","Valor al día","Área","A cargo de","Ubicación","Marca/modelo/cuenta","Estado","Notas"],...activos.map(a=>{const d=a.data||{};return [(TIPO_A[a.tipo]||{}).n||a.tipo,a.nombre,a.cantidad,a.valor,a.fecha_valor,a.area&&AREAS[a.area]?AREAS[a.area].n:"General",a.responsable||"",a.ubicacion||"",d.detalle||"",d.estado||"",d.notas||""]})];
+  const blob=new Blob(["﻿"+filas.map(r=>r.map(q).join(",")).join("\r\n")],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),el=document.createElement("a");
+  el.href=url;el.download=`TdD-activos-${key(new Date())}.csv`;document.body.appendChild(el);el.click();el.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);toast("CSV descargado.")}
+document.addEventListener("click",async e=>{const b=e.target.closest("button");if(!b)return;const ds=b.dataset;
+  if(ds.anuevo!==undefined){nuevoActivo=ds.anuevo==="1";activoEdit=null;render();if(nuevoActivo)setTimeout(()=>$("aNombre").focus(),30);return}
+  if(ds.aedit){activoEdit=ds.aedit;nuevoActivo=false;render();setTimeout(()=>{const f=$("activoForm");if(f)f.scrollIntoView({behavior:"smooth",block:"center"})},30);return}
+  if(ds.afiltro){filtroA=ds.afiltro;render();return}
+  if(ds.acsv){csvActivos();return}
+  if(ds.aborrar){const a=activos.find(x=>x.id===ds.aborrar);if(!a||!confirm(`¿Borrar «${a.nombre}» de los activos?`))return;
+    const {error}=await sb.from("activos").delete().eq("id",a.id);if(error){toast("No se pudo borrar: "+error.message);return}
+    activos=activos.filter(x=>x.id!==a.id);activoEdit=null;render();toast("Activo borrado.")}});
+document.addEventListener("submit",async e=>{if(e.target.id!=="activoForm")return;e.preventDefault();if(!sb)return;const aid=e.target.dataset.aid;
+  const fila={tipo:$("aTipo").value,nombre:$("aNombre").value.trim().slice(0,160),valor:Number($("aValor").value)||0,cantidad:Math.max(1,parseInt($("aCant").value)||1),fecha_valor:$("aFecha").value||key(new Date()),
+    area:$("aArea").value,responsable:$("aResp").value.trim()||null,ubicacion:$("aUbic").value.trim()||null,data:{detalle:$("aDet").value.trim(),estado:$("aEstado").value,notas:$("aNotas").value.trim()}};
+  const {data,error}=await (aid?sb.from("activos").update(fila).eq("id",aid).select().single():sb.from("activos").insert(fila).select().single());
+  if(error){toast("No se pudo guardar: "+(/activos/.test(error.message)&&/schema|exist/.test(error.message)?"falta correr la migración 019.":error.message));return}
+  if(aid){const i=activos.findIndex(x=>x.id===aid);if(i>=0)activos[i]=data}else if(data&&!activos.some(x=>x.id===data.id))activos.push(data);
+  nuevoActivo=false;activoEdit=null;render();toast(aid?"Activo actualizado.":"Activo agregado.")});
 /* ---------- Tareas de todas las áreas (PM) ---------- */
 function renderPMTasks(){const ws=weekStart(),wk=key(ws);
   if(!$("ptArea").options.length)$("ptArea").innerHTML=AREA_IDS.map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("")+`<option value="todas">Todas las áreas</option>`;
@@ -3080,7 +3142,7 @@ async function start(){
   if(started){render();return}started=true;
   sb.from("perfiles").select("*").then(({data})=>{perfiles=data||[];render()});
   tasksCol=makeCol("tareas");logrosCol=makeCol("logros");
-  cargarEntradas();cargarCalendario();cargarCanciones();cargarFinanzas();cargarSamplyEventos();
+  cargarEntradas();cargarCalendario();cargarCanciones();cargarFinanzas();cargarSamplyEventos();cargarActivos();
   let gotT=false,gotL=false;
   const timer=setTimeout(()=>setStatus("No se pudo conectar todavía; revisa tu conexión.",true),10000);
   const done=()=>{if(gotT&&gotL){clearTimeout(timer);setStatus("")}};

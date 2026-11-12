@@ -129,6 +129,9 @@ Corre `supabase/migraciones/016_saludo.sql`. El Dashboard saluda «Bienvenido Di
 5. En la app, abre una canción → **Vincular con Samply** → elige el proyecto y la carpeta. Con **Crear liga para compartir** se genera la liga de escucha.
 6. Una sola vez, la PM o el desarrollador toca **Activar avisos de Samply** en cualquier canción vinculada: Samply avisará a la Bitácora cuando se suba una versión o el artista comente.
 
+### 21. Activos (Finanzas → Activos)
+Corre `supabase/migraciones/019_activos.sql`. Registra todo lo que tiene Tiempo de Dios: cuentas de banco, efectivo, inversiones, cuentas por cobrar, equipo, instrumentos, vehículos, inmuebles e inventario, con su valor, a qué fecha, área, quién lo tiene y dónde está. Todos lo ven; solo Finanzas y el desarrollador lo editan. Avisa de los saldos sin actualizar en más de 45 días y se descarga en CSV.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 
