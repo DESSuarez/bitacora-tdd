@@ -383,6 +383,9 @@ a.chip.who{text-decoration:none}a.chip.who:hover{filter:brightness(.95)}
 .carta .pbio p.vacio{color:var(--muted);font-size:14px}
 .carta .pbio textarea{width:100%;min-height:84px;resize:vertical;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--fg);padding:12px 14px;font:inherit;font-size:15.5px;line-height:1.55}
 .carta .pbio textarea:focus{border-color:var(--area-ink);outline:none}
+.psaludo{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:14px 28px 0}
+.psaludo>span{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.psaludo small{color:var(--muted);font-size:12.5px}
 .carta .pacts{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:14px 28px 24px}
 .carta .pacts .drophint{text-align:left}
 @media (max-width:640px){
@@ -398,7 +401,7 @@ a.chip.who{text-decoration:none}a.chip.who:hover{filter:brightness(.95)}
   .carta .uedit{justify-content:center}
   .carta .pchips{justify-content:center}
   .av.xxl{width:152px;height:152px;font-size:56px}
-  .carta .pbio,.carta .pacts{padding-left:18px;padding-right:18px}
+  .carta .pbio,.carta .pacts,.psaludo{padding-left:18px;padding-right:18px}
 }
 .btn.file{display:inline-flex;align-items:center;cursor:pointer}
 .plist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
@@ -1408,7 +1411,7 @@ function render(){
   pintarMenu();
   const nombre=D?"Dashboard":P?(route==="equipo"?"Equipo":pp?pp.nombre:"Perfil"):isPM?"Project Manager":AREAS[route].n;
   $("areaTag").innerHTML=(AREA_ICON[route]||"")+esc(route==="persona"?"Perfil":nombre);
-  $("h1").innerHTML=D?`Bienvenido <em>hijo de Dios</em>`:route==="equipo"?`El equipo <em>en orden</em>`:route==="persona"?esc(nombre):isPM?`Las áreas <em>en orden</em>`:`La semana <em>en orden</em>`;
+  $("h1").innerHTML=D?saludoH1():route==="equipo"?`El equipo <em>en orden</em>`:route==="persona"?esc(nombre):isPM?`Las áreas <em>en orden</em>`:`La semana <em>en orden</em>`;
   document.title=nombre+" · Bitácora Tiempo de Dios";
   // pestañas
   if(PM_SOLO.includes(pmView)&&!esPM())pmView="week";
@@ -2130,6 +2133,7 @@ function cartaPersona(p,self,puede,email){const ar=[p.area,...(p.areas||[])].fil
       </div>
     </div>
     <div class="pbio"><h3>Sobre ${self?"mí":"esta persona"}</h3>${puede?`<textarea data-pbio="${p.id}" maxlength="600" rows="3" placeholder="${self?"Cuéntale al equipo quién eres: qué haces en Tiempo de Dios, tus dones y cómo te gusta trabajar.":"Escribe una breve presentación."}">${esc(p.bio||"")}</textarea>`:p.bio?`<p>${esc(p.bio)}</p>`:`<p class="vacio">Aún no escribe su presentación.</p>`}</div>
+    ${self?`<div class="psaludo"><span>Cómo te saluda la Bitácora</span><div class="vistas">${["hijo","hija"].map(v=>`<button type="button" class="vista" data-psaludo="${v}" aria-pressed="${saludoDe(p)===v}" aria-selected="${saludoDe(p)===v}">${v==="hija"?"Bienvenida, hija de Dios":"Bienvenido, hijo de Dios"}</button>`).join("")}</div>${p.saludo?"":`<small>Lo deduje de tu nombre; tócalo para confirmarlo.</small>`}</div>`:""}
     ${puede||esPM()?`<div class="pacts">${puede?`<label class="btn ghost sm file">${p.foto?"Cambiar foto":"Subir foto"}<input type="file" accept="image/*" data-foto="${p.id}" hidden></label>${p.foto?`<button type="button" class="btn ghost sm" data-ajustar="${p.id}">Ajustar encuadre</button>`:""}<small class="drophint">o arrastra una imagen a la foto, o pégala con ⌘V</small>`:""}${esPM()&&!self?`<button class="btn ghost sm" data-goteam="1">Cambiar rol o área</button>`:""}</div>`:""}
   </article>`}
 /* Resumen de lo que la PM (o desarrollo) le asignó a una persona en el mes: avance, por área y lista */
@@ -2202,6 +2206,15 @@ async function subirFoto(id,blob){if(!sb)return;toast("Subiendo foto…");
     if(vieja&&vieja.startsWith(id+"/"))sb.storage.from("fotos").remove([vieja]).catch(()=>{})}
   catch(e){console.error(e);toast("No se pudo subir la foto: "+(/row-level security|Unauthorized|403/i.test(e.message||"")?"no tienes permiso (revisa la migración 002).":e.message||e))}}
 
+/* Saludo del Dashboard: "Bienvenido Diego, hijo de Dios" / "Bienvenida Ceci, hija de Dios".
+   Cada quien lo elige en su perfil (perfiles.saludo, migración 016); si no ha elegido, se deduce del primer nombre. */
+const NOMBRES_HIJA=["carmen","rocío","rocio","raquel","isabel","beatriz","mercedes","pilar","ruth","esther","abigail","sol","consuelo","dolores","inés","ines","belén","belen","rosy","ceci","itzel","nayeli","miriam","lupita","guadalupe","rosario","trinidad","araceli","maricel","noemí","noemi","yamileth","edith","judith","lizbeth","marisol","maribel","mabel","lourdes","nancy","karen","ingrid","jazmín","jazmin","abril","flor","luz","paz","ivonne","yazmín","yazmin","zoé","zoe","chely","mayte","dulce","mar","irene"];
+const NOMBRES_HIJO=["luca","josema","elías","elias","tobías","tobias","jeremías","jeremias","isaías","isaias","matías","matias","nicola"];
+function primerNombre(p){return String(p&&p.nombre||"").trim().split(/\s+/)[0]||""}
+function saludoDe(p){if(!p)return "hijo";if(p.saludo==="hija"||p.saludo==="hijo")return p.saludo;
+  const n=primerNombre(p).toLowerCase();if(NOMBRES_HIJO.includes(n))return "hijo";if(NOMBRES_HIJA.includes(n))return "hija";return /a$/.test(n)?"hija":"hijo"}
+function saludoH1(){const s=saludoDe(perfil),n=primerNombre(perfil);return `${s==="hija"?"Bienvenida":"Bienvenido"}${n?" "+esc(n):""}, <em>${s} de Dios</em>`}
+
 /* Portada de la carta de presentación: se recorta a 3:1 (máx. 1800 px de ancho) y se guarda en fotos/<id>/portada-<fecha>.jpg */
 /* La imagen se guarda sin recortar (máx. 1800 px por lado) y se elige qué franja se ve: la posición vertical
    va en la misma URL como #y=0…100 (0 = arriba, 100 = abajo), así no hace falta otra columna. */
@@ -2243,6 +2256,8 @@ async function quitarPortada(id){const antes=(perfiles.find(x=>x.id===id)||{}).p
   const vieja=rutaFoto(antes);if(vieja&&vieja.startsWith(id+"/"))sb.storage.from("fotos").remove([vieja]).catch(()=>{})}
 document.addEventListener("change",e=>{const f=e.target.closest&&e.target.closest("[data-portada]");if(f&&f.files&&f.files[0]){subirPortada(f.dataset.portada,f.files[0]);f.value=""}});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-quitarportada]");if(b)quitarPortada(b.dataset.quitarportada)});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-psaludo]");if(!b||!perfil)return;
+  actualizarPerfil(perfil.id,{saludo:b.dataset.psaludo})});
 
 /* ---------- Equipo (solo PM) ---------- */
 /* Invitar y quitar usa la Edge Function "equipo" (supabase/functions/equipo).

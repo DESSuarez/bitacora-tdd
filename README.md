@@ -112,6 +112,9 @@ Corre `supabase/migraciones/014_portada.sql`. Agrega `perfiles.portada`: cada qu
 3. **Checklist definitivo (22 pasos):** los 14 de producción y los 8 del pipeline de Marketing (D-42 a D+30). Las fechas de Marketing salen de la fecha de lanzamiento.
 4. **Pendiente de cada canción:** siempre es su siguiente paso, asignado a quien le toca (Ariel, Memo o Marketing). Al completarlo, aquí o en Pendientes, se marca en el checklist, la etapa avanza sola y se crea el siguiente.
 
+### 18. Saludo del Dashboard
+Corre `supabase/migraciones/016_saludo.sql`. El Dashboard saluda «Bienvenido Diego, hijo de Dios» o «Bienvenida Ceci, hija de Dios». Cada quien lo confirma o cambia en su perfil («Cómo te saluda la Bitácora»); mientras no elija, se deduce del nombre.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 

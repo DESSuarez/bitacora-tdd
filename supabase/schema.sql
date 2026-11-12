@@ -261,6 +261,11 @@ alter table public.perfiles add constraint perfiles_bio_largo check (bio is null
 -- Portada de la carta de presentación (migración 014)
 alter table public.perfiles add column if not exists portada text;
 
+-- Saludo del Dashboard: hijo o hija de Dios (migración 016)
+alter table public.perfiles add column if not exists saludo text;
+alter table public.perfiles drop constraint if exists perfiles_saludo_valido;
+alter table public.perfiles add constraint perfiles_saludo_valido check (saludo is null or saludo in ('hijo','hija'));
+
 -- Solo la PM cambia rol, área y áreas adicionales; nombre, usuario, foto y bio solo los cambia cada quien (migración 011)
 create or replace function public.proteger_rol()
 returns trigger language plpgsql security definer set search_path = public as $$
