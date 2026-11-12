@@ -357,6 +357,11 @@ a.chip.who{text-decoration:none}a.chip.who:hover{filter:brightness(.95)}
 .pcoverbtn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:99px;border:0;background:rgba(27,28,26,.55);color:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .15s}
 .pcoverbtn:hover{background:rgba(27,28,26,.8)}
 .pcoverbtn svg{width:16px;height:16px}
+.pcoverbtn.ok{background:#fff;color:#1B1C1A}.pcoverbtn.ok:hover{background:var(--baby)}
+.pcoverhint{display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:99px;background:rgba(27,28,26,.55);color:#fff;font-size:13px;font-weight:700;backdrop-filter:blur(6px)}
+.carta .pcover.ajustando{cursor:grab;touch-action:none;box-shadow:inset 0 0 0 3px var(--baby);z-index:3}
+.carta .pcover.ajustando:active{cursor:grabbing}
+.carta .pcover.ajustando::after{background:repeating-linear-gradient(0deg,transparent 0 49px,rgba(255,255,255,.25) 49px 50px)}
 .carta .pmarca{position:absolute;right:20px;top:16px;z-index:1;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.85);mix-blend-mode:luminosity}
 .carta .pbody{display:flex;align-items:flex-end;gap:26px;padding:0 28px;margin-top:-84px;position:relative;z-index:2;flex-wrap:wrap}
 .carta .pfoto{position:relative;padding:0;border:0;border-radius:50%;flex:none}
@@ -1388,7 +1393,7 @@ function confirmDel(btn,id,fn){
 /* ---------- Render ---------- */
 /* Cambios que llegan en tiempo real: vuelve a pintar sin perder el campo que se está escribiendo */
 function renderKeep(){const ae=document.activeElement;
-  if((ae&&(ae.id==="eNotas"||ae.id==="cNotas"))||arrastre||!$("evModal").hidden){esperaRender=true;return}
+  if((ae&&(ae.id==="eNotas"||ae.id==="cNotas"))||arrastre||ajPortada||!$("evModal").hidden){esperaRender=true;return}
   if(ae&&ae.dataset&&ae.dataset.grip){const g=ae.dataset.grip;render();const n=document.querySelector(`[data-grip="${g}"]`);if(n)n.focus();return}
   const sel=!ae||!ae.matches("input,textarea")||ae.classList.contains("otro-in")?null:ae.id?"#"+CSS.escape(ae.id):
     ["tedit","snota","hecha"].map(k=>ae.dataset[k]!=null?`[data-${k}="${CSS.escape(ae.dataset[k])}"]`+(k==="tedit"?`[data-f="${ae.dataset.f}"]`:""):"").find(Boolean)||null;
@@ -2113,8 +2118,8 @@ function cartaPersona(p,self,puede,email){const ar=[p.area,...(p.areas||[])].fil
   const chips=ar.length?ar.map(a=>`<a class="chip area" href="#${a}" style="background:${AREAS[a].c};color:${AREAS[a].on}">${AREA_ICON[a]||""}${AREAS[a].n}</a>`).join(""):ACCESO_TOTAL.includes(p.rol)?`<span class="chip">Todas las áreas</span>`:`<span class="chip">Sin área asignada</span>`;
   const CAM='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
   return `<article class="profile carta">
-    <div class="pcover ${p.portada?"conimg":""}" style="background:${p.portada?`url(&quot;${esc(p.portada)}&quot;) center/cover no-repeat, `:""}${cover}"><span class="pmarca">Tiempo de Dios</span>
-      ${self?`<div class="pcoveracts"><label class="pcoverbtn" title="Sube una imagen horizontal; se recorta a lo ancho">${CAM}<span>${p.portada?"Cambiar portada":"Poner portada"}</span><input type="file" accept="image/*" data-portada="${p.id}" hidden></label>${p.portada?`<button type="button" class="pcoverbtn" data-quitarportada="${p.id}" title="Volver a los colores de tus áreas">Quitar</button>`:""}</div>`:""}</div>
+    <div class="pcover ${p.portada?"conimg":""}" data-pcover="${p.id}" style="background:${p.portada?`url(&quot;${esc(portadaUrl(p.portada))}&quot;) 50% ${portadaY(p.portada)}%/cover no-repeat, `:""}${cover}"><span class="pmarca">Tiempo de Dios</span>
+      ${self?`<div class="pcoveracts"><label class="pcoverbtn" title="Sube una imagen horizontal; se recorta a lo ancho">${CAM}<span>${p.portada?"Cambiar portada":"Poner portada"}</span><input type="file" accept="image/*" data-portada="${p.id}" hidden></label>${p.portada?`<button type="button" class="pcoverbtn" data-ajportada="${p.id}" title="Arrastra la imagen hacia arriba o hacia abajo">↕ Ajustar</button>`:""}${p.portada?`<button type="button" class="pcoverbtn" data-quitarportada="${p.id}" title="Volver a los colores de tus áreas">Quitar</button>`:""}</div>`:""}</div>
     <div class="pbody">
       <div class="pfoto" ${puede?`data-drop="${p.id}" title="Arrastra o pega una imagen aquí"`:""}>${av(p,"xxl")}${puede?`<label class="fotobtn" title="${p.foto?"Cambiar foto":"Subir foto"}" aria-label="${p.foto?"Cambiar foto":"Subir foto"}">${CAM}<input type="file" accept="image/*" data-foto="${p.id}" hidden></label>`:""}</div>
       <div class="pinfo">${puede?`<input data-pnombre="${p.id}" value="${esc(p.nombre)}" maxlength="60" aria-label="Nombre" title="Nombre: como te ve el equipo">`:`<h2>${esc(p.nombre)}</h2>`}
@@ -2198,17 +2203,41 @@ async function subirFoto(id,blob){if(!sb)return;toast("Subiendo foto…");
   catch(e){console.error(e);toast("No se pudo subir la foto: "+(/row-level security|Unauthorized|403/i.test(e.message||"")?"no tienes permiso (revisa la migración 002).":e.message||e))}}
 
 /* Portada de la carta de presentación: se recorta a 3:1 (máx. 1800 px de ancho) y se guarda en fotos/<id>/portada-<fecha>.jpg */
+/* La imagen se guarda sin recortar (máx. 1800 px por lado) y se elige qué franja se ve: la posición vertical
+   va en la misma URL como #y=0…100 (0 = arriba, 100 = abajo), así no hace falta otra columna. */
 function recortarPortada(file){return new Promise((ok,ko)=>{const img=new Image(),url=URL.createObjectURL(file);
-  img.onload=()=>{const W=Math.min(1800,img.naturalWidth),H=Math.round(W/3),c=document.createElement("canvas");c.width=W;c.height=H;
-    const r=Math.max(W/img.naturalWidth,H/img.naturalHeight),w=img.naturalWidth*r,h=img.naturalHeight*r;
-    c.getContext("2d").drawImage(img,(W-w)/2,(H-h)/2,w,h);URL.revokeObjectURL(url);c.toBlob(b=>b?ok(b):ko(new Error("No se pudo preparar la imagen")),"image/jpeg",.86)};
+  img.onload=()=>{const r=Math.min(1,1800/img.naturalWidth,1800/img.naturalHeight),W=Math.round(img.naturalWidth*r),H=Math.round(img.naturalHeight*r),c=document.createElement("canvas");c.width=W;c.height=H;
+    c.getContext("2d").drawImage(img,0,0,W,H);URL.revokeObjectURL(url);c.toBlob(b=>b?ok(b):ko(new Error("No se pudo preparar la imagen")),"image/jpeg",.86)};
   img.onerror=()=>{URL.revokeObjectURL(url);ko(new Error("Ese archivo no es una imagen que el navegador pueda abrir"))};img.src=url})}
-function rutaFoto(u){return ((u||"").split("/object/public/fotos/")[1]||"").split("?")[0]}
+function portadaUrl(u){return String(u||"").split("#")[0]}
+function portadaY(u){const m=String(u||"").match(/#y=(\d{1,3})/);return m?Math.min(100,+m[1]):50}
+/* Ajustar la portada: se arrastra hacia arriba o hacia abajo; Guardar o Cancelar */
+let ajPortada=null;
+function ajustarPortada(id){const el=document.querySelector(`[data-pcover="${id}"]`),p=perfiles.find(x=>x.id===id);if(!el||!p||!p.portada)return;
+  const img=new Image();img.onload=()=>{ajPortada={id,el,y:portadaY(p.portada),y0:portadaY(p.portada),nat:img.naturalHeight/img.naturalWidth,arr:null};
+    el.classList.add("ajustando");const acts=el.querySelector(".pcoveracts");if(acts)acts.innerHTML=`<span class="pcoverhint">↕ Arrastra la imagen</span><button type="button" class="pcoverbtn ok" data-ajguardar="1">Guardar</button><button type="button" class="pcoverbtn" data-ajcancelar="1">Cancelar</button>`};
+  img.src=portadaUrl(p.portada)}
+function pintarAjuste(){const a=ajPortada;if(!a)return;a.el.style.backgroundPosition=`50% ${a.y}%, 0 0`}
+document.addEventListener("pointerdown",e=>{const a=ajPortada;if(!a||!a.el.contains(e.target)||e.target.closest("button"))return;e.preventDefault();
+  a.arr={y:e.clientY,y0:a.y,pid:e.pointerId};try{a.el.setPointerCapture(e.pointerId)}catch(_){}});
+document.addEventListener("pointermove",e=>{const a=ajPortada;if(!a||!a.arr||e.pointerId!==a.arr.pid)return;
+  const w=a.el.offsetWidth,h=a.el.offsetHeight,sobra=Math.max(1,w*a.nat-h);  // píxeles de imagen que no caben
+  a.y=Math.max(0,Math.min(100,a.arr.y0-(e.clientY-a.arr.y)/sobra*100));pintarAjuste()});
+["pointerup","pointercancel"].forEach(t=>document.addEventListener(t,()=>{if(ajPortada)ajPortada.arr=null}));
+function terminarAjuste(guardar){const a=ajPortada;if(!a)return;ajPortada=null;const p=perfiles.find(x=>x.id===a.id);
+  if(guardar&&p&&Math.round(a.y)!==Math.round(a.y0))actualizarPerfil(a.id,{portada:portadaUrl(p.portada)+"#y="+Math.round(a.y)});else render();
+  if(esperaRender)esperaRender=false}
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.ajportada){ajustarPortada(b.dataset.ajportada);return}
+  if(b.dataset.ajguardar){terminarAjuste(true);return}
+  if(b.dataset.ajcancelar){terminarAjuste(false)}});
+function rutaFoto(u){return ((u||"").split("/object/public/fotos/")[1]||"").split(/[?#]/)[0]}
 async function subirPortada(id,file){if(!sb||!perfil||id!==perfil.id)return;toast("Subiendo portada…");
   try{const blob=await recortarPortada(file),path=`${id}/portada-${Date.now()}.jpg`,antes=(perfiles.find(x=>x.id===id)||{}).portada||"";
     const {error}=await sb.storage.from("fotos").upload(path,blob,{contentType:"image/jpeg",cacheControl:"31536000"});if(error)throw error;
-    await actualizarPerfil(id,{portada:sb.storage.from("fotos").getPublicUrl(path).data.publicUrl});
-    const vieja=rutaFoto(antes);if(vieja&&vieja.startsWith(id+"/"))sb.storage.from("fotos").remove([vieja]).catch(()=>{})}
+    await actualizarPerfil(id,{portada:sb.storage.from("fotos").getPublicUrl(path).data.publicUrl+"#y=50"});
+    const vieja=rutaFoto(antes);if(vieja&&vieja.startsWith(id+"/"))sb.storage.from("fotos").remove([vieja]).catch(()=>{});
+    setTimeout(()=>ajustarPortada(id),150)}
   catch(e){console.error(e);toast("No se pudo subir la portada: "+(/portada/.test(e.message||"")&&/column|schema/.test(e.message||"")?"falta correr la migración 014.":e.message||e))}}
 async function quitarPortada(id){const antes=(perfiles.find(x=>x.id===id)||{}).portada||"";await actualizarPerfil(id,{portada:null});
   const vieja=rutaFoto(antes);if(vieja&&vieja.startsWith(id+"/"))sb.storage.from("fotos").remove([vieja]).catch(()=>{})}
