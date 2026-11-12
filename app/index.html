@@ -2134,7 +2134,7 @@ function detalleCancion(c){const d=c.data||{},ck=c.checklist||{},hechos=pasosHec
       <h2>${esc(tituloDe(c))}</h2><p>${esc(creditoDe(c))}${d.nombre&&d.nombre!==ministerioDe(c)?" · "+esc(d.nombre):""}${d.bpm?" · "+esc(d.bpm)+" BPM":""}${d.tonalidad?" · "+esc(d.tonalidad):""}</p>
       <div class="cavance"><div class="cprog grande">${barra(p)}<b style="color:${colorAvance(p)}">${p}%</b></div><small>${hechos} de ${PASOS.length} pasos, desde la primera asesoría hasta el reporte D+30 de la campaña</small></div>
       <div class="rbtns"><button type="button" class="btn" data-cagendar="${esc(c.id)}">${c.semana?"Cambiar semana de producción":"Agendar semana de producción"}</button>${esPM()?`<button type="button" class="icon del" data-cdel="${esc(c.id)}" aria-label="Borrar canción" title="Borrar canción y sus archivos">${ICON_DEL}</button>`:""}</div></div>
-    <div class="cpendiente">${pend?`<div><span class="evk2">Pendiente actual</span><strong>${esc(pend.titulo)}</strong><small>${esc(pend.responsable||"Sin responsable")} · vence ${shortDate(venceDe(pend))}</small></div><button type="button" class="btn ghost sm" data-irtarea="musica">Ver en Pendientes</button>`
+    <div class="cpendiente">${pend?`<div><span class="evk2">Pendiente actual</span><strong>${esc(pend.titulo)}</strong><small>${esc(pend.responsable||"Sin responsable")} · vence ${shortDate(venceDe(pend))}</small></div><button type="button" class="btn ghost sm" data-verpend="${esc(pend.id)}">Ver en Pendientes</button>`
       :n?`<div><span class="evk2">Siguiente paso</span><strong>${n}. ${esc(PASOS[n-1][0])}</strong><small>${esc(PASOS[n-1][2])} · todavía sin pendiente</small></div><button type="button" class="btn sm" data-cpend="${esc(c.id)}">Crear pendiente</button>`
       :`<div><span class="evk2">Proceso completo</span><strong>Canción lanzada y reportada 🎉</strong></div>`}</div>
     ${panelSamply(c)}
@@ -2200,7 +2200,10 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)r
   if(ds.evnuevo!==undefined){abrirEvento(null,ds.evnuevo||key(new Date()));return}
   if(ds.evabrir){const [id,f]=ds.evabrir.split("|");abrirEvento(id,f);return}
   if(ds.evprod){abrirEvento(null,ds.evprod,{tipo:"produccion",area:"musica",titulo:"Producción · ",fin:key(addDays(fromKey(ds.evprod),4))});return}
-  if(ds.irtarea){areaView[ds.irtarea]="tasks";location.hash=ds.irtarea;return}
+  if(ds.irtarea){areaView[ds.irtarea]="tasks";if(location.hash==="#"+ds.irtarea)render();else location.hash=ds.irtarea;return}
+  if(ds.verpend){const t=findT(ds.verpend);if(!t)return;const a=areaOf(t);areaView[a]="tasks";anchor=fromKey(t.semana);open.add(t.id);recienMovida=t.id;setTimeout(()=>{if(recienMovida===t.id)recienMovida=null},1500);
+    if(location.hash==="#"+a)render();else location.hash=a;
+    setTimeout(()=>{const li=document.querySelector(`[data-tid="${CSS.escape(t.id)}"]`);if(li)li.scrollIntoView({behavior:"smooth",block:"center"})},120);return}
   if(ds.cancion){cancionSel=ds.cancion;render();window.scrollTo(0,0);return}
   if(ds.cvolver){cancionSel=null;cancionEdit=null;render();window.scrollTo(0,0);return}
   if(ds.vercancion){cancionSel=ds.vercancion;areaView.musica="canciones";if(location.hash==="#musica")render();else location.hash="musica";window.scrollTo(0,0);return}
