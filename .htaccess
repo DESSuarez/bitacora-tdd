@@ -7,6 +7,8 @@ RewriteRule ^(.*)$ app/$1 [L]
 
 # Que el navegador siempre pregunte por la versión nueva de la app después de cada despliegue
 <IfModule mod_headers.c>
+  # La Bitácora y sus formularios (entrada/, cancion/) son privados: que ningún buscador los indexe
+  Header set X-Robots-Tag "noindex, nofollow, noarchive"
   <FilesMatch "\.(html|js)$">
     Header set Cache-Control "no-cache"
   </FilesMatch>
