@@ -115,6 +115,12 @@ Corre `supabase/migraciones/014_portada.sql`. Agrega `perfiles.portada`: cada qu
 ### 18. Saludo del Dashboard
 Corre `supabase/migraciones/016_saludo.sql`. El Dashboard saluda «Bienvenido Diego, hijo de Dios» o «Bienvenida Ceci, hija de Dios». Cada quien lo confirma o cambia en su perfil («Cómo te saluda la Bitácora»); mientras no elija, se deduce del nombre.
 
+### 19. Finanzas y documentos de registro de canciones
+1. Corre `supabase/migraciones/017_finanzas.sql`. Crea las tablas `gastos` e `ingresos`, el bucket privado `finanzas`, la columna `perfiles.finanzas` y el permiso para que Música suba documentos de registro de canciones.
+2. En **Equipo**, marca **💰 Finanzas** a Carla (y a quien se sume después). Solo ellas y el desarrollador aprueban, rechazan, pagan y registran ingresos; todo el equipo ve y cualquiera puede pedir un gasto.
+3. **Finanzas → Solicitudes de gasto**: pedir, aprobar, rechazar y marcar «Pago realizado» (fecha, método, referencia y comprobante). **Ingresos y egresos**: registro mensual con balance, por categoría y CSV.
+4. En Canciones, los pasos 12 (INDAUTOR/SACM) y 13 (splitsheet) solo se completan subiendo el documento.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 

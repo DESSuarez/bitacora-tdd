@@ -59,7 +59,7 @@ window.ETAPAS_CANCION = [
 ];
 
 // Checklist definitivo: 14 pasos de producción + 8 de marketing (pipeline D-Day).
-// [paso, fase, responsable, días respecto al lanzamiento (solo marketing)]
+// [paso, fase, responsable, días respecto al lanzamiento (solo marketing), documento obligatorio para completarlo]
 // El avance de cada canción (0 a 100 %) es cuántos de estos pasos están completos.
 // Ojo: el orden importa (el avance guardado usa el número de paso); agrega pasos nuevos al final.
 window.CHECKLIST_CANCION = [
@@ -74,8 +74,8 @@ window.CHECKLIST_CANCION = [
   ["Jueves · Cierre de instrumentación y voces", "Producción", "Memo"],
   ["Viernes · Edición, mezcla y master", "Producción", "Memo"],
   ["Aprobación del master por el artista", "Producción", "Memo"],
-  ["Registro INDAUTOR / SACM", "Registro", "Ariel"],
-  ["Splitsheet firmado", "Registro", "Memo"],
+  ["Registro INDAUTOR / SACM", "Registro", "Ariel", null, "el comprobante del registro INDAUTOR / SACM"],
+  ["Splitsheet firmado", "Registro", "Memo", null, "el splitsheet firmado"],
   ["Handoff a Marketing", "Marketing", "Memo"],
   ["D-42 · Brief creativo", "Marketing", "Marketing", -42],
   ["D-35 · Briefing de artwork", "Marketing", "Marketing", -35],

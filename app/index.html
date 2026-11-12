@@ -709,6 +709,44 @@ button.cmore:hover{color:var(--fg)}
 .dvhora{font-family:var(--mono);font-size:12.5px;color:var(--muted);padding-top:8px}
 .dvlista .cev{padding:10px 12px 10px 14px}.dvlista .cev strong{font-size:15px}
 @media (max-width:640px){.cmd{min-height:64px;padding:4px}.cmev{font-size:0;height:6px;padding:0;border-radius:3px;background:var(--c);box-shadow:none}.cmev b{display:none}.cmh span{padding:6px 4px;text-align:center}.vista{padding:0 11px}.dvlista li{grid-template-columns:1fr}.dvhora{padding:0}}
+/* Finanzas */
+.fh2{margin:0;font-family:var(--display);font-weight:900;font-size:24px;font-stretch:106%}
+.fsub{margin:4px 0 0;color:var(--muted);font-size:14px;max-width:62ch}
+.fform{grid-template-columns:repeat(6,1fr)}
+.fform textarea{border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 14px;font:inherit;color:var(--fg);resize:vertical}
+.fform input[type=file]{font-size:13px}
+.glist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.gcard{width:100%;text-align:left;font:inherit;color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;cursor:pointer}
+.gcard:hover{border-color:var(--area-ink)}
+.gcard.e-pendiente{box-shadow:inset 4px 0 0 var(--sol)}.gcard.e-aprobada{box-shadow:inset 4px 0 0 #8E6BD8}.gcard.e-pagada{box-shadow:inset 4px 0 0 #3F9E6A}.gcard.e-rechazada,.gcard.e-cancelada{opacity:.7}
+.gcard.abierta{border-color:var(--area);border-bottom-left-radius:0;border-bottom-right-radius:0}
+.gtop{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.gtop time{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.gmid{display:flex;gap:12px;align-items:baseline;justify-content:space-between}
+.gmid strong{font-size:16.5px;font-weight:800;overflow-wrap:anywhere}
+.gmonto{font-family:var(--display);font-weight:900;font-size:22px;white-space:nowrap}
+.gdet{border:1.5px solid var(--area);border-top:0;border-radius:0 0 14px 14px;padding:14px 16px;display:flex;flex-direction:column;gap:12px;background:color-mix(in srgb,var(--area-soft) 35%,var(--bg))}
+.gdl{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 16px;margin:0}
+.gdl div{min-width:0}.gdl .full{grid-column:1/-1}
+.gdl dt{font-size:12px;font-weight:700;color:var(--muted)}.gdl dd{margin:2px 0 0;font-size:14.5px;overflow-wrap:anywhere}
+.ghist{margin:0;padding-left:18px;font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+.gacts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.gpagar{background:#3F9E6A;color:#fff}
+.gpago{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;border:1.5px solid #3F9E6A;border-radius:12px;padding:12px;background:var(--bg)}
+.gpago h4{grid-column:1/-1;margin:0;font-size:15px}
+.gpago label{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:13px}.gpago label small{font-weight:500;color:var(--muted)}
+.gpago .full{grid-column:1/-1}.gpago .row{display:flex;gap:8px;justify-content:flex-end}
+.fbal .ing b{color:#3F9E6A}.fbal .egr b{color:var(--flame)}
+.fbar{display:grid;grid-template-columns:120px 1fr auto;gap:10px;align-items:center;font-size:13.5px;font-weight:700}
+.fbar .trk{height:8px;border-radius:99px;background:var(--surface);overflow:hidden}.fbar .trk i{display:block;height:100%;border-radius:99px}
+.fbar b{font-family:var(--mono);font-weight:500;font-size:12.5px}
+.fmov{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.fmov li{display:grid;grid-template-columns:64px 1fr auto auto;gap:12px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line)}
+.fmov li:last-child{border-bottom:0}
+.fmov time{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.fmov div{display:flex;flex-direction:column;min-width:0}.fmov strong{font-size:14.5px;overflow-wrap:anywhere}.fmov small{font-size:12px;color:var(--muted)}
+.fmov b{font-family:var(--mono);font-weight:500;font-size:14px;white-space:nowrap}
+.fmov li.ingreso b{color:#3F9E6A}.fmov li.egreso b{color:var(--flame)}
+@media (max-width:760px){.gdl{grid-template-columns:1fr 1fr}.gpago{grid-template-columns:1fr}.fform{grid-template-columns:1fr}.fmov li{grid-template-columns:52px 1fr auto}.fmov li .icon{display:none}.fbar{grid-template-columns:90px 1fr auto}}
 /* Formulario para agendar */
 .evcard{max-width:540px;gap:12px}
 .evcard label{display:flex;flex-direction:column;gap:5px;font-weight:700;font-size:13.5px;min-width:0}
@@ -781,6 +819,10 @@ button.cmore:hover{color:var(--fg)}
 .ccolab{display:flex;flex-direction:column;gap:6px}
 .ccolab>span{font-weight:700;font-size:14px}
 .mcolab{font-size:12px;font-weight:700;color:var(--muted)}
+.cdocs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.cdocbtn{border:1.5px dashed var(--line);background:var(--bg);border-radius:99px;height:26px;padding:0 10px;font:inherit;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer}
+.cdocbtn.req{border-color:var(--flame);color:var(--flame)}
+.cdocbtn:hover{border-style:solid}
 .check14 li.cfase{display:block;border:0;padding:12px 4px 2px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
 .check14 li.sig{background:var(--area-soft);border-radius:8px}
 .check14 li.sig small{color:var(--area-ink);font-weight:700}
@@ -946,6 +988,7 @@ select:disabled{cursor:default;opacity:.7}
     <a href="#operativo" data-route="operativo" style="--c:var(--sol);--on:#1B1C1A"><span class="ic" data-ic="operativo"></span><span class="lb">Operativo</span><span class="cnt" data-cnt="operativo"></span></a>
     <div class="sidesec">General</div>
     <a href="#equipo" data-route="equipo" style="--c:#6E7A79;--on:#fff"><span class="ic" data-ic="equipo"></span><span class="lb">Equipo</span></a>
+    <a href="#finanzas" data-route="finanzas" style="--c:#3F9E6A;--on:#fff"><span class="ic" data-ic="finanzas"></span><span class="lb">Finanzas</span><span class="cnt" data-cnt="finanzas"></span></a>
     <a href="#pm" data-route="pm" style="--c:var(--pmc);--on:#fff"><span class="ic" data-ic="pm"></span><span class="lb">Project Manager</span></a>
   </nav>
   <div class="userbar" id="userbar" hidden>
@@ -1061,6 +1104,9 @@ select:disabled{cursor:default;opacity:.7}
         <ul class="llist" id="lList"></ul>
       </div>
     </section>
+
+    <!-- Finanzas: solicitudes de gasto e ingresos y egresos del mes -->
+    <section class="view" id="vFinanzas" hidden></section>
 
     <!-- Dashboard: calendario semanal, disponibilidad de producción y pendientes generales -->
     <section class="view" id="vDash" hidden></section>
@@ -1192,6 +1238,7 @@ const AREA_ICON={
  pm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
  equipo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14.5c2.4 0 4 1.5 4.5 4"/></svg>'};
 AREA_ICON.persona=AREA_ICON.equipo;
+AREA_ICON.finanzas='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="13" rx="2.5"/><path d="M2.5 10.5h19M6.5 15h4"/></svg>';
 AREA_ICON.dashboard='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16.5" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4M7.5 13.5h3M13.5 13.5h3M7.5 17h3"/></svg>';
 const AREA_TABS=[["tasks","Pendientes"],["report","Reporte diario"],["month","Mes"],["logros","Logros"]];
 const PM_TABS=[["week","Semana"],["month","Mes"],["year","Año"],["tasks","Tareas"],["team","Equipo"]];
@@ -1357,10 +1404,10 @@ function shortRange(ws,ms){const r=monthRange(ms);let a=ws,b=addDays(ws,6);if(ke
 function heat(n){return n<=0?"":n<=2?"h1":n<=4?"h2":"h3"}
 
 /* Navegación */
-function scope(){if(route==="equipo")return "team";if(route==="dashboard")return {dia:"day",mes:"month",ano:"year"}[dashView]||"week";if(route==="persona")return "week";if(route==="pm")return pmView==="tasks"?"week":pmView;const v=areaView[route];if(v==="entradas"||v==="canciones")return v;return v==="tasks"||v==="report"?"week":"month"}
+function scope(){if(route==="equipo")return "team";if(route==="finanzas")return finView==="mes"?"month":"finsol";if(route==="dashboard")return {dia:"day",mes:"month",ano:"year"}[dashView]||"week";if(route==="persona")return "week";if(route==="pm")return pmView==="tasks"?"week":pmView;const v=areaView[route];if(v==="entradas"||v==="canciones")return v;return v==="tasks"||v==="report"?"week":"month"}
 function readHash(){const h=decodeURIComponent((location.hash||"").replace("#","").split("&")[0]);
   if(h.startsWith("persona/")){route="persona";personaId=h.slice(8);return}
-  route=(AREAS[h]||h==="pm"||h==="equipo"||h==="dashboard")?h:"formacion"}
+  route=(AREAS[h]||h==="pm"||h==="equipo"||h==="dashboard"||h==="finanzas")?h:"formacion"}
 window.addEventListener("hashchange",()=>{readHash();render();window.scrollTo(0,0)});
 
 /* Acciones de tareas */
@@ -1370,6 +1417,8 @@ function addTask(titulo,proyecto,respVal,area,semana,extra){area=area||route;con
   if(extra)Object.assign(t,extra);tasks.push(t);render();saveTask(t)}
 function findT(id){return tasks.find(x=>x.id===id)}
 function toggleTask(id){const t=findT(id);if(!t)return;const now=new Date().toISOString();
+  if(!t.hecha&&t.cancion_id&&t.paso&&requiereDoc(t.paso)){const c=canciones.find(x=>x.id===t.cancion_id);
+    if(c&&!docsPaso(c,t.paso).length){toast(`Para completar este paso sube ${requiereDoc(t.paso)}.`);pedirDocPaso(c,t.paso);return}}
   if(t.hecha)t.hecha=null;else{t.hecha=now;t.subtareas=t.subtareas.map(s=>s.hecha?s:{...s,hecha:now})}
   render();saveTask(t);pasoDeTarea(t)}
 function toggleSub(id,sid){const t=findT(id);if(!t)return;const now=new Date().toISOString();
@@ -1411,7 +1460,7 @@ function confirmDel(btn,id,fn){
 /* ---------- Render ---------- */
 /* Cambios que llegan en tiempo real: vuelve a pintar sin perder el campo que se está escribiendo */
 function renderKeep(){const ae=document.activeElement;
-  if((ae&&(ae.id==="eNotas"||ae.id==="cNotas"))||arrastre||ajPortada||cancionEdit||!$("evModal").hidden){esperaRender=true;return}
+  if((ae&&(ae.id==="eNotas"||ae.id==="cNotas"))||arrastre||ajPortada||cancionEdit||(ae&&ae.closest&&ae.closest("#gastoForm,#pagoForm,#ingresoForm"))||!$("evModal").hidden){esperaRender=true;return}
   if(ae&&ae.dataset&&ae.dataset.grip){const g=ae.dataset.grip;render();const n=document.querySelector(`[data-grip="${g}"]`);if(n)n.focus();return}
   const sel=!ae||!ae.matches("input,textarea")||ae.classList.contains("otro-in")?null:ae.id?"#"+CSS.escape(ae.id):
     ["tedit","snota","hecha"].map(k=>ae.dataset[k]!=null?`[data-${k}="${CSS.escape(ae.dataset[k])}"]`+(k==="tedit"?`[data-f="${ae.dataset.f}"]`:""):"").find(Boolean)||null;
@@ -1420,20 +1469,20 @@ function renderKeep(){const ae=document.activeElement;
   const v=ae.value,a=ae.selectionStart,b=ae.selectionEnd;render();const n=document.querySelector(sel);
   if(n&&n!==ae){n.value=v;n.focus();try{n.setSelectionRange(a,b)}catch(e){}}}
 function render(){
-  const isPM=route==="pm",D=route==="dashboard",P=route==="equipo"||route==="persona"||D,A=!isPM&&!P;
+  const isPM=route==="pm",D=route==="dashboard",F=route==="finanzas",P=route==="equipo"||route==="persona"||D||F,A=!isPM&&!P;
   const pp=route==="persona"?perfiles.find(x=>x.id===personaId):null;
-  document.body.dataset.area=D?miArea():P?(pp&&pp.id!==(perfil&&perfil.id)?areaPrincipal(pp):miArea()):isPM?miArea():route;
+  document.body.dataset.area=D||F?miArea():P?(pp&&pp.id!==(perfil&&perfil.id)?areaPrincipal(pp):miArea()):isPM?miArea():route;
   pintarMenu();
-  const nombre=D?"Dashboard":P?(route==="equipo"?"Equipo":pp?pp.nombre:"Perfil"):isPM?"Project Manager":AREAS[route].n;
+  const nombre=D?"Dashboard":F?"Finanzas":P?(route==="equipo"?"Equipo":pp?pp.nombre:"Perfil"):isPM?"Project Manager":AREAS[route].n;
   $("areaTag").innerHTML=(AREA_ICON[route]||"")+esc(route==="persona"?"Perfil":nombre);
-  $("h1").innerHTML=D?saludoH1():route==="equipo"?`El equipo <em>en orden</em>`:route==="persona"?esc(nombre):isPM?`Las áreas <em>en orden</em>`:`La semana <em>en orden</em>`;
+  $("h1").innerHTML=D?saludoH1():F?`Las cuentas <em>claras</em>`:route==="equipo"?`El equipo <em>en orden</em>`:route==="persona"?esc(nombre):isPM?`Las áreas <em>en orden</em>`:`La semana <em>en orden</em>`;
   document.title=nombre+" · Bitácora Tiempo de Dios";
   // pestañas
   if(PM_SOLO.includes(pmView)&&!esPM())pmView="week";
   if(areaView.formacion==="entradas"&&!puedeEntradas())areaView.formacion="tasks";
   if(areaView.musica==="canciones"&&!puedeMusica())areaView.musica="tasks";
-  const tabs=P?[]:isPM?PM_TABS.filter(([k])=>!PM_SOLO.includes(k)||esPM()):areaTabs(route);const cur=P?route:isPM?pmView:areaView[route];
-  const counts=P?{}:isPM?{tasks:tasks.filter(t=>t.semana===key(weekStart())&&!t.hecha).length}:tabCounts(route);
+  const tabs=F?FIN_TABS:P?[]:isPM?PM_TABS.filter(([k])=>!PM_SOLO.includes(k)||esPM()):areaTabs(route);const cur=F?finView:P?route:isPM?pmView:areaView[route];
+  const counts=F?{solicitudes:puedeFin()?gastos.filter(g=>g.estado==="pendiente").length:0}:P?{}:isPM?{tasks:tasks.filter(t=>t.semana===key(weekStart())&&!t.hecha).length}:tabCounts(route);
   $("tabs").innerHTML=tabs.map(([k,l])=>`<button class="tab" role="tab" data-tab="${k}" aria-selected="${k===cur}">${l}${counts[k]?`<span class="count">${counts[k]}</span>`:""}</button>`).join("");
   // periodo
   const sc=scope(),now=new Date();
@@ -1441,18 +1490,18 @@ function render(){
   const same=sc==="day"?key(anchor)===key(now):sc==="week"?key(weekStart())===key(mondayOf(now)):sc==="month"?(anchor.getFullYear()===now.getFullYear()&&anchor.getMonth()===now.getMonth()):anchor.getFullYear()===now.getFullYear();
   $("todayP").textContent=sc==="day"?"Hoy":sc==="week"?"Esta semana":sc==="month"?"Este mes":"Este año";
   $("todayP").disabled=same;$("todayP").style.opacity=same?.45:1;
-  $("todayP").parentElement.style.display=sc==="team"||sc==="entradas"||sc==="canciones"?"none":"";if(sc==="canciones")$("periodLabel").textContent=`Canciones por producir · ${canciones.filter(c=>c.etapa!=="completado").length} en proceso`;if(sc==="entradas")$("periodLabel").textContent=`Formulario para formadores · ${entradas.length} entrada${entradas.length===1?"":"s"}`;if(sc==="team")$("periodLabel").textContent=route==="equipo"?`${perfiles.length} persona${perfiles.length===1?"":"s"} en la bitácora`:"Administración del equipo";
+  $("todayP").parentElement.style.display=sc==="team"||sc==="entradas"||sc==="canciones"||sc==="finsol"?"none":"";if(sc==="finsol")$("periodLabel").textContent=`Solicitudes de gasto · ${gastos.filter(g=>g.estado==="pendiente").length} por revisar`;if(sc==="canciones")$("periodLabel").textContent=`Canciones por producir · ${canciones.filter(c=>c.etapa!=="completado").length} en proceso`;if(sc==="entradas")$("periodLabel").textContent=`Formulario para formadores · ${entradas.length} entrada${entradas.length===1?"":"s"}`;if(sc==="team")$("periodLabel").textContent=route==="equipo"?`${perfiles.length} persona${perfiles.length===1?"":"s"} en la bitácora`:"Administración del equipo";
   // datalists
   const projs=[...new Set(tasks.map(t=>t.proyecto).filter(Boolean))];
   $("projList").innerHTML=projs.map(p=>`<option value="${esc(p)}">`).join("");
   const people=[...new Set(tasks.flatMap(t=>[t.responsable,...t.subtareas.map(s=>s.responsable)]).concat(logros.map(l=>l.responsable)).concat(perfiles.map(p=>p.nombre)).filter(Boolean))];
   $("whoList").innerHTML=people.map(p=>`<option value="${esc(p)}">`).join("");
   // vistas
-  const show={vTasks:A&&cur==="tasks",vReport:A&&cur==="report",vMonth:A&&cur==="month",vLogros:A&&cur==="logros",vEntradas:A&&cur==="entradas",vPM:isPM&&!PM_SOLO.includes(cur),vPMTasks:isPM&&cur==="tasks",vTeam:isPM&&cur==="team",vPeople:route==="equipo",vPerson:route==="persona",vDash:D,vCanciones:A&&cur==="canciones"};
+  const show={vTasks:A&&cur==="tasks",vReport:A&&cur==="report",vMonth:A&&cur==="month",vLogros:A&&cur==="logros",vEntradas:A&&cur==="entradas",vPM:isPM&&!PM_SOLO.includes(cur),vPMTasks:isPM&&cur==="tasks",vTeam:isPM&&cur==="team",vPeople:route==="equipo",vPerson:route==="persona",vDash:D,vCanciones:A&&cur==="canciones",vFinanzas:F};
   Object.entries(show).forEach(([id,v])=>{$(id).hidden=!v});
   if(A){const ro=!canEdit(route);const msg=ro?`Vista de solo lectura. Solo el equipo de ${AREAS[route].n} y la project manager pueden registrar aquí.`:"";
     $("roTasks").hidden=$("roLogros").hidden=!ro;$("roTasks").textContent=$("roLogros").textContent=msg;$("addForm").hidden=ro;$("logroForm").hidden=ro}
-  if(D)renderDashboard();else if(route==="equipo")renderPeople();else if(route==="persona")renderPerson();else if(isPM&&cur==="team")renderTeam();else if(isPM&&cur==="tasks")renderPMTasks();else if(isPM)renderPM();else if(cur==="tasks")renderTasks();else if(cur==="report")renderReport();else if(cur==="month")renderMonth();else if(cur==="entradas")renderEntradas();else if(cur==="canciones")renderCanciones();else renderLogros();
+  if(D)renderDashboard();else if(F)renderFinanzas();else if(route==="equipo")renderPeople();else if(route==="persona")renderPerson();else if(isPM&&cur==="team")renderTeam();else if(isPM&&cur==="tasks")renderPMTasks();else if(isPM)renderPM();else if(cur==="tasks")renderTasks();else if(cur==="report")renderReport();else if(cur==="month")renderMonth();else if(cur==="entradas")renderEntradas();else if(cur==="canciones")renderCanciones();else renderLogros();
 }
 function tabCounts(a){const ws=weekStart(),ms=monthStart(),r=monthRange(ms);
   return {tasks:weekTasksOf(a,ws).filter(t=>!t.hecha).length,report:logRange(key(ws),key(addDays(ws,6)),a).length,month:logRange(r.s,r.e,a).length,logros:logrosRange(r.s,r.e,a).length,entradas:a==="formacion"?entradas.filter(e=>e.estado==="nueva").length:0,canciones:a==="musica"?canciones.filter(c=>c.etapa==="intake").length:0}}
@@ -1654,7 +1703,7 @@ function fechaHora(iso){const d=new Date(iso);return `${d.getDate()} ${MESES[d.g
 function estadoPill(k){return `<span class="epill e-${esc(k)}">${esc(ESTADO_N[k]||k)}</span>`}
 /* Documentos de un campo "files"; los que no traen un campo conocido van al último */
 function docsDe(e,k,campos){const fk=(campos||CAMPOS).flatMap(s=>s.campos).filter(c=>c.tipo==="files").map(c=>c.k);
-  return (e.archivos||[]).filter(a=>(fk.includes(a.campo)?a.campo:fk[fk.length-1])===k)}
+  return (e.archivos||[]).filter(a=>!/^paso\d/.test(a.campo||"")&&(fk.includes(a.campo)?a.campo:fk[fk.length-1])===k)}
 function docChip(a,attr){return `<button type="button" class="chip arch" data-${attr||"earch"}="${esc(a.ruta)}" title="Abrir ${esc(a.nombre)}">${iconoArch({nombre:a.nombre,tipo:a.tipo})} ${esc(a.nombre)} <small>${tamDe(a.tamano||0)}</small></button>`}
 function entradaCard(e){const d=e.data||{},n=(e.archivos||[]).length;
   return `<li><button type="button" class="ecard ${e.estado==="nueva"?"nueva":""}" data-entrada="${esc(e.id)}">
@@ -1717,7 +1766,7 @@ function cargarEntradas(){if(entradasCh||!sb||!puedeEntradas())return;
 document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset.eestado){guardarEntrada(t.dataset.eestado,{estado:t.value},true);return}
   if(t.dataset.enotas){guardarEntrada(t.dataset.enotas,{notas:t.value.slice(0,5000)},false)}});
-document.addEventListener("focusout",e=>{if((e.target.id==="eNotas"||e.target.id==="cNotas")&&esperaRender){esperaRender=false;setTimeout(renderKeep,0)}});
+document.addEventListener("focusout",e=>{if((e.target.id==="eNotas"||e.target.id==="cNotas"||(e.target.closest&&e.target.closest("#gastoForm,#pagoForm,#ingresoForm")))&&esperaRender){esperaRender=false;setTimeout(renderKeep,0)}});
 /* PDF de una entrada: todas las respuestas, el temario, los documentos y las notas */
 function entradaPDF(e){const d=e.data||{};
   const P=pdfWriter("Entrada de formación",clean(`${d.titulo||"Sin título"}${d.nombre?" · "+d.nombre:""}`).slice(0,86));
@@ -1921,6 +1970,21 @@ function semanaTxt(k){const l=fromKey(k),v=addDays(l,4);return `${l.getDate()} $
    Avance = pasos completos / total. Cada canción tiene siempre un pendiente en Música: su siguiente paso,
    asignado a quien le toca. Al completarlo (aquí o en Pendientes) se marca en el checklist y se crea el siguiente. */
 const ETAPA_POR_PASO=window.ETAPA_POR_PASO||{},ORDEN_ETAPAS=ETAPAS.map(e=>e[0]).filter(k=>k!=="bloqueado");
+function requiereDoc(n){return (PASOS[n-1]||[])[4]||""}
+function docsPaso(c,n){return (c.archivos||[]).filter(a=>a.campo==="paso"+n)}
+/* Pide el documento del paso n (INDAUTOR, splitsheet) y, ya subido, marca el paso */
+function pedirDocPaso(c,n){const inp=document.createElement("input");inp.type="file";inp.accept=".pdf,.png,.jpg,.jpeg,.heic,.doc,.docx";
+  inp.onchange=async()=>{const f=inp.files&&inp.files[0];if(!f||!sb)return;if(f.size>ARCH_MAX){toast("El archivo pesa más de 25 MB.");return}
+    toast("Subiendo documento…");const ruta=`equipo/${c.id}/p${n}-${Date.now()}-${nombreSeguro(f.name)}`;
+    const {error}=await sb.storage.from("canciones").upload(ruta,f,{contentType:f.type||"application/octet-stream"});
+    if(error){toast("No se pudo subir: "+(/row-level security|Unauthorized|403/i.test(error.message)?"falta correr la migración 017 o no estás en Música.":error.message));return}
+    const archivos=[...(c.archivos||[]),{nombre:f.name.slice(0,120),ruta,tamano:f.size,tipo:f.type||"",campo:"paso"+n,subido:new Date().toISOString(),por_nombre:perfil?perfil.nombre:""}];
+    await guardarCancion(c.id,{archivos},false);c.archivos=archivos;marcarPaso(c,String(n))};
+  inp.click()}
+function marcarPaso(c,n){const ck={...(c.checklist||{})},now=new Date().toISOString();
+  if(ck[n])delete ck[n];else{if(requiereDoc(+n)&&!docsPaso(c,+n).length){pedirDocPaso(c,+n);toast(`Para completar este paso sube ${requiereDoc(+n)}.`);return}
+    ck[n]=now;const t=tasks.find(x=>x.cancion_id===c.id&&String(x.paso)===n&&!x.hecha);if(t){t.hecha=now;saveTask(t)}}
+  guardarPasos(c,ck)}
 function pasosHechos(c){const ck=c.checklist||{};return PASOS.filter((_,i)=>ck[String(i+1)]).length}
 function avance(c){return PASOS.length?Math.round(pasosHechos(c)/PASOS.length*100):0}
 function siguientePaso(c){const ck=c.checklist||{},i=PASOS.findIndex((_,i)=>!ck[String(i+1)]);return i<0?null:i+1}
@@ -1952,7 +2016,9 @@ function pasoDeTarea(t){if(!t.cancion_id||!puedeMusica())return;const c=cancione
   const ck={...(c.checklist||{})},k=String(t.paso);
   if(t.hecha&&!ck[k])ck[k]=t.hecha;else if(!t.hecha&&ck[k])delete ck[k];else{if(t.hecha)crearPendiente(c);return}
   guardarPasos(c,ck)}
-function barra(p){return `<div class="cbar" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100"><i style="width:${p}%"></i></div>`}
+/* Avance: del naranja de Tiempo de Dios (#FF3D1A) al verde de Spotify (#1DB954); entre más cerca del 100 %, más verde */
+function colorAvance(p){const a=[255,61,26],b=[29,185,84],t=Math.max(0,Math.min(1,p/100));return `rgb(${a.map((x,i)=>Math.round(x+(b[i]-x)*t)).join(",")})`}
+function barra(p){return `<div class="cbar" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100"><i style="width:${p}%;background:linear-gradient(90deg,#FF3D1A,${colorAvance(p)})"></i></div>`}
 function ccardHTML(c){const d=c.data||{},p=avance(c);
   return `<button type="button" class="ccard ${c.etapa==="intake"?"nueva":""}" data-cancion="${esc(c.id)}"><strong>${esc(tituloDe(c))}</strong><span class="art">${esc(creditoDe(c))}</span>
     <div class="tmeta">${d.bpm?`<span>${esc(d.bpm)} BPM</span>`:""}${c.semana?`<span class="chip tipo">🗓 ${semanaTxt(c.semana)}</span>`:""}${c.lanzamiento?`<span>🚀 ${shortDate(c.lanzamiento)}</span>`:""}</div>
@@ -2033,7 +2099,7 @@ function detalleCancion(c){const d=c.data||{},ck=c.checklist||{},hechos=pasosHec
     <button type="button" class="btn ghost sm eback" data-cvolver="1">← Todas las canciones</button>
     <div class="ehead"><div class="etop">${etapaPill(c.etapa)}${d.tipo?`<span class="chip tipo">${esc(d.tipo)}</span>`:""}<time datetime="${esc(c.creado)}">Registrada el ${fechaHora(c.creado)}</time></div>
       <h2>${esc(tituloDe(c))}</h2><p>${esc(creditoDe(c))}${d.nombre&&d.nombre!==ministerioDe(c)?" · "+esc(d.nombre):""}${d.bpm?" · "+esc(d.bpm)+" BPM":""}${d.tonalidad?" · "+esc(d.tonalidad):""}</p>
-      <div class="cavance"><div class="cprog grande">${barra(p)}<b>${p}%</b></div><small>${hechos} de ${PASOS.length} pasos, desde la primera asesoría hasta el reporte D+30 de la campaña</small></div>
+      <div class="cavance"><div class="cprog grande">${barra(p)}<b style="color:${colorAvance(p)}">${p}%</b></div><small>${hechos} de ${PASOS.length} pasos, desde la primera asesoría hasta el reporte D+30 de la campaña</small></div>
       <div class="rbtns"><button type="button" class="btn" data-cagendar="${esc(c.id)}">${c.semana?"Cambiar semana de producción":"Agendar semana de producción"}</button>${esPM()?`<button type="button" class="icon del" data-cdel="${esc(c.id)}" aria-label="Borrar canción" title="Borrar canción y sus archivos">${ICON_DEL}</button>`:""}</div></div>
     <div class="cpendiente">${pend?`<div><span class="evk2">Pendiente actual</span><strong>${esc(pend.titulo)}</strong><small>${esc(pend.responsable||"Sin responsable")} · vence ${shortDate(venceDe(pend))}</small></div><button type="button" class="btn ghost sm" data-irtarea="musica">Ver en Pendientes</button>`
       :n?`<div><span class="evk2">Siguiente paso</span><strong>${n}. ${esc(PASOS[n-1][0])}</strong><small>${esc(PASOS[n-1][2])} · todavía sin pendiente</small></div><button type="button" class="btn sm" data-cpend="${esc(c.id)}">Crear pendiente</button>`
@@ -2048,7 +2114,7 @@ function detalleCancion(c){const d=c.data||{},ck=c.checklist||{},hechos=pasosHec
     <section class="esec"><h3><span class="n">✓</span>Checklist · ${hechos}/${PASOS.length}</h3>
       <div class="dpanel"><div class="csem"><b>Semana de producción:</b> ${c.semana?`<span class="chip tipo">${semanaTxt(c.semana)}</span>`:`<span class="esin">Sin agendar</span>`}${c.lanzamiento?` <b style="margin-left:10px">Lanzamiento:</b> <span class="chip tipo">🚀 ${shortDate(c.lanzamiento)}</span>`:""}</div>
       <ul class="check14">${PASOS.map(([t,f,r,dd],i)=>{const k=String(i+1),h=ck[k],v=fechaPaso(c,i+1),sep=f!==fase?`<li class="cfase">${esc(f)}</li>`:"";fase=f;
-        return `${sep}<li class="${h?"ok":""} ${!h&&i+1===n?"sig":""}"><button type="button" class="check" role="checkbox" aria-checked="${!!h}" aria-label="${esc(t)}" data-cpaso="${esc(c.id)}|${k}">${CHECK}</button><span>${k}. ${esc(t)}<span class="fase">${esc(r)}${v&&!h?` · vence ${shortDate(v)}`:""}</span></span><small>${h?shortDate(h.slice(0,10)):!h&&i+1===n?"siguiente":""}</small></li>`}).join("")}</ul></div></section>
+        return `${sep}<li class="${h?"ok":""} ${!h&&i+1===n?"sig":""}"><button type="button" class="check" role="checkbox" aria-checked="${!!h}" aria-label="${esc(t)}" data-cpaso="${esc(c.id)}|${k}">${CHECK}</button><span>${k}. ${esc(t)}<span class="fase">${esc(r)}${v&&!h?` · vence ${shortDate(v)}`:""}</span>${requiereDoc(i+1)?`<span class="cdocs">${docsPaso(c,i+1).map(a=>docChip(a,"carch")).join("")}${docsPaso(c,i+1).length?`<button type="button" class="cdocbtn" data-cdoc="${esc(c.id)}|${k}">+ Otro archivo</button>`:`<button type="button" class="cdocbtn req" data-cdoc="${esc(c.id)}|${k}">📎 Subir ${esc(requiereDoc(i+1))}${h?" (falta)":" para completarlo"}</button>`}</span>`:""}</span><small>${h?shortDate(h.slice(0,10)):!h&&i+1===n?"siguiente":""}</small></li>`}).join("")}</ul></div></section>
     ${cancionEdit===c.id?formEditarCancion(c):`<div class="cdatosh"><h3>Datos de la canción</h3><button type="button" class="btn ghost sm" data-ceditar="${esc(c.id)}">✎ Editar datos</button></div>
     ${CAMPOS_C.map((s,i)=>{const cs=s.campos.filter(x=>aplicaE(x,d));if(!cs.some(x=>x.tipo==="files"?docsDe(c,x.k,CAMPOS_C).length:!vacioE(d[x.k])))return "";return `<section class="esec"><h3><span class="n">${i+1}</span>${esc(s.titulo)}</h3><dl>${cs.map(x=>`<div class="eq"><dt>${esc(x.l)}</dt><dd>${valorE(x,d[x.k],c,CAMPOS_C,"carch")}</dd></div>`).join("")}</dl></section>`}).join("")}`}
   </div>`}
@@ -2108,9 +2174,8 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)r
   if(ds.ligaonoff){const l=ligas.find(x=>x.id===ds.ligaonoff);if(!l)return;const activa=!l.activa;l.activa=activa;render();
     sb.from("ligas_artistas").update({activa}).eq("id",l.id).then(({error})=>{if(error){l.activa=!activa;render();toast("No se pudo cambiar: "+error.message)}else toast(activa?"Liga activada.":"Liga desactivada: ya no sirve para registrar.")});return}
   if(ds.carch){abrirArchivo(ds.carch,"canciones");return}
-  if(ds.cpaso){const [id,n]=ds.cpaso.split("|"),c=canciones.find(x=>x.id===id);if(!c)return;const ck={...(c.checklist||{})},now=new Date().toISOString();
-    if(ck[n])delete ck[n];else{ck[n]=now;const t=tasks.find(x=>x.cancion_id===c.id&&String(x.paso)===n&&!x.hecha);if(t){t.hecha=now;saveTask(t)}}
-    guardarPasos(c,ck);return}
+  if(ds.cpaso){const [id,n]=ds.cpaso.split("|"),c=canciones.find(x=>x.id===id);if(c)marcarPaso(c,n);return}
+  if(ds.cdoc){const [id,n]=ds.cdoc.split("|"),c=canciones.find(x=>x.id===id);if(c)pedirDocPaso(c,+n);return}
   if(ds.cpend){const c=canciones.find(x=>x.id===ds.cpend);if(c){crearPendiente(c);render();toast("Pendiente creado en Música.")}return}
   if(ds.cvista){cancionesVista=ds.cvista;render();return}
   if(ds.cnueva!==undefined){nuevaCancion=ds.cnueva==="1";render();if(nuevaCancion)setTimeout(()=>$("cnTitulo").focus(),30);return}
@@ -2118,6 +2183,179 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)r
     if(ev)abrirEvento(ev.id,null);else{const l=proximaLibre();abrirEvento(null,l,{tipo:"produccion",area:"musica",titulo:`Producción · «${(c.data||{}).titulo||"Sin título"}»`,fin:key(addDays(fromKey(l),4)),cancion_id:c.id})}return}
   if(ds.cdel){const id=ds.cdel;confirmDel(b,id,()=>borrarCancion(id));return}});
 
+/* ---------- Finanzas: solicitudes de gasto, ingresos y registro mensual ----------
+   Tablas "gastos" e "ingresos" (migración 017). Todo el equipo ve; cualquiera pide un gasto;
+   solo Finanzas (perfiles.finanzas) y el desarrollador aprueban, rechazan, pagan y registran ingresos.
+   Un gasto "pagada" (con fecha_pago) es un egreso del mes; los ingresos se registran aparte. */
+const FIN_TABS=[["solicitudes","Solicitudes de gasto"],["mes","Ingresos y egresos"]];
+const ESTADOS_G=[["pendiente","Pendiente","var(--sol)"],["aprobada","Aprobada","#8E6BD8"],["pagada","Pagada","#3F9E6A"],["rechazada","Rechazada","var(--flame)"],["cancelada","Cancelada","#7C8786"]];
+const ESTADO_G=Object.fromEntries(ESTADOS_G.map(([k,n,c])=>[k,{n,c}]));
+const CATS_GASTO=["Materiales","Equipo","Producción","Transporte","Alimentos","Hospedaje","Honorarios","Servicios","Publicidad","Eventos","Otro"];
+const CATS_INGRESO=["Donativos","Aportaciones","Venta","Patrocinio","Regalías","Reembolso","Otro"];
+const METODOS=["Transferencia","Efectivo","Tarjeta","Reembolso"];
+let finView="solicitudes",gastos=[],ingresosF=[],loadedF=false,finErr="",finCh=null,filtroG="activas",soloMias=false,gastoSel=null,nuevoGasto=false,pagoForm=null,nuevoIngreso=false,ingresoEdit=null;
+const MXN=new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN"});
+function dinero(n){return MXN.format(Number(n)||0)}
+function puedeFin(){return !!perfil&&(!!perfil.finanzas||perfil.rol==="desarrollador")}
+function genteFin(){return perfiles.filter(p=>p.finanzas).map(p=>primerNombre(p)).join(", ")||"Finanzas"}
+function nombreDe(id){const p=perfiles.find(x=>x.id===id);return p?p.nombre:"Alguien del equipo"}
+function cargarFinanzas(){if(finCh||!sb)return;
+  const load=async()=>{const [g,i]=await Promise.all([sb.from("gastos").select("*").order("creado",{ascending:false}).limit(5000),sb.from("ingresos").select("*").order("fecha",{ascending:false}).limit(5000)]);
+    const err=g.error||i.error;
+    if(err)finErr=/gastos|ingresos|PGRST205|42P01/.test((err.message||"")+(err.code||""))?"Falta correr la migración 017 en Supabase para usar Finanzas.":"No se pudo leer Finanzas: "+err.message;
+    else{gastos=g.data||[];ingresosF=i.data||[];finErr=""}
+    loadedF=true;renderKeep()};
+  const upd=(arr,p,nuevo)=>{if(p.eventType==="DELETE")return arr.filter(x=>x.id!==(p.old&&p.old.id));const i=arr.findIndex(x=>x.id===p.new.id);if(i>=0){arr[i]=p.new;return arr}nuevo&&nuevo(p.new);return [p.new,...arr]};
+  finCh=sb.channel("rt-finanzas")
+    .on("postgres_changes",{event:"*",schema:"public",table:"gastos"},p=>{gastos=upd(gastos,p,g=>{if(p.eventType==="INSERT"&&puedeFin()&&g.solicitante!==(perfil&&perfil.id))toast(`Nueva solicitud de gasto: ${g.concepto} · ${dinero(g.monto)}`)});renderKeep()})
+    .on("postgres_changes",{event:"*",schema:"public",table:"ingresos"},p=>{ingresosF=upd(ingresosF,p);renderKeep()})
+    .subscribe(st=>{if(st==="SUBSCRIBED")load()})}
+function pillG(k){const e=ESTADO_G[k]||{n:k,c:"var(--muted)"};return `<span class="cpill" style="--c:${e.c}">${esc(e.n)}</span>`}
+function archFin(a){return `<button type="button" class="chip arch" data-farch="${esc(a.path)}" title="Abrir ${esc(a.nombre)}">${iconoArch(a)} ${esc(a.nombre)} <small>${tamDe(a.tam||0)}</small></button>`}
+async function subirFin(gid,files,clase){const out=[];if(!sb||!perfil)return out;
+  for(const f of [...files||[]]){if(f.size>ARCH_MAX){toast(`${f.name} pesa más de 25 MB.`);continue}
+    const path=`${perfil.id}/${gid}/${Date.now()}-${nombreSeguro(f.name)}`;
+    const {error}=await sb.storage.from("finanzas").upload(path,f,{contentType:f.type||"application/octet-stream"});
+    if(error){toast(`No se pudo subir ${f.name}: ${/bucket not found/i.test(error.message)?"falta correr la migración 017.":error.message}`);continue}
+    out.push({path,nombre:f.name.slice(0,120),tipo:f.type||"",tam:f.size,subido:new Date().toISOString(),por_nombre:perfil.nombre,clase})}
+  return out}
+function historial(g,estado,nota){return [...((g.data||{}).historial||[]),{estado,por:perfil?perfil.nombre:"",cuando:new Date().toISOString(),nota:nota||""}]}
+async function guardarGasto(id,cambios,msg){const g=gastos.find(x=>x.id===id);if(!g||!sb)return false;const antes=JSON.parse(JSON.stringify(g));Object.assign(g,cambios);render();
+  const {data,error}=await sb.from("gastos").update(cambios).eq("id",id).select("id");
+  if(error||!data||!data.length){Object.assign(g,antes);render();toast("No se pudo guardar"+(error?": "+error.message:": no tienes permiso."));return false}
+  if(msg)toast(msg);return true}
+/* ---------- Vista: solicitudes ---------- */
+function formGasto(){const hoy=key(new Date());
+  return `<form class="cnueva fform" id="gastoForm" autocomplete="off"><h3>Nueva solicitud de gasto</h3>
+    <label class="c4">¿Para qué es?<input class="field" id="gConcepto" maxlength="200" required placeholder="Ej. Renta de equipo de audio para el retiro"></label>
+    <label class="c2">Monto (MXN)<input class="field" id="gMonto" type="number" min="0.01" step="0.01" inputmode="decimal" required placeholder="0.00"></label>
+    <label class="c2">Área<select class="field" id="gArea"><option value="general">General</option>${AREA_IDS.map(a=>`<option value="${a}" ${perfil&&areaPrincipal(perfil)===a?"selected":""}>${AREAS[a].n}</option>`).join("")}</select></label>
+    <label class="c2">Categoría<select class="field" id="gCat">${CATS_GASTO.map(c=>`<option>${c}</option>`).join("")}</select></label>
+    <label class="c2">¿Para cuándo se necesita?<input class="field" id="gFecha" type="date" min="${hoy}"></label>
+    <label class="c3">Beneficiario o proveedor<input class="field" id="gBenef" maxlength="120" placeholder="A quién se le paga"></label>
+    <label class="c3">Forma de pago<select class="field" id="gMetodo">${METODOS.map(m=>`<option>${m}</option>`).join("")}</select></label>
+    <label class="c6">Datos para el pago <small>(opcional)</small><input class="field" id="gCuenta" maxlength="200" placeholder="CLABE, banco y a nombre de quién; o «reembolso a mí»"></label>
+    <label class="c6">Notas <small>(opcional)</small><textarea id="gNotas" maxlength="1000" rows="2" placeholder="Detalles, cotizaciones comparadas, urgencia…"></textarea></label>
+    <label class="c6">Cotización o factura <small>(opcional, PDF o imagen)</small><input type="file" id="gArch" multiple accept=".pdf,.png,.jpg,.jpeg,.heic,.xml,.xlsx,.docx"></label>
+    <div class="row"><span class="dlnote">La revisa ${esc(genteFin())}. Te avisamos aquí cuando cambie de estado.</span><button type="button" class="btn ghost" data-gnuevo="0">Cancelar</button><button class="btn" type="submit">Enviar solicitud</button></div></form>`}
+function gastoCard(g){const yo=perfil&&g.solicitante===perfil.id,d=g.data||{};
+  return `<li><button type="button" class="gcard ${gastoSel===g.id?"abierta":""} e-${esc(g.estado)}" data-gasto="${esc(g.id)}">
+    <div class="gtop">${pillG(g.estado)}${g.area&&AREAS[g.area]?`<span class="chip" style="background:${AREAS[g.area].c};color:${AREAS[g.area].on};border-color:transparent">${AREAS[g.area].n}</span>`:""}${g.categoria?`<span class="chip">${esc(g.categoria)}</span>`:""}<time>${fechaHora(g.creado)}</time></div>
+    <div class="gmid"><strong>${esc(g.concepto)}</strong><b class="gmonto">${dinero(g.monto)}</b></div>
+    <div class="tmeta"><span>${yo?"Tú":esc(nombreDe(g.solicitante))}</span>${d.beneficiario?`<span>→ ${esc(d.beneficiario)}</span>`:""}${g.fecha_requerida&&g.estado!=="pagada"?`<span>Para el ${shortDate(g.fecha_requerida)}</span>`:""}${g.fecha_pago?`<span>Pagada el ${shortDate(g.fecha_pago)}</span>`:""}${(d.archivos||[]).length?`<span>📎 ${(d.archivos||[]).length}</span>`:""}</div></button>
+    ${gastoSel===g.id?detalleGasto(g):""}</li>`}
+function detalleGasto(g){const d=g.data||{},fin=puedeFin(),yo=perfil&&g.solicitante===perfil.id,arch=d.archivos||[],pago=d.pago||{};
+  return `<div class="gdet">
+    <dl class="gdl"><div><dt>Pidió</dt><dd>${esc(nombreDe(g.solicitante))}</dd></div><div><dt>Monto</dt><dd>${dinero(g.monto)}</dd></div>
+      ${d.beneficiario?`<div><dt>Beneficiario</dt><dd>${esc(d.beneficiario)}</dd></div>`:""}<div><dt>Forma de pago</dt><dd>${esc(d.metodo||"—")}</dd></div>
+      ${d.cuenta?`<div class="full"><dt>Datos para el pago</dt><dd>${esc(d.cuenta)}</dd></div>`:""}${d.notas?`<div class="full"><dt>Notas</dt><dd class="etexto">${esc(d.notas)}</dd></div>`:""}
+      ${g.estado==="pagada"?`<div><dt>Pagada el</dt><dd>${g.fecha_pago?shortDate(g.fecha_pago)+" "+fromKey(g.fecha_pago).getFullYear():"—"}</dd></div><div><dt>Método</dt><dd>${esc(pago.metodo||"—")}</dd></div>${pago.referencia?`<div><dt>Referencia</dt><dd>${esc(pago.referencia)}</dd></div>`:""}${pago.notas?`<div class="full"><dt>Notas del pago</dt><dd>${esc(pago.notas)}</dd></div>`:""}`:""}
+      ${d.motivo?`<div class="full"><dt>Motivo del rechazo</dt><dd>${esc(d.motivo)}</dd></div>`:""}</dl>
+    ${arch.length?`<div class="edocs">${arch.map(archFin).join("")}</div>`:""}
+    ${(d.historial||[]).length?`<ol class="ghist">${d.historial.map(h=>`<li><b>${esc((ESTADO_G[h.estado]||{n:h.estado}).n)}</b> · ${esc(h.por||"")} · ${fechaHora(h.cuando)}${h.nota?` · ${esc(h.nota)}`:""}</li>`).join("")}</ol>`:""}
+    ${pagoForm===g.id?`<form class="gpago" id="pagoForm" data-gid="${esc(g.id)}"><h4>Registrar pago realizado</h4>
+        <label>Fecha de pago<input class="field" type="date" id="pFecha" value="${key(new Date())}" max="${key(new Date())}" required></label>
+        <label>Método<select class="field" id="pMetodo">${METODOS.map(m=>`<option ${m===d.metodo?"selected":""}>${m}</option>`).join("")}</select></label>
+        <label>Monto pagado<input class="field" type="number" min="0.01" step="0.01" id="pMonto" value="${Number(g.monto).toFixed(2)}" required></label>
+        <label>Referencia <small>(opcional)</small><input class="field" id="pRef" maxlength="120" placeholder="Folio, rastreo SPEI…"></label>
+        <label class="full">Comprobante <small>(opcional)</small><input type="file" id="pArch" multiple accept=".pdf,.png,.jpg,.jpeg,.heic,.xml"></label>
+        <label class="full">Notas <small>(opcional)</small><input class="field" id="pNotas" maxlength="300"></label>
+        <div class="row full"><button type="button" class="btn ghost sm" data-gpago="">Cancelar</button><button class="btn sm" type="submit">✓ Pago realizado</button></div></form>`:""}
+    <div class="gacts">
+      ${fin&&g.estado==="pendiente"?`<button type="button" class="btn sm" data-gestado="${esc(g.id)}|aprobada">Aprobar</button><button type="button" class="btn ghost sm" data-gestado="${esc(g.id)}|rechazada">Rechazar</button>`:""}
+      ${fin&&(g.estado==="pendiente"||g.estado==="aprobada")&&pagoForm!==g.id?`<button type="button" class="btn sm gpagar" data-gpago="${esc(g.id)}">💸 Marcar pago realizado</button>`:""}
+      ${fin&&(g.estado==="pagada"||g.estado==="rechazada")?`<button type="button" class="btn ghost sm" data-gestado="${esc(g.id)}|aprobada">Regresar a aprobada</button>`:""}
+      ${yo&&g.estado==="pendiente"?`<button type="button" class="btn ghost sm" data-gestado="${esc(g.id)}|cancelada">Cancelar mi solicitud</button>`:""}
+      ${fin?`<button type="button" class="icon del" data-gborrar="${esc(g.id)}" aria-label="Borrar solicitud" title="Borrar solicitud">${ICON_DEL}</button>`:""}
+      ${!fin&&!yo?`<span class="ehint">Solo Finanzas puede cambiar esta solicitud.</span>`:""}</div></div>`}
+function renderFinanzas(){const V=$("vFinanzas");
+  if(finErr){V.innerHTML=`<div class="readonly">${esc(finErr)}</div>`;return}
+  if(!loadedF){V.innerHTML=`<div class="none">Cargando Finanzas…</div>`;return}
+  V.innerHTML=finView==="mes"?vistaMovimientos():vistaSolicitudes()}
+function vistaSolicitudes(){const yo=perfil&&perfil.id,ms=key(new Date()).slice(0,7);
+  const base=soloMias?gastos.filter(g=>g.solicitante===yo):gastos;
+  const cnt=k=>k==="activas"?base.filter(g=>g.estado==="pendiente"||g.estado==="aprobada").length:k==="todas"?base.length:base.filter(g=>g.estado===k).length;
+  const lista=base.filter(g=>filtroG==="todas"||(filtroG==="activas"?(g.estado==="pendiente"||g.estado==="aprobada"):g.estado===filtroG));
+  const sum=f=>gastos.filter(f).reduce((s,g)=>s+Number(g.monto),0);
+  return `<div class="dhead"><div><h2 class="fh2">Solicitudes de gasto</h2><p class="fsub">Cualquiera del equipo puede pedir un gasto. Las revisa y paga ${esc(genteFin())}${puedeFin()?" (tú puedes aprobar y pagar)":""}.</p></div><button type="button" class="btn" data-gnuevo="1">+ Nueva solicitud</button></div>
+    ${nuevoGasto?formGasto():""}
+    <div class="ctot"><div><b>${dinero(sum(g=>g.estado==="pendiente"))}</b><span>${gastos.filter(g=>g.estado==="pendiente").length} por revisar</span></div><div><b>${dinero(sum(g=>g.estado==="aprobada"))}</b><span>${gastos.filter(g=>g.estado==="aprobada").length} aprobadas por pagar</span></div><div><b>${dinero(sum(g=>g.estado==="pagada"&&(g.fecha_pago||"").slice(0,7)===ms))}</b><span>pagado este mes</span></div><div><b>${dinero(ingresosF.filter(i=>(i.fecha||"").slice(0,7)===ms).reduce((s,i)=>s+Number(i.monto),0))}</b><span>ingresos este mes</span></div></div>
+    <div class="efiltros">${[["activas","Activas"],["todas","Todas"],...ESTADOS_G.map(([k,n])=>[k,n])].map(([k,n])=>`<button type="button" class="efil" data-gfiltro="${k}" aria-pressed="${filtroG===k}">${n}<span>${cnt(k)}</span></button>`).join("")}<button type="button" class="efil" data-gmias="1" aria-pressed="${soloMias}">Solo las mías</button></div>
+    <ul class="glist">${lista.length?lista.map(gastoCard).join(""):`<li class="empty"><strong>${gastos.length?"No hay solicitudes con este filtro":"Aún no hay solicitudes de gasto"}</strong><p>${gastos.length?"Prueba con «Todas».":"Cuando alguien del equipo necesite comprar o pagar algo, lo pide aquí con «+ Nueva solicitud». Finanzas la aprueba, la paga y queda en el registro del mes."}</p></li>`}</ul>`}
+/* ---------- Vista: ingresos y egresos del mes ---------- */
+function movimientosMes(){const m=key(monthStart()).slice(0,7);
+  const egr=gastos.filter(g=>g.estado==="pagada"&&(g.fecha_pago||"").slice(0,7)===m).map(g=>({tipo:"egreso",id:g.id,fecha:g.fecha_pago,concepto:g.concepto,monto:Number((g.data||{}).pago&&(g.data.pago.monto)||g.monto),area:g.area,categoria:g.categoria,quien:nombreDe(g.solicitante)}));
+  const ing=ingresosF.filter(i=>(i.fecha||"").slice(0,7)===m).map(i=>({tipo:"ingreso",id:i.id,fecha:i.fecha,concepto:i.concepto,monto:Number(i.monto),area:i.area,categoria:i.categoria,quien:(i.data||{}).fuente||""}));
+  return [...ing,...egr].sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:a.tipo<b.tipo?-1:1)}
+function formIngreso(i){const v=i||{fecha:key(new Date()),concepto:"",monto:"",area:"general",categoria:"Donativos",data:{}};
+  return `<form class="cnueva fform" id="ingresoForm" data-iid="${esc(i?i.id:"")}" autocomplete="off"><h3>${i?"Editar ingreso":"Registrar ingreso"}</h3>
+    <label class="c4">Concepto<input class="field" id="iConcepto" maxlength="200" required value="${esc(v.concepto)}" placeholder="Ej. Donativo del retiro de jóvenes"></label>
+    <label class="c2">Monto (MXN)<input class="field" id="iMonto" type="number" min="0.01" step="0.01" required value="${esc(v.monto)}"></label>
+    <label class="c2">Fecha<input class="field" id="iFecha" type="date" required value="${esc(v.fecha)}"></label>
+    <label class="c2">Categoría<select class="field" id="iCat">${CATS_INGRESO.map(c=>`<option ${c===v.categoria?"selected":""}>${c}</option>`).join("")}</select></label>
+    <label class="c2">Área<select class="field" id="iArea"><option value="general">General</option>${AREA_IDS.map(a=>`<option value="${a}" ${v.area===a?"selected":""}>${AREAS[a].n}</option>`).join("")}</select></label>
+    <label class="c3">De quién <small>(opcional)</small><input class="field" id="iFuente" maxlength="120" value="${esc((v.data||{}).fuente||"")}" placeholder="Donante, cliente, evento…"></label>
+    <label class="c3">Referencia <small>(opcional)</small><input class="field" id="iRef" maxlength="120" value="${esc((v.data||{}).referencia||"")}"></label>
+    <div class="row">${i?`<button type="button" class="btn ghost" data-iborrar="${esc(i.id)}">Borrar ingreso</button>`:""}<span class="dlnote"></span><button type="button" class="btn ghost" data-inuevo="0">Cancelar</button><button class="btn" type="submit">Guardar</button></div></form>`}
+function vistaMovimientos(){const mov=movimientosMes(),fin=puedeFin();
+  const ti=mov.filter(x=>x.tipo==="ingreso").reduce((s,x)=>s+x.monto,0),te=mov.filter(x=>x.tipo==="egreso").reduce((s,x)=>s+x.monto,0),bal=ti-te;
+  const porCat=t=>{const o={};mov.filter(x=>x.tipo===t).forEach(x=>o[x.categoria||"Otro"]=(o[x.categoria||"Otro"]||0)+x.monto);return Object.entries(o).sort((a,b)=>b[1]-a[1])};
+  const barras=(arr,tot,col)=>arr.length?arr.map(([c,v])=>`<div class="fbar"><span>${esc(c)}</span><div class="trk"><i style="width:${tot?Math.round(v/tot*100):0}%;background:${col}"></i></div><b>${dinero(v)}</b></div>`).join(""):`<p class="none" style="margin:0">Sin movimientos.</p>`;
+  const ie=ingresoEdit&&ingresosF.find(x=>x.id===ingresoEdit);
+  return `<div class="dhead"><div><h2 class="fh2">Ingresos y egresos de ${MESES_L[monthStart().getMonth()]}</h2><p class="fsub">Los egresos son las solicitudes con pago realizado en este mes. ${fin?"Registra aquí los ingresos.":"Solo Finanzas registra ingresos."}</p></div>
+      <div class="rbtns">${fin?`<button type="button" class="btn" data-inuevo="1">+ Registrar ingreso</button>`:""}<button type="button" class="btn ghost" data-fcsv="1">Descargar CSV</button></div></div>
+    ${nuevoIngreso||ie?formIngreso(ie||null):""}
+    <div class="ctot fbal"><div class="ing"><b>${dinero(ti)}</b><span>ingresos</span></div><div class="egr"><b>${dinero(te)}</b><span>egresos</span></div><div class="${bal>=0?"ing":"egr"}"><b>${dinero(bal)}</b><span>balance del mes</span></div><div><b>${mov.length}</b><span>movimientos</span></div></div>
+    <div class="dgrid"><div class="dpanel"><h3>Egresos por categoría</h3>${barras(porCat("egreso"),te,"var(--flame)")}</div><div class="dpanel"><h3>Ingresos por categoría</h3>${barras(porCat("ingreso"),ti,"#3F9E6A")}</div></div>
+    <div class="dpanel"><h3>Movimientos</h3>${mov.length?`<ul class="fmov">${mov.map(x=>`<li class="${x.tipo}"><time>${shortDate(x.fecha)}</time><div><strong>${esc(x.concepto)}</strong><small>${x.tipo==="ingreso"?"Ingreso":"Egreso"} · ${esc(x.categoria||"Otro")}${x.area&&AREAS[x.area]?" · "+AREAS[x.area].n:""}${x.quien?" · "+esc(x.quien):""}</small></div><b>${x.tipo==="ingreso"?"+":"−"}${dinero(x.monto)}</b>${x.tipo==="ingreso"&&fin?`<button type="button" class="icon" data-iedit="${esc(x.id)}" aria-label="Editar ingreso" title="Editar">✎</button>`:x.tipo==="egreso"?`<button type="button" class="icon" data-irgasto="${esc(x.id)}" aria-label="Ver solicitud" title="Ver solicitud">↗</button>`:""}</li>`).join("")}</ul>`:`<p class="none" style="margin:0">Aún no hay movimientos en este mes.</p>`}</div>`}
+function csvFinanzas(){const mov=movimientosMes(),q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+  const filas=[["Fecha","Tipo","Concepto","Categoría","Área","Quién","Monto"],...mov.map(x=>[x.fecha,x.tipo==="ingreso"?"Ingreso":"Egreso",x.concepto,x.categoria||"",x.area&&AREAS[x.area]?AREAS[x.area].n:"General",x.quien||"",(x.tipo==="ingreso"?1:-1)*x.monto])];
+  const blob=new Blob(["﻿"+filas.map(r=>r.map(q).join(",")).join("\r\n")],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=`TdD-finanzas-${key(monthStart()).slice(0,7)}.csv`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);toast("CSV descargado.")}
+/* ---------- Acciones ---------- */
+document.addEventListener("click",async e=>{const b=e.target.closest("button");if(!b)return;const ds=b.dataset;
+  if(ds.gnuevo!==undefined){nuevoGasto=ds.gnuevo==="1";render();if(nuevoGasto)setTimeout(()=>$("gConcepto").focus(),30);return}
+  if(ds.gfiltro){filtroG=ds.gfiltro;render();return}
+  if(ds.gmias){soloMias=!soloMias;render();return}
+  if(ds.gasto){gastoSel=gastoSel===ds.gasto?null:ds.gasto;pagoForm=null;render();return}
+  if(ds.farch){abrirArchivo(ds.farch,"finanzas");return}
+  if(ds.gpago!==undefined){pagoForm=ds.gpago||null;render();return}
+  if(ds.gestado){const [id,est]=ds.gestado.split("|"),g=gastos.find(x=>x.id===id);if(!g)return;let nota="";
+    if(est==="rechazada"){nota=window.prompt("¿Por qué se rechaza? (lo verá quien la pidió)","");if(nota===null)return}
+    if(est==="cancelada"&&!confirm("¿Cancelar tu solicitud?"))return;
+    const d={...(g.data||{}),historial:historial(g,est,nota)};if(est==="rechazada")d.motivo=nota;if(est==="aprobada")delete d.motivo;
+    const cambios={estado:est,data:d};if(est!=="pagada")cambios.fecha_pago=null;
+    guardarGasto(id,cambios,{aprobada:"Solicitud aprobada.",rechazada:"Solicitud rechazada.",cancelada:"Solicitud cancelada."}[est]);return}
+  if(ds.gborrar){const g=gastos.find(x=>x.id===ds.gborrar);if(!g||!confirm(`¿Borrar la solicitud «${g.concepto}»? No se puede deshacer.`))return;
+    const {error}=await sb.from("gastos").delete().eq("id",g.id);if(error){toast("No se pudo borrar: "+error.message);return}
+    const rutas=((g.data||{}).archivos||[]).map(a=>a.path);if(rutas.length)sb.storage.from("finanzas").remove(rutas).catch(()=>{});
+    gastos=gastos.filter(x=>x.id!==g.id);gastoSel=null;render();toast("Solicitud borrada.");return}
+  if(ds.inuevo!==undefined){nuevoIngreso=ds.inuevo==="1";ingresoEdit=null;render();if(nuevoIngreso)setTimeout(()=>$("iConcepto").focus(),30);return}
+  if(ds.iedit){ingresoEdit=ds.iedit;nuevoIngreso=false;render();return}
+  if(ds.iborrar){const i=ingresosF.find(x=>x.id===ds.iborrar);if(!i||!confirm(`¿Borrar el ingreso «${i.concepto}»?`))return;
+    const {error}=await sb.from("ingresos").delete().eq("id",i.id);if(error){toast("No se pudo borrar: "+error.message);return}
+    ingresosF=ingresosF.filter(x=>x.id!==i.id);ingresoEdit=null;render();toast("Ingreso borrado.");return}
+  if(ds.irgasto){finView="solicitudes";filtroG="todas";gastoSel=ds.irgasto;render();return}
+  if(ds.fcsv){csvFinanzas();return}});
+document.addEventListener("submit",async e=>{const f=e.target;
+  if(f.id==="gastoForm"){e.preventDefault();if(!sb||!perfil)return;const btn=f.querySelector("[type=submit]");btn.disabled=true;
+    const id=crypto.randomUUID(),arch=await subirFin(id,$("gArch").files,"solicitud");
+    const fila={id,solicitante:perfil.id,estado:"pendiente",concepto:$("gConcepto").value.trim().slice(0,200),monto:Number($("gMonto").value),area:$("gArea").value,categoria:$("gCat").value,fecha_requerida:$("gFecha").value||null,
+      data:{beneficiario:$("gBenef").value.trim(),metodo:$("gMetodo").value,cuenta:$("gCuenta").value.trim(),notas:$("gNotas").value.trim(),archivos:arch,historial:[{estado:"pendiente",por:perfil.nombre,cuando:new Date().toISOString(),nota:""}]}};
+    const {data,error}=await sb.from("gastos").insert(fila).select().single();btn.disabled=false;
+    if(error){toast("No se pudo enviar: "+(/gastos/.test(error.message)&&/schema|exist/.test(error.message)?"falta correr la migración 017.":error.message));return}
+    if(!gastos.some(x=>x.id===id))gastos.unshift(data||fila);nuevoGasto=false;filtroG="activas";gastoSel=id;render();toast(`Solicitud enviada a ${genteFin()}.`);return}
+  if(f.id==="pagoForm"){e.preventDefault();const g=gastos.find(x=>x.id===f.dataset.gid);if(!g)return;const btn=f.querySelector("[type=submit]");btn.disabled=true;
+    const arch=await subirFin(g.id,$("pArch").files,"pago"),monto=Number($("pMonto").value);
+    const d={...(g.data||{}),archivos:[...((g.data||{}).archivos||[]),...arch],pago:{metodo:$("pMetodo").value,referencia:$("pRef").value.trim(),notas:$("pNotas").value.trim(),monto,por:perfil.nombre,registrado:new Date().toISOString()}};
+    d.historial=historial(g,"pagada",`${dinero(monto)} · ${$("pMetodo").value}${$("pRef").value.trim()?" · "+$("pRef").value.trim():""}`);
+    pagoForm=null;btn.disabled=false;if(filtroG==="activas"||filtroG==="aprobada"||filtroG==="pendiente")filtroG="todas";gastoSel=g.id;guardarGasto(g.id,{estado:"pagada",fecha_pago:$("pFecha").value,data:d},"Pago registrado: ya cuenta como egreso del mes.");return}
+  if(f.id==="ingresoForm"){e.preventDefault();if(!sb)return;const iid=f.dataset.iid;
+    const fila={fecha:$("iFecha").value,concepto:$("iConcepto").value.trim().slice(0,200),monto:Number($("iMonto").value),area:$("iArea").value,categoria:$("iCat").value,data:{fuente:$("iFuente").value.trim(),referencia:$("iRef").value.trim()}};
+    const q=iid?sb.from("ingresos").update(fila).eq("id",iid).select().single():sb.from("ingresos").insert(fila).select().single();
+    const {data,error}=await q;if(error){toast("No se pudo guardar: "+error.message);return}
+    if(iid){const i=ingresosF.findIndex(x=>x.id===iid);if(i>=0)ingresosF[i]=data}else if(data&&!ingresosF.some(x=>x.id===data.id))ingresosF.unshift(data);
+    nuevoIngreso=false;ingresoEdit=null;const m=fromKey(fila.fecha);anchor=new Date(m.getFullYear(),m.getMonth(),1);render();toast(iid?"Ingreso actualizado.":"Ingreso registrado.")}});
 /* ---------- Tareas de todas las áreas (PM) ---------- */
 function renderPMTasks(){const ws=weekStart(),wk=key(ws);
   if(!$("ptArea").options.length)$("ptArea").innerHTML=AREA_IDS.map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("")+`<option value="todas">Todas las áreas</option>`;
@@ -2345,7 +2583,7 @@ function renderTeam(){
       <div class="who"><div class="wl"><a href="#persona/${p.id}" title="Ver perfil">${av(p,"md")}</a><strong class="mnom">${esc(p.nombre)}</strong></div><span class="mail">${esc([arroba(p),c?c.email:""].filter(Boolean).join(" · "))}</span></div>
       <select data-prol="${p.id}" aria-label="Rol" ${self?'disabled title="No puedes cambiar tu propio rol"':""}>${Object.entries(ROLES).map(([k,l])=>`<option value="${k}" ${p.rol===k?"selected":""}>${l}</option>`).join("")}</select>
       <select data-parea="${p.id}" aria-label="Área" ${ACCESO_TOTAL.includes(p.rol)?"disabled":""}>${ACCESO_TOTAL.includes(p.rol)?`<option>Todas</option>`:`<option value="" ${p.area?"":"selected"}>Sin área</option>${AREA_IDS.map(a=>`<option value="${a}" ${p.area===a?"selected":""}>${AREAS[a].n}</option>`).join("")}`}</select>
-      <div class="tambien"><span>${ACCESO_TOTAL.includes(p.rol)?"Participa en":"También en"}</span>${AREA_IDS.filter(a=>a!==p.area).map(a=>`<label class="tchip ${enArea(p,a)?"on":""}" style="--c:${AREAS[a].c};--on:${AREAS[a].on}"><input type="checkbox" data-pareas="${p.id}|${a}" ${enArea(p,a)?"checked":""}>${AREAS[a].n}</label>`).join("")}</div>
+      <div class="tambien"><span>${ACCESO_TOTAL.includes(p.rol)?"Participa en":"También en"}</span>${AREA_IDS.filter(a=>a!==p.area).map(a=>`<label class="tchip ${enArea(p,a)?"on":""}" style="--c:${AREAS[a].c};--on:${AREAS[a].on}"><input type="checkbox" data-pareas="${p.id}|${a}" ${enArea(p,a)?"checked":""}>${AREAS[a].n}</label>`).join("")}<label class="tchip ${p.finanzas?"on":""}" style="--c:#3F9E6A;--on:#fff" title="Puede aprobar y pagar solicitudes de gasto y registrar ingresos"><input type="checkbox" data-pfin="${p.id}" ${p.finanzas?"checked":""}>💰 Finanzas</label></div>
       <div class="acts">${estado}${c&&!c.activo&&!self?`<button class="btn ghost sm" data-reenviar="${p.id}">Reenviar</button>`:""}${self?"":`<button class="icon" data-quitar="${p.id}" aria-label="Quitar acceso a ${esc(p.nombre)}">${ICON_DEL}</button>`}</div>
     </li>`}).join(""):`<li class="none">Aún no hay nadie en el equipo.</li>`}
 async function actualizarPerfil(id,cambios){const p=perfiles.find(x=>x.id===id);if(!p)return;const antes={...p};Object.assign(p,cambios);render();
@@ -2505,7 +2743,7 @@ $("logroForm").addEventListener("submit",e=>{e.preventDefault();if(!logrosCol){t
   render();saveLogro(l);toast("Logro guardado.")});
 document.addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
-  if(b.dataset.tab){if(b.dataset.tab==="entradas")entradaSel=null;if(b.dataset.tab==="canciones")cancionSel=null;if(route==="pm"){pmView=b.dataset.tab}else{const prev=scope();areaView[route]=b.dataset.tab}render();return}
+  if(b.dataset.tab){if(route==="finanzas"){finView=b.dataset.tab;render();return}if(b.dataset.tab==="entradas")entradaSel=null;if(b.dataset.tab==="canciones")cancionSel=null;if(route==="pm"){pmView=b.dataset.tab}else{const prev=scope();areaView[route]=b.dataset.tab}render();return}
   if(b.dataset.goweek){anchor=fromKey(b.dataset.goweek);areaView[route]="report";render();window.scrollTo({top:0,behavior:"smooth"});return}
   if(b.dataset.goarea){const [a,v]=b.dataset.goarea.split("|");areaView[a]=v;location.hash=a;return}
   if(b.dataset.ajustar){const p=perfiles.find(x=>x.id===b.dataset.ajustar);if(p&&p.foto)abrirRecorte(p.id,p.foto);return}
@@ -2576,6 +2814,7 @@ $("ptForm").addEventListener("submit",e=>{e.preventDefault();if(!tasksCol){toast
 document.addEventListener("change",e=>{const t=e.target;if(!sb)return;
   if(t.dataset.prol){const rol=t.value;actualizarPerfil(t.dataset.prol,ACCESO_TOTAL.includes(rol)?{rol,area:null}:{rol})}
   else if(t.dataset.parea){const p=perfiles.find(x=>x.id===t.dataset.parea),v=t.value||null;actualizarPerfil(t.dataset.parea,{area:v,areas:((p&&p.areas)||[]).filter(a=>a!==v)})}
+  else if(t.dataset.pfin){actualizarPerfil(t.dataset.pfin,{finanzas:t.checked})}
   else if(t.dataset.pareas){const [id,a]=t.dataset.pareas.split("|"),p=perfiles.find(x=>x.id===id);if(!p)return;
     const cur=(p.areas||[]).filter(x=>x!==a);actualizarPerfil(id,{areas:t.checked?[...cur,a]:cur})}
   else if(t.dataset.pusuario){const p=perfiles.find(x=>x.id===t.dataset.pusuario);const v=t.value.trim().replace(/^@/,"").toLowerCase();
@@ -2640,6 +2879,7 @@ function pintarMenu(){const yo=perfil&&perfil.id,esYo=route==="persona"&&persona
   const ny=$("navYo");if(yo){ny.hidden=false;ny.href="#persona/"+yo}
   if(!loadedT)return;
   AREA_IDS.forEach(a=>{const n=areaTasks(a).filter(t=>!t.hecha&&t.semana<=wk).length,c=document.querySelector(`[data-cnt="${a}"]`);if(c){c.textContent=n||"";c.title=n?`${n} pendiente${n>1?"s":""}`:""}});
+  const cf=document.querySelector('[data-cnt="finanzas"]');if(cf){const n=puedeFin()?gastos.filter(g=>g.estado==="pendiente"||g.estado==="aprobada").length:gastos.filter(g=>perfil&&g.solicitante===perfil.id&&g.estado==="pendiente").length;cf.textContent=n||"";cf.title=n?(puedeFin()?`${n} por revisar o pagar`:`${n} solicitud${n>1?"es":""} tuya${n>1?"s":""} pendiente${n>1?"s":""}`):""}
   const cd=document.querySelector('[data-cnt="dashboard"]');if(cd){const h=key(new Date()),n=ocurrenciasRango(h,h).length;cd.textContent=n||"";cd.title=n?`${n} evento${n>1?"s":""} hoy`:""}
   const cy=document.querySelector('[data-cnt="yo"]');if(cy&&yo){const n=pendientesDe(yo).length;cy.textContent=n||"";cy.title=n?`${n} pendiente${n>1?"s":""}`:""}}
 document.querySelectorAll("[data-ic]").forEach(i=>{i.innerHTML=i.dataset.ic==="yo"?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>':AREA_ICON[i.dataset.ic]||""});
@@ -2732,7 +2972,7 @@ async function start(){
   if(started){render();return}started=true;
   sb.from("perfiles").select("*").then(({data})=>{perfiles=data||[];render()});
   tasksCol=makeCol("tareas");logrosCol=makeCol("logros");
-  cargarEntradas();cargarCalendario();cargarCanciones();
+  cargarEntradas();cargarCalendario();cargarCanciones();cargarFinanzas();
   let gotT=false,gotL=false;
   const timer=setTimeout(()=>setStatus("No se pudo conectar todavía; revisa tu conexión.",true),10000);
   const done=()=>{if(gotT&&gotL){clearTimeout(timer);setStatus("")}};
