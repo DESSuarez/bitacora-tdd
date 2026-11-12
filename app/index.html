@@ -614,11 +614,6 @@ table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:52
 .cev strong{font-size:13px;font-weight:800;line-height:1.25;overflow-wrap:anywhere}
 .cev small{font-size:11.5px;color:var(--muted);line-height:1.3;overflow-wrap:anywhere}
 .cev .hr{font-family:var(--mono);font-size:11px;color:var(--muted)}
-.ctask{display:flex;gap:6px;align-items:flex-start;font-size:12.5px;line-height:1.3;color:var(--fg);background:none;border:0;padding:2px 2px;text-align:left;font:inherit;font-size:12.5px;cursor:pointer;border-radius:6px;min-width:0}
-.ctask:hover{background:var(--surface)}
-.ctask i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c);margin-top:4px}
-.ctask span{min-width:0;overflow-wrap:anywhere}
-.ctask.atr span{color:var(--flame)}
 .cmore{font-size:11.5px;color:var(--muted);padding-left:16px}
 .dgrid{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;align-items:start}
 .dpanel{border:1.5px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
@@ -633,15 +628,6 @@ table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:52
 .dsem.ocupada{background:color-mix(in srgb,var(--flame) 10%,var(--bg));border-color:color-mix(in srgb,var(--flame) 40%,var(--line))}
 .dsem.doble{background:var(--flame-soft);border-color:var(--flame)}
 .dsem.doble b{color:var(--flame)}
-.dareas{display:flex;flex-direction:column;gap:10px}
-.dar{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;font-size:13.5px;font-weight:700}
-.dar .trk{height:8px;border-radius:99px;background:var(--surface);overflow:hidden}
-.dar .trk i{display:block;height:100%;background:var(--c);border-radius:99px}
-.dar small{font-family:var(--mono);font-weight:500;color:var(--muted);font-size:12px}
-.datr{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
-.datr li{display:flex;gap:8px;align-items:baseline;font-size:13.5px}
-.datr li i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
-.datr li small{margin-left:auto;font-family:var(--mono);color:var(--flame);font-size:11.5px;white-space:nowrap}
 @media (max-width:900px){.dgrid{grid-template-columns:1fr}}
 @media (max-width:760px){.cal7{grid-template-columns:1fr;border-radius:14px}.cdia{min-height:0;padding:12px}.cdia.vacio{display:none}.cdh{justify-content:flex-start;gap:10px}.cmas{opacity:.8;top:8px;bottom:auto}}
 /* Dashboard: evangelio del día */
@@ -685,9 +671,6 @@ button.cmore:hover{color:var(--fg)}
 .cmd.hoy .cmn{background:var(--area);color:var(--on-area)}
 .cmev{display:block;width:100%;text-align:left;border:0;border-radius:6px;padding:2px 6px;background:color-mix(in srgb,var(--c) 18%,var(--bg));box-shadow:inset 3px 0 0 var(--c);font:inherit;font-size:12px;font-weight:700;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
 .cmev b{font-family:var(--mono);font-weight:500;font-size:11px;color:var(--muted)}
-.cmpend{align-self:flex-start;border:0;background:none;padding:0 4px;font:inherit;font-size:11.5px;color:var(--muted);cursor:pointer}
-.cmpend::before{content:"● ";color:var(--area)}
-.cmpend.atr{color:var(--flame)}.cmpend.atr::before{color:var(--flame)}
 .calano{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
 .cam{border:1.5px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
 .camt{align-self:flex-start;background:none;border:0;padding:0;font-family:var(--display);font-weight:900;font-size:16px;color:var(--fg);cursor:pointer}
@@ -698,16 +681,12 @@ button.cmore:hover{color:var(--fg)}
 .camd:hover{background:var(--surface)}
 .camd.con{background:color-mix(in srgb,var(--c) 22%,var(--bg));font-weight:800}
 .camd.hoy{background:var(--area);color:var(--on-area);font-weight:900}
-.dvdia{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:start}
 .dvh{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .dvlista{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .dvlista li{display:grid;grid-template-columns:90px 1fr;gap:12px;align-items:start}
 .dvhora{font-family:var(--mono);font-size:12.5px;color:var(--muted);padding-top:8px}
 .dvlista .cev{padding:10px 12px 10px 14px}.dvlista .cev strong{font-size:15px}
-.dvtareas{display:flex;flex-direction:column;gap:4px}
-.dvtareas .ctask{font-size:14px}
-@media (max-width:900px){.dvdia{grid-template-columns:1fr}}
-@media (max-width:640px){.cmd{min-height:64px;padding:4px}.cmev{font-size:0;height:6px;padding:0;border-radius:3px;background:var(--c);box-shadow:none}.cmev b{display:none}.cmpend{font-size:0;padding:0}.cmpend::before{font-size:10px}.cmh span{padding:6px 4px;text-align:center}.vista{padding:0 11px}.dvlista li{grid-template-columns:1fr}.dvhora{padding:0}}
+@media (max-width:640px){.cmd{min-height:64px;padding:4px}.cmev{font-size:0;height:6px;padding:0;border-radius:3px;background:var(--c);box-shadow:none}.cmev b{display:none}.cmh span{padding:6px 4px;text-align:center}.vista{padding:0 11px}.dvlista li{grid-template-columns:1fr}.dvhora{padding:0}}
 /* Formulario para agendar */
 .evcard{max-width:540px;gap:12px}
 .evcard label{display:flex;flex-direction:column;gap:5px;font-weight:700;font-size:13.5px;min-width:0}
@@ -1708,8 +1687,6 @@ let dashView="semana";  // dia | semana | mes | ano (la semana es la vista de in
 const VISTAS=[["dia","Día"],["semana","Semana"],["mes","Mes"],["ano","Año"]];
 function fechaLarga(d){const s=`${DIAS[d.getDay()]} ${d.getDate()} de ${MESES_L[d.getMonth()]} ${d.getFullYear()}`;return s[0].toUpperCase()+s.slice(1)}
 function eventosDia(occ,k){return occ.filter(o=>o.ini<=k&&o.fin>=k).sort((a,b)=>(a.ev.hora||"99").localeCompare(b.ev.hora||"99"))}
-function tareasDia(k){return tasks.filter(t=>!t.hecha&&venceDe(t)===k)}
-function ctaskHTML(t,hoy,k){return `<button type="button" class="ctask ${k<hoy?"atr":""}" style="--c:${AREAS[areaOf(t)].c}" data-irtarea="${esc(areaOf(t))}" title="${esc(AREAS[areaOf(t)].n)} · ${esc(t.responsable||"")}"><i></i><span>${esc(t.titulo)}</span></button>`}
 
 /* ---------- Evangelio del día (Vatican News, vía evangelio.php) ---------- */
 const evangelios={};  // fecha → {estado:"cargando"|"ok"|"error", datos}
@@ -1739,26 +1716,19 @@ const ICON_LIBRO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 
 /* ---------- Vistas del calendario ---------- */
 function vistaSemana(hoy){const ws=weekStart(),ks=[...Array(7)].map((_,i)=>key(addDays(ws,i))),occ=ocurrenciasRango(ks[0],ks[6]);
-  return `<div class="cal7" aria-label="Calendario de la semana">${ks.map((k,i)=>{const d=fromKey(k),evs=eventosDia(occ,k),ts=tareasDia(k),max=6;
-    return `<div class="cdia ${i>4?"finde":""} ${k===hoy?"hoy":""} ${!evs.length&&!ts.length&&k!==hoy?"vacio":""}"><div class="cdh"><button type="button" class="cdn" data-irdia="${k}" title="Ver el día"><span>${DIAS[d.getDay()].slice(0,3)}</span><b>${d.getDate()}</b></button></div>
-      ${evs.map(o=>cevHTML(o,k)).join("")}${ts.slice(0,max).map(t=>ctaskHTML(t,hoy,k)).join("")}
-      ${ts.length>max?`<button type="button" class="cmore" data-irdia="${k}">+${ts.length-max} pendientes más</button>`:""}
+  return `<div class="cal7" aria-label="Calendario de la semana">${ks.map((k,i)=>{const d=fromKey(k),evs=eventosDia(occ,k);
+    return `<div class="cdia ${i>4?"finde":""} ${k===hoy?"hoy":""} ${!evs.length&&k!==hoy?"vacio":""}"><div class="cdh"><button type="button" class="cdn" data-irdia="${k}" title="Ver el día"><span>${DIAS[d.getDay()].slice(0,3)}</span><b>${d.getDate()}</b></button></div>
+      ${evs.map(o=>cevHTML(o,k)).join("")}
       <button type="button" class="cmas" data-evnuevo="${k}" aria-label="Agendar el ${DIAS[d.getDay()]} ${d.getDate()}" title="Agendar este día">+</button></div>`}).join("")}</div>`}
-function vistaDia(hoy){const k=key(anchor),occ=ocurrenciasRango(k,k),evs=eventosDia(occ,k),ts=tareasDia(k);
-  const atr=k===hoy?tasks.filter(t=>!t.hecha&&venceDe(t)<hoy):[];
-  return `<div class="dvdia">
-    <div class="dpanel"><div class="dvh"><h3>Agenda</h3><button type="button" class="btn ghost sm" data-evnuevo="${k}">+ Agendar este día</button></div>
-      ${evs.length?`<ul class="dvlista">${evs.map(o=>{const ev=o.ev,dia=Math.round((fromKey(k)-fromKey(o.ini))/864e5);return `<li><span class="dvhora">${esc(ev.hora||"Todo el día")}</span><button type="button" class="cev" style="--c:${colorEv(ev)}" data-evabrir="${esc(ev.id)}|${o.ini}"><strong>${esc(ev.titulo||"Sin título")}</strong><small>${esc((TIPOS_EV[ev.tipo]||TIPOS_EV.otro)[0])}${ev.tipo==="produccion"&&dia<5?" · "+esc(DIAS_PROD[dia]):""}${ev.area&&AREAS[ev.area]?" · "+AREAS[ev.area].n:""}${ev.repetir?" · ↻ "+esc(REPETIR[ev.repetir].toLowerCase()):""}</small>${ev.notas?`<small>${esc(ev.notas)}</small>`:""}</button></li>`}).join("")}</ul>`:`<p class="none" style="margin:0">Nada agendado este día.</p>`}</div>
-    <div class="dpanel"><h3>Pendientes que vencen${k===hoy?" hoy":""} · ${ts.length}</h3>
-      ${ts.length?`<div class="dvtareas">${ts.map(t=>ctaskHTML(t,hoy,k)).join("")}</div>`:`<p class="none" style="margin:0">Ningún pendiente vence este día.</p>`}
-      ${atr.length?`<h3 style="font-size:15px;margin-top:6px;color:var(--flame)">Atrasadas · ${atr.length}</h3><div class="dvtareas">${atr.map(t=>ctaskHTML(t,hoy,venceDe(t))).join("")}</div>`:""}</div></div>`}
+function vistaDia(hoy){const k=key(anchor),occ=ocurrenciasRango(k,k),evs=eventosDia(occ,k);
+  return `<div class="dpanel"><div class="dvh"><h3>Agenda · ${evs.length} evento${evs.length===1?"":"s"}</h3><button type="button" class="btn ghost sm" data-evnuevo="${k}">+ Agendar este día</button></div>
+      ${evs.length?`<ul class="dvlista">${evs.map(o=>{const ev=o.ev,dia=Math.round((fromKey(k)-fromKey(o.ini))/864e5);return `<li><span class="dvhora">${esc(ev.hora||"Todo el día")}</span><button type="button" class="cev" style="--c:${colorEv(ev)}" data-evabrir="${esc(ev.id)}|${o.ini}"><strong>${esc(ev.titulo||"Sin título")}</strong><small>${esc((TIPOS_EV[ev.tipo]||TIPOS_EV.otro)[0])}${ev.tipo==="produccion"&&dia<5?" · "+esc(DIAS_PROD[dia]):""}${ev.area&&AREAS[ev.area]?" · "+AREAS[ev.area].n:""}${ev.repetir?" · ↻ "+esc(REPETIR[ev.repetir].toLowerCase()):""}</small>${ev.notas?`<small>${esc(ev.notas)}</small>`:""}</button></li>`}).join("")}</ul>`:`<p class="none" style="margin:0">Nada agendado este día.</p>`}</div>`}
 function vistaMes(hoy){const ms=monthStart(),ini=mondayOf(ms),fin=new Date(ms.getFullYear(),ms.getMonth()+1,0),semanas=Math.ceil((Math.round((fin-ini)/864e5)+1)/7);
   const ks=[...Array(semanas*7)].map((_,i)=>key(addDays(ini,i))),occ=ocurrenciasRango(ks[0],ks[ks.length-1]);
-  return `<div class="calmes"><div class="cmh">${["lun","mar","mié","jue","vie","sáb","dom"].map(d=>`<span>${d}</span>`).join("")}</div><div class="cmg">${ks.map((k,i)=>{const d=fromKey(k),evs=eventosDia(occ,k),ts=tareasDia(k),fuera=d.getMonth()!==ms.getMonth(),max=3;
+  return `<div class="calmes"><div class="cmh">${["lun","mar","mié","jue","vie","sáb","dom"].map(d=>`<span>${d}</span>`).join("")}</div><div class="cmg">${ks.map((k,i)=>{const d=fromKey(k),evs=eventosDia(occ,k),fuera=d.getMonth()!==ms.getMonth(),max=3;
     return `<div class="cmd ${fuera?"fuera":""} ${k===hoy?"hoy":""} ${i%7>4?"finde":""}"><button type="button" class="cmn" data-irdia="${k}" aria-label="Ver ${fechaLarga(d)}">${d.getDate()}</button>
       ${evs.slice(0,max).map(o=>`<button type="button" class="cmev" style="--c:${colorEv(o.ev)}" data-evabrir="${esc(o.ev.id)}|${o.ini}" title="${esc(o.ev.titulo||"")}">${o.ev.hora?`<b>${esc(o.ev.hora)}</b> `:""}${esc(o.ev.titulo||"Sin título")}</button>`).join("")}
-      ${evs.length>max?`<button type="button" class="cmore" data-irdia="${k}">+${evs.length-max} más</button>`:""}
-      ${ts.length?`<button type="button" class="cmpend ${k<hoy?"atr":""}" data-irdia="${k}">${ts.length} pendiente${ts.length>1?"s":""}</button>`:""}</div>`}).join("")}</div></div>`}
+      ${evs.length>max?`<button type="button" class="cmore" data-irdia="${k}">+${evs.length-max} más</button>`:""}</div>`}).join("")}</div></div>`}
 function vistaAno(hoy){const y=anchor.getFullYear(),occ=ocurrenciasRango(`${y}-01-01`,`${y}-12-31`),porDia={};
   occ.forEach(o=>{for(let d=fromKey(o.ini<`${y}-01-01`?`${y}-01-01`:o.ini);key(d)<=o.fin&&d.getFullYear()===y;d=addDays(d,1))(porDia[key(d)]=porDia[key(d)]||[]).push(o.ev)});
   return `<div class="calano">${[...Array(12)].map((_,m)=>{const p=new Date(y,m,1),ini=mondayOf(p),n=new Date(y,m+1,0).getDate(),off=Math.round((p-ini)/864e5);
@@ -1775,18 +1745,11 @@ function renderDashboard(){const V=$("vDash"),hoy=key(new Date());
       const rango=`${fromKey(l).getDate()} ${MESES[fromKey(l).getMonth()]} – ${v.getDate()} ${MESES[v.getMonth()]}`;
       return ps.length?`<button type="button" class="dsem ${ps.length>1?"doble":"ocupada"}" data-evabrir="${esc(ps[0].ev.id)}|${ps[0].ini}"><time>${rango}</time><b>${ps.length>1?`Doble agenda · ${ps.length}`:esc(ps[0].ev.titulo)}</b></button>`
         :`<button type="button" class="dsem libre" data-evprod="${l}"><time>${rango}</time><b>Libre</b></button>`}).join("");
-    const wk=key(weekStart()),porArea=AREA_IDS.map(a=>{const t=tasks.filter(x=>x.semana===wk&&areaOf(x)===a),h=t.filter(x=>x.hecha).length;return {a,n:t.length,h}});
-    const atr=tasks.filter(t=>!t.hecha&&venceDe(t)<hoy).sort((a,b)=>venceDe(a)<venceDe(b)?-1:1);
-    extra=`<div class="dgrid">
-      <div class="dpanel"><h3>Disponibilidad de producción</h3><p>Una canción ocupa una semana completa, de lunes a viernes. Toca una semana libre para agendarla.</p><div class="disp">${disp}</div></div>
-      <div class="dpanel"><h3>Pendientes de la semana</h3>
-        <div class="dareas">${porArea.map(x=>`<div class="dar" style="--c:${AREAS[x.a].c}"><span>${AREAS[x.a].n}</span><div class="trk"><i style="width:${x.n?Math.round(x.h/x.n*100):0}%"></i></div><small>${x.h}/${x.n}</small></div>`).join("")}</div>
-        ${atr.length?`<h3 style="font-size:15px;margin-top:6px">Atrasadas · ${atr.length}</h3><ul class="datr">${atr.slice(0,8).map(t=>`<li style="--c:${AREAS[areaOf(t)].c}"><i></i><span>${esc(t.titulo)}</span><small>${Math.round((fromKey(hoy)-fromKey(venceDe(t)))/864e5)} d</small></li>`).join("")}</ul>${atr.length>8?`<span class="cmore" style="padding:0">+${atr.length-8} más</span>`:""}`:`<p class="none" style="margin:0">Nada atrasado. 🙌</p>`}
-      </div></div>`}
+    extra=`<div class="dpanel"><h3>Disponibilidad de producción</h3><p>Una canción ocupa una semana completa, de lunes a viernes. Toca una semana libre para agendarla.</p><div class="disp">${disp}</div></div>`}
   V.innerHTML=`${evangelioHTML(fEv)}
     <div class="dhead"><div class="vistas" role="tablist" aria-label="Vista del calendario">${VISTAS.map(([k,n])=>`<button type="button" role="tab" class="vista" data-vista="${k}" aria-selected="${dashView===k}">${n}</button>`).join("")}</div>
       <button type="button" class="btn" data-evnuevo="${dashView==="dia"?key(anchor):""}">+ Agendar</button></div>
-    <div class="dleyenda">${Object.values(TIPOS_EV).map(([n,c])=>`<span><i style="--c:${c}"></i>${n}</span>`).join("")}<span><i style="--c:var(--muted);border-radius:50%"></i>Pendiente que vence ese día</span></div>
+    <div class="dleyenda">${Object.values(TIPOS_EV).map(([n,c])=>`<span><i style="--c:${c}"></i>${n}</span>`).join("")}</div>
     ${eventosErr?`<div class="readonly">${esc(eventosErr)}</div>`:""}
     ${cuerpo}${extra}`}
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const ds=b.dataset;
@@ -2400,7 +2363,7 @@ function pintarMenu(){const yo=perfil&&perfil.id,esYo=route==="persona"&&persona
   const ny=$("navYo");if(yo){ny.hidden=false;ny.href="#persona/"+yo}
   if(!loadedT)return;
   AREA_IDS.forEach(a=>{const n=areaTasks(a).filter(t=>!t.hecha&&t.semana<=wk).length,c=document.querySelector(`[data-cnt="${a}"]`);if(c){c.textContent=n||"";c.title=n?`${n} pendiente${n>1?"s":""}`:""}});
-  const cd=document.querySelector('[data-cnt="dashboard"]');if(cd){const n=tasks.filter(t=>!t.hecha&&venceDe(t)<key(new Date())).length;cd.textContent=n||"";cd.title=n?`${n} atrasada${n>1?"s":""}`:""}
+  const cd=document.querySelector('[data-cnt="dashboard"]');if(cd){const h=key(new Date()),n=ocurrenciasRango(h,h).length;cd.textContent=n||"";cd.title=n?`${n} evento${n>1?"s":""} hoy`:""}
   const cy=document.querySelector('[data-cnt="yo"]');if(cy&&yo){const n=pendientesDe(yo).length;cy.textContent=n||"";cy.title=n?`${n} pendiente${n>1?"s":""}`:""}}
 document.querySelectorAll("[data-ic]").forEach(i=>{i.innerHTML=i.dataset.ic==="yo"?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>':AREA_ICON[i.dataset.ic]||""});
 function menuLateral(abierto){document.body.classList.toggle("menu-abierto",abierto);$("sideBack").hidden=!abierto;$("sideOpen").setAttribute("aria-expanded",abierto);
