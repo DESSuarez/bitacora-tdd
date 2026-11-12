@@ -7,7 +7,7 @@
 //   {accion:"proyectos"}                                → proyectos de Samply
 //   {accion:"carpetas", projectid}                      → carpetas de un proyecto
 //   {accion:"cancion", projectid, folderid?}            → versiones, escuchas y comentarios de la canción
-//   {accion:"liga", projectid, folderid?, nombre}       → crea una liga (player) para compartir
+//   {accion:"liga", projectid, boxids?|folderid?, nombre} → crea una liga (player) solo de esa pista (boxids) o de la carpeta
 //   {accion:"webhook"}  (solo PM o desarrollador)       → registra el webhook de esta función en Samply
 // Desde Samply (webhook firmado): guarda el evento en samply_eventos (subida terminada, comentario nuevo).
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
@@ -152,7 +152,8 @@ Deno.serve(async (req) => {
     }
     if (body.accion === "liga") {
       const p = await samply("/players", { method: "POST", body: JSON.stringify({
-        name: String(body.nombre || "Canción").slice(0, 120), projectid: body.projectid, ...(body.folderid ? { folderid: body.folderid } : {}),
+        name: String(body.nombre || "Canción").slice(0, 120), projectid: body.projectid,
+        ...(Array.isArray(body.boxids) && body.boxids.length ? { boxids: body.boxids.map(String).slice(0, 20) } : body.folderid ? { folderid: body.folderid } : {}),
         options: { comments: true, downloads: false, stacks: true },
       }) });
       return json({ id: p.id, playerUrl: p.playerUrl });

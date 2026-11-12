@@ -816,6 +816,11 @@ button.cmore:hover{color:var(--fg)}
 .smev{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px}
 .smev h4{margin:0;font-family:var(--mono);font-weight:500;font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
 .smev div{display:flex;gap:8px;align-items:baseline}.smev small{font-size:12.5px;color:var(--fg)}
+.samply.compacto{padding:12px 14px;gap:10px}.samply.compacto .smh h3{font-size:16px}
+.smopc{display:flex;flex-wrap:wrap;gap:6px;border-top:1px dashed var(--line);padding-top:10px}
+.smnuevo{color:var(--area-ink);font-weight:700}
+.smform .full{grid-column:1/-1}
+.mli{position:relative}.mli .mplay~.mrow small{padding-right:40px}.mplay{position:absolute;right:10px;bottom:9px;z-index:1;width:30px;height:30px;border-radius:50%;background:#1B1C1A;color:#fff;display:grid;place-items:center;font-size:12px;text-decoration:none;box-shadow:0 4px 10px -4px rgba(0,0,0,.4)}.mplay:hover{background:var(--flame)}
 .smnota{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;border-top:1px dashed var(--line);padding-top:10px}.smnota small{color:var(--muted)}
 @media (max-width:700px){.smform,.smgrid{grid-template-columns:1fr}}
 .cdatosh{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
@@ -2056,7 +2061,7 @@ let cancionesVista="ministerios",nuevaCancion=false;
 const COLORES_MIN=["var(--flame)","var(--sea)","#8E6BD8","#D69A1E","#D9558E","#2B8FA3","#3F9E6A","#7C8786"];
 function colorMin(n){let h=0;for(const ch of String(n))h=(h*31+ch.charCodeAt(0))>>>0;return COLORES_MIN[h%COLORES_MIN.length]}
 function filaCancion(c,m){const n=siguientePaso(c),p=avance(c),pa=n?PASOS[n-1]:null,v=n?fechaPaso(c,n):null,otros=ministeriosDe(c).filter(x=>x!==m);
-  return `<li><button type="button" class="mrow" data-cancion="${esc(c.id)}"><div class="mrt"><strong>${esc(tituloDe(c))}</strong>${otros.length?`<span class="mcolab">🤝 con ${esc(otros.join(", "))}</span>`:""}${etapaPill(c.etapa)}${c.lanzamiento?`<span class="mlz">🚀 ${shortDate(c.lanzamiento)}</span>`:""}</div>
+  return `<li class="mli">${samplyUrl(c)?`<a class="mplay" href="${esc(samplyUrl(c))}" target="_blank" rel="noopener noreferrer" title="Abrir en Samply" aria-label="Abrir ${esc(tituloDe(c))} en Samply">▶</a>`:""}<button type="button" class="mrow" data-cancion="${esc(c.id)}"><div class="mrt"><strong>${esc(tituloDe(c))}</strong>${otros.length?`<span class="mcolab">🤝 con ${esc(otros.join(", "))}</span>`:""}${etapaPill(c.etapa)}${c.lanzamiento?`<span class="mlz">🚀 ${shortDate(c.lanzamiento)}</span>`:""}</div>
     <div class="cprog">${barra(p)}<b>${p}%</b></div>
     <small>${pa?`Sigue: paso ${n} · ${esc(pa[0])} · ${esc(pa[2])}${v?` · ${shortDate(v)}`:""}`:"✓ Proceso completo"}</small></button></li>`}
 function vistaMinisterios(){const grupos={};canciones.forEach(c=>ministeriosDe(c).forEach(m=>(grupos[m]=grupos[m]||[]).push(c)));
@@ -2404,67 +2409,61 @@ function cargarSamplyEventos(){if(samplyCh||!sb||!puedeMusica())return;
     const c=canciones.find(x=>((x.data||{}).samply||{}).projectid===p.new.projectid);
     toast(p.new.tipo==="comment.created"?`Samply · nuevo comentario${p.new.autor?" de "+p.new.autor:""}${c?" en «"+tituloDe(c)+"»":""}`:`Samply · nueva versión subida${c?" de «"+tituloDe(c)+"»":""}: ${p.new.box_nombre||""}`);
     if(c)delete samplyCache[c.id];renderKeep()}).subscribe()}
-function cargarSamply(c,forzar){const s=(c.data||{}).samply;if(!s||!s.projectid)return;const k=samplyCache[c.id];
-  if(k&&!forzar&&(k.estado==="cargando"||Date.now()-k.cuando<5*60*1000))return;
-  samplyCache[c.id]={estado:"cargando",cuando:Date.now(),datos:k&&k.datos};
-  samplyFn({accion:"cancion",projectid:s.projectid,folderid:s.folderid||null})
-    .then(d=>{samplyCache[c.id]={estado:"ok",cuando:Date.now(),datos:d};renderKeep()})
-    .catch(e=>{samplyCache[c.id]={estado:"error",cuando:Date.now(),error:e.message};renderKeep()})}
-function hace(ms){if(!ms)return "";const d=new Date(ms);return `${d.getDate()} ${MESES[d.getMonth()]} · ${hhmm(d.toISOString())}`}
-function mmss(s){if(s==null)return "";s=Math.round(s);return `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`}
+/* Panel compacto: solo el acceso directo a la pista de la canción en Samply */
+let samplyOpc=null;
+function samplyUrl(c){const s=(c.data||{}).samply;return s&&s.playerUrl||""}
 function panelSamply(c){const s=(c.data||{}).samply,v=samplyVinc&&samplyVinc.cid===c.id?samplyVinc:null;
-  if(!s||!s.projectid){
-    if(!v)return `<section class="samply"><div class="smh"><span class="smlogo">S</span><div><h3>Samply</h3><p>Liga esta canción con su proyecto y carpeta en Samply para ver aquí sus versiones, quién la escuchó y los comentarios del artista.</p></div><button type="button" class="btn sm" data-svinc="${esc(c.id)}">Vincular con Samply</button></div></section>`;
-    return `<section class="samply"><div class="smh"><span class="smlogo">S</span><div><h3>Vincular con Samply</h3><p>Elige el proyecto del artista y, si la canción tiene su propia carpeta, también la carpeta.</p></div></div>
-      ${v.error?`<div class="readonly">${esc(v.error)}</div>`:""}
-      ${!v.proyectos?`<p class="none">Cargando proyectos de Samply…</p>`:`<div class="smform">
-        <label>Proyecto<select class="field" data-sproy="${esc(c.id)}"><option value="">Elige un proyecto…</option>${v.proyectos.map(p=>`<option value="${esc(p.id)}" ${v.projectid===p.id?"selected":""}>${esc(p.nombre)}</option>`).join("")}</select></label>
-        <label>Carpeta de la canción <small>(opcional)</small><select class="field" data-scarp="${esc(c.id)}" ${v.projectid?"":"disabled"}><option value="">Todo el proyecto</option>${(v.carpetas||[]).map(f=>`<option value="${esc(f.id)}" ${v.folderid===f.id?"selected":""}>${esc(f.nombre)}</option>`).join("")}</select></label></div>`}
-      <div class="smacts"><button type="button" class="btn ghost sm" data-svinc="">Cancelar</button><button type="button" class="btn sm" data-sguardar="${esc(c.id)}" ${v.projectid?"":"disabled"}>Vincular</button></div></section>`}
-  cargarSamply(c);const k=samplyCache[c.id]||{},d=k.datos,evs=samplyEventos.filter(e=>e.projectid===s.projectid).slice(0,6);
-  const completas=d?d.escuchas.filter(e=>e.tipo==="play"&&e.completo!=null&&e.completo>=90):[];
-  const ck=c.checklist||{},sug=!ck["11"]&&completas.length?11:ck["11"]&&!ck["12"]&&completas.length>=2?12:null;
-  return `<section class="samply"><div class="smh"><span class="smlogo">S</span><div><h3>Samply</h3><p>${esc(s.proyecto||"Proyecto")}${s.carpeta?" › "+esc(s.carpeta):""}</p></div>
-      <div class="smbtns">${s.playerUrl?`<a class="btn sm" href="${esc(s.playerUrl)}" target="_blank" rel="noopener noreferrer">▶ Escuchar en Samply</a><button type="button" class="btn ghost sm" data-scopiar="${esc(c.id)}">Copiar liga</button>`:`<button type="button" class="btn sm" data-sliga="${esc(c.id)}">Crear liga para compartir</button>`}
-        <button type="button" class="icon" data-srefrescar="${esc(c.id)}" title="Actualizar" aria-label="Actualizar datos de Samply">↻</button><button type="button" class="icon" data-sdesv="${esc(c.id)}" title="Desvincular" aria-label="Desvincular de Samply">✕</button></div></div>
-    ${k.estado==="error"?`<div class="readonly">${esc(k.error)}</div>`:""}
-    ${sug?`<div class="smsug"><span>🎧 ${completas.length} escucha${completas.length>1?"s":""} completa${completas.length>1?"s":""} en Samply (la última: ${esc(completas[0].quien||"anónimo")}, ${hace(completas[0].cuando)}).</span><button type="button" class="btn sm" data-cpaso="${esc(c.id)}|${sug}">Marcar ${sug===11?"primera escucha":"segunda escucha y aprobación"}</button></div>`:""}
-    ${!d?`<p class="none">${k.estado==="error"?"":"Cargando datos de Samply…"}</p>`:`<div class="smgrid">
-      <div><h4>Versiones · ${d.archivos.reduce((n,a)=>n+a.versiones.length,0)}</h4>${d.archivos.length?`<ul class="smlist">${d.archivos.map(a=>`<li><b>${esc(a.nombre)}</b>${a.versiones.length>1?`<small>${a.versiones.length} versiones · la más nueva: ${esc(a.versiones[a.versiones.length-1].nombre)}</small>`:a.versiones[0]&&a.versiones[0].duracion?`<small>${mmss(a.versiones[0].duracion)}</small>`:""}</li>`).join("")}</ul>`:`<p class="none">Aún no hay archivos.</p>`}</div>
-      <div><h4>Escuchas · ${d.escuchas.filter(e=>e.tipo==="play").length}</h4>${d.escuchas.length?`<ul class="smlist">${d.escuchas.slice(0,8).map(e=>`<li><b>${esc(e.quien||"Anónimo")}</b><small>${e.tipo==="play"?`escuchó ${e.completo!=null?e.completo+"%":""}`:e.tipo==="export"?"descargó":e.tipo==="share"?"compartió":"abrió la liga"}${e.archivo?" · "+esc(e.archivo):""} · ${hace(e.cuando)}${e.ciudad?" · "+esc(e.ciudad):""}</small>${e.completo!=null?`<span class="smpct"><i style="width:${e.completo}%"></i></span>`:""}</li>`).join("")}</ul>`:`<p class="none">Nadie la ha escuchado todavía.</p>`}</div>
-      <div class="full"><h4>Comentarios · ${d.comentarios.length}</h4>${d.comentarios.length?`<ul class="smlist">${d.comentarios.slice(0,12).map(m=>`<li class="${m.resuelto?"ok":""}"><b>${esc(m.autor)}${m.segundo!=null?` <span class="smt">${mmss(m.segundo)}</span>`:""}</b><small>${esc(m.archivo)} · ${hace(m.cuando)}${m.resuelto?" · ✓ resuelto":""}</small><p>${esc(m.texto)}</p></li>`).join("")}</ul>`:`<p class="none">Sin comentarios.</p>`}</div>
-    </div>`}
-    ${esPM()&&!evs.length?`<div class="smnota"><small>¿Quieres que Samply avise aquí en cuanto se suba una versión o el artista comente?</small><button type="button" class="btn ghost sm" data-swebhook="1">Activar avisos de Samply</button></div>`:""}
-    ${evs.length?`<div class="smev"><h4>Avisos recientes de Samply</h4>${evs.map(e=>`<div><span>${e.tipo==="comment.created"?"💬":"⬆️"}</span><small>${esc(e.tipo==="comment.created"?(e.autor||"Alguien")+" comentó":"Nueva versión")}${e.box_nombre?" · "+esc(e.box_nombre):""}${e.mensaje?" · «"+esc(e.mensaje.slice(0,120))+"»":""} · ${hace(Date.parse(e.creado))}</small></div>`).join("")}</div>`:""}
+  if(v)return `<section class="samply"><div class="smh"><span class="smlogo">S</span><div><h3>Vincular con Samply</h3><p>Elige el proyecto, la carpeta y la pista de esta canción. Se crea una liga directa solo a esa pista.</p></div></div>
+    ${v.error?`<div class="readonly">${esc(v.error)}</div>`:""}
+    ${!v.proyectos?`<p class="none">Cargando proyectos de Samply…</p>`:`<div class="smform">
+      <label>Proyecto<select class="field" data-sproy="${esc(c.id)}"><option value="">Elige un proyecto…</option>${v.proyectos.map(p=>`<option value="${esc(p.id)}" ${v.projectid===p.id?"selected":""}>${esc(p.nombre)}</option>`).join("")}</select></label>
+      <label>Carpeta<select class="field" data-scarp="${esc(c.id)}" ${v.projectid?"":"disabled"}><option value="">Todo el proyecto</option>${(v.carpetas||[]).map(f=>`<option value="${esc(f.id)}" ${v.folderid===f.id?"selected":""}>${esc(f.nombre)}</option>`).join("")}</select></label>
+      <label class="full">Pista de la canción<select class="field" data-spista="${esc(c.id)}" ${v.pistas?"":"disabled"}>${!v.projectid?`<option>Primero elige el proyecto</option>`:!v.pistas?`<option>Cargando pistas…</option>`:`<option value="">Elige la pista…</option>${v.pistas.map(a=>`<option value="${esc(a.id)}" ${v.boxid===a.id?"selected":""}>${esc(a.nombre)}${a.versiones.length>1?` (${a.versiones.length} versiones)`:""}</option>`).join("")}`}</select></label></div>`}
+    <div class="smacts"><button type="button" class="btn ghost sm" data-svinc="">Cancelar</button><button type="button" class="btn sm" data-sguardar="${esc(c.id)}" ${v.projectid&&v.boxid?"":"disabled"}>Vincular</button></div></section>`;
+  if(!s||!s.projectid)return `<section class="samply compacto"><div class="smh"><span class="smlogo">S</span><div><h3>Samply</h3><p>Sin vincular</p></div><button type="button" class="btn ghost sm" data-svinc="${esc(c.id)}">Vincular con Samply</button></div></section>`;
+  const url=s.playerUrl,ev=samplyEventos.find(e=>e.projectid===s.projectid&&(!s.boxid||e.boxid===s.boxid));
+  return `<section class="samply compacto"><div class="smh"><span class="smlogo">S</span><div><h3>${esc(s.pista||s.carpeta||s.proyecto||"Samply")}</h3><p>${esc(s.proyecto||"")}${s.carpeta?" › "+esc(s.carpeta):""}${ev?` · <span class="smnuevo">${ev.tipo==="comment.created"?"💬 comentario nuevo":"⬆️ versión nueva"} ${hace(Date.parse(ev.creado))}</span>`:""}</p></div>
+      <div class="smbtns">${url?`<a class="btn" href="${esc(url)}" target="_blank" rel="noopener noreferrer">▶ Abrir en Samply</a><button type="button" class="icon" data-scopiar="${esc(c.id)}" title="Copiar liga" aria-label="Copiar liga de Samply">⧉</button>`:s.boxid?`<button type="button" class="btn" data-sliga="${esc(c.id)}">Crear liga directa</button>`:`<button type="button" class="btn" data-svinc="${esc(c.id)}">Elegir la pista</button>`}
+        <button type="button" class="icon" data-sopc="${esc(c.id)}" title="Más opciones" aria-label="Más opciones de Samply" aria-expanded="${samplyOpc===c.id}">⋯</button></div></div>
+    ${samplyOpc===c.id?`<div class="smopc"><button type="button" class="btn ghost sm" data-svinc="${esc(c.id)}">Cambiar pista</button><button type="button" class="btn ghost sm" data-sdesv="${esc(c.id)}">Desvincular</button>${esPM()?`<button type="button" class="btn ghost sm" data-swebhook="1" title="Samply avisará aquí cuando se suba una versión o el artista comente">Activar avisos de Samply</button>`:""}</div>`:""}
   </section>`}
+function hace(ms){if(!ms)return "";const d=new Date(ms);return `${d.getDate()} ${MESES[d.getMonth()]}`}
+async function cargarPistas(pid,fid){try{const r=await samplyFn({accion:"cancion",projectid:pid,folderid:fid||null});const v=samplyVinc;if(!v||v.projectid!==pid||(v.folderid||null)!==(fid||null))return;
+  v.pistas=r.archivos||[];const c=canciones.find(x=>x.id===v.cid),t=c&&tituloDe(c).toLowerCase().replace(/[^a-z0-9áéíóúñü ]/g,"").trim();
+  const g=t&&v.pistas.find(a=>(a.nombre||"").toLowerCase().includes(t));if(g)v.boxid=g.id;render()}
+  catch(err){if(samplyVinc){samplyVinc.error=err.message;render()}}}
+async function crearLigaSamply(c){const s=(c.data||{}).samply;if(!s)return;
+  const r=await samplyFn({accion:"liga",projectid:s.projectid,boxids:s.boxid?[s.boxid]:null,folderid:s.boxid?null:s.folderid||null,nombre:`${tituloDe(c)} · ${creditoDe(c)}`});
+  await guardarCancion(c.id,{data:{...(c.data||{}),samply:{...s,playerUrl:r.playerUrl}}},true,"Liga directa a la canción en Samply lista.")}
 document.addEventListener("click",async e=>{const b=e.target.closest("button");if(!b)return;const ds=b.dataset;
-  if(ds.svinc!==undefined){if(!ds.svinc){samplyVinc=null;render();return}
-    samplyVinc={cid:ds.svinc};render();
-    try{const r=await samplyFn({accion:"proyectos"});if(!samplyVinc)return;const c=canciones.find(x=>x.id===samplyVinc.cid);
-      samplyVinc.proyectos=(r.proyectos||[]).sort((a,b)=>(b.modificado||0)-(a.modificado||0));
-      const m=c&&ministeriosDe(c).map(x=>x.toLowerCase()),g=m&&samplyVinc.proyectos.find(p=>m.some(x=>(p.nombre||"").toLowerCase().includes(x)));
-      if(g){samplyVinc.projectid=g.id;cargarCarpetas(g.id)}}
+  if(ds.svinc!==undefined){samplyOpc=null;if(!ds.svinc){samplyVinc=null;render();return}
+    const c0=canciones.find(x=>x.id===ds.svinc),s0=c0&&(c0.data||{}).samply;
+    samplyVinc={cid:ds.svinc,projectid:s0&&s0.projectid||null,folderid:s0&&s0.folderid||null,boxid:s0&&s0.boxid||null};render();
+    try{const r=await samplyFn({accion:"proyectos"});const v=samplyVinc;if(!v)return;const c=canciones.find(x=>x.id===v.cid);
+      v.proyectos=(r.proyectos||[]).sort((a,b)=>(b.modificado||0)-(a.modificado||0));
+      if(!v.projectid){const m=c&&ministeriosDe(c).map(x=>x.toLowerCase()),g=m&&v.proyectos.find(p=>m.some(x=>(p.nombre||"").toLowerCase().includes(x)));if(g)v.projectid=g.id}
+      if(v.projectid){cargarCarpetas(v.projectid);cargarPistas(v.projectid,v.folderid)}}
     catch(err){if(samplyVinc)samplyVinc.error=err.message}
     render();return}
-  if(ds.sguardar){const v=samplyVinc,c=canciones.find(x=>x.id===ds.sguardar);if(!v||!c||!v.projectid)return;
-    const p=v.proyectos.find(x=>x.id===v.projectid),f=(v.carpetas||[]).find(x=>x.id===v.folderid);
-    samplyVinc=null;delete samplyCache[c.id];
-    guardarCancion(c.id,{data:{...(c.data||{}),samply:{projectid:v.projectid,proyecto:p?p.nombre:"",folderid:f?f.id:null,carpeta:f?f.nombre:""}}},true,"Canción vinculada con Samply.");return}
-  if(ds.sliga){const c=canciones.find(x=>x.id===ds.sliga),s=c&&(c.data||{}).samply;if(!s)return;b.disabled=true;b.textContent="Creando liga…";
-    try{const r=await samplyFn({accion:"liga",projectid:s.projectid,folderid:s.folderid||null,nombre:`${tituloDe(c)} · ${creditoDe(c)}`});
-      await guardarCancion(c.id,{data:{...(c.data||{}),samply:{...s,playerUrl:r.playerUrl}}},true,"Liga de Samply creada.")}
-    catch(err){toast(err.message);render()}return}
-  if(ds.scopiar){const c=canciones.find(x=>x.id===ds.scopiar),s=c&&(c.data||{}).samply;if(s&&s.playerUrl)copiarTexto(s.playerUrl,"Liga de Samply copiada.");return}
-  if(ds.srefrescar){const c=canciones.find(x=>x.id===ds.srefrescar);if(c){cargarSamply(c,true);render()}return}
+  if(ds.sguardar){const v=samplyVinc,c=canciones.find(x=>x.id===ds.sguardar);if(!v||!c||!v.projectid||!v.boxid)return;
+    const p=(v.proyectos||[]).find(x=>x.id===v.projectid),f=(v.carpetas||[]).find(x=>x.id===v.folderid),a=(v.pistas||[]).find(x=>x.id===v.boxid);
+    samplyVinc=null;b.disabled=true;
+    const ant=(c.data||{}).samply||{},sam={projectid:v.projectid,proyecto:p?p.nombre:"",folderid:f?f.id:null,carpeta:f?f.nombre:"",boxid:v.boxid,pista:a?a.nombre:"",playerUrl:ant.boxid===v.boxid?ant.playerUrl||"":""};
+    await guardarCancion(c.id,{data:{...(c.data||{}),samply:sam}},true,"");
+    if(!sam.playerUrl)try{await crearLigaSamply(c)}catch(err){toast("Vinculada, pero no se pudo crear la liga: "+err.message);render()}else toast("Canción vinculada con Samply.");return}
+  if(ds.sliga){const c=canciones.find(x=>x.id===ds.sliga);if(!c)return;b.disabled=true;b.textContent="Creando liga…";try{await crearLigaSamply(c)}catch(err){toast(err.message);render()}return}
+  if(ds.scopiar){const c=canciones.find(x=>x.id===ds.scopiar);if(c&&samplyUrl(c))copiarTexto(samplyUrl(c),"Liga de Samply copiada.");return}
+  if(ds.sopc){samplyOpc=samplyOpc===ds.sopc?null:ds.sopc;render();return}
   if(ds.sdesv){const c=canciones.find(x=>x.id===ds.sdesv);if(!c||!confirm("¿Desvincular esta canción de Samply? En Samply no se borra nada."))return;
-    const d={...(c.data||{})};delete d.samply;delete samplyCache[c.id];guardarCancion(c.id,{data:d},true,"Se desvinculó de Samply.");return}
-  if(ds.swebhook){b.disabled=true;try{const r=await samplyFn({accion:"webhook",funcion:FN_SAMPLY});toast("Listo: Samply avisará a la Bitácora de subidas y comentarios.")}catch(err){toast(err.message)}b.disabled=false;return}});
+    const d={...(c.data||{})};delete d.samply;samplyOpc=null;guardarCancion(c.id,{data:d},true,"Se desvinculó de Samply.");return}
+  if(ds.swebhook){b.disabled=true;try{await samplyFn({accion:"webhook",funcion:FN_SAMPLY});toast("Listo: Samply avisará a la Bitácora de versiones nuevas y comentarios.")}catch(err){toast(err.message)}b.disabled=false;return}});
 async function cargarCarpetas(pid){try{const r=await samplyFn({accion:"carpetas",projectid:pid});if(samplyVinc&&samplyVinc.projectid===pid){samplyVinc.carpetas=r.carpetas||[];
-  const c=canciones.find(x=>x.id===samplyVinc.cid),t=c&&tituloDe(c).toLowerCase(),g=t&&samplyVinc.carpetas.find(f=>(f.nombre||"").toLowerCase().includes(t));if(g)samplyVinc.folderid=g.id;render()}}
+  render()}}
   catch(err){if(samplyVinc){samplyVinc.error=err.message;render()}}}
 document.addEventListener("change",e=>{const t=e.target;
-  if(t.dataset.sproy!==undefined&&samplyVinc){samplyVinc.projectid=t.value||null;samplyVinc.carpetas=null;samplyVinc.folderid=null;render();if(t.value)cargarCarpetas(t.value);return}
-  if(t.dataset.scarp!==undefined&&samplyVinc){samplyVinc.folderid=t.value||null;render()}});
+  if(t.dataset.sproy!==undefined&&samplyVinc){const v=samplyVinc;v.projectid=t.value||null;v.carpetas=null;v.folderid=null;v.pistas=null;v.boxid=null;render();if(t.value){cargarCarpetas(t.value);cargarPistas(t.value,null)}return}
+  if(t.dataset.scarp!==undefined&&samplyVinc){const v=samplyVinc;v.folderid=t.value||null;v.pistas=null;v.boxid=null;render();cargarPistas(v.projectid,v.folderid);return}
+  if(t.dataset.spista!==undefined&&samplyVinc){samplyVinc.boxid=t.value||null;render()}});
 /* ---------- Finanzas → Activos: todo lo que tiene Tiempo de Dios hoy (tabla "activos", migración 019) ---------- */
 const TIPOS_ACTIVO=[["banco","Cuentas de banco","🏦","liquido"],["efectivo","Efectivo y caja chica","💵","liquido"],["inversion","Inversiones","📈","liquido"],["por_cobrar","Cuentas por cobrar","🧾","liquido"],
   ["equipo","Equipo (audio, video, cómputo)","🎛️","bien"],["instrumento","Instrumentos","🎸","bien"],["vehiculo","Vehículos","🚐","bien"],["inmueble","Inmuebles","🏠","bien"],["inventario","Inventario y mercancía","📦","bien"],["otro","Otros","✳️","bien"]];
