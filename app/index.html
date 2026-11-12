@@ -2016,9 +2016,9 @@ function pasoDeTarea(t){if(!t.cancion_id||!puedeMusica())return;const c=cancione
   const ck={...(c.checklist||{})},k=String(t.paso);
   if(t.hecha&&!ck[k])ck[k]=t.hecha;else if(!t.hecha&&ck[k])delete ck[k];else{if(t.hecha)crearPendiente(c);return}
   guardarPasos(c,ck)}
-/* Avance: del naranja de Tiempo de Dios (#FF3D1A) al verde de Spotify (#1DB954); entre más cerca del 100 %, más verde */
+/* Avance: un solo color por porcentaje, del naranja de Tiempo de Dios (#FF3D1A, 0 %) al verde de Spotify (#1DB954, 100 %) */
 function colorAvance(p){const a=[255,61,26],b=[29,185,84],t=Math.max(0,Math.min(1,p/100));return `rgb(${a.map((x,i)=>Math.round(x+(b[i]-x)*t)).join(",")})`}
-function barra(p){return `<div class="cbar" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100"><i style="width:${p}%;background:linear-gradient(90deg,#FF3D1A,${colorAvance(p)})"></i></div>`}
+function barra(p){return `<div class="cbar" role="progressbar" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100"><i style="width:${p}%;background:${colorAvance(p)}"></i></div>`}
 function ccardHTML(c){const d=c.data||{},p=avance(c);
   return `<button type="button" class="ccard ${c.etapa==="intake"?"nueva":""}" data-cancion="${esc(c.id)}"><strong>${esc(tituloDe(c))}</strong><span class="art">${esc(creditoDe(c))}</span>
     <div class="tmeta">${d.bpm?`<span>${esc(d.bpm)} BPM</span>`:""}${c.semana?`<span class="chip tipo">🗓 ${semanaTxt(c.semana)}</span>`:""}${c.lanzamiento?`<span>🚀 ${shortDate(c.lanzamiento)}</span>`:""}</div>
