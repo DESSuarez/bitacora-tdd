@@ -665,13 +665,25 @@ table.matrix{border-collapse:separate;border-spacing:5px;width:100%;min-width:52
 .evtxt{margin:0;font-family:Georgia,"Iowan Old Style","Times New Roman",serif;font-size:16.5px;line-height:1.6;color:#E3E8E7;max-width:75ch}
 .evlead{font-size:17.5px;color:#fff}
 .evmas{display:flex;flex-direction:column;gap:8px}
+.evtextos{display:flex;flex-direction:column;gap:8px}
+.evtextos.corto{max-height:9.6em;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent);mask-image:linear-gradient(180deg,#000 55%,transparent)}
 .evpie{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin-top:4px;font-size:13px}
-.evpie a{color:#A9B3B2;text-decoration:none}.evpie a:hover{color:#fff}
+.evpie a{color:#A9B3B2;text-decoration:none}
+.evnav{display:flex;align-items:center;gap:6px;margin-left:auto}
+.evflecha{width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;font-size:20px;line-height:1;display:grid;place-items:center;padding:0 0 2px;cursor:pointer;transition:background .15s,border-color .15s}
+.evflecha:hover:not(:disabled){background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.5)}
+.evflecha:disabled{opacity:.3;cursor:default}
+.evpuntos{display:flex;gap:6px;padding:0 2px}
+.evpunto{width:8px;height:8px;border-radius:99px;border:0;padding:0;background:rgba(255,255,255,.28);cursor:pointer;transition:width .2s,background .2s}
+.evpunto[aria-current="true"]{width:22px;background:var(--baby)}
+.evsig{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);border-radius:99px;height:32px;padding:0 14px;font-weight:800;font-size:13px;cursor:pointer}
+.evsig:hover{border-color:var(--baby);color:var(--baby)}
+.evsalmo{white-space:pre-line;font-size:16px;line-height:1.55;margin-bottom:4px}.evpie a:hover{color:#fff}
 .evbtn{background:#fff;color:#1B1C1A;border:0;border-radius:99px;height:32px;padding:0 14px;font-weight:800;font-size:13px}
 .evbtn:hover{background:var(--baby)}
 .evang.carga .evsk{color:#A9B3B2;font-family:var(--body);font-size:14px}
 .evang.err .evtxt{font-family:var(--body);font-size:14px;color:#C9D2D1}.evang.err a{color:var(--baby)}
-@media (max-width:640px){.evang{grid-template-columns:1fr;padding:18px;gap:12px}.evmarca{width:40px;height:40px}.evtxt{font-size:15.5px}.evlead{font-size:16.5px}}
+@media (max-width:640px){.evnav{margin-left:0;width:100%;justify-content:space-between}.evang{grid-template-columns:1fr;padding:18px;gap:12px}.evmarca{width:40px;height:40px}.evtxt{font-size:15.5px}.evlead{font-size:16.5px}}
 /* Dashboard: vistas día / semana / mes / año */
 .vistas{display:inline-flex;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:3px;gap:2px}
 .vista{border:0;background:transparent;color:var(--muted);font-weight:800;font-size:14px;height:36px;padding:0 16px;border-radius:9px}
@@ -1860,27 +1872,35 @@ function eventosDia(occ,k){return occ.filter(o=>o.ini<=k&&o.fin>=k).sort((a,b)=>
 
 /* ---------- Evangelio del día (Vatican News, vía evangelio.php) ---------- */
 const evangelios={};  // fecha → {estado:"cargando"|"ok"|"error", datos}
-let evangelioAbierto=false;
-const LIBROS={Mateo:"Mt",Marcos:"Mc",Lucas:"Lc",Juan:"Jn"};
+let evangelioAbierto=false,lecturaIdx=0,lecturaFecha="";
+/* Lecturas del día (evangelio.php): primero el Evangelio y con flechas Primera lectura, Salmo y Segunda lectura */
+const LIBROS={Mateo:"Mt",Marcos:"Mc",Lucas:"Lc",Juan:"Jn",Salmo:"Sal",Salmos:"Sal"};
 function citaCorta(c){c=String(c||"").replace(/^(san|según)\s+/i,"").trim();const m=c.match(/^([1-3]?\s?[A-Za-zÁÉÍÓÚáéíóúÑñ]+)\.?\s+(.*)$/);if(!m)return c;return (LIBROS[m[1]]||m[1])+" "+m[2]}
+function lecturasDe(d){if(!d)return [];if(Array.isArray(d.lecturas)&&d.lecturas.length)return d.lecturas;
+  return d.parrafos?[{tipo:"evangelio",nombre:"Evangelio",titulo:d.titulo,cita:d.cita,parrafos:d.parrafos}]:[]}
 function cargarEvangelio(f){if(evangelios[f])return;
-  try{const g=JSON.parse(localStorage.getItem("bitacora-evangelio-"+f)||"null");if(g&&g.parrafos){evangelios[f]={estado:"ok",datos:g};return}}catch(e){}
+  try{const g=JSON.parse(localStorage.getItem("bitacora-lecturas-"+f)||"null");if(g&&g.lecturas){evangelios[f]={estado:"ok",datos:g};return}}catch(e){}
   evangelios[f]={estado:"cargando"};
-  fetch("evangelio.php?fecha="+f).then(r=>r.ok?r.json():Promise.reject(r.status)).then(d=>{if(!d||!d.parrafos||!d.parrafos.length)throw 0;
-    evangelios[f]={estado:"ok",datos:d};try{localStorage.setItem("bitacora-evangelio-"+f,JSON.stringify(d))}catch(e){}if(route==="dashboard")renderKeep()})
+  fetch("evangelio.php?fecha="+f).then(r=>r.ok?r.json():Promise.reject(r.status)).then(d=>{if(!lecturasDe(d).length)throw 0;
+    evangelios[f]={estado:"ok",datos:d};try{localStorage.setItem("bitacora-lecturas-"+f,JSON.stringify(d))}catch(e){}if(route==="dashboard")renderKeep()})
   .catch(()=>{evangelios[f]={estado:"error"};if(route==="dashboard")renderKeep()})}
 function evangelioHTML(f){cargarEvangelio(f);const g=evangelios[f]||{},d=g.datos,hoy=key(new Date());
-  const cuando=f===hoy?"Evangelio de hoy":`Evangelio del ${fechaLarga(fromKey(f)).toLowerCase()}`;
+  if(lecturaFecha!==f){lecturaFecha=f;lecturaIdx=0;evangelioAbierto=false}
+  const cuando=f===hoy?"de hoy":`del ${fechaLarga(fromKey(f)).toLowerCase()}`;
   const url=d&&d.url||`https://www.vaticannews.va/es/evangelio-de-hoy/${f.replace(/-/g,"/")}.html`;
-  if(g.estado!=="ok")return `<section class="evang ${g.estado==="error"?"err":"carga"}"><div class="evmarca">${ICON_LIBRO}</div><div class="evbody"><span class="evk">${cuando}</span>
-    ${g.estado==="error"?`<p class="evtxt">No se pudo cargar en este momento. <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Léelo en Vatican News ↗</a></p>`:`<p class="evtxt evsk">Cargando la Palabra del día…</p>`}</div></section>`;
-  const ps=d.parrafos,primero=ps[0],resto=ps.slice(1);
-  return `<section class="evang"><div class="evmarca">${ICON_LIBRO}</div><div class="evbody">
-    <div class="evtop"><span class="evk">${cuando}</span><span class="evcita" title="${esc(d.cita||"")}">${esc(citaCorta(d.cita))}</span></div>
-    <h3 class="evt">${esc((d.titulo||"Lectura del santo evangelio").replace(/\s+$/,""))}</h3>
-    <p class="evtxt evlead">${esc(primero)}</p>
-    ${resto.length?`<div class="evmas" ${evangelioAbierto?"":"hidden"}>${resto.map(p=>`<p class="evtxt">${esc(p)}</p>`).join("")}</div>`:""}
-    <div class="evpie">${resto.length?`<button type="button" class="evbtn" data-evangelio="1" aria-expanded="${evangelioAbierto}">${evangelioAbierto?"Mostrar menos":"Leer el evangelio completo"}</button>`:""}<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Vatican News ↗</a></div>
+  if(g.estado!=="ok")return `<section class="evang ${g.estado==="error"?"err":"carga"}"><div class="evmarca">${ICON_LIBRO}</div><div class="evbody"><span class="evk">Lecturas ${cuando}</span>
+    ${g.estado==="error"?`<p class="evtxt">No se pudieron cargar en este momento. <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Léelas en Vatican News ↗</a></p>`:`<p class="evtxt evsk">Cargando la Palabra del día…</p>`}</div></section>`;
+  const ls=lecturasDe(d),n=ls.length;if(lecturaIdx>=n)lecturaIdx=0;
+  const l=ls[lecturaIdx],ps=l.parrafos||[],salmo=l.tipo==="salmo",largo=ps.join(" ").length>(salmo?320:520)||ps.length>(salmo?2:3);
+  const par=(p,k)=>`<p class="evtxt${salmo?" evsalmo":k===0?" evlead":""}">${esc(p)}</p>`;
+  return `<section class="evang" aria-roledescription="carrusel" aria-label="Lecturas del día"><div class="evmarca">${ICON_LIBRO}</div><div class="evbody">
+    <div class="evtop"><span class="evk">${esc(l.nombre||"Lectura")} ${cuando}</span>${l.cita?`<span class="evcita" title="${esc(l.cita)}">${esc(citaCorta(l.cita))}</span>`:""}
+      ${n>1?`<div class="evnav"><button type="button" class="evflecha" data-evlec="-1" aria-label="Lectura anterior" ${lecturaIdx===0?"disabled":""}>‹</button><span class="evpuntos">${ls.map((x,k)=>`<button type="button" class="evpunto" data-evir="${k}" aria-label="${esc(x.nombre)}" aria-current="${k===lecturaIdx}" title="${esc(x.nombre)}"></button>`).join("")}</span><button type="button" class="evflecha" data-evlec="1" aria-label="Siguiente lectura" ${lecturaIdx===n-1?"disabled":""}>›</button></div>`:""}</div>
+    <h3 class="evt">${esc((l.titulo||l.nombre||"").replace(/\s+$/,""))}</h3>
+    <div class="evtextos ${largo&&!evangelioAbierto?"corto":""}">${ps.map(par).join("")}</div>
+    <div class="evpie">${largo?`<button type="button" class="evbtn" data-evangelio="1" aria-expanded="${evangelioAbierto}">${evangelioAbierto?"Mostrar menos":salmo?"Leer el salmo completo":l.tipo==="evangelio"?"Leer el evangelio completo":"Leer la lectura completa"}</button>`:""}
+      ${n>1&&lecturaIdx<n-1?`<button type="button" class="evsig" data-evlec="1">${esc(ls[lecturaIdx+1].nombre)} →</button>`:""}
+      <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${salmo?"Evangelio del Día ↗":"Vatican News ↗"}</a></div>
   </div></section>`}
 const ICON_LIBRO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H13v16h5.5c.8 0 1.5-.7 1.5-1.5z"/><path d="M7 8h1.5M7 11h1.5M15.5 8H17"/></svg>';
 
@@ -1931,7 +1951,15 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)r
   if(ds.disp!==undefined){dispOff=ds.disp==="0"?0:Math.max(0,dispOff+Number(ds.disp));render();return}
   if(ds.irdia){anchor=fromKey(ds.irdia);dashView="dia";render();window.scrollTo({top:0,behavior:"smooth"});return}
   if(ds.irmes){anchor=fromKey(ds.irmes+"-01");dashView="mes";render();return}
-  if(ds.evangelio){evangelioAbierto=!evangelioAbierto;render();return}});
+  if(ds.evangelio){evangelioAbierto=!evangelioAbierto;render();return}
+  if(ds.evlec){lecturaIdx=Math.max(0,lecturaIdx+Number(ds.evlec));evangelioAbierto=false;render();return}
+  if(ds.evir!==undefined){lecturaIdx=Number(ds.evir);evangelioAbierto=false;render();return}});
+/* En el celular: deslizar la tarjeta de lecturas a la izquierda o a la derecha */
+let evToque=null;
+document.addEventListener("touchstart",e=>{const c=e.target.closest(".evang");evToque=c?{x:e.touches[0].clientX,y:e.touches[0].clientY}:null},{passive:true});
+document.addEventListener("touchend",e=>{if(!evToque)return;const t=e.changedTouches[0],dx=t.clientX-evToque.x,dy=t.clientY-evToque.y;evToque=null;
+  if(Math.abs(dx)<50||Math.abs(dx)<Math.abs(dy)*1.5)return;const d=(evangelios[lecturaFecha]||{}).datos,n=lecturasDe(d).length;if(n<2)return;
+  const k=Math.min(n-1,Math.max(0,lecturaIdx+(dx<0?1:-1)));if(k!==lecturaIdx){lecturaIdx=k;evangelioAbierto=false;render()}},{passive:true});
 /* ---------- Formulario para agendar ---------- */
 function abrirEvento(id,fecha,base){const ev=id?eventos.find(x=>x.id===id):null;if(id&&!ev)return;
   evEdit={id:ev?ev.id:null,ocurrencia:fecha||null};const v=ev||Object.assign({titulo:"",tipo:"fijo",fecha:fecha||key(new Date()),fin:"",hora:"",repetir:"",hasta:"",area:"general",notas:""},base||{});
