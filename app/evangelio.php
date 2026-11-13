@@ -1,10 +1,12 @@
 <?php
 // Lecturas del día para el Dashboard de la Bitácora.
 // Evangelio, primera y segunda lectura: Vatican News (medio oficial de la Santa Sede, enlazado desde vatican.va).
-// Salmo responsorial: Evangelio del Día (evangeliodeldia.org), porque Vatican News no lo publica.
+// Salmo responsorial (Vatican News no lo publica): dominicos.org, que trae la respuesta («R/.»), para hoy y días pasados;
+// para días futuros, las estrofas de Evangelio del Día (evangeliodeldia.org), que no traen la respuesta.
 // Se leen desde el servidor (esos sitios no dejan que el navegador los lea directo) y se guarda una copia por día.
 // Uso: evangelio.php?fecha=YYYY-MM-DD
-//   → {fecha, url, lecturas:[{tipo, nombre, titulo, cita, parrafos[]}], y por compatibilidad titulo, cita, parrafos del evangelio}
+//   → {fecha, url, lecturas:[{tipo, nombre, titulo, cita, parrafos[], respuesta?, fuente?, fuente_url?}], y por compatibilidad titulo, cita, parrafos del evangelio}
+//   En el salmo, las estrofas que terminan en «R/.» llevan después la respuesta.
 //   tipo: evangelio | primera | salmo | segunda (en ese orden)
 header('Content-Type: application/json; charset=utf-8');
 header('X-Robots-Tag: noindex, nofollow');
@@ -24,7 +26,7 @@ if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $fecha, $m) || !checkdate((int)$m
   preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $fecha, $m);
 }
 $url = "https://www.vaticannews.va/es/evangelio-de-hoy/{$m[1]}/{$m[2]}/{$m[3]}.html";
-$cache = rtrim(sys_get_temp_dir(), '/') . "/tdd-lecturas-v2-$fecha.json";
+$cache = rtrim(sys_get_temp_dir(), '/') . "/tdd-lecturas-v3-$fecha.json";
 
 if (is_file($cache) && filesize($cache) > 50) {
   header('Cache-Control: public, max-age=21600');
@@ -93,17 +95,42 @@ foreach ($lec as $t) {
 unset($actual);
 if ($l = lectura('primera', 'Primera lectura', $primera)) $lecturas[] = $l;
 
-// Salmo responsorial (Evangelio del Día)
-$fe = str_replace('-', '', $fecha);
-$base = "https://feed.evangelizo.org/v2/reader.php?date=$fe&lang=SP&content=PS";
-$salmo = descargar("$base&type=reading");
-if ($salmo && !preg_match('/^\s*</', $salmo)) {
-  $estrofas = array_values(array_filter(array_map('trim', preg_split('~(<br\s*/?>\s*){2,}~i', $salmo)), fn($x) => $x !== ''));
-  $estrofas = array_values(array_filter(array_map('limpiar', $estrofas), fn($x) => $x !== ''));
-  $cita = limpiar(descargar("$base&type=reading_lt"));
-  if ($estrofas) $lecturas[] = ['tipo' => 'salmo', 'nombre' => 'Salmo', 'titulo' => 'Salmo responsorial', 'cita' => rtrim($cita, '.'), 'parrafos' => $estrofas,
-    'fuente' => 'evangeliodeldia.org'];
+// Salmo responsorial con su respuesta (dominicos.org; solo publica hasta el día de hoy)
+function salmoDominicos($fecha) {
+  [$y, $mo, $d] = explode('-', $fecha);
+  $u = "https://www.dominicos.org/predicacion/evangelio-del-dia/$d-$mo-$y/";
+  $html = descargar($u);
+  if (!$html) return null;
+  $meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  // Que la página sea de ese día (para fechas futuras muestra otra cosa)
+  if (!preg_match('/"headline":\s*"Evangelio del d[ií]a (\d{1,2}) de (\p{L}+) (\d{4})/u', $html, $h)
+      || (int)$h[1] !== (int)$d || mb_strtolower($h[2]) !== $meses[(int)$mo - 1] || $h[3] !== $y) return null;
+  if (!preg_match('~Salmo de hoy\s*</h2>\s*<h3>(.*?)</h3>(.*?)<h2~siu', $html, $m)) return null;
+  if (!preg_match('~^(.*?)\s*R/\.\s*(.+)$~su', limpiar($m[1]), $r)) return null;
+  preg_match_all('~<p[^>]*>(.*?)</p>~si', $m[2], $ps);
+  $estrofas = [];
+  foreach ($ps[1] as $p) foreach (preg_split('~<br\s*/?>\s*<br\s*/?>~i', $p) as $e) { $t = limpiar($e); if ($t !== '') $estrofas[] = $t; }
+  if (!$estrofas) return null;
+  return ['tipo' => 'salmo', 'nombre' => 'Salmo', 'titulo' => 'Salmo responsorial', 'cita' => trim($r[1]), 'respuesta' => trim(preg_replace('/\s+/u', ' ', $r[2])),
+    'parrafos' => $estrofas, 'fuente' => 'dominicos.org', 'fuente_url' => $u];
 }
+// Sin respuesta: estrofas de Evangelio del Día (sin el pie «Extraído de la Biblia…»)
+function salmoEvangelizo($fecha) {
+  $base = 'https://feed.evangelizo.org/v2/reader.php?date=' . str_replace('-', '', $fecha) . '&lang=SP&content=PS';
+  $txt = descargar("$base&type=reading");
+  if (!$txt || preg_match('/^\s*</', $txt)) return null;
+  $estrofas = [];
+  foreach (preg_split('~(<br\s*/?>\s*){2,}~i', $txt) as $e) {
+    $t = limpiar($e);
+    if ($t === '' || preg_match('/^(Extraído de|Para recibir)/iu', $t)) continue;
+    $t = trim(preg_replace('/\n?(Extraído de la Biblia.*|Para recibir cada mañana.*)$/isu', '', $t));
+    if ($t !== '') $estrofas[] = $t;
+  }
+  if (!$estrofas) return null;
+  return ['tipo' => 'salmo', 'nombre' => 'Salmo', 'titulo' => 'Salmo responsorial', 'cita' => rtrim(limpiar(descargar("$base&type=reading_lt")), '.'),
+    'parrafos' => $estrofas, 'fuente' => 'evangeliodeldia.org', 'fuente_url' => 'https://evangeliodeldia.org/SP/gospel/' . $fecha];
+}
+if ($sal = salmoDominicos($fecha) ?: salmoEvangelizo($fecha)) $lecturas[] = $sal;
 
 if ($l = lectura('segunda', 'Segunda lectura', $segunda)) $lecturas[] = $l;
 
