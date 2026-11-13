@@ -1875,16 +1875,17 @@ function eventosDia(occ,k){return occ.filter(o=>o.ini<=k&&o.fin>=k).sort((a,b)=>
 /* ---------- Evangelio del día (Vatican News, vía evangelio.php) ---------- */
 const evangelios={};  // fecha → {estado:"cargando"|"ok"|"error", datos}
 let evangelioAbierto=false,lecturaIdx=0,lecturaFecha="";
+const LECTURAS_V=4;  // súbelo cuando cambie evangelio.php: evita copias viejas del servidor y del navegador
 /* Lecturas del día (evangelio.php): primero el Evangelio y con flechas Primera lectura, Salmo y Segunda lectura */
 const LIBROS={Mateo:"Mt",Marcos:"Mc",Lucas:"Lc",Juan:"Jn",Salmo:"Sal",Salmos:"Sal"};
 function citaCorta(c){c=String(c||"").replace(/^(san|según)\s+/i,"").trim();const m=c.match(/^([1-3]?\s?[A-Za-zÁÉÍÓÚáéíóúÑñ]+)\.?\s+(.*)$/);if(!m)return c;return (LIBROS[m[1]]||m[1])+" "+m[2]}
 function lecturasDe(d){if(!d)return [];if(Array.isArray(d.lecturas)&&d.lecturas.length)return d.lecturas;
   return d.parrafos?[{tipo:"evangelio",nombre:"Evangelio",titulo:d.titulo,cita:d.cita,parrafos:d.parrafos}]:[]}
 function cargarEvangelio(f){if(evangelios[f])return;
-  try{const g=JSON.parse(localStorage.getItem("bitacora-lecturas3-"+f)||"null");if(g&&g.lecturas){evangelios[f]={estado:"ok",datos:g};return}}catch(e){}
+  try{const g=JSON.parse(localStorage.getItem("bitacora-lecturas"+LECTURAS_V+"-"+f)||"null");if(g&&g.lecturas){evangelios[f]={estado:"ok",datos:g};return}}catch(e){}
   evangelios[f]={estado:"cargando"};
-  fetch("evangelio.php?fecha="+f).then(r=>r.ok?r.json():Promise.reject(r.status)).then(d=>{if(!lecturasDe(d).length)throw 0;
-    evangelios[f]={estado:"ok",datos:d};try{localStorage.setItem("bitacora-lecturas3-"+f,JSON.stringify(d))}catch(e){}if(route==="dashboard")renderKeep()})
+  fetch("evangelio.php?v="+LECTURAS_V+"&fecha="+f).then(r=>r.ok?r.json():Promise.reject(r.status)).then(d=>{if(!lecturasDe(d).length)throw 0;
+    evangelios[f]={estado:"ok",datos:d};try{localStorage.setItem("bitacora-lecturas"+LECTURAS_V+"-"+f,JSON.stringify(d))}catch(e){}if(route==="dashboard")renderKeep()})
   .catch(()=>{evangelios[f]={estado:"error"};if(route==="dashboard")renderKeep()})}
 function evangelioHTML(f){cargarEvangelio(f);const g=evangelios[f]||{},d=g.datos,hoy=key(new Date());
   if(lecturaFecha!==f){lecturaFecha=f;lecturaIdx=0;evangelioAbierto=false}
