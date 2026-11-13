@@ -890,6 +890,20 @@ button.cmore:hover{color:var(--fg)}
 .confcard{max-width:440px;text-align:left;gap:10px}.confcard p{font-size:14.5px;color:var(--muted);margin:0;line-height:1.5}
 .confic{width:44px;height:44px;border-radius:12px;background:var(--flame-soft);color:var(--flame);display:grid;place-items:center}.confic svg{width:24px;height:24px}
 .confacts{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}.confsi{background:var(--flame);color:#fff}
+.cierrecard{position:fixed;right:20px;bottom:20px;z-index:70;width:min(440px,calc(100vw - 32px));background:var(--bg);color:var(--fg);border:1.5px solid var(--area);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 18px 50px -16px rgba(0,0,0,.45);animation:subeCierre .22s ease}
+@keyframes subeCierre{from{transform:translateY(14px);opacity:0}}
+.cierreh{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start}
+.cierreh b{display:block;font-size:14.5px;overflow-wrap:anywhere}.cierreh small{color:var(--muted);font-size:12.5px}
+.cierreok{width:28px;height:28px;border-radius:50%;background:var(--area);color:var(--on-area);display:grid;place-items:center;font-weight:900}
+.cierrecard textarea{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;font:inherit;color:var(--fg);resize:vertical}
+.cierrecard textarea:focus{border-color:var(--area-ink);outline:none}
+.cierreacts{display:flex;gap:8px;align-items:center;justify-content:flex-end}.cierreacts small{margin-right:auto;color:var(--muted);font-size:11.5px}
+.cierretxt{font-size:13.5px;color:var(--fg);background:var(--area-soft);border-left:3px solid var(--area);border-radius:6px;padding:6px 10px;margin-top:4px;white-space:pre-wrap;overflow-wrap:anywhere}
+.cierreedit{border:0;background:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0 4px}.cierreedit:hover{color:var(--area-ink)}
+.cierreadd{align-self:flex-start;border:1.5px dashed var(--line);background:none;color:var(--muted);border-radius:99px;font:inherit;font-size:12px;font-weight:700;padding:3px 10px;cursor:pointer;margin-top:4px}
+.cierreadd:hover{border-color:var(--area-ink);color:var(--area-ink)}
+.pmcierre{display:block;color:var(--muted);font-size:12px;margin-left:2px}
+@media (max-width:640px){.cierrecard{right:16px;left:16px;bottom:16px;width:auto}}
 .cdatosh{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
 .cdatosh h3{margin:0;font-family:var(--display);font-weight:900;font-size:20px}
 .cedit{display:flex;flex-direction:column;gap:22px;border:1.5px solid var(--area);border-radius:18px;padding:18px;background:color-mix(in srgb,var(--area-soft) 45%,var(--bg))}
@@ -1516,16 +1530,38 @@ function addTask(titulo,proyecto,respVal,area,semana,extra){area=area||route;con
   const t={id:uid(),area,titulo,proyecto:proyecto||"",responsable:p.nombre,responsable_id:p.id,semana:wk,creada:new Date().toISOString(),creada_por:perfil?perfil.id:null,hecha:null,orden:ord,subtareas:[]};
   if(extra)Object.assign(t,extra);tasks.push(t);render();saveTask(t)}
 function findT(id){return tasks.find(x=>x.id===id)}
+/* ---------- Comentario final al completar («¿Cómo quedó?») ----------
+   Se guarda en la tarea o subtarea como «cierre» y aparece en la tarea, el Reporte diario, el panel de la PM y el PDF semanal. */
+let cierreAbierto=null;
+function abrirCierre(id,sid){const t=findT(id);if(!t)return;const x=sid?t.subtareas.find(z=>z.id===sid):t;if(!x||!x.hecha||!canEdit(areaOf(t)))return;
+  cierreAbierto={id,sid};let c=$("cierreCard");
+  if(!c){c=document.createElement("form");c.id="cierreCard";c.className="cierrecard";c.setAttribute("role","dialog");c.setAttribute("aria-label","Comentario final");document.body.appendChild(c)}
+  c.innerHTML=`<div class="cierreh"><span class="cierreok">✓</span><div><b>${esc(x.titulo)}</b><small>¿Cómo quedó? Escríbelo para que quede claro cómo se completó (opcional).</small></div><button type="button" class="icon" data-cierre="omitir" aria-label="Cerrar">✕</button></div>
+    <textarea id="cierreTxt" maxlength="600" rows="2" placeholder="Ej. Quedó el martes 24 a las 11 am en CdD con Rogelio.">${esc(x.cierre||"")}</textarea>
+    <div class="cierreacts"><small>Enter para guardar · Shift+Enter para otra línea</small><button type="button" class="btn ghost sm" data-cierre="omitir">Omitir</button><button class="btn sm" type="submit">Guardar</button></div>`;
+  c.hidden=false;setTimeout(()=>{const ta=$("cierreTxt");if(ta){ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length)}},40)}
+function cerrarCierre(){cierreAbierto=null;const c=$("cierreCard");if(c)c.hidden=true}
+function guardarCierre(){const a=cierreAbierto;if(!a)return;const t=findT(a.id);if(!t){cerrarCierre();return}const x=a.sid?t.subtareas.find(z=>z.id===a.sid):t;
+  const v=($("cierreTxt").value||"").trim().slice(0,600);cerrarCierre();if(!x||(x.cierre||"")===v)return;
+  if(v)x.cierre=v;else delete x.cierre;render();saveTask(t);toast(v?"Comentario final guardado.":"Se quitó el comentario final.")}
+document.addEventListener("submit",e=>{if(e.target.id==="cierreCard"){e.preventDefault();guardarCierre()}});
+document.addEventListener("keydown",e=>{if(e.target&&e.target.id==="cierreTxt"){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();guardarCierre()}else if(e.key==="Escape")cerrarCierre()}});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-cierre],[data-cierreedit]");if(!b)return;
+  if(b.dataset.cierre==="omitir"){cerrarCierre();return}
+  if(b.dataset.cierreedit){const [id,sid]=b.dataset.cierreedit.split("|");abrirCierre(id,sid||null)}});
+function cierreHTML(x,id,sid,ed){return x.cierre?`<div class="cierretxt">💬 ${esc(x.cierre)}${ed?` <button type="button" class="cierreedit" data-cierreedit="${esc(id)}|${esc(sid||"")}" aria-label="Editar comentario final" title="Editar comentario final">✎</button>`:""}</div>`
+  :x.hecha&&ed?`<button type="button" class="cierreadd" data-cierreedit="${esc(id)}|${esc(sid||"")}">💬 Agregar cómo quedó</button>`:""}
 function toggleTask(id){const t=findT(id);if(!t)return;const now=new Date().toISOString();
   if(!t.hecha&&t.cancion_id&&t.paso){const c=canciones.find(x=>x.id===t.cancion_id);
     if(c&&requiereDoc(t.paso,c)&&!docsPaso(c,t.paso).length){toast(`Para completar este paso sube ${requiereDoc(t.paso,c)}.`);pedirDocPaso(c,t.paso);return}
     if(c&&requiereLiga(t.paso,c)&&!(c.data||{}).drive){pedirLigaPaso(c,t.paso);return}}
   if(t.hecha)t.hecha=null;else{t.hecha=now;t.subtareas=t.subtareas.map(s=>s.hecha?s:{...s,hecha:now})}
-  render();saveTask(t);pasoDeTarea(t)}
+  render();saveTask(t);pasoDeTarea(t);if(t.hecha)abrirCierre(t.id,null)}
 function toggleSub(id,sid){const t=findT(id);if(!t)return;const now=new Date().toISOString();
   t.subtareas=t.subtareas.map(s=>s.id===sid?{...s,hecha:s.hecha?null:now}:s);
   const all=t.subtareas.length&&t.subtareas.every(s=>s.hecha);
-  const antes=!!t.hecha;if(all&&!t.hecha)t.hecha=now;if(!all&&t.hecha)t.hecha=null;render();saveTask(t);if(antes!==!!t.hecha)pasoDeTarea(t)}
+  const antes=!!t.hecha;if(all&&!t.hecha)t.hecha=now;if(!all&&t.hecha)t.hecha=null;render();saveTask(t);if(antes!==!!t.hecha)pasoDeTarea(t);
+  const ss=t.subtareas.find(x=>x.id===sid);if(t.hecha&&!antes)abrirCierre(t.id,null);else if(ss&&ss.hecha)abrirCierre(t.id,sid)}
 function addSub(id,titulo,respVal){const t=findT(id);if(!t)return;const p=respDe(respVal);t.subtareas=[...t.subtareas,{id:uid(),titulo,responsable:p.nombre,responsable_id:p.id,hecha:null}];if(t.hecha)t.hecha=null;open.add(id);render();saveTask(t)}
 function delSub(id,sid){const t=findT(id);if(!t)return;t.subtareas=t.subtareas.filter(s=>s.id!==sid);render();saveTask(t)}
 function setOwner(id,val){const t=findT(id);if(!t||val==="__otro")return;const p=respDe(val);
@@ -1707,6 +1743,7 @@ function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen
           <button class="ttitle" data-open="${t.id}" aria-expanded="${isOpen}">${esc(t.titulo)}</button>
           <div class="tmeta">${whoChip(t.responsable,t.responsable_id)}${t.proyecto?`<span class="chip">${esc(t.proyecto)}</span>`:""}${chipVence(t)}${t.subtareas.length?`<span>${subsDone}/${t.subtareas.length} subtareas</span>`:""}${t.hecha?`<span class="when">✓ ${DIAS[new Date(t.hecha).getDay()]} ${new Date(t.hecha).getDate()} ${MESES[new Date(t.hecha).getMonth()]} · ${hhmm(t.hecha)}</span>`:""}${t.nota&&!isOpen?`<button class="chip" type="button" data-open="${t.id}" style="cursor:pointer">📝 Nota</button>`:""}${t.cancion_id?`<button class="chip cvinc" type="button" data-vercancion="${esc(t.cancion_id)}">🎵 Ver canción</button>`:""}</div>
           ${ligasDe(t,eo?t.id+"|":"")}
+          ${cierreHTML(t,t.id,null,ed)}
         </div>
         <div class="tactions">
           <button class="icon" data-open="${t.id}" aria-label="Editar, subtareas y responsable" title="Editar y subtareas">${ICON_SUB}</button>
@@ -1719,7 +1756,7 @@ function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen
           <button class="check sub" role="checkbox" aria-checked="${!!s.hecha}" aria-label="Marcar ${esc(s.titulo)}" data-st="${t.id}|${s.id}" ${ed?"":"disabled"}>${CHECK}</button>
           <div class="sbody"><span><span class="stit">${esc(s.titulo)}</span> ${whoChip(s.responsable,s.responsable_id)}${s.hecha&&!eo?` <span class="when" style="color:var(--muted)">· ${DIAS[new Date(s.hecha).getDay()].slice(0,3)} ${new Date(s.hecha).getDate()} ${MESES[new Date(s.hecha).getMonth()]} ${hhmm(s.hecha)}</span>`:""}</span>
             ${s.hecha&&eo?`<label class="notatxt">Hecha el <input type="datetime-local" class="whenin" data-hecha="${t.id}|${s.id}" value="${localDT(s.hecha)}" aria-label="Fecha y hora en que se completó ${esc(s.titulo)}"></label>`:""}
-            ${ligasDe(s,eo?t.id+"|"+s.id:"")}
+            ${ligasDe(s,eo?t.id+"|"+s.id:"")}${cierreHTML(s,t.id,s.id,ed)}
             ${eo?`<input class="subnota" data-snota="${t.id}|${s.id}" value="${esc(s.nota||"")}" maxlength="500" placeholder="Nota de la subtarea (opcional)…" aria-label="Nota de ${esc(s.titulo)}">`:s.nota?`<div class="notatxt">📝 ${esc(s.nota)}</div>`:""}</div>
           ${ed?`<button class="icon del" data-sdel="${t.id}|${s.id}" aria-label="Borrar subtarea">${ICON_DEL}</button>`:""}</div>`).join("")}
         ${isOpen&&ed?`<div class="editrow">
@@ -1743,7 +1780,7 @@ function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen
 function dayRows(log,ws,withArea){const today=key(new Date());let html="";
   for(let i=0;i<7;i++){const d=addDays(ws,i),k=key(d),items=log.filter(x=>x.dia===k);if(i>=5&&!items.length)continue;
     html+=`<div class="day ${k===today?"today":""}"><div class="dlabel"><b>${DIAS[d.getDay()]}</b><span>${d.getDate()} ${MESES[d.getMonth()]}</span>${items.length?`<span class="chip tipo n">${items.length} hecho${items.length>1?"s":""}</span>`:""}</div>
-    ${items.length?`<ul class="ditems">${items.map(x=>`<li class="ditem"><time datetime="${x.hecha}">${hhmm(x.hecha)}</time><div>${x.tipo==="t"?`<span class="k t">Tarea</span><strong>${esc(x.titulo)}</strong>`:`<span class="k s">Sub</span>${esc(x.titulo)} <span class="parent">› ${esc(x.padre)}</span>`} ${whoChip(x.responsable,x.rid)}${x.proyecto?` <span class="chip">${esc(x.proyecto)}</span>`:""}${x.obj?ligasDe(x.obj,""):""}</div></li>`).join("")}</ul>`:`<div class="none">${k>today?"Aún no llega":"Sin registros este día"}</div>`}</div>`}
+    ${items.length?`<ul class="ditems">${items.map(x=>`<li class="ditem"><time datetime="${x.hecha}">${hhmm(x.hecha)}</time><div>${x.tipo==="t"?`<span class="k t">Tarea</span><strong>${esc(x.titulo)}</strong>`:`<span class="k s">Sub</span>${esc(x.titulo)} <span class="parent">› ${esc(x.padre)}</span>`} ${whoChip(x.responsable,x.rid)}${x.proyecto?` <span class="chip">${esc(x.proyecto)}</span>`:""}${x.obj?ligasDe(x.obj,""):""}${x.obj&&x.obj.cierre?`<div class="cierretxt">💬 ${esc(x.obj.cierre)}</div>`:""}</div></li>`).join("")}</ul>`:`<div class="none">${k>today?"Aún no llega":"Sin registros este día"}</div>`}</div>`}
   return html}
 function renderReport(){
   const a=route,ws=weekStart(),s=key(ws),e=key(addDays(ws,6)),log=logRange(s,e,a),lg=logrosRange(s,e,a);
@@ -2720,7 +2757,7 @@ function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
     const cuando=t.semana<wkNow?`<span style="color:var(--flame)">Viene de la ${weekLabel(fromKey(t.semana)).toLowerCase()}</span>`:t.semana>wkNow?weekLabel(fromKey(t.semana)):"Esta semana";
     return `<li class="pitem"><button class="check ${s?"sub":""}" role="checkbox" aria-checked="false" aria-label="Marcar ${esc(x.titulo)}" ${s?`data-st="${t.id}|${s.id}"`:`data-tt="${t.id}"`} ${canEdit(a)?"":"disabled"}>${CHECK}</button>
       <div class="txt"><strong>${esc(x.titulo)}</strong><small>${s?`Subtarea de ${esc(t.titulo)} · `:""}${cuando}${t.proyecto?" · "+esc(t.proyecto):""}</small></div>${chipA(a)}</li>`}).join(""):`<li class="none">Nada pendiente.</li>`;
-  $("personDone").innerHTML=done.length?done.map(x=>`<li class="pitem"><time datetime="${x.hecha}">${DIAS[new Date(x.hecha).getDay()].slice(0,3)} ${hhmm(x.hecha)}</time><div class="txt"><strong>${esc(x.titulo)}</strong>${x.tipo==="s"?`<small>Subtarea de ${esc(x.padre)}</small>`:""}</div>${chipA(x.area)}</li>`).join(""):`<li class="none">Nada completado en esta semana.</li>`}
+  $("personDone").innerHTML=done.length?done.map(x=>`<li class="pitem"><time datetime="${x.hecha}">${DIAS[new Date(x.hecha).getDay()].slice(0,3)} ${hhmm(x.hecha)}</time><div class="txt"><strong>${esc(x.titulo)}</strong>${x.tipo==="s"?`<small>Subtarea de ${esc(x.padre)}</small>`:""}${x.obj&&x.obj.cierre?`<small class="pmcierre">💬 ${esc(x.obj.cierre)}</small>`:""}</div>${chipA(x.area)}</li>`).join(""):`<li class="none">Nada completado en esta semana.</li>`}
 
 /* Carta de presentación: portada con el color de sus áreas, foto grande, rol, áreas, correo y "Sobre mí" */
 function cartaPersona(p,self,puede,email){const ar=[p.area,...(p.areas||[])].filter((a,i,l)=>AREAS[a]&&l.indexOf(a)===i);
@@ -2931,7 +2968,7 @@ function renderPM(){
     const tDone=al.filter(x=>x.tipo==="t");let inner="";
     if(v!=="year"){const pp=plannedPct(a,wkKeys);
       inner+=`<div><h5>Plan ${v==="week"?"de la semana":"del mes"} · ${pp.d}/${pp.n}</h5><div class="bar" style="margin-top:6px"><i style="width:${pp.pct}%"></i></div></div>`;
-      inner+=`<div><h5>Tareas completadas</h5>${tDone.length?`<ul style="margin-top:6px">${tDone.slice(-5).reverse().map(x=>`<li><span class="when">${shortDate(x.dia)}</span>${esc(x.titulo)}</li>`).join("")}</ul>${tDone.length>5?`<span class="more">+${tDone.length-5} más</span>`:""}`:`<div class="none" style="margin-top:4px">Nada completado aún</div>`}</div>`;
+      inner+=`<div><h5>Tareas completadas</h5>${tDone.length?`<ul style="margin-top:6px">${tDone.slice(-5).reverse().map(x=>`<li><span class="when">${shortDate(x.dia)}</span>${esc(x.titulo)}${x.obj&&x.obj.cierre?`<small class="pmcierre">💬 ${esc(x.obj.cierre)}</small>`:""}</li>`).join("")}</ul>${tDone.length>5?`<span class="more">+${tDone.length-5} más</span>`:""}`:`<div class="none" style="margin-top:4px">Nada completado aún</div>`}</div>`;
       const cb=countBy(alg,"tipo","Otro");
       const ent=entregablesRange(s,e,a);
       inner+=`<div><h5>Entregables y ligas · ${ent.length}</h5>${ent.length?`<ul class="entregas">${ent.slice(0,6).map(x=>entregaLi(x)).join("")}</ul>${ent.length>6?`<span class="more">+${ent.length-6} más en el día por día</span>`:""}`:`<div class="none" style="margin-top:4px">Sin archivos ni ligas</div>`}</div>`;
@@ -2965,7 +3002,7 @@ function weekText(a){const ws=weekStart(),s=key(ws),e=key(addDays(ws,6)),log=log
   L.push(`Completado: ${log.filter(x=>x.tipo==="t").length} tareas y ${log.filter(x=>x.tipo==="s").length} subtareas`);L.push("");
   for(let i=0;i<7;i++){const d=addDays(ws,i),k=key(d),items=log.filter(x=>x.dia===k);if(!items.length&&i>=5)continue;
     L.push(`${cap(DIAS[d.getDay()])} ${d.getDate()} ${MESES[d.getMonth()]}`);if(!items.length)L.push("  · Sin registros");
-    items.forEach(x=>L.push(`  ${hhmm(x.hecha)}  ${x.tipo==="t"?"✔ "+x.titulo:"– "+x.titulo+" (de: "+x.padre+")"}${x.responsable?" · "+x.responsable:""}${x.proyecto?" ["+x.proyecto+"]":""}`));L.push("")}
+    items.forEach(x=>{L.push(`  ${hhmm(x.hecha)}  ${x.tipo==="t"?"✔ "+x.titulo:"– "+x.titulo+" (de: "+x.padre+")"}${x.responsable?" · "+x.responsable:""}${x.proyecto?" ["+x.proyecto+"]":""}`);if(x.obj&&x.obj.cierre)L.push(`         ↳ ${x.obj.cierre}`)});L.push("")}
   if(lg.length){L.push("Logros:");lg.forEach(l=>L.push(`  ★ ${l.tipo}: ${l.titulo}${l.liga?" "+safeUrl(l.liga):""}`));L.push("")}
   const pend=weekTasksOf(a,ws).filter(t=>!t.hecha);if(pend.length){L.push("En curso:");pend.forEach(t=>L.push(`  · ${t.titulo}${t.responsable?" · "+t.responsable:""}`))}
   return L.join("\n")}
@@ -3010,7 +3047,8 @@ function buildPDF(){
       P.h("Día por día");let any=false;
       for(let i=0;i<7;i++){const d=addDays(ws,i),k=key(d),it=al.filter(x=>x.dia===k);if(!it.length)continue;any=true;
         P.p(`${cap(DIAS[d.getDay()])} ${d.getDate()} ${MESES[d.getMonth()]}`,{bold:true,size:10.5});
-        it.forEach(x=>P.p(`${hhmm(x.hecha)}   ${x.tipo==="t"?"Tarea: "+clean(x.titulo):"Subtarea: "+clean(x.titulo)+" (de "+clean(x.padre)+")"}${x.responsable?" · "+clean(x.responsable):""}`,{indent:12,size:10}));P.gap(3)}
+        it.forEach(x=>{P.p(`${hhmm(x.hecha)}   ${x.tipo==="t"?"Tarea: "+clean(x.titulo):"Subtarea: "+clean(x.titulo)+" (de "+clean(x.padre)+")"}${x.responsable?" · "+clean(x.responsable):""}`,{indent:12,size:10});
+          if(x.obj&&x.obj.cierre)P.p(`Cómo quedó: ${clean(x.obj.cierre)}`,{indent:52,size:9.5,color:[69,122,127]})});P.gap(3)}
       if(!any)P.p("Sin tareas completadas esta semana.",{color:[94,103,102],size:10});
       if(alg.length){P.h("Logros");pdfLogros(P,alg)}
       const ent=entregablesRange(s,e,a);if(ent.length){P.h("Entregables y ligas");ent.slice().reverse().forEach(x=>{const o=x.f||x.l,u=x.l?safeUrl(x.l.url):"";
