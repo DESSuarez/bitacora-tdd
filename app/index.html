@@ -8,8 +8,9 @@
 <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#1B1C1A">
-<script>/* Tema guardado por cada quien: "dia", "noche" o automático (sigue al sistema) */
-try{var t=localStorage.getItem("bitacora-tema");if(t==="dia")document.documentElement.dataset.theme="light";else if(t==="noche")document.documentElement.dataset.theme="dark";
+<script>/* Tema guardado por cada quien: "dia", "noche", "retro" (80s / 8 bits) o automático (sigue al sistema) */
+function fuentesRetro(){if(document.getElementById("fuentesRetro"))return;var l=document.createElement("link");l.id="fuentesRetro";l.rel="stylesheet";l.href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap";document.head.appendChild(l)}
+try{var t=localStorage.getItem("bitacora-tema");if(t==="dia")document.documentElement.dataset.theme="light";else if(t==="noche")document.documentElement.dataset.theme="dark";else if(t==="retro"){document.documentElement.dataset.theme="retro";fuentesRetro()}
 if(localStorage.getItem("bitacora-lateral")==="oculta")document.documentElement.dataset.lateral="oculta"}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -32,6 +33,47 @@ if(localStorage.getItem("bitacora-lateral")==="oculta")document.documentElement.
 :root[data-theme="dark"]{
   --bg:#1B1C1A; --surface:#242623; --fg:#F5F7F6; --muted:#A3ADAC; --line:#353835;
   --sea-text:#8CC3C8; --baby-ink:#98D5E0; --baby-soft:#203033; --flame-soft:#3A2019; --sea-soft:#1F3133; --sol-ink:#F2B33D; --sol-soft:#352B17; --pmc:#4A4F4B; --band:#121311; color-scheme:dark}
+/* ---------- Tema Retro 80s / 8 bits ---------- */
+:root[data-theme="retro"]{
+  --night:#0B0221; --flame:#FF2E88; --baby:#00E5FF; --sea:#2BFF88; --sol:#FFE600;
+  --bg:#0B0221; --surface:#170A3A; --fg:#F4ECFF; --muted:#B9A6E8; --line:#4A2A8F;
+  --sea-text:#2BFF88; --baby-ink:#00E5FF; --baby-soft:#06283B; --flame-soft:#3A0A2A; --sea-soft:#08301F;
+  --sol-ink:#FFE600; --sol-soft:#3A3305; --pmc:#7B2CFF; --band:#05010F;
+  --display:"Press Start 2P","Courier New",monospace; --body:"VT323","Courier New",monospace; --mono:"VT323","Courier New",monospace;
+  --neon:0 0 6px currentColor,0 0 14px color-mix(in srgb,currentColor 55%,transparent);
+  color-scheme:dark}
+:root[data-theme="retro"] body{font-size-adjust:.5;background:radial-gradient(1200px 600px at 70% -10%,#2A0B5A 0%,transparent 60%),var(--bg);letter-spacing:.01em}
+:root[data-theme="retro"] *{border-radius:0!important}
+:root[data-theme="retro"] .av,:root[data-theme="retro"] .evpunto,:root[data-theme="retro"] .mtit i,:root[data-theme="retro"] .ctask i{border-radius:0!important}
+:root[data-theme="retro"] body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(180deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px);mix-blend-mode:overlay}
+:root[data-theme="retro"] .band{background:linear-gradient(180deg,#05010F 0%,#1A0640 70%,#3A0A5C 100%);position:relative;overflow:hidden}
+:root[data-theme="retro"] .band::before{content:"";position:absolute;left:-10%;right:-10%;bottom:0;height:55%;pointer-events:none;opacity:.35;
+  background:linear-gradient(transparent 0 95%,#FF2E88 95%) 0 0/100% 22px,linear-gradient(90deg,transparent 0 96%,#FF2E88 96%) 0 0/44px 100%;transform:perspective(220px) rotateX(55deg);transform-origin:bottom}
+:root[data-theme="retro"] .band .wrap{position:relative}
+:root[data-theme="retro"] h1{font-size:clamp(22px,4.2vw,40px);line-height:1.25;text-shadow:var(--neon);letter-spacing:0}
+:root[data-theme="retro"] h1 em{color:var(--area);text-shadow:var(--neon)}
+:root[data-theme="retro"] h1::after{content:"_";margin-left:6px;color:var(--area);animation:parpadeo 1s steps(1) infinite}
+@keyframes parpadeo{50%{opacity:0}}
+:root[data-theme="retro"] .btn{box-shadow:4px 4px 0 #000;font-size:12px;letter-spacing:.02em;transition:transform .06s,box-shadow .06s}
+:root[data-theme="retro"] .btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 #000}
+:root[data-theme="retro"] .btn.ghost{border:2px solid var(--line);box-shadow:4px 4px 0 #000}
+:root[data-theme="retro"] .tab{font-size:11px;letter-spacing:.02em}
+:root[data-theme="retro"] .tab[aria-selected="true"]{color:var(--area);text-shadow:var(--neon)}
+:root[data-theme="retro"] .task,:root[data-theme="retro"] .dpanel,:root[data-theme="retro"] .mini,:root[data-theme="retro"] .gcard,:root[data-theme="retro"] .ecard,:root[data-theme="retro"] .ccard,
+:root[data-theme="retro"] .samply,:root[data-theme="retro"] .cnueva,:root[data-theme="retro"] .eliga,:root[data-theme="retro"] .cal7,:root[data-theme="retro"] .calmes,:root[data-theme="retro"] .cam,
+:root[data-theme="retro"] .ctot div,:root[data-theme="retro"] .profile,:root[data-theme="retro"] .egestion,:root[data-theme="retro"] .cpendiente,:root[data-theme="retro"] .kcol{border:2px solid var(--line);box-shadow:5px 5px 0 #000}
+:root[data-theme="retro"] .evang{background:linear-gradient(135deg,#120433,#2A0B5A);border:2px solid #7B2CFF;box-shadow:6px 6px 0 #000,0 0 24px rgba(123,44,255,.35)}
+:root[data-theme="retro"] .evtxt,:root[data-theme="retro"] .evlead{font-family:var(--body);font-size:20px;line-height:1.35}
+:root[data-theme="retro"] .evresp{color:var(--sol);text-shadow:var(--neon)}
+:root[data-theme="retro"] .cbar,:root[data-theme="retro"] .bar,:root[data-theme="retro"] .trk{border:2px solid var(--line);background:#000}
+:root[data-theme="retro"] .cbar i,:root[data-theme="retro"] .bar i{background-image:repeating-linear-gradient(90deg,transparent 0 8px,rgba(0,0,0,.45) 8px 10px)!important}
+:root[data-theme="retro"] .side{background:#08011A;border-right:2px solid var(--line)}
+:root[data-theme="retro"] .areanav a{font-family:var(--display);font-size:10.5px;letter-spacing:.02em}
+:root[data-theme="retro"] .areanav a[aria-current="page"]{text-shadow:var(--neon)}
+:root[data-theme="retro"] .field,:root[data-theme="retro"] textarea,:root[data-theme="retro"] select{border:2px solid var(--line)!important;background:#05010F!important;font-size:19px}
+:root[data-theme="retro"] .chip,:root[data-theme="retro"] .cpill,:root[data-theme="retro"] .epill{font-family:var(--body);font-size:16px}
+:root[data-theme="retro"] .toast{font-family:var(--display);font-size:11px;box-shadow:4px 4px 0 #000;border:2px solid var(--area)}
+@media (prefers-reduced-motion:reduce){:root[data-theme="retro"] h1::after{animation:none}}
 body[data-area="formacion"]{--area:var(--sea);--area-ink:var(--sea-text);--area-soft:var(--sea-soft);--on-area:#FFFFFF}
 body[data-area="musica"]{--area:var(--flame);--area-ink:var(--flame);--area-soft:var(--flame-soft);--on-area:#FFFFFF}
 body[data-area="audiovisual"]{--area:var(--baby);--area-ink:var(--baby-ink);--area-soft:var(--baby-soft);--on-area:#1B1C1A}
@@ -76,7 +118,7 @@ a{color:var(--area-ink)}
 .acct #userName .rol{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .acct .caret{transform:rotate(180deg);color:var(--muted)}
 .side .temasel{flex-direction:column;align-items:stretch;gap:6px;padding:6px 8px 10px}
-.side .temasel div{display:grid;grid-template-columns:repeat(3,1fr)}
+.side .temasel div{display:grid;grid-template-columns:repeat(2,1fr)}
 .side .acctmenu .temasel button{text-align:center}
 .mtop{display:none;align-items:center;gap:6px;margin:-8px 0 -4px -8px}
 .mtop .brandrow{font-size:11px;letter-spacing:.06em}
@@ -1054,7 +1096,7 @@ select:disabled{cursor:default;opacity:.7}
         <button type="button" class="acct" id="acctBtn" aria-label="Mi cuenta" aria-haspopup="menu" aria-expanded="false" aria-controls="acctMenu"><span class="avatar" id="acctAvatar"></span><span id="userName"></span><svg class="caret" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div class="acctmenu" id="acctMenu" role="menu" hidden>
           <div class="acctinfo"><b id="acctNombre"></b><span class="mail" id="acctUsuario"></span><span id="acctRol"></span><span class="mail" id="acctEmail"></span></div>
-          <div class="temasel" role="group" aria-label="Apariencia"><span>Apariencia</span><div><button type="button" data-tema="dia">Día</button><button type="button" data-tema="noche">Noche</button><button type="button" data-tema="auto">Auto</button></div></div>
+          <div class="temasel" role="group" aria-label="Apariencia"><span>Apariencia</span><div><button type="button" data-tema="dia">Día</button><button type="button" data-tema="noche">Noche</button><button type="button" data-tema="retro" title="80s / 8 bits">👾 Retro</button><button type="button" data-tema="auto">Auto</button></div></div>
           <button type="button" role="menuitem" id="meBtn">Mi perfil</button>
           <button type="button" role="menuitem" id="pwBtn">Cambiar contraseña</button>
           <button type="button" role="menuitem" id="logoutBtn" class="out">Cerrar sesión</button>
@@ -3191,14 +3233,14 @@ const SOL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-wid
 const LUNA='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>';
 const mqOscuro=window.matchMedia("(prefers-color-scheme: dark)");
 function temaGuardado(){try{return localStorage.getItem("bitacora-tema")||"auto"}catch(e){return "auto"}}
-function esNoche(){const t=temaGuardado();return t==="noche"||(t==="auto"&&mqOscuro.matches)}
+function esNoche(){const t=temaGuardado();return t==="noche"||t==="retro"||(t==="auto"&&mqOscuro.matches)}
 function aplicarTema(t){try{if(t==="auto")localStorage.removeItem("bitacora-tema");else localStorage.setItem("bitacora-tema",t)}catch(e){}
-  const r=document.documentElement;if(t==="dia")r.dataset.theme="light";else if(t==="noche")r.dataset.theme="dark";else delete r.dataset.theme;pintarTema()}
+  const r=document.documentElement;if(t==="dia")r.dataset.theme="light";else if(t==="noche")r.dataset.theme="dark";else if(t==="retro"){r.dataset.theme="retro";fuentesRetro()}else delete r.dataset.theme;pintarTema()}
 function pintarTema(){const n=esNoche(),t=temaGuardado();$("temaBtn").innerHTML=n?SOL:LUNA;$("temaBtn").title=n?"Modo día":"Modo noche";$("temaBtn").setAttribute("aria-label",n?"Cambiar a modo día":"Cambiar a modo noche");
   document.querySelectorAll("[data-tema]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tema===t));
-  const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=n?"#121311":"#1B1C1A"}
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t==="retro"?"#05010F":n?"#121311":"#1B1C1A"}
 $("temaBtn").onclick=()=>{aplicarTema(esNoche()?"dia":"noche");toast(esNoche()?"Modo noche":"Modo día")};
-document.addEventListener("click",e=>{const b=e.target.closest("[data-tema]");if(b)aplicarTema(b.dataset.tema)});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-tema]");if(b){aplicarTema(b.dataset.tema);if(b.dataset.tema==="retro")toast("👾 Modo retro: ¡insert coin!")}});
 mqOscuro.addEventListener&&mqOscuro.addEventListener("change",pintarTema);pintarTema();
 function pintarCuenta(email){if(!perfil)return;const rol=rolDe(perfil);pintarPaleta();
   $("userName").innerHTML=`<b>${esc(perfil.nombre)}</b><span class="rol">${esc(rol)}</span>`;$("acctAvatar").innerHTML=perfil.foto?`<img src="${esc(perfil.foto)}" alt="">`:esc((perfil.nombre||"?").trim().charAt(0).toUpperCase());
