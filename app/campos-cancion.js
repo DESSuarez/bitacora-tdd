@@ -94,5 +94,30 @@ window.CHECKLIST_CANCION = [
 // Al completar estos pasos, la canción avanza sola a la etapa indicada (nunca retrocede ni sale de "Bloqueado")
 window.ETAPA_POR_PASO = { 1: "preproduccion", 5: "agendada", 6: "produccion", 12: "registro", 16: "marketing", 24: "completado" };
 
+// ---------- Canciones Live (grabación en vivo de un día, audio y video) ----------
+// Cada canción es «estudio» (CHECKLIST_CANCION, arriba) o «live» (este checklist). Se elige al agregarla (data.formato).
+// [paso, fase, responsable, días respecto al lanzamiento, documento obligatorio, liga obligatoria]
+window.CHECKLIST_LIVE = [
+  ["Solicitud: artista, canción o canciones y aprobación", "Solicitud", "Ariel / Memo"],
+  ["Preparación: arreglo acústico definido, músicos confirmados y ensayo hecho", "Preparación", "Memo"],
+  ["Fecha de grabación confirmada con el artista y con Audiovisual", "Agendada", "Memo"],
+  ["Grabación: sesión en un solo día, en audio y video", "Grabación", "Memo / Audiovisual"],
+  ["Post: mezcla de audio y edición de video (hasta 2 ajustes)", "Post", "Memo / Audiovisual"],
+  ["Listo para publicar: entrega a Marketing con liga a Drive", "Listo para publicar", "Memo", null, "", "la liga de Drive con el material final"]
+];
+// Al completar estos pasos, la canción live avanza sola a la etapa indicada
+window.ETAPA_POR_PASO_LIVE = { 1: "preproduccion", 3: "agendada", 4: "registro", 5: "marketing", 6: "completado" };
+// En las canciones live, las mismas etapas se llaman así
+window.ETAPAS_LIVE = {
+  intake: ["Solicitud", "Artista, canción o canciones y aprobación."],
+  preproduccion: ["Preparación", "Arreglo acústico, músicos confirmados y ensayo."],
+  agendada: ["Agendada", "Fecha de grabación confirmada con el artista y con Audiovisual."],
+  produccion: ["Grabación", "Sesión grabada en un solo día, en audio y video."],
+  registro: ["Post", "Mezcla de audio y edición de video, con hasta 2 ajustes."],
+  marketing: ["Listo para publicar", "Entrega a Marketing con liga a Drive."],
+  completado: ["Publicado", "La canción live ya se publicó."],
+  bloqueado: ["Bloqueado", "Algo detiene el proceso; anota el motivo en las notas."]
+};
+
 // Semana de producción: lo que se hace cada día (lunes a viernes)
 window.DIAS_PRODUCCION = ["Maqueteo", "Instrumentación", "Creación de contenido", "Cierre de instrumentación y voces", "Edición, mezcla y master"];
