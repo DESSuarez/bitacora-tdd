@@ -2062,11 +2062,13 @@ function ministerioDe(c){return (c.ministerio||"").trim()||artistaDe(c)}
 function colaboranDe(c){const m=ministerioDe(c);return [...new Set([].concat((c.data||{}).colaboran||[]).map(x=>String(x).trim()).filter(x=>x&&x!==m))]}
 function ministeriosDe(c){return [ministerioDe(c),...colaboranDe(c)]}
 function creditoDe(c){return ministeriosDe(c).join(" × ")}
-function listaMinisterios(){return [...new Set([...ligas.filter(l=>l.activa).map(l=>l.nombre),...canciones.flatMap(ministeriosDe)])].filter(Boolean).sort((a,b)=>a.localeCompare(b,"es",{sensitivity:"base"}))}
+/* «Tiempo de Dios» = todo el colectivo: siempre va primero en la lista y no se usa como colaborador */
+const MIN_TDD="Tiempo de Dios";
+function listaMinisterios(){return [MIN_TDD,...[...new Set([...ligas.filter(l=>l.activa).map(l=>l.nombre),...canciones.flatMap(ministeriosDe)])].filter(m=>m&&m!==MIN_TDD).sort((a,b)=>a.localeCompare(b,"es",{sensitivity:"base"}))]}
 /* Lista desplegable de ministerios dados de alta, con «Otro…» para escribir uno nuevo */
 function selectMinisterio(attrs,actual){const ms=listaMinisterios();if(actual&&!ms.includes(actual))ms.push(actual);
   return `<select class="field" ${attrs}>${actual?"":`<option value="" selected disabled>Elige el ministerio…</option>`}${ms.map(m=>`<option value="${esc(m)}" ${m===actual?"selected":""}>${esc(m)}</option>`).join("")}<option value="__nuevo">✎ Otro…</option></select>`}
-function chipsColab(nombre,sel,excluir){return listaMinisterios().filter(m=>m!==excluir).map(m=>`<label class="tchip ${sel.includes(m)?"on":""}" style="--c:${colorMin(m)};--on:#fff"><input type="checkbox" name="${nombre}" value="${esc(m)}" ${sel.includes(m)?"checked":""}>${esc(m)}</label>`).join("")}
+function chipsColab(nombre,sel,excluir){return listaMinisterios().filter(m=>m!==excluir&&m!==MIN_TDD).map(m=>`<label class="tchip ${sel.includes(m)?"on":""}" style="--c:${colorMin(m)};--on:#fff"><input type="checkbox" name="${nombre}" value="${esc(m)}" ${sel.includes(m)?"checked":""}>${esc(m)}</label>`).join("")}
 function tituloDe(c){return (c.data||{}).titulo||"Sin título"}
 function fechaPaso(c,n){const d=(PASOS[n-1]||[])[3];return c.lanzamiento&&d!=null?key(addDays(fromKey(c.lanzamiento),d)):null}
 function personaPorNombre(n){const l=String(n||"").toLowerCase();return perfiles.find(p=>(p.usuario||"").toLowerCase()===l)||perfiles.find(p=>(p.nombre||"").toLowerCase().startsWith(l))}
@@ -2098,14 +2100,14 @@ function ccardHTML(c){const d=c.data||{},p=avance(c);
 /* ---------- Dashboard por ministerio ---------- */
 let cancionesVista="ministerios",nuevaCancion=false;
 const COLORES_MIN=["var(--flame)","var(--sea)","#8E6BD8","#D69A1E","#D9558E","#2B8FA3","#3F9E6A","#7C8786"];
-function colorMin(n){let h=0;for(const ch of String(n))h=(h*31+ch.charCodeAt(0))>>>0;return COLORES_MIN[h%COLORES_MIN.length]}
+function colorMin(n){if(n===MIN_TDD)return "var(--flame)";let h=0;for(const ch of String(n))h=(h*31+ch.charCodeAt(0))>>>0;return COLORES_MIN[h%COLORES_MIN.length]}
 function filaCancion(c,m){const n=siguientePaso(c),p=avance(c),pa=n?PASOS[n-1]:null,v=n?fechaPaso(c,n):null,otros=ministeriosDe(c).filter(x=>x!==m);
   return `<li class="mli">${samplyUrl(c)?`<a class="mplay" href="${esc(samplyUrl(c))}" target="_blank" rel="noopener noreferrer" title="Abrir en Samply" aria-label="Abrir ${esc(tituloDe(c))} en Samply">▶</a>`:""}<button type="button" class="mrow" data-cancion="${esc(c.id)}"><div class="mrt"><strong>${esc(tituloDe(c))}</strong>${otros.length?`<span class="mcolab">🤝 con ${esc(otros.join(", "))}</span>`:""}${etapaPill(c.etapa)}${c.lanzamiento?`<span class="mlz">🚀 ${shortDate(c.lanzamiento)}</span>`:""}</div>
     <div class="cprog">${barra(p)}<b>${p}%</b></div>
     <small>${pa?`Sigue: paso ${n} · ${esc(pa[0])} · ${esc(pa[2])}${v?` · ${shortDate(v)}`:""}`:"✓ Proceso completo"}</small></button></li>`}
 function vistaMinisterios(){const grupos={};canciones.forEach(c=>ministeriosDe(c).forEach(m=>(grupos[m]=grupos[m]||[]).push(c)));
   ligas.filter(l=>l.activa&&!grupos[l.nombre]).forEach(l=>grupos[l.nombre]=[]);
-  const nombres=Object.keys(grupos).sort((a,b)=>grupos[b].filter(c=>c.etapa!=="completado").length-grupos[a].filter(c=>c.etapa!=="completado").length||a.localeCompare(b));
+  const nombres=Object.keys(grupos).sort((a,b)=>(b===MIN_TDD)-(a===MIN_TDD)||grupos[b].filter(c=>c.etapa!=="completado").length-grupos[a].filter(c=>c.etapa!=="completado").length||a.localeCompare(b));
   if(!nombres.length)return "";
   return `<div class="minis">${nombres.map(m=>{const cs=grupos[m].slice().sort((a,b)=>avance(b)-avance(a)),act=cs.filter(c=>c.etapa!=="completado");
     const prod=cs.filter(c=>c.etapa==="produccion").length,lanz=cs.filter(c=>c.etapa==="completado").length,prom=act.length?Math.round(act.reduce((s,c)=>s+avance(c),0)/act.length):0;
