@@ -680,8 +680,8 @@ create policy canciones_equipo_subir on storage.objects for insert to authentica
   with check (bucket_id = 'canciones' and (storage.foldername(name))[1] = 'equipo' and public.puede_area('musica'));
 
 -- ============ Samply (migración 018) ============
--- Checklist de 23 pasos (las canciones nuevas nacen con pasos_version = 2)
-alter table public.canciones add column if not exists pasos_version int not null default 2;
+-- Checklist de 24 pasos (las canciones nuevas nacen con pasos_version = 3)
+alter table public.canciones add column if not exists pasos_version int not null default 3;  -- 3 = checklist de 24 pasos (migración 021)
 
 -- ============ 2. Eventos de Samply ============
 create table if not exists public.samply_eventos (

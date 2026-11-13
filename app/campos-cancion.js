@@ -59,7 +59,8 @@ window.ETAPAS_CANCION = [
 ];
 
 // Checklist definitivo: 15 pasos de producción (con las dos escuchas del master en Samply) + 8 de marketing (pipeline D-Day).
-// La migración 018 reacomodó los números de las canciones que ya existían (antes eran 22 pasos).
+// La migración 018 reacomodó los números de las canciones que ya existían (antes eran 22 pasos) y la 021 agregó
+// «Subir canción a plataformas (DistroKid)» después del splitsheet (24 pasos).
 // [paso, fase, responsable, días respecto al lanzamiento (solo marketing), documento obligatorio para completarlo]
 // El avance de cada canción (0 a 100 %) es cuántos de estos pasos están completos.
 // Ojo: el orden importa (el avance guardado usa el número de paso); agrega pasos nuevos al final.
@@ -78,6 +79,7 @@ window.CHECKLIST_CANCION = [
   ["Segunda escucha y aprobación del master por el artista", "Escuchas", "Memo"],
   ["Registro INDAUTOR / SACM", "Registro", "Ariel", null, "el comprobante del registro INDAUTOR / SACM"],
   ["Splitsheet firmado", "Registro", "Memo", null, "el splitsheet firmado"],
+  ["Subir canción a plataformas (DistroKid)", "Registro", "Memo"],
   ["Handoff a Marketing", "Marketing", "Memo"],
   ["D-42 · Brief creativo", "Marketing", "Marketing", -42],
   ["D-35 · Briefing de artwork", "Marketing", "Marketing", -35],
@@ -90,7 +92,7 @@ window.CHECKLIST_CANCION = [
 ];
 
 // Al completar estos pasos, la canción avanza sola a la etapa indicada (nunca retrocede ni sale de "Bloqueado")
-window.ETAPA_POR_PASO = { 1: "preproduccion", 5: "agendada", 6: "produccion", 12: "registro", 15: "marketing", 23: "completado" };
+window.ETAPA_POR_PASO = { 1: "preproduccion", 5: "agendada", 6: "produccion", 12: "registro", 16: "marketing", 24: "completado" };
 
 // Semana de producción: lo que se hace cada día (lunes a viernes)
 window.DIAS_PRODUCCION = ["Maqueteo", "Instrumentación", "Creación de contenido", "Cierre de instrumentación y voces", "Edición, mezcla y master"];

@@ -2076,7 +2076,7 @@ function etapaSegun(actual,ck){if(actual==="bloqueado")return actual;let e=actua
 function crearPendiente(c){if(!puedeMusica()||!tasksCol||pendienteAbierto(c))return;const n=siguientePaso(c);if(!n)return;
   const id=`cancion-${c.id}-p${n}`;if(findT(id))return;
   const [t,f,r]=PASOS[n-1],p=personaPorNombre(r),v=fechaPaso(c,n),hoy=key(new Date());
-  const extra={id,cancion_id:c.id,paso:n,pasos_version:2,nota:`Paso ${n} de ${PASOS.length} (${f}) de «${tituloDe(c)}» · ${creditoDe(c)}. Al completarlo se marca en su checklist y se crea el siguiente paso.`};
+  const extra={id,cancion_id:c.id,paso:n,pasos_version:3,nota:`Paso ${n} de ${PASOS.length} (${f}) de «${tituloDe(c)}» · ${creditoDe(c)}. Al completarlo se marca en su checklist y se crea el siguiente paso.`};
   if(v&&v>hoy){extra.vence=v;extra.semana=key(mondayOf(fromKey(v)))}
   addTask(`«${tituloDe(c)}» · ${t}`,"Canciones",p?p.id:"txt:"+r,"musica",extra.semana||key(mondayOf(new Date())),extra)}
 /* Guarda el checklist, avanza la etapa si toca y deja creado el siguiente pendiente */
