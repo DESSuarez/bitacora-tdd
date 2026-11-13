@@ -1517,7 +1517,18 @@ function renderKeep(){const ae=document.activeElement;
   if(!sel){render();return}
   const v=ae.value,a=ae.selectionStart,b=ae.selectionEnd;render();const n=document.querySelector(sel);
   if(n&&n!==ae){n.value=v;n.focus();try{n.setSelectionRange(a,b)}catch(e){}}}
-function render(){
+/* Al redibujar (por ejemplo, por cambios en tiempo real) se conserva lo escrito en los formularios abiertos */
+const FORMS_VIVOS=["cancionForm","gastoForm","pagoForm","ingresoForm","activoForm","ligaForm","cEditForm"];
+function guardarForms(){const out=[];FORMS_VIVOS.forEach(id=>{const f=document.getElementById(id);if(!f)return;
+  out.push({id,campos:[...f.elements].filter(el=>el.name||el.id).map(el=>({k:el.id||el.name+"|"+el.value,v:el.value,c:el.checked,h:el.hidden,tipo:el.type}))})});
+  const ae=document.activeElement;return {out,foco:ae&&ae.form&&FORMS_VIVOS.includes(ae.form.id)?(ae.id||ae.name+"|"+ae.value):null}}
+function restaurarForms(g){g.out.forEach(({id,campos})=>{const f=document.getElementById(id);if(!f)return;
+  campos.forEach(x=>{const el=[...f.elements].find(e=>(e.id||e.name+"|"+e.value)===x.k);if(!el||x.tipo==="file")return;
+    if(el.type==="checkbox"||el.type==="radio"){el.checked=x.c;const l=el.closest("label.tchip");if(l)l.classList.toggle("on",x.c)}else el.value=x.v;
+    if(el.id==="cnMinOtro"){el.hidden=x.h;el.required=!x.h}})});
+  if(g.foco){const el=document.getElementById(g.foco);if(el&&document.activeElement!==el)try{el.focus({preventScroll:true})}catch(e){}}}
+function render(){const g=guardarForms();dibujar();restaurarForms(g)}
+function dibujar(){
   const isPM=route==="pm",D=route==="dashboard",F=route==="finanzas",P=route==="equipo"||route==="persona"||D||F,A=!isPM&&!P;
   const pp=route==="persona"?perfiles.find(x=>x.id===personaId):null;
   document.body.dataset.area=D||F?miArea():P?(pp&&pp.id!==(perfil&&perfil.id)?areaPrincipal(pp):miArea()):isPM?miArea():route;
