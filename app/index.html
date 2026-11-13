@@ -2062,7 +2062,10 @@ function ministerioDe(c){return (c.ministerio||"").trim()||artistaDe(c)}
 function colaboranDe(c){const m=ministerioDe(c);return [...new Set([].concat((c.data||{}).colaboran||[]).map(x=>String(x).trim()).filter(x=>x&&x!==m))]}
 function ministeriosDe(c){return [ministerioDe(c),...colaboranDe(c)]}
 function creditoDe(c){return ministeriosDe(c).join(" × ")}
-function listaMinisterios(){return [...new Set([...ligas.filter(l=>l.activa).map(l=>l.nombre),...canciones.flatMap(ministeriosDe)])].filter(Boolean).sort((a,b)=>a.localeCompare(b))}
+function listaMinisterios(){return [...new Set([...ligas.filter(l=>l.activa).map(l=>l.nombre),...canciones.flatMap(ministeriosDe)])].filter(Boolean).sort((a,b)=>a.localeCompare(b,"es",{sensitivity:"base"}))}
+/* Lista desplegable de ministerios dados de alta, con «Otro…» para escribir uno nuevo */
+function selectMinisterio(attrs,actual){const ms=listaMinisterios();if(actual&&!ms.includes(actual))ms.push(actual);
+  return `<select class="field" ${attrs}>${actual?"":`<option value="" selected disabled>Elige el ministerio…</option>`}${ms.map(m=>`<option value="${esc(m)}" ${m===actual?"selected":""}>${esc(m)}</option>`).join("")}<option value="__nuevo">✎ Otro…</option></select>`}
 function chipsColab(nombre,sel,excluir){return listaMinisterios().filter(m=>m!==excluir).map(m=>`<label class="tchip ${sel.includes(m)?"on":""}" style="--c:${colorMin(m)};--on:#fff"><input type="checkbox" name="${nombre}" value="${esc(m)}" ${sel.includes(m)?"checked":""}>${esc(m)}</label>`).join("")}
 function tituloDe(c){return (c.data||{}).titulo||"Sin título"}
 function fechaPaso(c,n){const d=(PASOS[n-1]||[])[3];return c.lanzamiento&&d!=null?key(addDays(fromKey(c.lanzamiento),d)):null}
@@ -2113,7 +2116,7 @@ function vistaMinisterios(){const grupos={};canciones.forEach(c=>ministeriosDe(c
 function formNuevaCancion(){const mins=[...new Set([...canciones.map(ministerioDe),...ligas.map(l=>l.nombre)])].sort();
   return `<form class="cnueva" id="cancionForm" autocomplete="off"><h3>Agregar una canción que ya está en proceso</h3>
     <label class="c3">Título<input class="field" id="cnTitulo" maxlength="140" required placeholder="Ej. Surgit Iglesia"></label>
-    <label class="c3">Ministerio<input class="field" id="cnMinisterio" maxlength="120" list="cnMinList" required placeholder="Ministerio del colectivo"><datalist id="cnMinList">${mins.map(m=>`<option value="${esc(m)}">`).join("")}</datalist></label>
+    <label class="c3">Ministerio${selectMinisterio('id="cnMinisterio" required',"")}<input class="field" id="cnMinOtro" maxlength="120" placeholder="Nombre del ministerio" hidden></label>
     <div class="c6 ccolab"><span>En colaboración con <small>(opcional)</small></span><div class="cemulti">${chipsColab("cnColab",[],"")}</div></div>
     <label class="c4">¿Hasta qué paso van?<select class="field" id="cnPaso"><option value="0">Ninguno todavía (empieza en la primera asesoría)</option>${PASOS.map(([t],i)=>`<option value="${i+1}">${i+1}. ${esc(t)}</option>`).join("")}</select></label>
     <label class="c2">Fecha de lanzamiento <small>(opcional)</small><input class="field" type="date" id="cnLanz"></label>
@@ -2176,7 +2179,7 @@ function detalleCancion(c){const d=c.data||{},ck=c.checklist||{},hechos=pasosHec
     ${panelSamply(c)}
     <div class="egestion cgest">
       <label for="cEtapa">Etapa<select class="field" id="cEtapa" data-cetapa="${esc(c.id)}">${ETAPAS.map(([k,n])=>`<option value="${k}" ${c.etapa===k?"selected":""}>${esc(n)}</option>`).join("")}</select><small class="ehint">${esc((ETAPAS.find(x=>x[0]===c.etapa)||[])[2]||"")} Avanza sola al completar pasos.</small></label>
-      <label for="cMin">Ministerio<input class="field" id="cMin" data-cmin="${esc(c.id)}" value="${esc(c.ministerio||"")}" maxlength="120" placeholder="${esc(artistaDe(c))}"></label>
+      <label for="cMin">Ministerio${selectMinisterio(`id="cMin" data-cmin="${esc(c.id)}"`,ministerioDe(c))}</label>
       <div class="ccolab"><span>En colaboración con</span><div class="cemulti" data-ccolab="${esc(c.id)}">${chipsColab("colab",colaboranDe(c),ministerioDe(c))||`<small class="ehint">Crea ligas o agrega canciones de otros ministerios para elegirlos.</small>`}</div><small class="ehint">La canción aparece también en el tablero de cada ministerio que marques.</small></div>
       <label for="cLanz">Fecha de lanzamiento (D0)<input class="field" type="date" id="cLanz" data-clanz="${esc(c.id)}" value="${esc(c.lanzamiento||"")}"><small class="ehint">Con esta fecha se calculan los pasos de Marketing y aparece en el calendario.</small></label>
       <label for="cNotas" class="cnot">Notas internas del equipo<textarea id="cNotas" data-cnotas="${esc(c.id)}" maxlength="5000" rows="3" placeholder="Acuerdos de las asesorías, costos de stems, motivo si está bloqueada… Solo las ve el equipo.">${esc(c.notas||"")}</textarea><small class="ehint">Se guardan al salir del campo. El artista no las ve.</small></label>
@@ -2201,7 +2204,9 @@ function proximaLibre(){let l=mondayOf(new Date());for(let i=0;i<52;i++){const k
 document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset.cetapa){guardarCancion(t.dataset.cetapa,{etapa:t.value},true,`Etapa: ${ETAPA_N[t.value]}.`);return}
   if(t.dataset.cnotas){guardarCancion(t.dataset.cnotas,{notas:t.value.slice(0,5000)},false,"Notas guardadas.");return}
-  if(t.dataset.cmin){guardarCancion(t.dataset.cmin,{ministerio:t.value.trim().slice(0,120)||null},true,"Ministerio guardado.");return}
+  if(t.dataset.cmin){let v=t.value;if(v==="__nuevo"){v=(window.prompt("Nombre del ministerio:","")||"").trim();if(!v){render();return}}
+    guardarCancion(t.dataset.cmin,{ministerio:v.slice(0,120)||null},true,"Ministerio guardado.");return}
+  if(t.id==="cnMinisterio"){const o=$("cnMinOtro");o.hidden=t.value!=="__nuevo";o.required=t.value==="__nuevo";if(!o.hidden)o.focus();return}
   if(t.dataset.clanz){const c=canciones.find(x=>x.id===t.dataset.clanz);if(!c)return;guardarCancion(c.id,{lanzamiento:t.value||null},true,t.value?"Fecha de lanzamiento guardada.":"Se quitó la fecha de lanzamiento.");eventoLanzamiento(c)}});
 /* El lanzamiento (D0) aparece en el calendario como evento propio de la canción */
 function eventoLanzamiento(c){if(!eventosCol)return;const id="lanz-"+c.id,ev=eventos.find(x=>x.id===id);
@@ -2210,7 +2215,7 @@ function eventoLanzamiento(c){if(!eventosCol)return;const id="lanz-"+c.id,ev=eve
   const i=eventos.findIndex(x=>x.id===id);if(i>=0)eventos[i]=nuevo;else eventos.push(nuevo);guardarEvento(nuevo)}
 /* Agregar a mano una canción que ya está en proceso */
 document.addEventListener("submit",async e=>{if(e.target.id!=="cancionForm")return;e.preventDefault();if(!sb)return;
-  const titulo=$("cnTitulo").value.trim(),min=$("cnMinisterio").value.trim(),hasta=+$("cnPaso").value,now=new Date().toISOString();if(!titulo||!min)return;
+  const titulo=$("cnTitulo").value.trim(),min=($("cnMinisterio").value==="__nuevo"?$("cnMinOtro").value:$("cnMinisterio").value).trim(),hasta=+$("cnPaso").value,now=new Date().toISOString();if(!titulo||!min)return;
   const ck={};for(let i=1;i<=hasta;i++)ck[String(i)]=now;
   const sem=$("cnSemana").value?key(mondayOf(fromKey($("cnSemana").value))):null;
   const fila={id:crypto.randomUUID(),ministerio:min.slice(0,120),etapa:etapaSegun("intake",ck),checklist:ck,semana:sem,lanzamiento:$("cnLanz").value||null,
