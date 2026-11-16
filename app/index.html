@@ -53,6 +53,13 @@ body[data-area="operativo"]{--area:var(--sol);--area-ink:var(--sol-ink);--area-s
 body[data-area="legal"]{--area:var(--lav);--area-ink:var(--lav-ink);--area-soft:var(--lav-soft);--on-area:#FFFFFF}
 body[data-area="marketing"]{--area:var(--rosa);--area-ink:var(--rosa-ink);--area-soft:var(--rosa-soft);--on-area:#FFFFFF}
 .dtipos{margin:4px 0 10px}
+.calfil{margin:0 0 10px;flex-wrap:wrap}.cevar{display:block;font:700 9.5px/1.2 "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;opacity:.75}
+.sinacc{max-width:560px;margin:30px auto;padding:28px;border:1px solid var(--line);border-top:6px solid var(--c);border-radius:16px;background:var(--surface);display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.sinacc .ic{width:40px;height:40px;color:var(--c)}.sinacc .ic svg{width:100%;height:100%}.sinacc h2{margin:0}.sinacc p{margin:0;color:var(--muted)}
+.sinform{display:flex;flex-direction:column;gap:10px;width:100%}.sinform label{display:flex;flex-direction:column;gap:6px;font-weight:600}
+.solic ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}.solic li{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.solic .sp{flex:1}.solic small{color:var(--muted)}
+.sinotras{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--muted)}.sinotras .tchip{text-decoration:none}
+.navpedir .ic{font-weight:800;display:grid;place-items:center}
 .rprod{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 .rprod section{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;background:var(--surface)}
 .rprod h4{margin:0;display:flex;justify-content:space-between;gap:8px;font-size:14px}.rprod h4 span{font:600 12px "IBM Plex Mono",monospace;color:var(--muted)}
@@ -1064,7 +1071,7 @@ select:disabled{cursor:default;opacity:.7}
   <form class="cropcard evcard" id="evForm" autocomplete="off">
     <h3 id="evTitle">Agendar</h3>
     <label>Título<input class="field" id="evTitulo" maxlength="140" required placeholder="Ej. Ensayo general, Producción de «Canción»"></label>
-    <div class="evrow"><label>Tipo<select class="field" id="evTipo"></select></label><label>Área<select class="field" id="evArea"></select></label></div>
+    <div class="evrow"><label>Tipo<select class="field" id="evTipo"></select></label><label>Calendario<select class="field" id="evArea"></select></label></div>
     <label id="evCancionW" hidden>Canción<select class="field" id="evCancion"></select></label>
     <div class="evrow"><label>Fecha<input type="date" class="field" id="evFecha" required></label><label><span>Hasta el <small>(opcional)</small></span><input type="date" class="field" id="evFin"></label></div>
     <label id="evProdW" hidden>Tipo de producción<select class="field" id="evTipoProd"></select></label>
@@ -1117,6 +1124,7 @@ select:disabled{cursor:default;opacity:.7}
     <a href="#operativo" data-route="operativo" style="--c:var(--sol);--on:#1B1C1A"><span class="ic" data-ic="operativo"></span><span class="lb">Operativo</span><span class="cnt" data-cnt="operativo"></span></a>
     <a href="#legal" data-route="legal" style="--c:var(--lav);--on:#fff"><span class="ic" data-ic="legal"></span><span class="lb">Legal</span><span class="cnt" data-cnt="legal"></span></a>
     <a href="#marketing" data-route="marketing" style="--c:var(--rosa);--on:#fff"><span class="ic" data-ic="marketing"></span><span class="lb">Marketing</span><span class="cnt" data-cnt="marketing"></span></a>
+    <a href="#" id="navPedir" class="navpedir" style="--c:var(--muted);--on:var(--bg)" hidden><span class="ic">＋</span><span class="lb">Pedir otra área</span></a>
     <div class="sidesec">General</div>
     <a href="#equipo" data-route="equipo" style="--c:#6E7A79;--on:#fff"><span class="ic" data-ic="equipo"></span><span class="lb">Equipo</span></a>
     <a href="#finanzas" data-route="finanzas" style="--c:#3F9E6A;--on:#fff"><span class="ic" data-ic="finanzas"></span><span class="lb">Finanzas</span><span class="cnt" data-cnt="finanzas"></span></a>
@@ -1247,6 +1255,7 @@ select:disabled{cursor:default;opacity:.7}
 
     <!-- Entradas: respuestas del formulario público de Formación -->
     <section class="view" id="vEntradas" hidden></section>
+    <section class="view" id="vSinAcceso" hidden></section>
 
     <!-- Panel PM -->
     <section class="view" id="vPM" hidden>
@@ -1308,6 +1317,7 @@ select:disabled{cursor:default;opacity:.7}
       <div class="rhead">
         <div><h2>Equipo</h2><p>Invita personas y define qué área puede editar cada una.</p></div>
       </div>
+      <div id="teamSolic"></div>
       <form class="lform" id="inviteForm" autocomplete="off">
         <h3>Invitar a alguien</h3>
         <label class="c3" for="iEmail">Correo<input class="field" type="email" id="iEmail" placeholder="nombre@tiempodedios.mx" maxlength="120" required></label>
@@ -1377,8 +1387,8 @@ AREA_ICON.persona=AREA_ICON.equipo;
 AREA_ICON.finanzas='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="13" rx="2.5"/><path d="M2.5 10.5h19M6.5 15h4"/></svg>';
 AREA_ICON.dashboard='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16.5" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4M7.5 13.5h3M13.5 13.5h3M7.5 17h3"/></svg>';
 const AREA_TABS=[["tasks","Pendientes"],["report","Reporte diario"],["month","Mes"],["logros","Logros"]];
-const PM_TABS=[["week","Semana"],["month","Mes"],["year","Año"],["tasks","Tareas"],["team","Equipo"]];
-const PM_SOLO=["tasks","team"];
+const PM_TABS=[["week","Semana"],["month","Mes"],["year","Año"],["cal","Calendario"],["tasks","Tareas"],["team","Equipo"]];
+const PM_SOLO=["tasks","team","cal"];
 const ROLES={pm:"Project Manager",desarrollador:"Desarrollador web",lider:"Líder",colaborador:"Colaborador"};
 const ACCESO_TOTAL=["pm","desarrollador"]; // sin área: ven y editan todo
 const $=id=>document.getElementById(id);
@@ -1540,7 +1550,7 @@ function shortRange(ws,ms){const r=monthRange(ms);let a=ws,b=addDays(ws,6);if(ke
 function heat(n){return n<=0?"":n<=2?"h1":n<=4?"h2":"h3"}
 
 /* Navegación */
-function scope(){if(route==="equipo")return "team";if(route==="finanzas")return finView==="mes"?"month":"finsol";if(route==="dashboard")return {dia:"day",mes:"month",ano:"year"}[dashView]||"week";if(route==="persona")return "week";if(route==="pm")return pmView==="tasks"?"week":pmView;const v=areaView[route];if(v==="entradas"||v==="canciones")return v;return v==="tasks"||v==="report"?"week":"month"}
+function scope(){if(route==="equipo")return "team";if(route==="finanzas")return finView==="mes"?"month":"finsol";if(route==="dashboard")return {dia:"day",mes:"month",ano:"year"}[dashView]||"week";if(route==="persona")return "week";if(route==="pm")return pmView==="cal"?({dia:"day",mes:"month",ano:"year"}[dashView]||"week"):pmView==="tasks"?"week":pmView;const v=areaView[route];if(v==="entradas"||v==="canciones")return v;return v==="tasks"||v==="report"?"week":"month"}
 function readHash(){const h=decodeURIComponent((location.hash||"").replace("#","").split("&")[0]);
   if(h.startsWith("persona/")){route="persona";personaId=h.slice(8);return}
   route=(AREAS[h]||h==="pm"||h==="equipo"||h==="dashboard"||h==="finanzas")?h:"formacion"}
@@ -1653,8 +1663,9 @@ function dibujar(){
   if(areaView.formacion==="entradas"&&!puedeEntradas())areaView.formacion="tasks";
   if(areaView.musica==="canciones"&&!puedeMusica())areaView.musica="tasks";
   ["legal","marketing"].forEach(a=>{if(areaView[a]==="canciones"&&!puedeCanciones())areaView[a]="tasks"});
-  const tabs=F?FIN_TABS:P?[]:isPM?PM_TABS.filter(([k])=>!PM_SOLO.includes(k)||esPM()):areaTabs(route);const cur=F?finView:P?route:isPM?pmView:areaView[route];
-  const counts=F?{solicitudes:puedeFin()?gastos.filter(g=>g.estado==="pendiente").length:0}:P?{}:isPM?{tasks:tasks.filter(t=>t.semana===key(weekStart())&&!t.hecha).length}:tabCounts(route);
+  const sinAcceso=A&&!canEdit(route);  // áreas donde la persona no está: no se ven, se piden
+  const tabs=F?FIN_TABS:P||sinAcceso?[]:isPM?PM_TABS.filter(([k])=>!PM_SOLO.includes(k)||esPM()):areaTabs(route);const cur=F?finView:P?route:isPM?pmView:areaView[route];
+  const counts=F?{solicitudes:puedeFin()?gastos.filter(g=>g.estado==="pendiente").length:0}:P?{}:isPM?{tasks:tasks.filter(t=>t.semana===key(weekStart())&&!t.hecha).length,team:solicitudes.filter(x=>x.estado==="pendiente").length}:tabCounts(route);
   $("tabs").innerHTML=tabs.map(([k,l])=>`<button class="tab" role="tab" data-tab="${k}" aria-selected="${k===cur}">${l}${counts[k]?`<span class="count">${counts[k]}</span>`:""}</button>`).join("");
   // periodo
   const sc=scope(),now=new Date();
@@ -1662,18 +1673,21 @@ function dibujar(){
   const same=sc==="day"?key(anchor)===key(now):sc==="week"?key(weekStart())===key(mondayOf(now)):sc==="month"?(anchor.getFullYear()===now.getFullYear()&&anchor.getMonth()===now.getMonth()):anchor.getFullYear()===now.getFullYear();
   $("todayP").textContent=sc==="day"?"Hoy":sc==="week"?"Esta semana":sc==="month"?"Este mes":"Este año";
   $("todayP").disabled=same;$("todayP").style.opacity=same?.45:1;
-  $("todayP").parentElement.style.display=sc==="team"||sc==="entradas"||sc==="canciones"||sc==="finsol"?"none":"";if(sc==="finsol")$("periodLabel").textContent=finView==="activos"?`Activos · ${dinero(activos.reduce((s,a)=>s+(Number(a.valor)||0),0))} en total`:`Solicitudes de gasto · ${gastos.filter(g=>g.estado==="pendiente").length} por revisar`;if(sc==="canciones")$("periodLabel").textContent=route==="legal"?`Registros de canciones · ${canciones.filter(c=>siguienteEn(c,"legal")).length} en trámite`:route==="marketing"?`Lanzamientos · ${canciones.filter(c=>siguienteEn(c,"marketing")).length} en campaña`:`Canciones por producir · ${canciones.filter(c=>c.etapa!=="completado").length} en proceso`;if(sc==="entradas")$("periodLabel").textContent=`Formulario para formadores · ${entradas.length} entrada${entradas.length===1?"":"s"}`;if(sc==="team")$("periodLabel").textContent=route==="equipo"?`${perfiles.length} persona${perfiles.length===1?"":"s"} en la bitácora`:"Administración del equipo";
+  if(A&&!canEdit(route))$("periodLabel").textContent=`Sin acceso a ${AREAS[route].n}`;
+  $("todayP").parentElement.style.display=(A&&!canEdit(route))||sc==="team"||sc==="entradas"||sc==="canciones"||sc==="finsol"?"none":"";if(sc==="finsol")$("periodLabel").textContent=finView==="activos"?`Activos · ${dinero(activos.reduce((s,a)=>s+(Number(a.valor)||0),0))} en total`:`Solicitudes de gasto · ${gastos.filter(g=>g.estado==="pendiente").length} por revisar`;if(sc==="canciones")$("periodLabel").textContent=route==="legal"?`Registros de canciones · ${canciones.filter(c=>siguienteEn(c,"legal")).length} en trámite`:route==="marketing"?`Lanzamientos · ${canciones.filter(c=>siguienteEn(c,"marketing")).length} en campaña`:`Canciones por producir · ${canciones.filter(c=>c.etapa!=="completado").length} en proceso`;if(sc==="entradas")$("periodLabel").textContent=`Formulario para formadores · ${entradas.length} entrada${entradas.length===1?"":"s"}`;if(sc==="team")$("periodLabel").textContent=route==="equipo"?`${perfiles.length} persona${perfiles.length===1?"":"s"} en la bitácora`:"Administración del equipo";
   // datalists
   const projs=[...new Set(tasks.map(t=>t.proyecto).filter(Boolean))];
   $("projList").innerHTML=projs.map(p=>`<option value="${esc(p)}">`).join("");
   const people=[...new Set(tasks.flatMap(t=>[t.responsable,...t.subtareas.map(s=>s.responsable)]).concat(logros.map(l=>l.responsable)).concat(perfiles.map(p=>p.nombre)).filter(Boolean))];
   $("whoList").innerHTML=people.map(p=>`<option value="${esc(p)}">`).join("");
   // vistas
-  const show={vTasks:A&&cur==="tasks",vReport:A&&cur==="report",vMonth:A&&cur==="month",vLogros:A&&cur==="logros",vEntradas:A&&cur==="entradas",vPM:isPM&&!PM_SOLO.includes(cur),vPMTasks:isPM&&cur==="tasks",vTeam:isPM&&cur==="team",vPeople:route==="equipo",vPerson:route==="persona",vDash:D,vCanciones:A&&cur==="canciones",vFinanzas:F};
+  const B=A&&!sinAcceso;
+  const show={vTasks:B&&cur==="tasks",vReport:B&&cur==="report",vMonth:B&&cur==="month",vLogros:B&&cur==="logros",vEntradas:B&&cur==="entradas",vPM:isPM&&!PM_SOLO.includes(cur),vPMTasks:isPM&&cur==="tasks",vTeam:isPM&&cur==="team",vPeople:route==="equipo",vPerson:route==="persona",vDash:D||(isPM&&cur==="cal"),vCanciones:B&&cur==="canciones",vFinanzas:F,vSinAcceso:sinAcceso};
   Object.entries(show).forEach(([id,v])=>{$(id).hidden=!v});
   if(A){const ro=!canEdit(route);const msg=ro?`Vista de solo lectura. Solo el equipo de ${AREAS[route].n} y la project manager pueden registrar aquí.`:"";
     $("roTasks").hidden=$("roLogros").hidden=!ro;$("roTasks").textContent=$("roLogros").textContent=msg;$("addForm").hidden=ro;$("logroForm").hidden=ro}
-  if(D)renderDashboard();else if(F)renderFinanzas();else if(route==="equipo")renderPeople();else if(route==="persona")renderPerson();else if(isPM&&cur==="team")renderTeam();else if(isPM&&cur==="tasks")renderPMTasks();else if(isPM)renderPM();else if(cur==="tasks")renderTasks();else if(cur==="report")renderReport();else if(cur==="month")renderMonth();else if(cur==="entradas")renderEntradas();else if(cur==="canciones")renderCanciones();else renderLogros();
+  if(sinAcceso){renderSinAcceso();return}
+  if(D||(isPM&&cur==="cal"))renderDashboard();else if(F)renderFinanzas();else if(route==="equipo")renderPeople();else if(route==="persona")renderPerson();else if(isPM&&cur==="team")renderTeam();else if(isPM&&cur==="tasks")renderPMTasks();else if(isPM)renderPM();else if(cur==="tasks")renderTasks();else if(cur==="report")renderReport();else if(cur==="month")renderMonth();else if(cur==="entradas")renderEntradas();else if(cur==="canciones")renderCanciones();else renderLogros();
 }
 function tabCounts(a){const ws=weekStart(),ms=monthStart(),r=monthRange(ms);
   return {tasks:weekTasksOf(a,ws).filter(t=>!t.hecha).length,report:logRange(key(ws),key(addDays(ws,6)),a).length,month:logRange(r.s,r.e,a).length,logros:logrosRange(r.s,r.e,a).length,entradas:a==="formacion"?entradas.filter(e=>e.estado==="nueva").length:0,canciones:a==="musica"?canciones.filter(c=>c.etapa==="intake").length:a==="legal"||a==="marketing"?canciones.filter(c=>siguienteEn(c,a)).length:0}}
@@ -1961,6 +1975,39 @@ function descargarEntradaPDF(id){const e=entradas.find(x=>x.id===id);if(!e)retur
     const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`TdD-entrada-${slug}-${String(e.creado).slice(0,10)}.pdf`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);toast("PDF descargado.")}
   catch(err){console.error(err);toast("No se pudo generar el PDF.")}}
 
+/* ---------- Acceso a áreas (migración 022): cada quien ve solo sus áreas y pide las demás ----------
+   Tabla "solicitudes_area" {id, usuario, area, nota, estado: pendiente | aprobada | rechazada}. La PM aprueba en Equipo. */
+let solicitudes=[],solicitudesCh=null;
+function cargarSolicitudes(){if(solicitudesCh||!sb)return;
+  const load=async()=>{const {data,error}=await sb.from("solicitudes_area").select("*").order("creado",{ascending:false}).limit(500);if(!error){solicitudes=data||[];renderKeep()}};
+  solicitudesCh=sb.channel("rt-solicitudes").on("postgres_changes",{event:"*",schema:"public",table:"solicitudes_area"},p=>{
+      if(p.eventType==="DELETE")solicitudes=solicitudes.filter(x=>x.id!==(p.old&&p.old.id));else{const i=solicitudes.findIndex(x=>x.id===p.new.id);if(i>=0)solicitudes[i]=p.new;else{solicitudes.unshift(p.new);if(esPM()){const q=perfiles.find(x=>x.id===p.new.usuario);toast(`${q?q.nombre:"Alguien"} pidió acceso a ${(AREAS[p.new.area]||{}).n||p.new.area}.`)}}
+        if(p.eventType==="UPDATE"&&perfil&&p.new.usuario===perfil.id&&p.new.estado!=="pendiente")toast(p.new.estado==="aprobada"?`✅ Ya tienes acceso a ${(AREAS[p.new.area]||{}).n}.`:`Tu solicitud para ${(AREAS[p.new.area]||{}).n} no se aprobó.`)}
+      renderKeep()}).subscribe(st=>{if(st==="SUBSCRIBED")load()})}
+function miSolicitud(a){return solicitudes.find(x=>perfil&&x.usuario===perfil.id&&x.area===a)}
+function renderSinAcceso(){const a=route,A=AREAS[a],s=miSolicitud(a);
+  $("vSinAcceso").innerHTML=`<div class="sinacc" style="--c:${A.c}"><span class="ic">${AREA_ICON[a]||""}</span><h2>No estás en ${esc(A.n)}</h2>
+    <p>Cada quien ve solo las áreas donde participa. Si necesitas trabajar aquí, pide acceso y la Project Manager lo aprueba.</p>
+    ${s&&s.estado==="pendiente"?`<div class="readonly">Ya pediste acceso el ${shortDate(String(s.creado).slice(0,10))}. Está pendiente de aprobar.</div>`
+      :`${s&&s.estado==="rechazada"?`<div class="readonly">Tu solicitud anterior no se aprobó. Puedes volver a pedirlo.</div>`:""}
+      <form class="sinform" id="pedirForm" data-area="${a}"><label>¿Para qué lo necesitas? <small>(opcional)</small><textarea class="field" id="pedirNota" maxlength="500" rows="2" placeholder="Ej. voy a apoyar en los lanzamientos de este mes"></textarea></label><button class="btn" type="submit">Solicitar acceso a ${esc(A.n)}</button></form>`}
+    <div class="sinotras"><span>Otras áreas que puedes pedir:</span>${AREA_IDS.filter(x=>!canEdit(x)&&x!==a).map(x=>`<a class="tchip" style="--c:${AREAS[x].c}" href="#${x}">${esc(AREAS[x].n)}${(miSolicitud(x)||{}).estado==="pendiente"?" · pedida":""}</a>`).join("")||"<small>ninguna</small>"}</div>
+    <a class="btn ghost sm" href="#dashboard">← Volver al Dashboard</a></div>`}
+document.addEventListener("submit",async e=>{if(e.target.id!=="pedirForm")return;e.preventDefault();if(!sb||!perfil)return;const area=e.target.dataset.area;
+  const {data,error}=await sb.from("solicitudes_area").insert({usuario:perfil.id,area,estado:"pendiente",nota:$("pedirNota").value.trim().slice(0,500)}).select().single();
+  if(error){toast("No se pudo enviar: "+(/solicitudes_area|PGRST205|42P01/.test(error.message+(error.code||""))?"falta correr la migración 022.":error.message));return}
+  solicitudes=[data,...solicitudes.filter(x=>x.id!==data.id)];render();toast("Solicitud enviada a la Project Manager.")});
+/* Menú: «Pedir otra área» abre una lista de las áreas donde no estás */
+document.addEventListener("click",e=>{const l=e.target.closest("#navPedir");if(!l)return;e.preventDefault();const a=AREA_IDS.find(x=>!canEdit(x));if(a)location.hash=a});
+/* Equipo (PM): solicitudes pendientes */
+function solicitudesHTML(){const ps=solicitudes.filter(x=>x.estado==="pendiente");if(!ps.length)return "";
+  return `<div class="lform solic"><h3>Solicitudes de acceso · ${ps.length}</h3><ul>${ps.map(x=>{const q=perfiles.find(p=>p.id===x.usuario),A=AREAS[x.area]||{n:x.area,c:"var(--muted)"};
+    return `<li><span class="cpar" style="--c:${A.c}">${esc(A.n)}</span><b>${esc(q?q.nombre:"Alguien")}</b>${x.nota?`<small>«${esc(x.nota)}»</small>`:""}<span class="sp"></span><button class="btn sm" data-solic="${esc(x.id)}|aprobada">Aprobar</button><button class="btn ghost sm" data-solic="${esc(x.id)}|rechazada">Rechazar</button></li>`}).join("")}</ul></div>`}
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-solic]");if(!b||!sb)return;const [id,estado]=b.dataset.solic.split("|"),x=solicitudes.find(y=>y.id===id);if(!x)return;
+  if(estado==="aprobada"){const q=perfiles.find(p=>p.id===x.usuario);if(q&&!enArea(q,x.area))await actualizarPerfil(q.id,q.area?{areas:[...new Set([...(q.areas||[]),x.area])]}:{area:x.area})}
+  const {error}=await sb.from("solicitudes_area").update({estado,resuelto:new Date().toISOString(),resuelto_por:perfil.id}).eq("id",id);
+  if(error){toast("No se pudo guardar: "+error.message);return}x.estado=estado;render();toast(estado==="aprobada"?"Acceso aprobado.":"Solicitud rechazada.")});
+
 /* ---------- Calendario interno (Dashboard) ----------
    Tabla "eventos" (migración 013). Cada evento: {titulo, tipo, fecha, fin?, hora?, repetir?, hasta?,
    excepciones:[fechas], area, notas, cancion_id?, creado, creado_por}. Todo el equipo agenda.
@@ -1978,13 +2025,22 @@ function cargarCalendario(){if(eventosCol||!sb)return;eventosCol=makeCol("evento
 function ocurrencias(ev,desde,hasta){return AGENDA.ocurrencias(ev,desde,hasta)}
 /* Eventos del calendario + fechas fijas (oración de los miércoles) */
 function todosEventos(){return [...eventos,...AGENDA.FIJOS]}
-function ocurrenciasRango(desde,hasta){return todosEventos().flatMap(ev=>ocurrencias(ev,desde,hasta))}
+/* Calendarios por área: cada evento es del calendario de un área o «general» (de todos).
+   Cada quien ve el general y los de sus áreas; la PM y el desarrollador, todo (y pueden filtrar). */
+let calFiltro="todo";
+function areaEv(ev){return AREAS[ev.area]?ev.area:"general"}
+function eventoVisible(ev){const a=areaEv(ev);if(ev.fijo)return calFiltro==="todo"||calFiltro==="general";
+  if(calFiltro!=="todo")return a===calFiltro;return a==="general"||canEdit(a)}
+function ocurrenciasRango(desde,hasta){return todosEventos().filter(eventoVisible).flatMap(ev=>ocurrencias(ev,desde,hasta))}
+function filtroCal(){const ops=["todo","general",...AREA_IDS.filter(a=>canEdit(a))];if(ops.length<=3&&!esPM())return "";
+  return `<div class="vistas calfil" role="tablist" aria-label="Calendario">${ops.map(k=>`<button type="button" role="tab" class="vista" data-calfil="${k}" aria-selected="${calFiltro===k}">${k==="todo"?(esPM()?"Todo":"Mis calendarios"):k==="general"?"General":esc(AREAS[k].n)}</button>`).join("")}</div>`}
 function horaTxt(ev){return ev.hora?ev.hora+(ev.horaFin?"–"+ev.horaFin:""):""}
 function producciones(lunes){const v=key(addDays(fromKey(lunes),4));return ocurrenciasRango(lunes,v).filter(o=>o.ev.tipo==="produccion")}
 function colorEv(ev){return (TIPOS_EV[ev.tipo]||TIPOS_EV.otro)[1]}
 function cevHTML(o,k){const ev=o.ev,dia=Math.round((fromKey(k)-fromKey(o.ini))/864e5);
   const sub=ev.tipo==="produccion"&&ev.tipoProd&&AGENDA.TIPOS_PROD[ev.tipoProd]?AGENDA.TIPOS_PROD[ev.tipoProd].n:ev.tipo==="produccion"&&dia<5?DIAS_PROD[dia]:ev.fin&&ev.fin>ev.fecha?`Día ${dia+1} de ${Math.round((fromKey(o.fin)-fromKey(o.ini))/864e5)+1}`:"";
-  return `<button type="button" class="cev" style="--c:${colorEv(ev)}" data-evabrir="${esc(ev.id)}|${o.ini}">${ev.hora?`<span class="hr">${esc(horaTxt(ev))}</span>`:""}<strong>${esc(ev.titulo||"Sin título")}</strong>${sub||ev.repetir?`<small>${sub?esc(sub):""}${ev.repetir?`${sub?" · ":""}↻ ${esc(REPETIR[ev.repetir].toLowerCase())}`:""}</small>`:""}</button>`}
+  const cal=esPM()&&calFiltro==="todo"&&AREAS[ev.area]?AREAS[ev.area].n:"";
+  return `<button type="button" class="cev" style="--c:${colorEv(ev)}" data-evabrir="${esc(ev.id)}|${o.ini}" ${cal?`title="Calendario de ${esc(cal)}"`:""}>${cal?`<span class="cevar">${esc(cal)}</span>`:""}${ev.hora?`<span class="hr">${esc(horaTxt(ev))}</span>`:""}<strong>${esc(ev.titulo||"Sin título")}</strong>${sub||ev.repetir?`<small>${sub?esc(sub):""}${ev.repetir?`${sub?" · ":""}↻ ${esc(REPETIR[ev.repetir].toLowerCase())}`:""}</small>`:""}</button>`}
 let dashView="semana",dispOff=0,dispTipo="fullband";  // dispOff: bloques de 12 semanas hacia adelante (o atrás) en la disponibilidad  // dia | semana | mes | ano (la semana es la vista de inicio)
 const VISTAS=[["dia","Día"],["semana","Semana"],["mes","Mes"],["ano","Año"]];
 function fechaLarga(d){const s=`${DIAS[d.getDay()]} ${d.getDate()} de ${MESES_L[d.getMonth()]} ${d.getFullYear()}`;return s[0].toUpperCase()+s.slice(1)}
@@ -2081,7 +2137,7 @@ function panelDisponibilidad(){const l0=addDays(mondayOf(new Date()),7*12*dispOf
 /* Canciones en producción por mes (6 meses desde el mes del calendario): qué se produce y cuántos bloques quedan */
 function resumenProduccion(){const m0=new Date(anchor.getFullYear(),anchor.getMonth(),1),T=AGENDA.TIPOS_PROD;
   const meses=[...Array(6)].map((_,i)=>{const ini=new Date(m0.getFullYear(),m0.getMonth()+i,1),fin=new Date(ini.getFullYear(),ini.getMonth()+1,0),a=key(ini),b=key(fin);
-    const prods=[...new Map(ocurrenciasRango(a,b).filter(o=>AGENDA.ocupaProduccion(o.ev)&&o.ini>=a).map(o=>[o.ev.id+o.ini,o])).values()].sort((x,y)=>x.ini.localeCompare(y.ini));
+    const prods=[...new Map(todosEventos().flatMap(ev=>ocurrencias(ev,a,b)).filter(o=>AGENDA.ocupaProduccion(o.ev)&&o.ev.tipo!=="inhabil"&&o.ini>=a).map(o=>[o.ev.id+o.ini,o])).values()].sort((x,y)=>x.ini.localeCompare(y.ini));
     let libres=0,total=0;for(let l=mondayOf(ini);key(l)<=b;l=addDays(l,7)){if(l.getMonth()!==ini.getMonth())continue;const s=AGENDA.semana(todosEventos(),key(l));if(!s.produccion)continue;total+=2;libres+=["A","B"].filter(x=>!s[x].por.length).length}
     return {ini,prods,libres,total}});
   return `<div class="dpanel"><div class="disph"><div><h3>Producción por mes</h3><p>Canciones agendadas para producir o grabar en cada mes, y bloques de 2 días que siguen libres.</p></div></div>
@@ -2097,17 +2153,18 @@ function panelEventos(){const hoy=key(new Date()),hasta=key(addDays(new Date(),5
     ${occ.length?`<ul class="evlista">${occ.slice(0,30).map(o=>{const d=fromKey(o.ini);return `<li><time>${DIA3[d.getDay()]} ${d.getDate()} ${MESES[d.getMonth()]}</time>${cevHTML(o,o.ini)}</li>`}).join("")}</ul>`:`<p class="none" style="margin:0">Nada en las próximas 8 semanas.</p>`}</div>`}
 /* Siguiente día con ese número de día de la semana (2 = martes, 5 = viernes) desde hoy */
 function proximoDia(n){let d=new Date();for(let i=0;i<7;i++){if(d.getDay()===n)return key(d);d=addDays(d,1)}return key(new Date())}
-function renderDashboard(){const V=$("vDash"),hoy=key(new Date());
+function renderDashboard(){const V=$("vDash"),hoy=key(new Date());if(!esPM()&&calFiltro!=="todo"&&calFiltro!=="general"&&!canEdit(calFiltro))calFiltro="todo";
   const fEv=dashView==="dia"?key(anchor):hoy;
   let cuerpo=dashView==="dia"?vistaDia(hoy):dashView==="mes"?vistaMes(hoy):dashView==="ano"?vistaAno(hoy):vistaSemana(hoy);
   // disponibilidad de producción y pendientes de la semana (debajo de día y semana)
   let extra="";
-  if(dashView==="semana"||dashView==="dia")extra=panelDisponibilidad();
+  if(puedeMusica()&&(dashView==="semana"||dashView==="dia"))extra=panelDisponibilidad();
   if(puedeMusica())extra=resumenProduccion()+extra;
   extra+=panelEventos();
-  V.innerHTML=`${evangelioHTML(fEv)}
+  V.innerHTML=`${route==="pm"?"":evangelioHTML(fEv)}
     <div class="dhead"><div class="vistas" role="tablist" aria-label="Vista del calendario">${VISTAS.map(([k,n])=>`<button type="button" role="tab" class="vista" data-vista="${k}" aria-selected="${dashView===k}">${n}</button>`).join("")}</div>
       <button type="button" class="btn" data-evnuevo="${dashView==="dia"?key(anchor):""}">+ Agendar</button></div>
+    ${filtroCal()}
     <div class="dleyenda">${Object.values(TIPOS_EV).map(([n,c])=>`<span><i style="--c:${c}"></i>${n}</span>`).join("")}</div>
     ${eventosErr?`<div class="readonly">${esc(eventosErr)}</div>`:""}
     ${cuerpo}${extra}`}
@@ -2115,6 +2172,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)r
   if(ds.vista){dashView=ds.vista;render();return}
   if(ds.disp!==undefined){dispOff=ds.disp==="0"?0:Math.max(0,dispOff+Number(ds.disp));render();return}
   if(ds.disptipo){dispTipo=ds.disptipo;render();return}
+  if(ds.calfil){calFiltro=ds.calfil;render();return}
   if(ds.evprodb){const [a,b]=ds.evprodb.split("|"),op=dispTipo==="acustico"?{inicio:a,fin:b}:(AGENDA.opciones(todosEventos(),key(mondayOf(fromKey(a))),dispTipo)[0]||{inicio:a,fin:b});
     abrirEvento(null,op.inicio,{tipo:"produccion",area:"musica",titulo:"Producción · ",fin:op.fin,hora:AGENDA.HORARIO.inicio,horaFin:AGENDA.HORARIO.fin,tipoProd:dispTipo});return}
   if(ds.evext){abrirEvento(null,ds.evext,{tipo:"grabacion",area:"musica",titulo:"Grabación externa · ",hora:AGENDA.HORARIO.inicio,horaFin:AGENDA.HORARIO.fin,notas:"Semana de colchón: batería u otra grabación fuera."});return}
@@ -2136,7 +2194,8 @@ function abrirEvento(id,fecha,base){const ev=id?eventos.find(x=>x.id===id):null;
   $("evTitle").textContent=ev?"Editar fecha":"Agendar";
   $("evTipo").innerHTML=Object.entries(TIPOS_EV).filter(([k])=>!TIPOS_EV_FIJOS.includes(k)).map(([k,[n]])=>`<option value="${k}">${n}</option>`).join("");
   $("evTipoProd").innerHTML=Object.entries(AGENDA.TIPOS_PROD).map(([k,t])=>`<option value="${k}">${esc(t.n)} · ${t.dias} días</option>`).join("");$("evTipoProd").value=v.tipoProd||"fullband";$("evHoraFin").value=v.horaFin||"";
-  $("evArea").innerHTML=`<option value="general">General</option>`+AREA_IDS.map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("");
+  $("evArea").innerHTML=`<option value="general">General (todos)</option>`+AREA_IDS.filter(a=>canEdit(a)||(ev&&ev.area===a)).map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("");
+  if(!ev&&!(base&&base.area))v.area=calFiltro!=="todo"&&calFiltro!=="general"?calFiltro:esPM()?"general":miArea();
   $("evRepetir").innerHTML=Object.entries(REPETIR).map(([k,n])=>`<option value="${k}">${n}</option>`).join("");
   $("evCancion").innerHTML=`<option value="">Sin canción ligada</option>`+canciones.filter(c=>c.etapa!=="completado").map(c=>`<option value="${esc(c.id)}">${esc((c.data||{}).titulo||"Sin título")} · ${esc(artistaDe(c))}</option>`).join("");
   $("evTitulo").value=v.titulo||"";$("evTipo").value=TIPOS_EV[v.tipo]?v.tipo:"otro";$("evArea").value=v.area||"general";$("evFecha").value=v.fecha||"";$("evFin").value=v.fin||"";
@@ -2448,7 +2507,7 @@ function detalleCancion(c){const PS=pasosDe(c),live=esLive(c);const d=c.data||{}
       <h2>${esc(tituloDe(c))} ${insigniaLive(c)}</h2><p>${esc(creditoDe(c))}${d.nombre&&d.nombre!==ministerioDe(c)?" · "+esc(d.nombre):""}${d.bpm?" · "+esc(d.bpm)+" BPM":""}${d.tonalidad?" · "+esc(d.tonalidad):""}</p>
       <div class="cavance"><div class="cprog grande">${barra(p)}<b style="color:${colorAvance(p)}">${p}%</b></div><small>${live?`${hechos} de ${PS.length} pasos, desde la solicitud hasta que queda lista para publicar`:`Música: ${hechosPista(c,"musica")} de ${pasosPista(c,"musica").length} pasos de producción`}</small>${live?"":`<div class="cpistas">${pistasMini(c)}</div>`}</div>
       ${puedeMusica()?`<div class="rbtns"><button type="button" class="btn" data-cagendar="${esc(c.id)}">${live?(c.semana?"Cambiar fecha de grabación":"Agendar grabación"):c.semana?"Cambiar semana de producción":"Agendar semana de producción"}</button>${c.semana?"":`<button type="button" class="btn ghost" data-cagendalink="${esc(c.id)}" title="El artista elige sus fechas">🔗 Enlace de agenda para el artista</button>`}<button type="button" class="btn ghost ebor" data-cdel="${esc(c.id)}" title="Borrar esta canción">${ICON_DEL} Borrar canción</button></div>`:""}</div>
-    <div class="cpendiente">${pends.length?`<div><span class="evk2">Pendiente${pends.length>1?"s":""} actual${pends.length>1?"es":""}</span>${pends.map(t=>`<div class="cpend1"><strong><span class="cpar" style="--c:${AREAS[areaOf(t)].c}">${esc(AREAS[areaOf(t)].n)}</span> ${esc(t.titulo)}</strong><small>${esc(t.responsable||"Sin responsable")} · vence ${shortDate(venceDe(t))} <button type="button" class="btn ghost sm" data-verpend="${esc(t.id)}">Ver en Pendientes</button></small></div>`).join("")}</div>`
+    <div class="cpendiente">${pends.length?`<div><span class="evk2">Pendiente${pends.length>1?"s":""} actual${pends.length>1?"es":""}</span>${pends.map(t=>`<div class="cpend1"><strong><span class="cpar" style="--c:${AREAS[areaOf(t)].c}">${esc(AREAS[areaOf(t)].n)}</span> ${esc(t.titulo)}</strong><small>${esc(t.responsable||"Sin responsable")} · vence ${shortDate(venceDe(t))} ${canEdit(areaOf(t))?`<button type="button" class="btn ghost sm" data-verpend="${esc(t.id)}">Ver en Pendientes</button>`:""}</small></div>`).join("")}</div>`
       :n?`<div><span class="evk2">Siguiente paso</span><strong>${n}. ${esc(PS[n-1][0])}</strong><small>${esc(PS[n-1][2])} · todavía sin pendiente</small></div><button type="button" class="btn sm" data-cpend="${esc(c.id)}">Crear pendiente</button>`
       :procesoCompleto(c)?`<div><span class="evk2">Proceso completo</span><strong>${live?"Canción live lista y publicada 🎉":"Canción lanzada y reportada 🎉"}</strong></div>`:`<div><span class="evk2">En espera</span><strong>Legal se abre al aprobar la composición (paso 2).</strong></div>`}</div>
     ${puedeMusica()?panelSamply(c):""}
@@ -3097,6 +3156,7 @@ async function cargarCuentas(){if(cuentasCargando||!sb)return;cuentasCargando=tr
   const {data}=await sb.from("perfiles").select("*");if(data)perfiles=data;
   render()}
 function renderTeam(){
+  $("teamSolic").innerHTML=solicitudesHTML();
   if(enfocarInvitar){enfocarInvitar=false;setTimeout(()=>{$("inviteForm").scrollIntoView({behavior:"smooth",block:"center"});$("iEmail").focus({preventScroll:true})},60)}
   if(cuentas===null&&!cuentasErr&&!cuentasCargando)cargarCuentas();
   $("teamNote").hidden=!cuentasErr&&!cuentasCargando;
@@ -3405,6 +3465,9 @@ function pintarMenu(){const yo=perfil&&perfil.id,esYo=route==="persona"&&persona
   document.querySelectorAll(".areanav a").forEach(a=>{const r=a.dataset.route;
     a.setAttribute("aria-current",(r==="yo"?esYo:r===route&&!(r==="persona")||(route==="persona"&&!esYo&&r==="equipo"))?"page":"false")});
   const ny=$("navYo");if(yo){ny.hidden=false;ny.href="#persona/"+yo}
+  // Áreas: cada quien ve solo las suyas (la PM y el desarrollador, todas); las demás se piden
+  if(perfil){AREA_IDS.forEach(a=>{const l=document.querySelector(`.areanav a[data-route="${a}"]`);if(l)l.hidden=!canEdit(a)});
+    $("navPedir").hidden=esPM()||AREA_IDS.every(a=>canEdit(a))}
   if(!loadedT)return;
   AREA_IDS.forEach(a=>{const n=areaTasks(a).filter(t=>!t.hecha&&t.semana<=wk).length,c=document.querySelector(`[data-cnt="${a}"]`);if(c){c.textContent=n||"";c.title=n?`${n} pendiente${n>1?"s":""}`:""}});
   const cf=document.querySelector('[data-cnt="finanzas"]');if(cf){const n=puedeFin()?gastos.filter(g=>g.estado==="pendiente"||g.estado==="aprobada").length:gastos.filter(g=>perfil&&g.solicitante===perfil.id&&g.estado==="pendiente").length;cf.textContent=n||"";cf.title=n?(puedeFin()?`${n} por revisar o pagar`:`${n} solicitud${n>1?"es":""} tuya${n>1?"s":""} pendiente${n>1?"s":""}`):""}
@@ -3496,11 +3559,11 @@ async function start(){
   perfil=p||{id:user.id,nombre:user.email,rol:"colaborador",area:null};perfil.email=user.email;
   $("auth").hidden=true;$("userbar").hidden=false;
   pintarCuenta(user.email);
-  if(!location.hash){route=esPM()?"pm":(perfil.area||"formacion");history.replaceState(null,"",location.pathname+"#"+route)}
+  if(!location.hash){route=esPM()?"pm":(perfil.area||(perfil.areas||[]).find(a=>AREAS[a])||"dashboard");history.replaceState(null,"",location.pathname+"#"+route)}
   if(started){render();return}started=true;
   sb.from("perfiles").select("*").then(({data})=>{perfiles=data||[];render()});
   tasksCol=makeCol("tareas");logrosCol=makeCol("logros");
-  cargarEntradas();cargarCalendario();cargarCanciones();cargarFinanzas();cargarSamplyEventos();cargarActivos();
+  cargarEntradas();cargarSolicitudes();cargarCalendario();cargarCanciones();cargarFinanzas();cargarSamplyEventos();cargarActivos();
   let gotT=false,gotL=false;
   const timer=setTimeout(()=>setStatus("No se pudo conectar todavía; revisa tu conexión.",true),10000);
   const done=()=>{if(gotT&&gotL){clearTimeout(timer);setStatus("")}};

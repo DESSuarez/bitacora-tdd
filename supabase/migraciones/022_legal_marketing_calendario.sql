@@ -104,6 +104,7 @@ grant execute on function public.agenda_ver(text) to anon, authenticated;
 -- Reservar: vuelve a revisar que esas fechas sigan libres y deja la producción en el calendario
 create or replace function public.agenda_reservar(t text, inicio date, fin date, nombre text, correo text, telefono text, notas text)
 returns json language plpgsql security definer set search_path = public as $$
+#variable_conflict use_variable
 declare a record; c record; paso text; ev text;
 begin
   select * into a from public.agendas_artistas where token = lower(trim(t)) and activa for update;
@@ -145,4 +146,32 @@ end $$;
 grant execute on function public.agenda_reservar(text, date, date, text, text, text, text) to anon, authenticated;
 
 do $$ begin alter publication supabase_realtime add table public.agendas_artistas;
+exception when duplicate_object then null; end $$;
+
+-- ============ 4) Acceso a áreas: cada quien ve solo sus áreas y pide las demás ============
+-- La PM (o el desarrollador) aprueba en Equipo: se agrega el área a perfiles.areas (o como su área, si no tenía).
+create table if not exists public.solicitudes_area (
+  id uuid primary key default gen_random_uuid(),
+  usuario uuid not null default auth.uid() references public.perfiles(id) on delete cascade,
+  area text not null check (area in ('formacion','musica','audiovisual','operativo','legal','marketing')),
+  nota text not null default '' check (char_length(nota) <= 500),
+  estado text not null default 'pendiente' check (estado in ('pendiente','aprobada','rechazada')),
+  creado timestamptz not null default now(),
+  resuelto timestamptz,
+  resuelto_por uuid
+);
+alter table public.solicitudes_area enable row level security;
+drop policy if exists solicitudes_ver on public.solicitudes_area;
+create policy solicitudes_ver on public.solicitudes_area for select to authenticated
+  using (usuario = auth.uid() or public.es_pm());
+drop policy if exists solicitudes_pedir on public.solicitudes_area;
+create policy solicitudes_pedir on public.solicitudes_area for insert to authenticated
+  with check (usuario = auth.uid() and estado = 'pendiente');
+drop policy if exists solicitudes_resolver on public.solicitudes_area;
+create policy solicitudes_resolver on public.solicitudes_area for update to authenticated
+  using (public.es_pm()) with check (public.es_pm());
+drop policy if exists solicitudes_borrar on public.solicitudes_area;
+create policy solicitudes_borrar on public.solicitudes_area for delete to authenticated using (public.es_pm());
+
+do $$ begin alter publication supabase_realtime add table public.solicitudes_area;
 exception when duplicate_object then null; end $$;

@@ -1,6 +1,6 @@
 # Bitácora Tiempo de Dios
 
-Web app para registrar pendientes, avances diarios y logros de las áreas de **Formación**, **Música** y **Audiovisual**, con un panel para la **Project Manager** y reportes en PDF por semana, mes y año.
+Web app para registrar pendientes, avances diarios y logros de las áreas de **Formación**, **Música**, **Audiovisual**, **Operativo**, **Legal** y **Marketing**, con un panel para la **Project Manager** y reportes en PDF por semana, mes y año.
 
 ## Qué hay en esta carpeta
 
@@ -14,6 +14,7 @@ bitacora-tdd/
 │   └── functions/equipo/     Edge Function para invitar y quitar personas (solo PM)
 ├── prototipo/
 │   └── bitacora-prototipo-claude.html   Versión original hecha en Claude (referencia de diseño)
+├── docs/MANUAL.md            Manual de construcción (se actualiza con cada cambio)
 ├── CLAUDE.md                 Contexto del proyecto para seguir trabajando en Claude Code
 └── README.md
 ```
@@ -134,6 +135,9 @@ Corre `supabase/migraciones/019_activos.sql`. Registra todo lo que tiene Tiempo 
 
 ### 22. Ligas limpias por ministerio
 Corre `supabase/migraciones/020_ligas_limpias.sql`. Cada ministerio queda con una dirección fija para registrar canciones, por ejemplo `pm.tiempodedios.mx/cancion/surgit-iglessia`. Se crea sola a partir del nombre (sin acentos, con guiones) y **no cambia nunca**, aunque se cambie el nombre del ministerio. Las ligas viejas (`/cancion/?l=…`) siguen funcionando. El `.htaccess` hace que `/cancion/<ministerio>` abra el formulario.
+
+### 23. Legal, Marketing, agenda de producción y accesos por área
+Corre `supabase/migraciones/022_legal_marketing_calendario.sql`. Agrega las áreas **Legal** y **Marketing** (el checklist de cada canción se reparte en Música, Legal y Marketing), el **enlace de agenda para artistas** (`pm.tiempodedios.mx/agenda/<código>`, el `.htaccess` lo abre) y las **solicitudes de acceso** a áreas. Después, en Equipo, asigna a quien trabaje en Legal o Marketing. Las reglas de la agenda de producción están en `app/agenda-reglas.js` y todo el detalle en `docs/MANUAL.md`.
 
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
