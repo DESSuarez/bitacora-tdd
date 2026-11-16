@@ -10,7 +10,8 @@
 // · Todos los miércoles de 9 a 12 hay oración (evento fijo).
 // · Los días inhábiles (evento tipo «inhabil»: vacaciones, festivos) no se pueden agendar.
 // · Tipos de producción: acústica o live = 1 bloque (2 días: 1 de grabación y ½ de mezcla y master);
-//   full band = la semana completa; producción grande = 2 semanas de producción seguidas.
+//   full band = la semana completa (lun, mar, jue, vie; o lun a jue si el viernes está ocupado);
+//   producción grande = 2 o más semanas completas. Cada producción guarda sus días exactos en «dias».
 (function () {
   const pad = (n) => String(n).padStart(2, "0");
   const key = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -51,6 +52,19 @@
     return out;
   }
 
+  /* Días que se trabajan en una producción de inicio a fin: entre semana, y sin el miércoles cuando ese viernes
+     también se produce (el miércoles es para las demás áreas). Si el viernes está ocupado, el miércoles sí entra. */
+  function diasHabiles(inicio, fin) {
+    const out = []; if (!inicio) return out; const f = fin && fin > inicio ? fin : inicio;
+    for (let d = fromKey(inicio); key(d) <= f; d = addDays(d, 1)) {
+      const w = d.getDay(); if (w === 0 || w === 6) continue;
+      if (w === 3 && key(addDays(d, 2)) <= f) continue;
+      out.push(key(d));
+    }
+    return out;
+  }
+  // ¿El evento ocupa ese día? (las producciones con «dias» solo ocupan esos días)
+  function ocupaDia(o, d) { return o.ini <= d && o.fin >= d && (!Array.isArray(o.ev.dias) || !o.ev.dias.length || o.ev.dias.includes(d)); }
   // Semana del mes: la n-ésima semana (de lunes) que empieza en ese mes
   function semanaDelMes(lunes) { return Math.floor((fromKey(lunes).getDate() - 1) / 7) + 1; }
   function esProduccion(lunes) { return semanaDelMes(lunes) <= 3; }
@@ -63,7 +77,7 @@
     const l = fromKey(lunes), vo = viernesOcupado(eventos, lunes), fin = key(addDays(l, 4));
     const occ = eventos.filter(ocupaProduccion).flatMap((ev) => ocurrencias(ev, lunes, fin));
     const bloque = (offs) => { const dias = offs.map((i) => key(addDays(l, i)));
-      const por = occ.filter((o) => dias.some((d) => o.ini <= d && o.fin >= d)).map((o) => o.ev);
+      const por = occ.filter((o) => dias.some((d) => ocupaDia(o, d))).map((o) => o.ev);
       return { dias, por: [...new Set(por)] }; };
     return { lunes, n: semanaDelMes(lunes), produccion: esProduccion(lunes), viernesOcupado: vo, A: bloque([0, 1]), B: bloque(vo ? [2, 3] : [3, 4]) };
   }
@@ -73,10 +87,13 @@
     const s = semana(eventos, lunes); if (!s.produccion) return [];
     const libre = (b) => !s[b].por.length;
     if (tipo === "acustico") return ["A", "B"].filter(libre).map((b) => ({ inicio: s[b].dias[0], fin: s[b].dias[1], bloque: b }));
-    if (tipo === "fullband") return libre("A") && libre("B") ? [{ inicio: s.A.dias[0], fin: s.B.dias[1], bloque: "AB" }] : [];
+    // Full band: la semana completa = lun, mar, jue y vie (o lun a jue si el viernes está ocupado)
+    if (tipo === "fullband") return libre("A") && libre("B") ? [{ inicio: s.A.dias[0], fin: s.B.dias[1], bloque: "AB", dias: diasHabiles(s.A.dias[0], s.B.dias[1]) }] : [];
+    // Producción grande: dos semanas de producción seguidas (en la app también se pueden elegir semanas sueltas)
     if (tipo === "grande") {
       const sig = key(addDays(fromKey(lunes), 7)), s2 = semana(eventos, sig);
-      return libre("A") && libre("B") && s2.produccion && !s2.A.por.length && !s2.B.por.length ? [{ inicio: s.A.dias[0], fin: s2.B.dias[1], bloque: "2S" }] : [];
+      return libre("A") && libre("B") && s2.produccion && !s2.A.por.length && !s2.B.por.length
+        ? [{ inicio: s.A.dias[0], fin: s2.B.dias[1], bloque: "2S", dias: [...diasHabiles(s.A.dias[0], s.B.dias[1]), ...diasHabiles(s2.A.dias[0], s2.B.dias[1])] }] : [];
     }
     return [];
   }
@@ -90,8 +107,8 @@
   function chocaConProduccion(eventos, fecha, hora, horaFin) {
     if (!hora) return false; const fin = horaFin || hora;
     if (!(hora < HORARIO.fin && fin > HORARIO.inicio)) return false;
-    return eventos.filter(ocupaProduccion).some((ev) => ocurrencias(ev, fecha, fecha).length);
+    return eventos.filter(ocupaProduccion).some((ev) => ocurrencias(ev, fecha, fecha).some((o) => ocupaDia(o, fecha)));
   }
 
-  window.AGENDA = { HORARIO, TIPOS_PROD, FIJOS, ocurrencias, semanaDelMes, esProduccion, ocupaProduccion, viernesOcupado, semana, opciones, disponibles, chocaConProduccion, util: { key, fromKey, addDays, mondayOf } };
+  window.AGENDA = { HORARIO, TIPOS_PROD, FIJOS, ocurrencias, semanaDelMes, esProduccion, ocupaProduccion, viernesOcupado, semana, opciones, disponibles, chocaConProduccion, diasHabiles, ocupaDia, util: { key, fromKey, addDays, mondayOf } };
 })();

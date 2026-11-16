@@ -148,8 +148,13 @@ docs/MANUAL.md          Este manual
     | Tipo | Días | Ocupa |
     |---|---|---|
     | Acústica o live | 2 | 1 bloque |
-    | Full band | 5 | La semana completa |
-    | Producción grande | 10 | 2 semanas de producción seguidas |
+    | Full band | 5 | La semana completa: lun, mar, jue y vie (o lun a jue si el viernes está ocupado) |
+    | Producción grande | 10 | 2 o más semanas completas |
+
+  - **Días exactos:** cada producción guarda `dias` (`AGENDA.diasHabiles`): entre semana y sin el miércoles cuando ese viernes también se produce. Así el miércoles queda libre para las demás áreas.
+  - **Disponibilidad en la app:**
+    - En **acústica** se elige un bloque.
+    - En **full band** y **grande** cada semana es una sola opción («Toda la semana»), y se pueden **marcar varias**: «Agendar N producciones full band» crea una por semana; «Agendar producción grande» crea una por semana, agrupadas con `grupo`.
 
   - **Qué ocupa producción:** eventos `produccion`, `inhabil` y `grabacion` ligados a una canción.
   - **Cenáculos y eventos:** no pueden caer entre 9 y 17 en un día con producción. Los atajos de horario son 19–21 y 20–22.
@@ -192,6 +197,7 @@ docs/MANUAL.md          Este manual
 | 019 | Activos |
 | 020 | Ligas limpias `/cancion/<ministerio>` |
 | 021 | Paso DistroKid (checklist de 24 pasos) |
+| **024** | `agenda_reservar` guarda los días exactos (`dias`) de lo que aparta un artista |
 | **023** | Liga fija de agenda por ministerio (`reutilizable`, `reservas`; códigos con guiones) |
 | **022** | Áreas Legal y Marketing, permisos de canciones para Legal, Marketing y Audiovisual, pendientes del funnel por área, `agendas_artistas` y sus funciones públicas, `solicitudes_area` |
 
@@ -213,6 +219,8 @@ docs/MANUAL.md          Este manual
 
 Formato: fecha · qué cambió · dónde.
 
+- **2026-11-16** (noche)
+  - **Disponibilidad:** full band y grande se agendan por semana completa (lun, mar, jue, vie, o lun a jue con el viernes ocupado), con selección de varias semanas a la vez. Las producciones ya no ocupan el miércoles (`agenda-reglas.js`, `index.html`, migración 024).
 - **2026-11-16** (tarde)
   - **Agenda:** liga fija por ministerio del colectivo y tipo de producción (`/agenda/surgit-iglessia-fullband`) y generador de ligas de un solo uso para artistas invitados (`index.html`, `agenda/index.html`, `.htaccess`, migración 023).
 - **2026-11-16**
