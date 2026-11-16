@@ -121,3 +121,12 @@ window.ETAPAS_LIVE = {
 
 // Semana de producción: lo que se hace cada día (lunes a viernes)
 window.DIAS_PRODUCCION = ["Maqueteo", "Instrumentación", "Creación de contenido", "Cierre de instrumentación y voces", "Edición, mezcla y master"];
+
+// ---------- Áreas de cada paso (estudio) ----------
+// El checklist es uno solo, pero se trabaja en tres áreas: Música (producción), Legal y Marketing.
+// Legal (INDAUTOR/SACM y splitsheet) corre aparte y se abre cuando se aprueba la composición (paso 2).
+// Marketing (handoff y pipeline D-Day) se abre cuando todos los pasos de Música están completos (100 %).
+// Los pasos que no aparecen aquí son de Música.
+window.AREA_PASO = { 13: "legal", 14: "legal", 16: "marketing", 17: "marketing", 18: "marketing", 19: "marketing", 20: "marketing", 21: "marketing", 22: "marketing", 23: "marketing", 24: "marketing" };
+// Canciones live: Grabación (4) y Post (5) crean además un pendiente en Audiovisual (es el mismo paso: al completarlo cualquiera, se cierran los dos).
+window.AV_PASO_LIVE = [4, 5];

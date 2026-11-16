@@ -21,6 +21,7 @@ if(localStorage.getItem("bitacora-lateral")==="oculta")document.documentElement.
   --bg:#FFFFFF; --surface:#F4F7F7; --fg:#1B1C1A; --muted:#5E6766; --line:#DDE5E5;
   --sea-text:#3A6A6F; --baby-ink:#2B7B8A; --baby-soft:#E3F3F6; --flame-soft:#FFE7E1; --sea-soft:#E2EEEF;
   --sol-ink:#8A5A00; --sol-soft:#FDF1D8; --pmc:#1B1C1A;
+  --lav:#7E5BD0; --lav-ink:#5E3FAE; --lav-soft:#EEE8FA; --rosa:#D9558E; --rosa-ink:#B23A70; --rosa-soft:#FBE6EF;
   --band:#1B1C1A;
   --area:var(--sea); --area-ink:var(--sea-text); --area-soft:var(--sea-soft); --on-area:#FFFFFF;
   --display:"Archivo","Arial Black","Helvetica Neue",Arial,sans-serif;
@@ -29,16 +30,17 @@ if(localStorage.getItem("bitacora-lateral")==="oculta")document.documentElement.
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#1B1C1A; --surface:#242623; --fg:#F5F7F6; --muted:#A3ADAC; --line:#353835;
-  --sea-text:#8CC3C8; --baby-ink:#98D5E0; --baby-soft:#203033; --flame-soft:#3A2019; --sea-soft:#1F3133; --sol-ink:#F2B33D; --sol-soft:#352B17; --pmc:#4A4F4B; --band:#121311; color-scheme:dark}}
+  --sea-text:#8CC3C8; --baby-ink:#98D5E0; --baby-soft:#203033; --flame-soft:#3A2019; --sea-soft:#1F3133; --sol-ink:#F2B33D; --sol-soft:#352B17; --pmc:#4A4F4B; --band:#121311; --lav:#9A7BE6; --lav-ink:#B9A3EE; --lav-soft:#2A2440; --rosa:#E06A9C; --rosa-ink:#F08BB7; --rosa-soft:#3A1F2B; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#1B1C1A; --surface:#242623; --fg:#F5F7F6; --muted:#A3ADAC; --line:#353835;
-  --sea-text:#8CC3C8; --baby-ink:#98D5E0; --baby-soft:#203033; --flame-soft:#3A2019; --sea-soft:#1F3133; --sol-ink:#F2B33D; --sol-soft:#352B17; --pmc:#4A4F4B; --band:#121311; color-scheme:dark}
+  --sea-text:#8CC3C8; --baby-ink:#98D5E0; --baby-soft:#203033; --flame-soft:#3A2019; --sea-soft:#1F3133; --sol-ink:#F2B33D; --sol-soft:#352B17; --pmc:#4A4F4B; --band:#121311; --lav:#9A7BE6; --lav-ink:#B9A3EE; --lav-soft:#2A2440; --rosa:#E06A9C; --rosa-ink:#F08BB7; --rosa-soft:#3A1F2B; color-scheme:dark}
 /* ---------- Tema Retro 80s: solo la paleta de colores (neón sobre morado oscuro), mismo diseño y tipografía ---------- */
 :root[data-theme="retro"]{
   --night:#0B0221; --flame:#FF2E88; --baby:#00E5FF; --sea:#2BFF88; --sol:#FFE600;
   --bg:#0B0221; --surface:#170A3A; --fg:#F4ECFF; --muted:#B9A6E8; --line:#3A2373;
   --sea-text:#2BFF88; --baby-ink:#00E5FF; --baby-soft:#06283B; --flame-soft:#3A0A2A; --sea-soft:#08301F;
   --sol-ink:#FFE600; --sol-soft:#3A3305; --pmc:#7B2CFF; --band:#05010F;
+  --lav:#B266FF; --lav-ink:#C99BFF; --lav-soft:#24104A; --rosa:#FF6EC7; --rosa-ink:#FF9AD8; --rosa-soft:#3A0A2E;
   color-scheme:dark}
 :root[data-theme="retro"] body{background:radial-gradient(1200px 600px at 70% -10%,#2A0B5A 0%,transparent 60%),var(--bg)}
 :root[data-theme="retro"] .band{background:linear-gradient(180deg,#05010F 0%,#1A0640 70%,#3A0A5C 100%)}
@@ -48,6 +50,16 @@ body[data-area="formacion"]{--area:var(--sea);--area-ink:var(--sea-text);--area-
 body[data-area="musica"]{--area:var(--flame);--area-ink:var(--flame);--area-soft:var(--flame-soft);--on-area:#FFFFFF}
 body[data-area="audiovisual"]{--area:var(--baby);--area-ink:var(--baby-ink);--area-soft:var(--baby-soft);--on-area:#1B1C1A}
 body[data-area="operativo"]{--area:var(--sol);--area-ink:var(--sol-ink);--area-soft:var(--sol-soft);--on-area:#1B1C1A}
+body[data-area="legal"]{--area:var(--lav);--area-ink:var(--lav-ink);--area-soft:var(--lav-soft);--on-area:#FFFFFF}
+body[data-area="marketing"]{--area:var(--rosa);--area-ink:var(--rosa-ink);--area-soft:var(--rosa-soft);--on-area:#FFFFFF}
+.cpistas{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.cpist{font:600 11px/1 "IBM Plex Mono",monospace;padding:4px 7px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--fg);white-space:nowrap}
+.cpist.ok{background:#1DB95422;border-color:#1DB954;color:var(--fg)}.cpist.off{opacity:.5}
+.check14 .cpista{list-style:none;margin:18px 0 4px;padding:8px 12px;border-radius:10px;background:color-mix(in srgb,var(--c) 14%,transparent);border-left:4px solid var(--c);font-weight:800;font-size:14px}
+.check14 .cpista small{font:500 12px "IBM Plex Mono",monospace;color:var(--muted);margin-left:6px}
+.check14 li.bloq{opacity:.45}
+.cpend1{margin-top:6px}.cpend1 small{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.cpar{display:inline-block;font:700 10px/1 "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;padding:4px 6px;border-radius:6px;background:var(--c);color:#fff;vertical-align:2px}
 body[data-area="pm"]{--area:var(--flame);--area-ink:var(--flame);--area-soft:var(--flame-soft);--on-area:#FFFFFF}
 
 *{box-sizing:border-box}
@@ -1071,6 +1083,8 @@ select:disabled{cursor:default;opacity:.7}
     <a href="#musica" data-route="musica" style="--c:var(--flame);--on:#fff"><span class="ic" data-ic="musica"></span><span class="lb">Música</span><span class="cnt" data-cnt="musica"></span></a>
     <a href="#audiovisual" data-route="audiovisual" style="--c:var(--baby);--on:#1B1C1A"><span class="ic" data-ic="audiovisual"></span><span class="lb">Audiovisual</span><span class="cnt" data-cnt="audiovisual"></span></a>
     <a href="#operativo" data-route="operativo" style="--c:var(--sol);--on:#1B1C1A"><span class="ic" data-ic="operativo"></span><span class="lb">Operativo</span><span class="cnt" data-cnt="operativo"></span></a>
+    <a href="#legal" data-route="legal" style="--c:var(--lav);--on:#fff"><span class="ic" data-ic="legal"></span><span class="lb">Legal</span><span class="cnt" data-cnt="legal"></span></a>
+    <a href="#marketing" data-route="marketing" style="--c:var(--rosa);--on:#fff"><span class="ic" data-ic="marketing"></span><span class="lb">Marketing</span><span class="cnt" data-cnt="marketing"></span></a>
     <div class="sidesec">General</div>
     <a href="#equipo" data-route="equipo" style="--c:#6E7A79;--on:#fff"><span class="ic" data-ic="equipo"></span><span class="lb">Equipo</span></a>
     <a href="#finanzas" data-route="finanzas" style="--c:#3F9E6A;--on:#fff"><span class="ic" data-ic="finanzas"></span><span class="lb">Finanzas</span><span class="cnt" data-cnt="finanzas"></span></a>
@@ -1312,7 +1326,9 @@ const AREAS={
   formacion:{n:"Formación",c:"var(--sea)",on:"#fff",rgb:[69,122,127],tipos:["Curso","Taller","Retiros / camps","Material creado"],ph:{titulo:"Ej. nombre del curso, taller o retiro",nota:"Ej. 35 asistentes, 4 sesiones, sede",testi:"Lo que alguien compartió sobre el curso, taller o retiro. Después puedes agregar más."}},
   musica:{n:"Música",c:"var(--flame)",on:"#fff",rgb:[255,61,26],tipos:["Canciones publicadas","Presentaciones en vivo","Eventos","Colaboraciones"],ph:{titulo:"Ej. nombre de la canción, presentación o evento",nota:"Ej. plataformas donde salió, reproducciones, lugar del evento",testi:"Lo que alguien compartió sobre la canción o la presentación. Después puedes agregar más."}},
   audiovisual:{n:"Audiovisual",c:"var(--baby)",on:"#1B1C1A",rgb:[120,196,210],tipos:["Video en vivo","Podcast","Video musical","Reels","Videos de formación"],ph:{titulo:"Ej. título del video, episodio o reel",nota:"Ej. vistas, duración, plataforma",testi:"Lo que alguien compartió sobre el video o comentarios importantes que dejaron. Después puedes agregar más."}},
-  operativo:{n:"Operativo",c:"var(--sol)",on:"#1B1C1A",rgb:[214,150,30],tipos:["Eventos organizados","Logística","Procesos y administración","Apoyo a otras áreas"],ph:{titulo:"Ej. evento, proceso o gestión que se concluyó",nota:"Ej. sede, proveedores, presupuesto, personas atendidas",testi:"Lo que alguien compartió sobre el evento o el apoyo recibido. Después puedes agregar más."}}
+  operativo:{n:"Operativo",c:"var(--sol)",on:"#1B1C1A",rgb:[214,150,30],tipos:["Eventos organizados","Logística","Procesos y administración","Apoyo a otras áreas"],ph:{titulo:"Ej. evento, proceso o gestión que se concluyó",nota:"Ej. sede, proveedores, presupuesto, personas atendidas",testi:"Lo que alguien compartió sobre el evento o el apoyo recibido. Después puedes agregar más."}},
+  legal:{n:"Legal",c:"var(--lav)",on:"#fff",rgb:[126,91,208],tipos:["Registros INDAUTOR / SACM","Splitsheets firmados","Contratos","Otro trámite"],ph:{titulo:"Ej. registro de la canción o contrato firmado",nota:"Ej. número de registro, autores, porcentajes",testi:"Comentarios sobre el trámite. Después puedes agregar más."}},
+  marketing:{n:"Marketing",c:"var(--rosa)",on:"#fff",rgb:[217,85,142],tipos:["Lanzamientos","Campañas","Contenido","Colaboraciones"],ph:{titulo:"Ej. lanzamiento de la canción o campaña",nota:"Ej. reproducciones, alcance, plataformas",testi:"Lo que alguien compartió sobre el lanzamiento. Después puedes agregar más."}}
 };
 const AREA_IDS=Object.keys(AREAS);
 const AREA_ICON={
@@ -1320,6 +1336,8 @@ const AREA_ICON={
  musica:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>',
  audiovisual:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="M15.5 10.5l6-3.5v10l-6-3.5z"/></svg>',
  operativo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2.5h6V4M9 11l2 2 4-4M9 17h6"/></svg>',
+ legal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7 21h10M4 7h16M7 7l-3 7a3 3 0 0 0 6 0zM17 7l-3 7a3 3 0 0 0 6 0z"/></svg>',
+ marketing:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10v4a1 1 0 0 0 1 1h3l6 4V5L7 9H4a1 1 0 0 0-1 1zM17 8.5a5 5 0 0 1 0 7M19.5 6a8.5 8.5 0 0 1 0 12"/></svg>',
  pm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
  equipo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14.5c2.4 0 4 1.5 4.5 4"/></svg>'};
 AREA_ICON.persona=AREA_ICON.equipo;
@@ -1339,7 +1357,7 @@ const DOT_CHECK='<svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8
 const DOT_STAR='<svg viewBox="0 0 18 18"><path d="M9 1.8l2.1 4.3 4.7.6-3.4 3.3.8 4.7L9 12.4l-4.2 2.3.8-4.7L2.2 6.7l4.7-.6z" fill="var(--flame)"/></svg>';
 
 let sb=null,perfil=null,perfiles=[],db=null,tasksCol=null,logrosCol=null,tasks=[],logros=[],loadedT=false,loadedL=false;
-let route="formacion",areaView={formacion:"tasks",musica:"tasks",audiovisual:"tasks",operativo:"tasks"},pmView="week";
+let route="formacion",areaView={formacion:"tasks",musica:"tasks",audiovisual:"tasks",operativo:"tasks",legal:"tasks",marketing:"tasks"},pmView="week";
 let anchor=new Date(),open=new Set(),openTesti=new Set(),pendingDel=null,personaId=null,enfocarInvitar=false;
 let cuentas=null,cuentasErr="",cuentasCargando=false;
 
@@ -1588,6 +1606,7 @@ function restaurarForms(g){g.out.forEach(({id,campos})=>{const f=document.getEle
   if(g.foco){const el=document.getElementById(g.foco);if(el&&document.activeElement!==el)try{el.focus({preventScroll:true})}catch(e){}}}
 function render(){const g=guardarForms();dibujar();restaurarForms(g)}
 function dibujar(){
+  barrerPendientes();
   const isPM=route==="pm",D=route==="dashboard",F=route==="finanzas",P=route==="equipo"||route==="persona"||D||F,A=!isPM&&!P;
   const pp=route==="persona"?perfiles.find(x=>x.id===personaId):null;
   document.body.dataset.area=D||F?miArea():P?(pp&&pp.id!==(perfil&&perfil.id)?areaPrincipal(pp):miArea()):isPM?miArea():route;
@@ -1600,6 +1619,7 @@ function dibujar(){
   if(PM_SOLO.includes(pmView)&&!esPM())pmView="week";
   if(areaView.formacion==="entradas"&&!puedeEntradas())areaView.formacion="tasks";
   if(areaView.musica==="canciones"&&!puedeMusica())areaView.musica="tasks";
+  ["legal","marketing"].forEach(a=>{if(areaView[a]==="canciones"&&!puedeCanciones())areaView[a]="tasks"});
   const tabs=F?FIN_TABS:P?[]:isPM?PM_TABS.filter(([k])=>!PM_SOLO.includes(k)||esPM()):areaTabs(route);const cur=F?finView:P?route:isPM?pmView:areaView[route];
   const counts=F?{solicitudes:puedeFin()?gastos.filter(g=>g.estado==="pendiente").length:0}:P?{}:isPM?{tasks:tasks.filter(t=>t.semana===key(weekStart())&&!t.hecha).length}:tabCounts(route);
   $("tabs").innerHTML=tabs.map(([k,l])=>`<button class="tab" role="tab" data-tab="${k}" aria-selected="${k===cur}">${l}${counts[k]?`<span class="count">${counts[k]}</span>`:""}</button>`).join("");
@@ -1609,7 +1629,7 @@ function dibujar(){
   const same=sc==="day"?key(anchor)===key(now):sc==="week"?key(weekStart())===key(mondayOf(now)):sc==="month"?(anchor.getFullYear()===now.getFullYear()&&anchor.getMonth()===now.getMonth()):anchor.getFullYear()===now.getFullYear();
   $("todayP").textContent=sc==="day"?"Hoy":sc==="week"?"Esta semana":sc==="month"?"Este mes":"Este año";
   $("todayP").disabled=same;$("todayP").style.opacity=same?.45:1;
-  $("todayP").parentElement.style.display=sc==="team"||sc==="entradas"||sc==="canciones"||sc==="finsol"?"none":"";if(sc==="finsol")$("periodLabel").textContent=finView==="activos"?`Activos · ${dinero(activos.reduce((s,a)=>s+(Number(a.valor)||0),0))} en total`:`Solicitudes de gasto · ${gastos.filter(g=>g.estado==="pendiente").length} por revisar`;if(sc==="canciones")$("periodLabel").textContent=`Canciones por producir · ${canciones.filter(c=>c.etapa!=="completado").length} en proceso`;if(sc==="entradas")$("periodLabel").textContent=`Formulario para formadores · ${entradas.length} entrada${entradas.length===1?"":"s"}`;if(sc==="team")$("periodLabel").textContent=route==="equipo"?`${perfiles.length} persona${perfiles.length===1?"":"s"} en la bitácora`:"Administración del equipo";
+  $("todayP").parentElement.style.display=sc==="team"||sc==="entradas"||sc==="canciones"||sc==="finsol"?"none":"";if(sc==="finsol")$("periodLabel").textContent=finView==="activos"?`Activos · ${dinero(activos.reduce((s,a)=>s+(Number(a.valor)||0),0))} en total`:`Solicitudes de gasto · ${gastos.filter(g=>g.estado==="pendiente").length} por revisar`;if(sc==="canciones")$("periodLabel").textContent=route==="legal"?`Registros de canciones · ${canciones.filter(c=>siguienteEn(c,"legal")).length} en trámite`:route==="marketing"?`Lanzamientos · ${canciones.filter(c=>siguienteEn(c,"marketing")).length} en campaña`:`Canciones por producir · ${canciones.filter(c=>c.etapa!=="completado").length} en proceso`;if(sc==="entradas")$("periodLabel").textContent=`Formulario para formadores · ${entradas.length} entrada${entradas.length===1?"":"s"}`;if(sc==="team")$("periodLabel").textContent=route==="equipo"?`${perfiles.length} persona${perfiles.length===1?"":"s"} en la bitácora`:"Administración del equipo";
   // datalists
   const projs=[...new Set(tasks.map(t=>t.proyecto).filter(Boolean))];
   $("projList").innerHTML=projs.map(p=>`<option value="${esc(p)}">`).join("");
@@ -1623,7 +1643,7 @@ function dibujar(){
   if(D)renderDashboard();else if(F)renderFinanzas();else if(route==="equipo")renderPeople();else if(route==="persona")renderPerson();else if(isPM&&cur==="team")renderTeam();else if(isPM&&cur==="tasks")renderPMTasks();else if(isPM)renderPM();else if(cur==="tasks")renderTasks();else if(cur==="report")renderReport();else if(cur==="month")renderMonth();else if(cur==="entradas")renderEntradas();else if(cur==="canciones")renderCanciones();else renderLogros();
 }
 function tabCounts(a){const ws=weekStart(),ms=monthStart(),r=monthRange(ms);
-  return {tasks:weekTasksOf(a,ws).filter(t=>!t.hecha).length,report:logRange(key(ws),key(addDays(ws,6)),a).length,month:logRange(r.s,r.e,a).length,logros:logrosRange(r.s,r.e,a).length,entradas:a==="formacion"?entradas.filter(e=>e.estado==="nueva").length:0,canciones:a==="musica"?canciones.filter(c=>c.etapa==="intake").length:0}}
+  return {tasks:weekTasksOf(a,ws).filter(t=>!t.hecha).length,report:logRange(key(ws),key(addDays(ws,6)),a).length,month:logRange(r.s,r.e,a).length,logros:logrosRange(r.s,r.e,a).length,entradas:a==="formacion"?entradas.filter(e=>e.estado==="nueva").length:0,canciones:a==="musica"?canciones.filter(c=>c.etapa==="intake").length:a==="legal"||a==="marketing"?canciones.filter(c=>siguienteEn(c,a)).length:0}}
 
 /* Pendientes */
 function renderTasks(){
@@ -1702,7 +1722,8 @@ document.addEventListener("keydown",e=>{const g=e.target.closest&&e.target.close
   if(reordenar(g.dataset.grip,sig?sig.dataset.tid:null)){arrastre={id:g.dataset.grip,teclado:true};finArrastre();toast(e.key==="ArrowUp"?"Subió un lugar.":"Bajó un lugar.")}});
 
 /* Las tareas completadas bajan al final, debajo de "Completadas" */
-function listaTareas(ts){const p=ts.filter(t=>!t.hecha),d=ts.filter(t=>t.hecha).sort((a,b)=>a.hecha<b.hecha?1:-1);
+function listaTareas(ts){ts=ts.filter(t=>!(t.hecha&&t.cancion_id&&t.paso));  // los pasos de canciones ya completados viven en su checklist: aquí solo se ve el siguiente
+  const p=ts.filter(t=>!t.hecha),d=ts.filter(t=>t.hecha).sort((a,b)=>a.hecha<b.hecha?1:-1);
   return p.map(taskItem).join("")+(d.length?`<li class="donesep">Completadas · ${d.length}</li>`+d.map(taskItem).join(""):"")}
 function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen=open.has(t.id),a=areaOf(t),ed=canEdit(a),eo=isOpen&&ed;
     const ord=ed&&!t.hecha;
@@ -1815,7 +1836,7 @@ const ESTADOS=window.ESTADOS_ENTRADA||[["nueva","Nueva"],["revision","En revisi�
 const ESTADO_N=Object.fromEntries(ESTADOS);
 let entradas=[],loadedE=false,entradasErr="",entradaSel=null,filtroE="todas",esperaRender=false,entradasCh=null;
 function puedeEntradas(){return esPM()||enArea(perfil,"formacion")}
-function areaTabs(a){return a==="formacion"&&puedeEntradas()?[...AREA_TABS,["entradas","Entradas"]]:a==="musica"&&puedeMusica()?[...AREA_TABS,["canciones","Canciones"]]:AREA_TABS}
+function areaTabs(a){return a==="formacion"&&puedeEntradas()?[...AREA_TABS,["entradas","Entradas"]]:a==="musica"&&puedeMusica()?[...AREA_TABS,["canciones","Canciones"]]:a==="legal"&&puedeCanciones()?[...AREA_TABS,["canciones","Registros"]]:a==="marketing"&&puedeCanciones()?[...AREA_TABS,["canciones","Lanzamientos"]]:AREA_TABS}
 function ligaFormulario(){return location.origin+location.pathname.replace(/[^/]*$/,"")+"entrada/"}
 function vacioE(v){return v==null||(Array.isArray(v)?!v.length:String(v).trim()==="")}
 function aplicaE(c,d){if(!c.si)return true;const v=d[c.si.k];return Array.isArray(v)?v.includes(c.si.v):v===c.si.v}
@@ -2096,10 +2117,12 @@ function insigniaLive(c){return esLive(c)?`<span class="clive" title="Canción l
 const ETAPA_C={intake:"var(--baby)",preproduccion:"var(--sol)",agendada:"#8E6BD8",produccion:"var(--flame)",registro:"#D9558E",marketing:"var(--sea)",completado:"#4CAF7A",bloqueado:"#7C8786"};
 let canciones=[],ligas=[],loadedC=false,cancionesErr="",cancionSel=null,cancionesCh=null;
 function puedeMusica(){return esPM()||enArea(perfil,"musica")}
+/* Ven y trabajan canciones: Música, Legal, Marketing, Audiovisual (lives) y la PM */
+function puedeCanciones(){return esPM()||["musica","legal","marketing","audiovisual"].some(a=>enArea(perfil,a))}
 function artistaDe(c){const d=c.data||{},l=ligas.find(x=>x.id===c.liga);return d.nombreArtistico||d.nombre||(l&&l.nombre)||"Artista"}
 /* Liga del ministerio: /cancion/<ministerio> (fija desde la migración 020); si aún no tiene dirección, la vieja ?l=<id> */
 function ligaCancion(id){const l=ligas.find(x=>x.id===id),base=location.origin+location.pathname.replace(/[^/]*$/,"")+"cancion/";return l&&l.slug?base+l.slug:base+"?l="+id}
-function cargarCanciones(){if(cancionesCh||!sb||!puedeMusica())return;
+function cargarCanciones(){if(cancionesCh||!sb||!puedeCanciones())return;
   const load=async()=>{const [c,l]=await Promise.all([sb.from("canciones").select("*").order("creado",{ascending:false}).limit(2000),sb.from("ligas_artistas").select("*").order("creado",{ascending:false}).limit(1000)]);
     const err=c.error||l.error;
     if(err)cancionesErr=/canciones|ligas_artistas|PGRST205|42P01/.test((err.message||"")+(err.code||""))?"Falta correr la migración 013 en Supabase para registrar canciones.":"No se pudieron leer las canciones: "+err.message;
@@ -2135,7 +2158,8 @@ function pedirDocPaso(c,n){const inp=document.createElement("input");inp.type="f
 function marcarPaso(c,n){const ck={...(c.checklist||{})},now=new Date().toISOString();
   if(ck[n])delete ck[n];else{if(requiereDoc(+n,c)&&!docsPaso(c,+n).length){pedirDocPaso(c,+n);toast(`Para completar este paso sube ${requiereDoc(+n,c)}.`);return}
     if(requiereLiga(+n,c)&&!(c.data||{}).drive){pedirLigaPaso(c,+n);return}
-    ck[n]=now;const t=tasks.find(x=>x.cancion_id===c.id&&String(x.paso)===n&&!x.hecha);if(t){t.hecha=now;saveTask(t)}}
+    if(pistaDe(c,+n)==="marketing"&&!pistaAbierta(c,"marketing")){toast("Marketing se abre cuando Música llegue al 100 %.");return}
+    ck[n]=now}
   guardarPasos(c,ck)}
 /* Live, paso 6: pide la liga de Drive con el material final y, ya guardada, marca el paso */
 async function pedirLigaPaso(c,n,soloCambiar){const v=(window.prompt(`Pega ${requiereLiga(n,c)||"la liga de Drive"}:`,(c.data||{}).drive||"")||"").trim();if(!v)return;
@@ -2143,8 +2167,26 @@ async function pedirLigaPaso(c,n,soloCambiar){const v=(window.prompt(`Pega ${req
   await guardarCancion(c.id,{data:{...(c.data||{}),drive:u}},!soloCambiar,"Liga de Drive guardada.");c.data={...(c.data||{}),drive:u};
   if(!soloCambiar&&!(c.checklist||{})[String(n)])marcarPaso(c,String(n))}
 function pasosHechos(c){const ck=c.checklist||{};return pasosDe(c).filter((_,i)=>ck[String(i+1)]).length}
-function avance(c){const P=pasosDe(c);return P.length?Math.round(pasosHechos(c)/P.length*100):0}
-function siguientePaso(c){const ck=c.checklist||{},i=pasosDe(c).findIndex((_,i)=>!ck[String(i+1)]);return i<0?null:i+1}
+/* ---------- Tres áreas por canción (AREA_PASO en campos-cancion.js) ----------
+   Música = producción (sus métricas y su avance solo cuentan sus pasos). Legal = INDAUTOR/SACM y splitsheet,
+   corre aparte desde que se aprueba la composición. Marketing = handoff y D-Day, se abre con Música al 100 %.
+   Cada área tiene a lo más un pendiente abierto por canción: su siguiente paso. */
+const AREA_PASO=window.AREA_PASO||{},AV_PASO_LIVE=window.AV_PASO_LIVE||[];
+const PISTAS=[["musica","🎵 Producción · Música"],["legal","⚖️ Legal"],["marketing","📣 Marketing"]];
+function pistaDe(c,n){return esLive(c)?"musica":AREA_PASO[n]||"musica"}
+function pasosPista(c,a){return pasosDe(c).map((_,i)=>i+1).filter(n=>pistaDe(c,n)===a)}
+function hechosPista(c,a){const ck=c.checklist||{};return pasosPista(c,a).filter(n=>ck[String(n)]).length}
+function pistaCompleta(c,a){return hechosPista(c,a)===pasosPista(c,a).length}
+function pistaAbierta(c,a){if(a==="legal")return !!(c.checklist||{})["2"];if(a==="marketing")return pistaCompleta(c,"musica");return true}
+function avancePista(c,a){const n=pasosPista(c,a).length;return n?Math.round(hechosPista(c,a)/n*100):0}
+function siguienteEn(c,a){if(!pasosPista(c,a).length||!pistaAbierta(c,a))return null;const ck=c.checklist||{};return pasosPista(c,a).find(n=>!ck[String(n)])||null}
+/* Avance de la canción = avance de Música (Legal y Marketing llevan el suyo) */
+function avance(c){return avancePista(c,"musica")}
+function siguientePaso(c){return siguienteEn(c,"musica")||siguienteEn(c,"marketing")||siguienteEn(c,"legal")}
+function procesoCompleto(c){return pasosHechos(c)===pasosDe(c).length}
+/* Insignias chicas con el avance de Legal y Marketing */
+function pistasMini(c){if(esLive(c))return "";return [["legal","⚖️"],["marketing","📣"]].map(([a,i])=>{const h=hechosPista(c,a),n=pasosPista(c,a).length,ab=pistaAbierta(c,a);
+  return `<span class="cpist ${h===n?"ok":ab?"":"off"}" title="${esc(AREAS[a].n)}: ${h} de ${n}${ab?"":a==="marketing"?" · se abre con Música al 100 %":" · se abre al aprobar la composición"}">${i} ${h}/${n}</span>`}).join("")}
 function ministerioDe(c){return (c.ministerio||"").trim()||artistaDe(c)}
 /* Colaboraciones: otros ministerios del colectivo que participan (data.colaboran). La canción aparece en el tablero de todos. */
 function colaboranDe(c){const m=ministerioDe(c);return [...new Set([].concat((c.data||{}).colaboran||[]).map(x=>String(x).trim()).filter(x=>x&&x!==m))]}
@@ -2160,20 +2202,37 @@ function chipsColab(nombre,sel,excluir){return listaMinisterios().filter(m=>m!==
 function tituloDe(c){return (c.data||{}).titulo||"Sin título"}
 function fechaPaso(c,n){const d=(pasosDe(c)[n-1]||[])[3];return c.lanzamiento&&d!=null?key(addDays(fromKey(c.lanzamiento),d)):null}
 function personaPorNombre(n){const l=String(n||"").toLowerCase();return perfiles.find(p=>(p.usuario||"").toLowerCase()===l)||perfiles.find(p=>(p.nombre||"").toLowerCase().startsWith(l))}
-function pendienteAbierto(c){return tasks.find(t=>t.cancion_id===c.id&&!t.hecha)}
+function pendienteAbierto(c,a){a=a||"musica";return tasks.find(t=>t.cancion_id===c.id&&!t.hecha&&!t.av&&areaOf(t)===a)}
+function pendientesAbiertos(c){return tasks.filter(t=>t.cancion_id===c.id&&!t.hecha)}
 function etapaSegun(actual,ck,c){if(actual==="bloqueado")return actual;let e=actual,ie=ORDEN_ETAPAS.indexOf(actual);
   Object.entries(esLive(c)?ETAPA_POR_PASO_LIVE:ETAPA_POR_PASO).forEach(([n,et])=>{const i=ORDEN_ETAPAS.indexOf(et);if(ck[String(n)]&&i>ie){e=et;ie=i}});return e}
-function crearPendiente(c){if(!puedeMusica()||!tasksCol||pendienteAbierto(c))return;const n=siguientePaso(c);if(!n)return;
-  const id=`cancion-${c.id}-p${n}`;if(findT(id))return;
-  const P=pasosDe(c),[t,f,r]=P[n-1],p=personaPorNombre(String(r).split("/")[0].trim()),v=fechaPaso(c,n),hoy=key(new Date());
-  const extra={id,cancion_id:c.id,paso:n,pasos_version:3,nota:`${esLive(c)?"Live · ":""}Paso ${n} de ${P.length} (${f}) de «${tituloDe(c)}» · ${creditoDe(c)}. Al completarlo se marca en su checklist y se crea el siguiente paso.`};
+function crearPendiente(c){if(!puedeCanciones()||!tasksCol)return;
+  // un solo autor (solista): el splitsheet de Legal queda marcado desde el principio
+  if(unAutor(c)&&!(c.checklist||{})[String(PASO_SPLIT)]){guardarPasos(c,{...(c.checklist||{}),[String(PASO_SPLIT)]:new Date().toISOString()});return}
+  PISTAS.forEach(([a])=>{if(pendienteAbierto(c,a))return;const n=siguienteEn(c,a);if(!n)return;crearTareaPaso(c,n,a);
+    if(esLive(c)&&AV_PASO_LIVE.includes(n))crearTareaPaso(c,n,"audiovisual",true)})}
+/* Una vez por sesión, ya cargadas canciones y tareas: cada canción activa tiene el pendiente de cada área abierta
+   (así las canciones que ya existían reciben su pendiente de Legal y de Marketing) */
+let barridoHecho=false;
+function barrerPendientes(){if(barridoHecho||!loadedC||!loadedT||!perfiles.length||!puedeCanciones()||!tasksCol)return;barridoHecho=true;
+  setTimeout(()=>canciones.filter(c=>c.etapa!=="bloqueado").forEach(c=>{try{crearPendiente(c)}catch(e){}}),300)}
+/* Pendiente de un paso en su área. av: copia en Audiovisual de un paso live (Grabación, Post) */
+function crearTareaPaso(c,n,a,av){const id=`cancion-${c.id}-p${n}${av?"-av":""}`;if(findT(id))return;
+  const P=pasosDe(c),[t,f,r]=P[n-1],quien=String(r).split("/")[av?1:0]||String(r).split("/")[0],nom=quien.trim(),p=av?null:personaPorNombre(nom),v=fechaPaso(c,n),hoy=key(new Date());
+  const extra={id,cancion_id:c.id,paso:n,pasos_version:3,nota:`${esLive(c)?"Live · ":""}Paso ${n} de ${P.length} (${f}) de «${tituloDe(c)}» · ${creditoDe(c)}.${av?" Pendiente compartido con Música: al completarlo aquí o allá se marca en el checklist.":" Al completarlo se marca en su checklist y se crea el siguiente paso."}`};
+  if(av)extra.av=true;
   if(v&&v>hoy){extra.vence=v;extra.semana=key(mondayOf(fromKey(v)))}
-  addTask(`«${tituloDe(c)}» · ${t}`,"Canciones",p?p.id:"txt:"+String(r).split("/")[0].trim(),"musica",extra.semana||key(mondayOf(new Date())),extra)}
+  addTask(`«${tituloDe(c)}» · ${t}`,AREAS[a].n==="Música"?"Canciones":"Canciones · "+AREAS[a].n,av?"txt:Audiovisual":p?p.id:"txt:"+nom,a,extra.semana||key(mondayOf(new Date())),extra)}
 /* Guarda el checklist, avanza la etapa si toca y deja creado el siguiente pendiente */
 function guardarPasos(c,ck){const cambios={checklist:ck},e=etapaSegun(c.etapa,ck,c);if(e!==c.etapa)cambios.etapa=e;
-  guardarCancion(c.id,cambios,true,e!==c.etapa?`Avanzó a «${nombreEtapa(c,e)}».`:"");crearPendiente(c)}
+  const abriaMkt=pistaAbierta(c,"marketing");
+  // los pendientes de pasos que ya quedaron hechos se cierran (p. ej. la copia de Audiovisual de un paso live)
+  tasks.filter(t=>t.cancion_id===c.id&&!t.hecha&&t.paso&&ck[String(t.paso)]).forEach(t=>{t.hecha=ck[String(t.paso)];saveTask(t)});
+  guardarCancion(c.id,cambios,true,e!==c.etapa?`Avanzó a «${nombreEtapa(c,e)}».`:"");
+  if(!abriaMkt&&pistaAbierta(c,"marketing")&&!esLive(c))toast(`🎉 Música al 100 %: «${tituloDe(c)}» pasa a Marketing.`);
+  crearPendiente(c)}
 /* Una tarea ligada a una canción se completó o se reabrió (desde Pendientes, Mi trabajo o aquí) */
-function pasoDeTarea(t){if(!t.cancion_id||!puedeMusica())return;const c=canciones.find(x=>x.id===t.cancion_id);if(!c)return;
+function pasoDeTarea(t){if(!t.cancion_id||!puedeCanciones())return;const c=canciones.find(x=>x.id===t.cancion_id);if(!c)return;
   if(!t.paso){if(t.hecha)crearPendiente(c);return}
   const ck={...(c.checklist||{})},k=String(t.paso);
   if(t.hecha&&!ck[k])ck[k]=t.hecha;else if(!t.hecha&&ck[k])delete ck[k];else{if(t.hecha)crearPendiente(c);return}
@@ -2184,7 +2243,7 @@ function barra(p){return `<div class="cbar" role="progressbar" aria-valuenow="${
 function ccardHTML(c){const d=c.data||{},p=avance(c);
   return `<button type="button" class="ccard ${c.etapa==="intake"?"nueva":""}" data-cancion="${esc(c.id)}"><strong>${esc(tituloDe(c))} ${insigniaLive(c)}</strong><span class="art">${esc(creditoDe(c))}</span>
     <div class="tmeta">${d.bpm?`<span>${esc(d.bpm)} BPM</span>`:""}${c.semana?`<span class="chip tipo">🗓 ${semanaTxt(c.semana)}</span>`:""}${c.lanzamiento?`<span>🚀 ${shortDate(c.lanzamiento)}</span>`:""}</div>
-    <div class="cprog">${barra(p)}<b>${p}%</b></div></button>`}
+    <div class="cprog">${barra(p)}<b>${p}%</b></div>${pistasMini(c)?`<div class="cpistas">${pistasMini(c)}</div>`:""}</button>`}
 /* ---------- Dashboard por ministerio ---------- */
 let cancionesVista="ministerios",nuevaCancion=false;
 const COLORES_MIN=["var(--flame)","var(--sea)","#8E6BD8","#D69A1E","#D9558E","#2B8FA3","#3F9E6A","#7C8786"];
@@ -2192,7 +2251,7 @@ function colorMin(n){if(n===MIN_TDD)return "var(--flame)";let h=0;for(const ch o
 function filaCancion(c,m){const n=siguientePaso(c),p=avance(c),pa=n?pasosDe(c)[n-1]:null,v=n?fechaPaso(c,n):null,otros=ministeriosDe(c).filter(x=>x!==m);
   return `<li class="mli">${samplyUrl(c)?`<a class="mplay" href="${esc(samplyUrl(c))}" target="_blank" rel="noopener noreferrer" title="Abrir en Samply" aria-label="Abrir ${esc(tituloDe(c))} en Samply">▶</a>`:""}<button type="button" class="mrow" data-cancion="${esc(c.id)}"><div class="mrt"><strong>${esc(tituloDe(c))}</strong>${insigniaLive(c)}${otros.length?`<span class="mcolab">🤝 con ${esc(otros.join(", "))}</span>`:""}${etapaPill(c.etapa,c)}${c.lanzamiento?`<span class="mlz">🚀 ${shortDate(c.lanzamiento)}</span>`:""}</div>
     <div class="cprog">${barra(p)}<b>${p}%</b></div>
-    <small>${pa?`Sigue: paso ${n} · ${esc(pa[0])} · ${esc(pa[2])}${v?` · ${shortDate(v)}`:""}`:"✓ Proceso completo"}</small></button></li>`}
+    <small>${pa?`Sigue: paso ${n} · ${esc(pa[0])} · ${esc(pa[2])}${v?` · ${shortDate(v)}`:""}`:procesoCompleto(c)?"✓ Proceso completo":"Música completa · Legal pendiente"} ${pistasMini(c)}</small></button></li>`}
 function vistaMinisterios(){const grupos={};canciones.forEach(c=>(ministerioDe(c)===MIN_TDD?[MIN_TDD]:ministeriosDe(c)).forEach(m=>(grupos[m]=grupos[m]||[]).push(c)));  // las de Tiempo de Dios solo en su tarjeta
   ligas.filter(l=>l.activa&&!grupos[l.nombre]).forEach(l=>grupos[l.nombre]=[]);
   const nombres=Object.keys(grupos).sort((a,b)=>(b===MIN_TDD)-(a===MIN_TDD)||grupos[b].filter(c=>c.etapa!=="completado").length-grupos[a].filter(c=>c.etapa!=="completado").length||a.localeCompare(b));
@@ -2218,7 +2277,19 @@ function formNuevaCancion(){const live=formatoNueva==="live",PN=live?PASOS_LIVE:
     <label class="c2">BPM <small>(opcional)</small><input class="field" id="cnBpm" maxlength="20"></label>
     <label class="c2">Tonalidad <small>(opcional)</small><input class="field" id="cnTono" maxlength="40"></label>
     <div class="row"><span class="dlnote">Se marcan como hechos los pasos hasta el que elijas y se crea el pendiente del siguiente.</span><button type="button" class="btn ghost" data-cnueva="0">Cancelar</button><button class="btn" type="submit">Agregar canción</button></div></form>`}
+/* Legal (Registros) y Marketing (Lanzamientos): las canciones en su área, como proyecto aparte */
+function vistaPista(a){const cs=canciones.filter(c=>pasosPista(c,a).length);
+  const curso=cs.filter(c=>siguienteEn(c,a)),listas=cs.filter(c=>pistaCompleta(c,a)),espera=cs.filter(c=>!pistaAbierta(c,a)&&c.etapa!=="bloqueado");
+  const fila=c=>{const n=siguienteEn(c,a),P=pasosDe(c),h=hechosPista(c,a),N=pasosPista(c,a).length,pc=avancePista(c,a);
+    return `<li class="mli"><button type="button" class="mrow" data-cancion="${esc(c.id)}"><div class="mrt"><strong>${esc(tituloDe(c))}</strong><span class="mcolab">${esc(creditoDe(c))}</span>${c.lanzamiento?`<span class="mlz">🚀 ${shortDate(c.lanzamiento)}</span>`:""}</div>
+      <div class="cprog">${barra(pc)}<b>${h}/${N}</b></div><small>${n?`Sigue: paso ${n} · ${esc(P[n-1][0])} · ${esc(P[n-1][2])}${fechaPaso(c,n)?` · ${shortDate(fechaPaso(c,n))}`:""}`:pistaCompleta(c,a)?"✓ Completo":a==="marketing"?`Música va en ${avance(c)} %`:"Esperando la aprobación de la composición"}</small></button></li>`};
+  const bloque=(t,xs,vacio)=>`<section class="mini" style="--c:${AREAS[a].c}"><header><div class="mtit"><i></i><h3>${t}</h3></div><div class="mstats"><span><b>${xs.length}</b> canci${xs.length===1?"ón":"ones"}</span></div></header>${xs.length?`<ul class="mlist">${xs.map(fila).join("")}</ul>`:`<p class="none" style="margin:0">${vacio}</p>`}</section>`;
+  return `<p class="dlnote" style="margin:0 0 14px">${a==="legal"?"Registro INDAUTOR / SACM y splitsheet firmado de cada canción. Corre aparte de la producción y no cuenta en las métricas de Música. Si la canción tiene un solo autor, el splitsheet ya viene marcado.":"Cada canción llega aquí como proyecto propio cuando Música completa su checklist al 100 %: handoff y pipeline D-Day hasta el reporte D+30."}</p>
+    <div class="minis">${bloque(a==="legal"?"En trámite":"En campaña",curso,"Nada en curso por ahora.")}${bloque(a==="legal"?"Por abrir":"En producción (todavía en Música)",espera,"—")}${bloque(a==="legal"?"Registradas":"Lanzadas",listas,"—")}</div>`}
 function renderCanciones(){const V=$("vCanciones");
+  if(route!=="musica"){if(!puedeCanciones()){V.innerHTML=`<div class="readonly">Solo el equipo de ${esc(AREAS[route].n)} y la project manager pueden ver esto.</div>`;return}
+    if(cancionSel){const c=canciones.find(x=>x.id===cancionSel);if(c){V.innerHTML=detalleCancion(c);return}if(loadedC)cancionSel=null}
+    V.innerHTML=cancionesErr?`<div class="readonly">${esc(cancionesErr)}</div>`:!loadedC?`<div class="none">Cargando canciones…</div>`:vistaPista(route);return}
   if(!puedeMusica()){V.innerHTML=`<div class="readonly">Solo el equipo de Música y la project manager pueden ver las canciones.</div>`;return}
   if(cancionSel){const c=canciones.find(x=>x.id===cancionSel);if(c){V.innerHTML=detalleCancion(c);return}if(loadedC)cancionSel=null}
   const cuenta=id=>canciones.filter(c=>c.liga===id).length;
@@ -2251,7 +2322,7 @@ document.addEventListener("submit",e=>{if(e.target.id!=="cEditForm")return;e.pre
   if(!d.titulo){toast("La canción necesita un título.");return}
   const cambioTitulo=d.titulo!==(c.data||{}).titulo;cancionEdit=null;esperaRender=false;
   guardarCancion(c.id,{data:d},true,"Datos de la canción guardados.");
-  if(cambioTitulo){if(c.lanzamiento)eventoLanzamiento(c);const t=pendienteAbierto(c);if(t&&t.paso){t.titulo=`«${d.titulo}» · ${pasosDe(c)[t.paso-1][0]}`;saveTask(t)}}
+  if(cambioTitulo){if(c.lanzamiento)eventoLanzamiento(c);pendientesAbiertos(c).filter(t=>t.paso).forEach(t=>{t.titulo=`«${d.titulo}» · ${pasosDe(c)[t.paso-1][0]}`;saveTask(t)})}
   window.scrollTo({top:document.querySelector(".cpendiente")?document.querySelector(".cpendiente").getBoundingClientRect().top+scrollY-20:0,behavior:"smooth"})});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-ceditar]");if(!b)return;cancionEdit=b.dataset.ceditar||null;esperaRender=false;render();
   if(cancionEdit)setTimeout(()=>{const f=$("cEditForm");if(f){f.scrollIntoView({behavior:"smooth",block:"start"});const t=$("ce_titulo");if(t)t.focus({preventScroll:true})}},50)});
@@ -2259,30 +2330,34 @@ document.addEventListener("change",e=>{const cb=e.target.closest&&e.target.close
   const box=cb.closest("[data-ccolab]");if(!box)return;const c=canciones.find(x=>x.id===box.dataset.ccolab);if(!c)return;
   const colaboran=[...box.querySelectorAll("input:checked")].map(x=>x.value);
   guardarCancion(c.id,{data:{...(c.data||{}),colaboran}},true,colaboran.length?`En colaboración con ${colaboran.join(", ")}.`:"Sin colaboración.");if(c.lanzamiento)eventoLanzamiento(c)});
-function detalleCancion(c){const PS=pasosDe(c),live=esLive(c);const d=c.data||{},ck=c.checklist||{},hechos=pasosHechos(c),p=avance(c),n=siguientePaso(c),pend=pendienteAbierto(c);
+function detalleCancion(c){const PS=pasosDe(c),live=esLive(c);const d=c.data||{},ck=c.checklist||{},hechos=pasosHechos(c),p=avance(c);let n=siguientePaso(c);const pends=pendientesAbiertos(c).filter(t=>!t.av||enArea(perfil,"audiovisual"));
+  const miPista=puedeMusica()?null:["legal","marketing"].find(a=>enArea(perfil,a));if(miPista&&siguienteEn(c,miPista))n=siguienteEn(c,miPista);
+  const sigs=new Set(PISTAS.map(([a])=>siguienteEn(c,a)).filter(Boolean)),orden=live?PS.map((_,i)=>i+1):PISTAS.flatMap(([a])=>pasosPista(c,a));let pista="";
   let fase="";
   return `<div class="edet">
     <button type="button" class="btn ghost sm eback" data-cvolver="1">← Todas las canciones</button>
     <div class="ehead"><div class="etop">${etapaPill(c.etapa,c)}${d.tipo?`<span class="chip tipo">${esc(d.tipo)}</span>`:""}<time datetime="${esc(c.creado)}">Registrada el ${fechaHora(c.creado)}</time></div>
       <h2>${esc(tituloDe(c))} ${insigniaLive(c)}</h2><p>${esc(creditoDe(c))}${d.nombre&&d.nombre!==ministerioDe(c)?" · "+esc(d.nombre):""}${d.bpm?" · "+esc(d.bpm)+" BPM":""}${d.tonalidad?" · "+esc(d.tonalidad):""}</p>
-      <div class="cavance"><div class="cprog grande">${barra(p)}<b style="color:${colorAvance(p)}">${p}%</b></div><small>${hechos} de ${PS.length} pasos, ${live?"desde la solicitud hasta que queda lista para publicar":"desde la primera asesoría hasta el reporte D+30 de la campaña"}</small></div>
-      <div class="rbtns"><button type="button" class="btn" data-cagendar="${esc(c.id)}">${live?(c.semana?"Cambiar fecha de grabación":"Agendar grabación"):c.semana?"Cambiar semana de producción":"Agendar semana de producción"}</button><button type="button" class="btn ghost ebor" data-cdel="${esc(c.id)}" title="Borrar esta canción">${ICON_DEL} Borrar canción</button></div></div>
-    <div class="cpendiente">${pend?`<div><span class="evk2">Pendiente actual</span><strong>${esc(pend.titulo)}</strong><small>${esc(pend.responsable||"Sin responsable")} · vence ${shortDate(venceDe(pend))}</small></div><button type="button" class="btn ghost sm" data-verpend="${esc(pend.id)}">Ver en Pendientes</button>`
+      <div class="cavance"><div class="cprog grande">${barra(p)}<b style="color:${colorAvance(p)}">${p}%</b></div><small>${live?`${hechos} de ${PS.length} pasos, desde la solicitud hasta que queda lista para publicar`:`Música: ${hechosPista(c,"musica")} de ${pasosPista(c,"musica").length} pasos de producción`}</small>${live?"":`<div class="cpistas">${pistasMini(c)}</div>`}</div>
+      ${puedeMusica()?`<div class="rbtns"><button type="button" class="btn" data-cagendar="${esc(c.id)}">${live?(c.semana?"Cambiar fecha de grabación":"Agendar grabación"):c.semana?"Cambiar semana de producción":"Agendar semana de producción"}</button><button type="button" class="btn ghost ebor" data-cdel="${esc(c.id)}" title="Borrar esta canción">${ICON_DEL} Borrar canción</button></div>`:""}</div>
+    <div class="cpendiente">${pends.length?`<div><span class="evk2">Pendiente${pends.length>1?"s":""} actual${pends.length>1?"es":""}</span>${pends.map(t=>`<div class="cpend1"><strong><span class="cpar" style="--c:${AREAS[areaOf(t)].c}">${esc(AREAS[areaOf(t)].n)}</span> ${esc(t.titulo)}</strong><small>${esc(t.responsable||"Sin responsable")} · vence ${shortDate(venceDe(t))} <button type="button" class="btn ghost sm" data-verpend="${esc(t.id)}">Ver en Pendientes</button></small></div>`).join("")}</div>`
       :n?`<div><span class="evk2">Siguiente paso</span><strong>${n}. ${esc(PS[n-1][0])}</strong><small>${esc(PS[n-1][2])} · todavía sin pendiente</small></div><button type="button" class="btn sm" data-cpend="${esc(c.id)}">Crear pendiente</button>`
-      :`<div><span class="evk2">Proceso completo</span><strong>${live?"Canción live lista y publicada 🎉":"Canción lanzada y reportada 🎉"}</strong></div>`}</div>
-    ${panelSamply(c)}
-    <div class="egestion cgest">
+      :procesoCompleto(c)?`<div><span class="evk2">Proceso completo</span><strong>${live?"Canción live lista y publicada 🎉":"Canción lanzada y reportada 🎉"}</strong></div>`:`<div><span class="evk2">En espera</span><strong>Legal se abre al aprobar la composición (paso 2).</strong></div>`}</div>
+    ${puedeMusica()?panelSamply(c):""}
+    ${puedeMusica()?`<div class="egestion cgest">
       <label for="cEtapa">Etapa<select class="field" id="cEtapa" data-cetapa="${esc(c.id)}">${ETAPAS.map(([k,n])=>`<option value="${k}" ${c.etapa===k?"selected":""}>${esc(n)}</option>`).join("")}</select><small class="ehint">${esc((ETAPAS.find(x=>x[0]===c.etapa)||[])[2]||"")} Avanza sola al completar pasos.</small></label>
       <label for="cMin">Ministerio${selectMinisterio(`id="cMin" data-cmin="${esc(c.id)}"`,ministerioDe(c))}</label>
       <div class="ccolab"><span>En colaboración con</span><div class="cemulti" data-ccolab="${esc(c.id)}">${chipsColab("colab",colaboranDe(c),ministerioDe(c))||`<small class="ehint">Crea ligas o agrega canciones de otros ministerios para elegirlos.</small>`}</div><small class="ehint">La canción aparece también en el tablero de cada ministerio que marques.</small></div>
       ${live?"":`<label class="cunautor"><input type="checkbox" data-cunautor="${esc(c.id)}" ${unAutor(c)?"checked":""}> <span><b>👤 Un solo autor</b><small>El splitsheet (paso ${PASO_SPLIT}) se da por hecho y no pide archivo.</small></span></label>`}
       <label for="cLanz">Fecha de lanzamiento (D0)<input class="field" type="date" id="cLanz" data-clanz="${esc(c.id)}" value="${esc(c.lanzamiento||"")}"><small class="ehint">Con esta fecha se calculan los pasos de Marketing y aparece en el calendario.</small></label>
       <label for="cNotas" class="cnot">Notas internas del equipo<textarea id="cNotas" data-cnotas="${esc(c.id)}" maxlength="5000" rows="3" placeholder="Acuerdos de las asesorías, costos de stems, motivo si está bloqueada… Solo las ve el equipo.">${esc(c.notas||"")}</textarea><small class="ehint">Se guardan al salir del campo. El artista no las ve.</small></label>
-    </div>
+    </div>`:""}
     <section class="esec"><h3><span class="n">✓</span>Checklist${live?" live":""} · ${hechos}/${PS.length}</h3>
       <div class="dpanel"><div class="csem"><b>${live?"Grabación":"Semana de producción"}:</b> ${live?(fechaGrabacion(c)?`<span class="chip tipo">🎤 ${esc(fechaLarga(fromKey(fechaGrabacion(c))))}</span>`:`<span class="esin">Sin agendar</span>`):c.semana?`<span class="chip tipo">${semanaTxt(c.semana)}</span>`:`<span class="esin">Sin agendar</span>`}${c.lanzamiento?` <b style="margin-left:10px">Lanzamiento:</b> <span class="chip tipo">🚀 ${shortDate(c.lanzamiento)}</span>`:""}</div>
-      <ul class="check14">${PS.map(([t,f,r,dd],i)=>{const k=String(i+1),h=ck[k],v=fechaPaso(c,i+1),sep=f!==fase?`<li class="cfase">${esc(f)}</li>`:"";fase=f;
-        return `${sep}<li class="${h?"ok":""} ${!h&&i+1===n?"sig":""}"><button type="button" class="check" role="checkbox" aria-checked="${!!h}" aria-label="${esc(t)}" data-cpaso="${esc(c.id)}|${k}">${CHECK}</button><span>${k}. ${esc(t)}<span class="fase">${i+1===PASO_SPLIT&&unAutor(c)?"👤 Un solo autor · no necesita splitsheet · ":""}${esc(r)}${v&&!h?` · vence ${shortDate(v)}`:""}</span>${requiereLiga(i+1,c)?`<span class="cdocs">${(c.data||{}).drive?`<a class="chip arch" href="${esc(safeUrl(c.data.drive))}" target="_blank" rel="noopener noreferrer">📁 Drive ↗</a><button type="button" class="cdocbtn" data-cliga="${esc(c.id)}|${k}">Cambiar liga</button>`:`<button type="button" class="cdocbtn req" data-cliga="${esc(c.id)}|${k}">🔗 Pegar ${esc(requiereLiga(i+1,c))}${h?" (falta)":" para completarlo"}</button>`}</span>`:""}${requiereDoc(i+1,c)?`<span class="cdocs">${docsPaso(c,i+1).map(a=>docChip(a,"carch")).join("")}${docsPaso(c,i+1).length?`<button type="button" class="cdocbtn" data-cdoc="${esc(c.id)}|${k}">+ Otro archivo</button>`:`<button type="button" class="cdocbtn req" data-cdoc="${esc(c.id)}|${k}">📎 Subir ${esc(requiereDoc(i+1,c))}${h?" (falta)":" para completarlo"}</button>`}</span>`:""}</span><small>${h?shortDate(h.slice(0,10)):!h&&i+1===n?"siguiente":""}</small></li>`}).join("")}</ul></div></section>
+      <ul class="check14">${orden.map(nn=>{const i=nn-1,[t,f,r,dd]=PS[i],k=String(i+1),h=ck[k],v=fechaPaso(c,i+1),a=pistaDe(c,nn),ab=pistaAbierta(c,a),ed=puedeMusica()||canEdit(a);
+        let sep="";if(!live&&a!==pista){pista=a;fase="";sep=`<li class="cpista" style="--c:${AREAS[a].c}">${esc((PISTAS.find(x=>x[0]===a)||[])[1])} <small>${hechosPista(c,a)}/${pasosPista(c,a).length}${ab?"":a==="marketing"?" · se abre cuando Música llegue al 100 %":" · se abre al aprobar la composición"}</small></li>`}
+        if(f!==fase){sep+=`<li class="cfase">${esc(f)}</li>`;fase=f}
+        return `${sep}<li class="${h?"ok":""} ${!h&&sigs.has(i+1)?"sig":""} ${!h&&!ab?"bloq":""}"><button type="button" class="check" role="checkbox" aria-checked="${!!h}" aria-label="${esc(t)}" data-cpaso="${esc(c.id)}|${k}" ${(!h&&!ab)||!ed?"disabled":""}>${CHECK}</button><span>${k}. ${esc(t)}<span class="fase">${i+1===PASO_SPLIT&&unAutor(c)?"👤 Un solo autor · no necesita splitsheet · ":""}${esc(r)}${v&&!h?` · vence ${shortDate(v)}`:""}</span>${requiereLiga(i+1,c)?`<span class="cdocs">${(c.data||{}).drive?`<a class="chip arch" href="${esc(safeUrl(c.data.drive))}" target="_blank" rel="noopener noreferrer">📁 Drive ↗</a><button type="button" class="cdocbtn" data-cliga="${esc(c.id)}|${k}">Cambiar liga</button>`:`<button type="button" class="cdocbtn req" data-cliga="${esc(c.id)}|${k}">🔗 Pegar ${esc(requiereLiga(i+1,c))}${h?" (falta)":" para completarlo"}</button>`}</span>`:""}${requiereDoc(i+1,c)?`<span class="cdocs">${docsPaso(c,i+1).map(a=>docChip(a,"carch")).join("")}${docsPaso(c,i+1).length?`<button type="button" class="cdocbtn" data-cdoc="${esc(c.id)}|${k}">+ Otro archivo</button>`:`<button type="button" class="cdocbtn req" data-cdoc="${esc(c.id)}|${k}">📎 Subir ${esc(requiereDoc(i+1,c))}${h?" (falta)":" para completarlo"}</button>`}</span>`:""}</span><small>${h?shortDate(h.slice(0,10)):!h&&sigs.has(i+1)?"siguiente":""}</small></li>`}).join("")}</ul></div></section>
     ${cancionEdit===c.id?formEditarCancion(c):`<div class="cdatosh"><h3>Datos de la canción</h3><button type="button" class="btn ghost sm" data-ceditar="${esc(c.id)}">✎ Editar datos</button></div>
     ${CAMPOS_C.map((s,i)=>{const cs=s.campos.filter(x=>aplicaE(x,d));if(!cs.some(x=>x.tipo==="files"?docsDe(c,x.k,CAMPOS_C).length:!vacioE(d[x.k])))return "";return `<section class="esec"><h3><span class="n">${i+1}</span>${esc(s.titulo)}</h3><dl>${cs.map(x=>`<div class="eq"><dt>${esc(x.l)}</dt><dd>${valorE(x,d[x.k],c,CAMPOS_C,"carch")}</dd></div>`).join("")}</dl></section>`}).join("")}`}
   </div>`}
@@ -2349,7 +2424,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)r
     setTimeout(()=>{const li=document.querySelector(`[data-tid="${CSS.escape(t.id)}"]`);if(li)li.scrollIntoView({behavior:"smooth",block:"center"})},120);return}
   if(ds.cancion){cancionSel=ds.cancion;render();window.scrollTo(0,0);return}
   if(ds.cvolver){cancionSel=null;cancionEdit=null;render();window.scrollTo(0,0);return}
-  if(ds.vercancion){cancionSel=ds.vercancion;areaView.musica="canciones";if(location.hash==="#musica")render();else location.hash="musica";window.scrollTo(0,0);return}
+  if(ds.vercancion){cancionSel=ds.vercancion;const a=puedeMusica()?"musica":["legal","marketing"].find(x=>enArea(perfil,x))||"musica";areaView[a]="canciones";if(location.hash==="#"+a)render();else location.hash=a;window.scrollTo(0,0);return}
   if(ds.copiarligac){const l=ligas.find(x=>x.id===ds.copiarligac);copiarTexto(ligaCancion(ds.copiarligac),`Liga de ${l?l.nombre:"el artista"} copiada.`);return}
   if(ds.ligaonoff){const l=ligas.find(x=>x.id===ds.ligaonoff);if(!l)return;const activa=!l.activa;l.activa=activa;render();
     sb.from("ligas_artistas").update({activa}).eq("id",l.id).then(({error})=>{if(error){l.activa=!activa;render();toast("No se pudo cambiar: "+error.message)}else toast(activa?"Liga activada.":"Liga desactivada: ya no sirve para registrar.")});return}
@@ -2357,7 +2432,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)r
   if(ds.cpaso){const [id,n]=ds.cpaso.split("|"),c=canciones.find(x=>x.id===id);if(c)marcarPaso(c,n);return}
   if(ds.cliga){const [id,n]=ds.cliga.split("|"),c=canciones.find(x=>x.id===id);if(c)pedirLigaPaso(c,+n,!!(c.checklist||{})[n]);return}
   if(ds.cdoc){const [id,n]=ds.cdoc.split("|"),c=canciones.find(x=>x.id===id);if(c)pedirDocPaso(c,+n);return}
-  if(ds.cpend){const c=canciones.find(x=>x.id===ds.cpend);if(c){crearPendiente(c);render();toast("Pendiente creado en Música.")}return}
+  if(ds.cpend){const c=canciones.find(x=>x.id===ds.cpend);if(c){crearPendiente(c);render();toast("Pendientes creados.")}return}
   if(ds.cformato){if(formatoNueva!==ds.cformato){formatoNueva=ds.cformato;render();const sp=$("cnPaso");if(sp)sp.value="0"}return}
   if(ds.cvista){cancionesVista=ds.cvista;render();return}
   if(ds.cnueva!==undefined){nuevaCancion=ds.cnueva==="1";render();if(nuevaCancion)setTimeout(()=>$("cnTitulo").focus(),30);return}
