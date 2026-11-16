@@ -40,7 +40,7 @@ window.CAMPOS_CANCION = [
     { k: "ligaDemo", l: "Liga a tu demo (opcional)", ayuda: "Si tu archivo pesa más de 50 MB, súbelo a Drive o Dropbox y pega la liga aquí." }
   ]},
   { id: "fechas", titulo: "Fechas", intro: "Para planear la semana de producción con el ministerio.", campos: [
-    { k: "disponibilidad", l: "¿Qué semanas o fechas podrías venir a producir?", tipo: "area", req: true, ayuda: "La producción dura una semana completa, de lunes a viernes." },
+    { k: "disponibilidad", l: "¿Qué semanas o fechas podrías venir a producir?", tipo: "area", req: true, ayuda: "Según el tipo de producción: acústica 2 días, full band una semana, producción grande 2 semanas. También te podemos mandar un enlace para que elijas tu semana." },
     { k: "lanzamiento", l: "¿Tienes una fecha ideal de lanzamiento?", ayuda: "Ej. marzo 2027, o «sin prisa»." },
     { k: "comentarios", l: "¿Algo más que debamos saber?", tipo: "area" }
   ]}

@@ -52,6 +52,27 @@ body[data-area="audiovisual"]{--area:var(--baby);--area-ink:var(--baby-ink);--ar
 body[data-area="operativo"]{--area:var(--sol);--area-ink:var(--sol-ink);--area-soft:var(--sol-soft);--on-area:#1B1C1A}
 body[data-area="legal"]{--area:var(--lav);--area-ink:var(--lav-ink);--area-soft:var(--lav-soft);--on-area:#FFFFFF}
 body[data-area="marketing"]{--area:var(--rosa);--area-ink:var(--rosa-ink);--area-soft:var(--rosa-soft);--on-area:#FFFFFF}
+.dtipos{margin:4px 0 10px}
+.disp2{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.dwk{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;background:var(--surface)}
+.dwk time{font:600 12px "IBM Plex Mono",monospace;color:var(--muted)}.dwk>b{font-size:13px}
+.dwk.cabe{border-color:#1DB954;box-shadow:inset 0 0 0 1px #1DB954}.dwk.colchon{background:repeating-linear-gradient(135deg,transparent 0 8px,color-mix(in srgb,var(--muted) 10%,transparent) 8px 16px)}
+.dwk small{color:var(--muted);font-size:12px}.dwk .dcabe{color:#1DB954;font-weight:700}
+.dblqs{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.dblq{border:1px solid var(--line);border-radius:9px;padding:6px 8px;text-align:left;background:var(--bg);color:var(--fg);cursor:pointer;display:flex;flex-direction:column;gap:2px;font:inherit;min-width:0}
+.dblq span{font:600 11px "IBM Plex Mono",monospace;color:var(--muted)}.dblq b{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dblq.libre b{color:#1DB954}.dblq.libre:hover:not(:disabled){border-color:#1DB954}.dblq:disabled{opacity:.45;cursor:default}
+.dblq.ocu{background:color-mix(in srgb,var(--flame) 14%,var(--bg));border-color:color-mix(in srgb,var(--flame) 40%,var(--line))}
+.dblq.ext{align-items:center;font-weight:700;font-size:12px}
+.evlista{list-style:none;margin:0;padding:0;display:grid;gap:6px}.evlista li{display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:center}
+.evlista time{font:600 12px "IBM Plex Mono",monospace;color:var(--muted)}
+.evatajos{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
+.dljor{margin:0 0 10px;font:500 12px "IBM Plex Mono",monospace;color:var(--muted)}
+.dvtodo{display:grid;grid-template-columns:64px 1fr;gap:10px;margin-bottom:8px}.dvtodo>div{display:grid;gap:6px}
+.dvgrid{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.dvgrid li{display:grid;grid-template-columns:64px 1fr;gap:10px;min-height:34px;border-bottom:1px solid var(--line);padding:4px 0}
+.dvgrid li.jor{background:color-mix(in srgb,var(--area) 6%,transparent)}.dvgrid li>div{display:grid;gap:4px}
+.dvgrid .dvhora,.dvtodo .dvhora{font:600 11px "IBM Plex Mono",monospace;color:var(--muted);padding-top:4px}
 .cpistas{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 .cpist{font:600 11px/1 "IBM Plex Mono",monospace;padding:4px 7px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--fg);white-space:nowrap}
 .cpist.ok{background:#1DB95422;border-color:#1DB954;color:var(--fg)}.cpist.off{opacity:.5}
@@ -1038,7 +1059,10 @@ select:disabled{cursor:default;opacity:.7}
     <div class="evrow"><label>Tipo<select class="field" id="evTipo"></select></label><label>Área<select class="field" id="evArea"></select></label></div>
     <label id="evCancionW" hidden>Canción<select class="field" id="evCancion"></select></label>
     <div class="evrow"><label>Fecha<input type="date" class="field" id="evFecha" required></label><label><span>Hasta el <small>(opcional)</small></span><input type="date" class="field" id="evFin"></label></div>
-    <div class="evrow"><label><span>Hora <small>(opcional)</small></span><input type="time" class="field" id="evHora"></label><label>Repetir<select class="field" id="evRepetir"></select></label></div>
+    <label id="evProdW" hidden>Tipo de producción<select class="field" id="evTipoProd"></select></label>
+    <div class="evrow"><label><span>Hora <small>(opcional)</small></span><input type="time" class="field" id="evHora"></label><label><span>Termina <small>(opcional)</small></span><input type="time" class="field" id="evHoraFin"></label></div>
+    <div class="evatajos" id="evAtajos" hidden><span>Horario:</span><button type="button" class="btn ghost sm" data-evh="19:00|21:00">19–21</button><button type="button" class="btn ghost sm" data-evh="20:00|22:00">20–22</button></div>
+    <label>Repetir<select class="field" id="evRepetir"></select></label>
     <label id="evHastaW" hidden><span>Repetir hasta <small>(opcional)</small></span><input type="date" class="field" id="evHasta"></label>
     <div class="evaviso" id="evAviso" hidden></div>
     <label><span>Notas <small>(opcional)</small></span><textarea id="evNotas" maxlength="1000" rows="2" placeholder="Lugar, quién va, qué llevar…"></textarea></label>
@@ -1317,6 +1341,7 @@ select:disabled{cursor:default;opacity:.7}
 <script src="campos-entrada.js"></script>
 <!-- Preguntas del formulario de canciones, etapas y checklist de producción -->
 <script src="campos-cancion.js"></script>
+<script src="agenda-reglas.js"></script>
 <script>
 (function(){
 const DIAS=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
@@ -1932,37 +1957,31 @@ function descargarEntradaPDF(id){const e=entradas.find(x=>x.id===id);if(!e)retur
    Tabla "eventos" (migración 013). Cada evento: {titulo, tipo, fecha, fin?, hora?, repetir?, hasta?,
    excepciones:[fechas], area, notas, cancion_id?, creado, creado_por}. Todo el equipo agenda.
    Una producción ocupa una semana (lunes a viernes); la disponibilidad muestra las semanas libres. */
-const TIPOS_EV={produccion:["Producción","var(--flame)"],fijo:["Fecha fija","var(--sea)"],reunion:["Reunión","var(--baby)"],ensayo:["Ensayo","var(--sol)"],evento:["Evento","#8E6BD8"],grabacion:["Grabación o contenido","#D9558E"],lanzamiento:["Lanzamiento","#1DB954"],otro:["Otro","#7C8786"]};
+const TIPOS_EV={produccion:["Producción","var(--flame)"],fijo:["Fecha fija","var(--sea)"],reunion:["Reunión","var(--baby)"],ensayo:["Ensayo","var(--sol)"],evento:["Evento","#8E6BD8"],grabacion:["Grabación o contenido","#D9558E"],lanzamiento:["Lanzamiento","#1DB954"],cenaculo:["Cenáculo","#B0413E"],oracion:["Oración","#5B7DB1"],externo:["Actividad externa (viernes ocupado)","#55606A"],otro:["Otro","#7C8786"]};
+/* Tipos que no se ofrecen al agendar (los pone el sistema) */
+const TIPOS_EV_FIJOS=["oracion"];
 const REPETIR={"":"No se repite",semanal:"Cada semana",quincenal:"Cada 2 semanas",mensual:"Cada mes",anual:"Cada año"};
 const DIAS_PROD=window.DIAS_PRODUCCION||["Maqueteo","Instrumentación","Creación de contenido","Cierre de instrumentación y voces","Edición, mezcla y master"];
 let eventos=[],loadedEv=false,eventosErr="",eventosCol=null,evEdit=null;
 function cargarCalendario(){if(eventosCol||!sb)return;eventosCol=makeCol("eventos");
   eventosCol.onSnapshot(snap=>{eventos=snap.docs.map(d=>({...(d.data()||{}),id:d.id}));eventosErr="";loadedEv=true;renderKeep()},
     err=>{eventosErr=/eventos|PGRST205|42P01/.test(err&&err.message||"")?"Falta correr la migración 013 en Supabase para usar el calendario.":"No se pudo leer el calendario: "+(err&&err.message||"");loadedEv=true;renderKeep()})}
-/* Fechas en que ocurre un evento entre desde y hasta (YYYY-MM-DD, inclusive) */
-function ocurrencias(ev,desde,hasta){const out=[];if(!ev.fecha)return out;
-  const ini0=fromKey(ev.fecha),dur=ev.fin&&ev.fin>ev.fecha?Math.round((fromKey(ev.fin)-ini0)/864e5):0,ex=ev.excepciones||[];
-  const lim=ev.hasta&&ev.hasta<hasta?ev.hasta:hasta;
-  const push=d=>{const a=key(d),b=key(addDays(d,dur));if(b>=desde&&a<=hasta&&!ex.includes(a))out.push({ev,ini:a,fin:b})};
-  if(!ev.repetir){push(ini0);return out}
-  for(let n=0;n<3000;n++){let d;
-    if(ev.repetir==="semanal")d=addDays(ini0,7*n);else if(ev.repetir==="quincenal")d=addDays(ini0,14*n);
-    else if(ev.repetir==="mensual")d=new Date(ini0.getFullYear(),ini0.getMonth()+n,ini0.getDate());
-    else if(ev.repetir==="anual")d=new Date(ini0.getFullYear()+n,ini0.getMonth(),ini0.getDate());else break;
-    if(key(d)>lim)break;
-    if((ev.repetir==="mensual"||ev.repetir==="anual")&&d.getDate()!==ini0.getDate())continue;  // 31 (o 29 feb) en un mes que no lo tiene: se salta
-    if(key(addDays(d,dur))<desde)continue;push(d)}
-  return out}
-function ocurrenciasRango(desde,hasta){return eventos.flatMap(ev=>ocurrencias(ev,desde,hasta))}
+/* Fechas en que ocurre un evento (la lógica vive en agenda-reglas.js, compartida con el enlace para artistas) */
+function ocurrencias(ev,desde,hasta){return AGENDA.ocurrencias(ev,desde,hasta)}
+/* Eventos del calendario + fechas fijas (oración de los miércoles) */
+function todosEventos(){return [...eventos,...AGENDA.FIJOS]}
+function ocurrenciasRango(desde,hasta){return todosEventos().flatMap(ev=>ocurrencias(ev,desde,hasta))}
+function horaTxt(ev){return ev.hora?ev.hora+(ev.horaFin?"–"+ev.horaFin:""):""}
 function producciones(lunes){const v=key(addDays(fromKey(lunes),4));return ocurrenciasRango(lunes,v).filter(o=>o.ev.tipo==="produccion")}
 function colorEv(ev){return (TIPOS_EV[ev.tipo]||TIPOS_EV.otro)[1]}
 function cevHTML(o,k){const ev=o.ev,dia=Math.round((fromKey(k)-fromKey(o.ini))/864e5);
-  const sub=ev.tipo==="produccion"&&dia<5?DIAS_PROD[dia]:ev.fin&&ev.fin>ev.fecha?`Día ${dia+1} de ${Math.round((fromKey(o.fin)-fromKey(o.ini))/864e5)+1}`:"";
-  return `<button type="button" class="cev" style="--c:${colorEv(ev)}" data-evabrir="${esc(ev.id)}|${o.ini}">${ev.hora?`<span class="hr">${esc(ev.hora)}</span>`:""}<strong>${esc(ev.titulo||"Sin título")}</strong>${sub||ev.repetir?`<small>${sub?esc(sub):""}${ev.repetir?`${sub?" · ":""}↻ ${esc(REPETIR[ev.repetir].toLowerCase())}`:""}</small>`:""}</button>`}
-let dashView="semana",dispOff=0;  // dispOff: bloques de 12 semanas hacia adelante (o atrás) en la disponibilidad  // dia | semana | mes | ano (la semana es la vista de inicio)
+  const sub=ev.tipo==="produccion"&&ev.tipoProd&&AGENDA.TIPOS_PROD[ev.tipoProd]?AGENDA.TIPOS_PROD[ev.tipoProd].n:ev.tipo==="produccion"&&dia<5?DIAS_PROD[dia]:ev.fin&&ev.fin>ev.fecha?`Día ${dia+1} de ${Math.round((fromKey(o.fin)-fromKey(o.ini))/864e5)+1}`:"";
+  return `<button type="button" class="cev" style="--c:${colorEv(ev)}" data-evabrir="${esc(ev.id)}|${o.ini}">${ev.hora?`<span class="hr">${esc(horaTxt(ev))}</span>`:""}<strong>${esc(ev.titulo||"Sin título")}</strong>${sub||ev.repetir?`<small>${sub?esc(sub):""}${ev.repetir?`${sub?" · ":""}↻ ${esc(REPETIR[ev.repetir].toLowerCase())}`:""}</small>`:""}</button>`}
+let dashView="semana",dispOff=0,dispTipo="fullband";  // dispOff: bloques de 12 semanas hacia adelante (o atrás) en la disponibilidad  // dia | semana | mes | ano (la semana es la vista de inicio)
 const VISTAS=[["dia","Día"],["semana","Semana"],["mes","Mes"],["ano","Año"]];
 function fechaLarga(d){const s=`${DIAS[d.getDay()]} ${d.getDate()} de ${MESES_L[d.getMonth()]} ${d.getFullYear()}`;return s[0].toUpperCase()+s.slice(1)}
-function eventosDia(occ,k){return occ.filter(o=>o.ini<=k&&o.fin>=k).sort((a,b)=>(a.ev.hora||"99").localeCompare(b.ev.hora||"99"))}
+function eventosDia(occ,k){const fd=[0,6].includes(fromKey(k).getDay());  // las producciones de dos semanas no se pintan en el fin de semana
+  return occ.filter(o=>o.ini<=k&&o.fin>=k&&!(fd&&AGENDA.ocupaProduccion(o.ev))).sort((a,b)=>(a.ev.hora||"99").localeCompare(b.ev.hora||"99"))}
 
 /* ---------- Evangelio del día (Vatican News, vía evangelio.php) ---------- */
 const evangelios={};  // fecha → {estado:"cargando"|"ok"|"error", datos}
@@ -2007,9 +2026,19 @@ function vistaSemana(hoy){const ws=weekStart(),ks=[...Array(7)].map((_,i)=>key(a
     return `<div class="cdia ${i>4?"finde":""} ${k===hoy?"hoy":""} ${!evs.length&&k!==hoy?"vacio":""}"><div class="cdh"><button type="button" class="cdn" data-irdia="${k}" title="Ver el día"><span>${DIAS[d.getDay()].slice(0,3)}</span><b>${d.getDate()}</b></button></div>
       ${evs.map(o=>cevHTML(o,k)).join("")}
       <button type="button" class="cmas" data-evnuevo="${k}" aria-label="Agendar el ${DIAS[d.getDay()]} ${d.getDate()}" title="Agendar este día">+</button></div>`}).join("")}</div>`}
-function vistaDia(hoy){const k=key(anchor),occ=ocurrenciasRango(k,k),evs=eventosDia(occ,k);
+/* Día: lo de todo el día arriba y lo que tiene hora en una rejilla de 7:00 a 23:00 (jornada laboral 9 a 17 sombreada) */
+function vistaDia(hoy){const k=key(anchor),occ=ocurrenciasRango(k,k),evs=eventosDia(occ,k),d=fromKey(k),H=AGENDA.HORARIO;
+  const todo=evs.filter(o=>!o.ev.hora),conHora=evs.filter(o=>o.ev.hora),hr=h=>+String(h).slice(0,2);
+  const vie=d.getDay()===5&&AGENDA.viernesOcupado(todosEventos(),key(mondayOf(d))),finJornada=vie?H.viernesCorto:H.fin;
+  const lunes=key(mondayOf(d)),sm=AGENDA.semanaDelMes(lunes),laboral=d.getDay()>0&&d.getDay()<6;
+  const item=o=>{const ev=o.ev,dia=Math.round((fromKey(k)-fromKey(o.ini))/864e5);return `<button type="button" class="cev" style="--c:${colorEv(ev)}" data-evabrir="${esc(ev.id)}|${o.ini}"><strong>${esc(ev.titulo||"Sin título")}</strong><small>${esc((TIPOS_EV[ev.tipo]||TIPOS_EV.otro)[0])}${ev.hora?" · "+esc(horaTxt(ev)):""}${ev.tipo==="produccion"&&dia<5&&!ev.tipoProd?" · "+esc(DIAS_PROD[dia]):""}${ev.area&&AREAS[ev.area]?" · "+AREAS[ev.area].n:""}${ev.repetir?" · ↻ "+esc(REPETIR[ev.repetir].toLowerCase()):""}${ev.fijo?" · fija":""}</small>${ev.notas?`<small>${esc(ev.notas)}</small>`:""}</button>`};
+  const horas=[...Array(17)].map((_,i)=>i+7);
   return `<div class="dpanel"><div class="dvh"><h3>Agenda · ${evs.length} evento${evs.length===1?"":"s"}</h3><button type="button" class="btn ghost sm" data-evnuevo="${k}">+ Agendar este día</button></div>
-      ${evs.length?`<ul class="dvlista">${evs.map(o=>{const ev=o.ev,dia=Math.round((fromKey(k)-fromKey(o.ini))/864e5);return `<li><span class="dvhora">${esc(ev.hora||"Todo el día")}</span><button type="button" class="cev" style="--c:${colorEv(ev)}" data-evabrir="${esc(ev.id)}|${o.ini}"><strong>${esc(ev.titulo||"Sin título")}</strong><small>${esc((TIPOS_EV[ev.tipo]||TIPOS_EV.otro)[0])}${ev.tipo==="produccion"&&dia<5?" · "+esc(DIAS_PROD[dia]):""}${ev.area&&AREAS[ev.area]?" · "+AREAS[ev.area].n:""}${ev.repetir?" · ↻ "+esc(REPETIR[ev.repetir].toLowerCase()):""}</small>${ev.notas?`<small>${esc(ev.notas)}</small>`:""}</button></li>`}).join("")}</ul>`:`<p class="none" style="margin:0">Nada agendado este día.</p>`}</div>`}
+      ${laboral?`<p class="dljor">Jornada ${H.inicio}–${finJornada}${vie?" · viernes ocupado por una actividad externa: solo de 9 a 11":""} · ${sm<=3?`semana ${sm} de producción del mes${d.getDay()===3&&!AGENDA.viernesOcupado(todosEventos(),lunes)?" · miércoles para las demás áreas":""}`:"semana de colchón (contratiempos y grabaciones externas)"}</p>`:""}
+      ${todo.length?`<div class="dvtodo"><span class="dvhora">Todo el día</span><div>${todo.map(item).join("")}</div></div>`:""}
+      <ol class="dvgrid">${horas.map(h=>{const aqui=conHora.filter(o=>hr(o.ev.hora)===h||(h===7&&hr(o.ev.hora)<7));const enJ=laboral&&h>=hr(H.inicio)&&h<hr(finJornada);
+        return `<li class="${enJ?"jor":""}"><span class="dvhora">${String(h).padStart(2,"0")}:00</span><div>${aqui.map(item).join("")}</div></li>`}).join("")}</ol>
+      ${!evs.length?`<p class="none" style="margin:8px 0 0">Nada agendado este día.</p>`:""}</div>`}
 function vistaMes(hoy){const ms=monthStart(),ini=mondayOf(ms),fin=new Date(ms.getFullYear(),ms.getMonth()+1,0),semanas=Math.ceil((Math.round((fin-ini)/864e5)+1)/7);
   const ks=[...Array(semanas*7)].map((_,i)=>key(addDays(ini,i))),occ=ocurrenciasRango(ks[0],ks[ks.length-1]);
   return `<div class="calmes"><div class="cmh">${["lun","mar","mié","jue","vie","sáb","dom"].map(d=>`<span>${d}</span>`).join("")}</div><div class="cmg">${ks.map((k,i)=>{const d=fromKey(k),evs=eventosDia(occ,k),fuera=d.getMonth()!==ms.getMonth(),max=3;
@@ -2022,21 +2051,41 @@ function vistaAno(hoy){const y=anchor.getFullYear(),occ=ocurrenciasRango(`${y}-0
     return `<div class="cam"><button type="button" class="camt" data-irmes="${y}-${String(m+1).padStart(2,"0")}">${MESES_L[m][0].toUpperCase()+MESES_L[m].slice(1)}</button>
       <div class="camg">${["L","M","M","J","V","S","D"].map(d=>`<span class="camh">${d}</span>`).join("")}${"<span></span>".repeat(off)}${[...Array(n)].map((_,i)=>{const k=key(new Date(y,m,i+1)),evs=porDia[k]||[];
         return `<button type="button" class="camd ${k===hoy?"hoy":""} ${evs.length?"con":""}" data-irdia="${k}" ${evs.length?`style="--c:${colorEv(evs[0])}" title="${esc(evs.map(e=>e.titulo).join(" · "))}"`:""}>${i+1}</button>`}).join("")}</div></div>`}).join("")}</div>`}
+/* ---------- Disponibilidad de producción (reglas en agenda-reglas.js) ----------
+   12 semanas: las 3 primeras de cada mes son de producción (bloque A lun–mar y B jue–vie, o mié–jue si el viernes
+   está ocupado); la 4.ª y 5.ª son colchón. Se marca qué semanas tienen lugar para el tipo de producción elegido. */
+const DIA3=["dom","lun","mar","mié","jue","vie","sáb"];
+function diasTxt(a,b){const x=fromKey(a),y=fromKey(b);return `${DIA3[x.getDay()]} ${x.getDate()}${x.getMonth()!==y.getMonth()?" "+MESES[x.getMonth()]:""} – ${DIA3[y.getDay()]} ${y.getDate()} ${MESES[y.getMonth()]}`}
+function panelDisponibilidad(){const l0=addDays(mondayOf(new Date()),7*12*dispOff),lf=addDays(l0,7*11+4),T=AGENDA.TIPOS_PROD;
+  const sem=AGENDA.disponibles(todosEventos(),key(l0),12,dispTipo),hoy=key(new Date());
+  const bloque=(s,b)=>{const x=s[b],ocu=x.por[0],pasado=x.dias[1]<hoy,etq=b==="A"?"Lun–Mar":s.viernesOcupado?"Mié–Jue":"Jue–Vie";
+    return ocu?`<button type="button" class="dblq ocu" data-evabrir="${esc(ocu.id)}|${x.dias[0]}" title="${esc(x.por.map(e=>e.titulo).join(" · "))}"><span>${etq}</span><b>${esc(ocu.titulo||"Ocupado")}</b></button>`
+      :`<button type="button" class="dblq libre" ${pasado?"disabled":""} data-evprodb="${x.dias[0]}|${x.dias[1]}"><span>${etq}</span><b>Libre</b></button>`};
+  const cards=sem.map(s=>{const l=fromKey(s.lunes),v=addDays(l,4),rango=`${l.getDate()} ${MESES[l.getMonth()]} – ${v.getDate()} ${MESES[v.getMonth()]}`;
+    if(!s.produccion)return `<div class="dwk colchon"><time>${rango}</time><b>Semana ${s.n} · colchón</b><small>Contratiempos y grabaciones externas</small><button type="button" class="dblq ext" data-evext="${s.lunes}">+ Grabación externa</button></div>`;
+    return `<div class="dwk ${s.opciones.length?"cabe":""}"><time>${rango}</time><b>Semana ${s.n} de producción${s.viernesOcupado?" · viernes ocupado":""}</b><div class="dblqs">${bloque(s,"A")}${bloque(s,"B")}</div>${s.opciones.length?`<small class="dcabe">✓ Cabe ${esc(T[dispTipo].n.toLowerCase())}</small>`:""}</div>`}).join("");
+  const cabe=sem.filter(s=>s.opciones.length).length;
+  return `<div class="dpanel"><div class="disph"><div><h3>Disponibilidad de producción</h3><p>3 semanas de producción al mes: lunes-martes y jueves-viernes de 9 a 17 (el miércoles es para las demás áreas). La 4.ª semana es colchón. Toca un bloque libre para agendar.</p></div>
+      <div class="dispnav"><button type="button" class="navbtn" data-disp="-1" aria-label="12 semanas antes" ${dispOff<=0?"disabled":""}>←</button><button type="button" class="navbtn" data-disp="0" ${dispOff===0?"disabled":""}>Hoy</button><button type="button" class="navbtn" data-disp="1" aria-label="12 semanas después">→</button></div></div>
+    <div class="vistas dtipos" role="tablist" aria-label="Tipo de producción">${Object.entries(T).map(([k,t])=>`<button type="button" role="tab" class="vista" data-disptipo="${k}" aria-selected="${dispTipo===k}" title="${esc(t.desc)}">${esc(t.n)} · ${t.dias} días</button>`).join("")}</div>
+    <div class="dispr"><b>${l0.getDate()} ${MESES[l0.getMonth()]} ${l0.getFullYear()} – ${lf.getDate()} ${MESES[lf.getMonth()]} ${lf.getFullYear()}</b><span>${cabe} semana${cabe===1?"":"s"} con lugar para ${esc(T[dispTipo].n.toLowerCase())} · ${esc(T[dispTipo].desc)}</span></div>
+    <div class="disp2">${cards}</div></div>`}
+/* ---------- Eventos: cenáculos, eventos y actividades externas (próximas 8 semanas) ---------- */
+const TIPOS_APARTADO=["evento","cenaculo","reunion","fijo","externo"];
+function panelEventos(){const hoy=key(new Date()),hasta=key(addDays(new Date(),56));
+  const occ=ocurrenciasRango(hoy,hasta).filter(o=>TIPOS_APARTADO.includes(o.ev.tipo)).sort((a,b)=>(a.ini+(a.ev.hora||"")).localeCompare(b.ini+(b.ev.hora||"")));
+  return `<div class="dpanel"><div class="disph"><div><h3>Eventos</h3><p>Cenáculos (algunos martes, 19–21 o 20–22), eventos y viernes ocupados por actividades externas. Los de noche no chocan con la jornada de producción.</p></div>
+      <div class="rbtns"><button type="button" class="btn sm" data-evtipo="cenaculo">+ Cenáculo</button><button type="button" class="btn ghost sm" data-evtipo="evento">+ Evento</button><button type="button" class="btn ghost sm" data-evtipo="externo">+ Viernes ocupado</button></div></div>
+    ${occ.length?`<ul class="evlista">${occ.slice(0,30).map(o=>{const d=fromKey(o.ini);return `<li><time>${DIA3[d.getDay()]} ${d.getDate()} ${MESES[d.getMonth()]}</time>${cevHTML(o,o.ini)}</li>`}).join("")}</ul>`:`<p class="none" style="margin:0">Nada en las próximas 8 semanas.</p>`}</div>`}
+/* Siguiente día con ese número de día de la semana (2 = martes, 5 = viernes) desde hoy */
+function proximoDia(n){let d=new Date();for(let i=0;i<7;i++){if(d.getDay()===n)return key(d);d=addDays(d,1)}return key(new Date())}
 function renderDashboard(){const V=$("vDash"),hoy=key(new Date());
   const fEv=dashView==="dia"?key(anchor):hoy;
   let cuerpo=dashView==="dia"?vistaDia(hoy):dashView==="mes"?vistaMes(hoy):dashView==="ano"?vistaAno(hoy):vistaSemana(hoy);
   // disponibilidad de producción y pendientes de la semana (debajo de día y semana)
   let extra="";
-  if(dashView==="semana"||dashView==="dia"){const l0=addDays(mondayOf(new Date()),7*12*dispOff),lf=addDays(l0,7*11+4);
-    const disp=[...Array(12)].map((_,i)=>{const l=key(addDays(l0,7*i)),ps=producciones(l),v=addDays(fromKey(l),4);
-      const rango=`${fromKey(l).getDate()} ${MESES[fromKey(l).getMonth()]} – ${v.getDate()} ${MESES[v.getMonth()]}`;
-      return ps.length?`<button type="button" class="dsem ${ps.length>1?"doble":"ocupada"}" data-evabrir="${esc(ps[0].ev.id)}|${ps[0].ini}"><time>${rango}</time><b>${ps.length>1?`Doble agenda · ${ps.length}`:esc(ps[0].ev.titulo)}</b></button>`
-        :`<button type="button" class="dsem libre" data-evprod="${l}"><time>${rango}</time><b>Libre</b></button>`}).join("");
-    const libres=[...Array(12)].filter((_,i)=>!producciones(key(addDays(l0,7*i))).length).length;
-    extra=`<div class="dpanel"><div class="disph"><div><h3>Disponibilidad de producción</h3><p>Una canción ocupa una semana completa, de lunes a viernes. Toca una semana libre para agendarla.</p></div>
-      <div class="dispnav"><button type="button" class="navbtn" data-disp="-1" aria-label="12 semanas antes" ${dispOff<=0?"disabled":""}>←</button><button type="button" class="navbtn" data-disp="0" ${dispOff===0?"disabled":""}>Hoy</button><button type="button" class="navbtn" data-disp="1" aria-label="12 semanas después">→</button></div></div>
-      <div class="dispr"><b>${l0.getDate()} ${MESES[l0.getMonth()]} ${l0.getFullYear()} – ${lf.getDate()} ${MESES[lf.getMonth()]} ${lf.getFullYear()}</b><span>${libres} de 12 semanas libres</span></div>
-      <div class="disp">${disp}</div></div>`}
+  if(dashView==="semana"||dashView==="dia")extra=panelDisponibilidad();
+  extra+=panelEventos();
   V.innerHTML=`${evangelioHTML(fEv)}
     <div class="dhead"><div class="vistas" role="tablist" aria-label="Vista del calendario">${VISTAS.map(([k,n])=>`<button type="button" role="tab" class="vista" data-vista="${k}" aria-selected="${dashView===k}">${n}</button>`).join("")}</div>
       <button type="button" class="btn" data-evnuevo="${dashView==="dia"?key(anchor):""}">+ Agendar</button></div>
@@ -2046,6 +2095,11 @@ function renderDashboard(){const V=$("vDash"),hoy=key(new Date());
 document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const ds=b.dataset;
   if(ds.vista){dashView=ds.vista;render();return}
   if(ds.disp!==undefined){dispOff=ds.disp==="0"?0:Math.max(0,dispOff+Number(ds.disp));render();return}
+  if(ds.disptipo){dispTipo=ds.disptipo;render();return}
+  if(ds.evprodb){const [a,b]=ds.evprodb.split("|"),op=dispTipo==="acustico"?{inicio:a,fin:b}:(AGENDA.opciones(todosEventos(),key(mondayOf(fromKey(a))),dispTipo)[0]||{inicio:a,fin:b});
+    abrirEvento(null,op.inicio,{tipo:"produccion",area:"musica",titulo:"Producción · ",fin:op.fin,hora:AGENDA.HORARIO.inicio,horaFin:AGENDA.HORARIO.fin,tipoProd:dispTipo});return}
+  if(ds.evext){abrirEvento(null,ds.evext,{tipo:"grabacion",area:"musica",titulo:"Grabación externa · ",hora:AGENDA.HORARIO.inicio,horaFin:AGENDA.HORARIO.fin,notas:"Semana de colchón: batería u otra grabación fuera."});return}
+  if(ds.evtipo){const t=ds.evtipo;abrirEvento(null,t==="cenaculo"?proximoDia(2):t==="externo"?proximoDia(5):key(new Date()),t==="cenaculo"?{tipo:"cenaculo",titulo:"Cenáculo",hora:"19:00",horaFin:"21:00",area:"general"}:t==="externo"?{tipo:"externo",titulo:"Actividad externa",area:"general",hora:"11:00",notas:"Ese viernes solo se trabaja de 9 a 11 y el miércoles se vuelve día de producción."}:{tipo:"evento",area:"general"});return}
   if(ds.irdia){anchor=fromKey(ds.irdia);dashView="dia";render();window.scrollTo({top:0,behavior:"smooth"});return}
   if(ds.irmes){anchor=fromKey(ds.irmes+"-01");dashView="mes";render();return}
   if(ds.evangelio){evangelioAbierto=!evangelioAbierto;render();return}
@@ -2059,9 +2113,10 @@ document.addEventListener("touchend",e=>{if(!evToque)return;const t=e.changedTou
   const k=Math.min(n-1,Math.max(0,lecturaIdx+(dx<0?1:-1)));if(k!==lecturaIdx){lecturaIdx=k;evangelioAbierto=false;render()}},{passive:true});
 /* ---------- Formulario para agendar ---------- */
 function abrirEvento(id,fecha,base){const ev=id?eventos.find(x=>x.id===id):null;if(id&&!ev)return;
-  evEdit={id:ev?ev.id:null,ocurrencia:fecha||null};const v=ev||Object.assign({titulo:"",tipo:"fijo",fecha:fecha||key(new Date()),fin:"",hora:"",repetir:"",hasta:"",area:"general",notas:""},base||{});
+  evEdit={id:ev?ev.id:null,ocurrencia:fecha||null};const v=ev||Object.assign({titulo:"",tipo:"fijo",fecha:fecha||key(new Date()),fin:"",hora:"",horaFin:"",repetir:"",hasta:"",area:"general",notas:""},base||{});
   $("evTitle").textContent=ev?"Editar fecha":"Agendar";
-  $("evTipo").innerHTML=Object.entries(TIPOS_EV).map(([k,[n]])=>`<option value="${k}">${n}</option>`).join("");
+  $("evTipo").innerHTML=Object.entries(TIPOS_EV).filter(([k])=>!TIPOS_EV_FIJOS.includes(k)).map(([k,[n]])=>`<option value="${k}">${n}</option>`).join("");
+  $("evTipoProd").innerHTML=Object.entries(AGENDA.TIPOS_PROD).map(([k,t])=>`<option value="${k}">${esc(t.n)} · ${t.dias} días</option>`).join("");$("evTipoProd").value=v.tipoProd||"fullband";$("evHoraFin").value=v.horaFin||"";
   $("evArea").innerHTML=`<option value="general">General</option>`+AREA_IDS.map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("");
   $("evRepetir").innerHTML=Object.entries(REPETIR).map(([k,n])=>`<option value="${k}">${n}</option>`).join("");
   $("evCancion").innerHTML=`<option value="">Sin canción ligada</option>`+canciones.filter(c=>c.etapa!=="completado").map(c=>`<option value="${esc(c.id)}">${esc((c.data||{}).titulo||"Sin título")} · ${esc(artistaDe(c))}</option>`).join("");
@@ -2071,15 +2126,18 @@ function abrirEvento(id,fecha,base){const ev=id?eventos.find(x=>x.id===id):null;
   evCampos();$("evModal").hidden=false;setTimeout(()=>$("evTitulo").focus(),30)}
 function cerrarEvento(){$("evModal").hidden=true;evEdit=null;if(esperaRender){esperaRender=false;render()}}
 /* Muestra u oculta campos y avisa si la semana de producción ya está ocupada */
-function evCampos(){const tipo=$("evTipo").value,prod=tipo==="produccion";
+function evCampos(){const tipo=$("evTipo").value,prod=tipo==="produccion";$("evProdW").hidden=!prod;$("evAtajos").hidden=tipo!=="cenaculo";
   $("evCancionW").hidden=!(prod||tipo==="grabacion")||!puedeMusica()&&!$("evCancion").value;$("evHastaW").hidden=!$("evRepetir").value;
-  if(prod&&$("evFecha").value){const l=mondayOf(fromKey($("evFecha").value));if(!$("evFin").value||$("evFin").value<$("evFecha").value)$("evFin").value=key(addDays(l,4));
-    if($("evFecha").value!==key(l)&&!evEdit.id)$("evFecha").value=key(l);
-    const otras=producciones(key(l)).filter(o=>o.ev.id!==evEdit.id);
-    $("evAviso").hidden=false;$("evAviso").className="evaviso"+(otras.length?"":" ok");
-    $("evAviso").textContent=otras.length?`Esa semana ya tiene producción: ${otras.map(o=>o.ev.titulo).join(", ")}. Una canción ocupa la semana completa.`:"Semana libre para producir (lunes a viernes)."}
+  if(prod&&$("evFecha").value){const tp=$("evTipoProd").value,l=key(mondayOf(fromKey($("evFecha").value))),otros=todosEventos().filter(x=>x.id!==evEdit.id),T=AGENDA.TIPOS_PROD[tp];
+    const ops=AGENDA.opciones(otros,l,tp),f=$("evFecha").value,op=ops.find(o=>o.inicio<=f&&o.fin>=f)||ops[0],sm=AGENDA.semana(otros,l);
+    if(op&&!evEdit.id){$("evFecha").value=op.inicio;$("evFin").value=op.fin;if(!$("evHora").value)$("evHora").value=AGENDA.HORARIO.inicio;if(!$("evHoraFin").value)$("evHoraFin").value=AGENDA.HORARIO.fin}
+    $("evAviso").hidden=false;$("evAviso").className="evaviso"+(op?" ok":"");
+    $("evAviso").textContent=op?`Hay lugar: ${diasTxt(op.inicio,op.fin)} · ${T.n} (${T.desc})`
+      :!sm.produccion?`Esa es la semana ${sm.n} del mes: semana de colchón (contratiempos y grabaciones externas). Elige otra semana o guárdala así si es un caso especial.`
+      :`Esa semana no tiene lugar para ${T.n.toLowerCase()}: ${[...sm.A.por,...sm.B.por].map(e=>e.titulo).filter((x,i,a)=>a.indexOf(x)===i).join(", ")||"ya está ocupada"}.`}
   else $("evAviso").hidden=true}
-["evTipo","evFecha","evRepetir"].forEach(i=>$(i).addEventListener("change",evCampos));
+["evTipo","evFecha","evRepetir","evTipoProd"].forEach(i=>$(i).addEventListener("change",evCampos));
+$("evAtajos").addEventListener("click",e=>{const b=e.target.closest("[data-evh]");if(!b)return;const [a,z]=b.dataset.evh.split("|");$("evHora").value=a;$("evHoraFin").value=z});
 $("evCancion").addEventListener("change",()=>{const c=canciones.find(x=>x.id===$("evCancion").value);if(c&&(!$("evTitulo").value||/^Producción/.test($("evTitulo").value)))$("evTitulo").value=`Producción · «${(c.data||{}).titulo||"Sin título"}»`});
 $("evCancelar").onclick=cerrarEvento;
 $("evModal").addEventListener("click",e=>{if(e.target===$("evModal"))cerrarEvento()});
@@ -2088,8 +2146,11 @@ function guardarEvento(ev){const {id,...b}=ev;return write(id,()=>eventosCol.doc
 $("evForm").addEventListener("submit",e=>{e.preventDefault();if(!eventosCol||!evEdit)return;
   const fecha=$("evFecha").value,fin=$("evFin").value;if(!fecha||!$("evTitulo").value.trim())return;
   if(fin&&fin<fecha){toast("«Hasta el» no puede ser antes de la fecha.");return}
+  if($("evHora").value&&$("evHoraFin").value&&$("evHoraFin").value<=$("evHora").value){toast("La hora de fin debe ser después de la de inicio.");return}
+  // cenáculos y eventos no pueden caer en la jornada de producción (9 a 17) de un día con producción
+  if(["cenaculo","evento"].includes($("evTipo").value)&&AGENDA.chocaConProduccion(todosEventos().filter(x=>x.id!==evEdit.id),fecha,$("evHora").value,$("evHoraFin").value)){toast("Ese horario choca con la producción de ese día (9 a 17). Cámbialo a la noche, p. ej. 19–21 o 20–22.");return}
   const prev=evEdit.id?eventos.find(x=>x.id===evEdit.id):null;
-  const ev={...(prev||{}),id:evEdit.id||uid(),titulo:$("evTitulo").value.trim().slice(0,140),tipo:$("evTipo").value,fecha,fin:fin&&fin>fecha?fin:"",hora:$("evHora").value,
+  const ev={...(prev||{}),id:evEdit.id||uid(),titulo:$("evTitulo").value.trim().slice(0,140),tipo:$("evTipo").value,fecha,fin:fin&&fin>fecha?fin:"",hora:$("evHora").value,horaFin:$("evHora").value?$("evHoraFin").value:"",tipoProd:$("evTipo").value==="produccion"?$("evTipoProd").value:"",
     repetir:$("evRepetir").value,hasta:$("evRepetir").value?$("evHasta").value:"",area:$("evArea").value,notas:$("evNotas").value.trim().slice(0,1000),
     cancion_id:["produccion","grabacion"].includes($("evTipo").value)?$("evCancion").value||null:null};
   if(!prev){ev.creado=new Date().toISOString();ev.creado_por=perfil?perfil.id:null;ev.excepciones=[]}
@@ -2326,6 +2387,8 @@ document.addEventListener("submit",e=>{if(e.target.id!=="cEditForm")return;e.pre
   window.scrollTo({top:document.querySelector(".cpendiente")?document.querySelector(".cpendiente").getBoundingClientRect().top+scrollY-20:0,behavior:"smooth"})});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-ceditar]");if(!b)return;cancionEdit=b.dataset.ceditar||null;esperaRender=false;render();
   if(cancionEdit)setTimeout(()=>{const f=$("cEditForm");if(f){f.scrollIntoView({behavior:"smooth",block:"start"});const t=$("ce_titulo");if(t)t.focus({preventScroll:true})}},50)});
+document.addEventListener("change",e=>{const t=e.target;if(!t.dataset||!t.dataset.ctipoprod)return;const c=canciones.find(x=>x.id===t.dataset.ctipoprod);if(!c)return;
+  guardarCancion(c.id,{data:{...(c.data||{}),tipoProd:t.value}},true,`Tipo de producción: ${AGENDA.TIPOS_PROD[t.value].n}.`)});
 document.addEventListener("change",e=>{const cb=e.target.closest&&e.target.closest(".cemulti input");if(!cb)return;cb.closest("label").classList.toggle("on",cb.checked);
   const box=cb.closest("[data-ccolab]");if(!box)return;const c=canciones.find(x=>x.id===box.dataset.ccolab);if(!c)return;
   const colaboran=[...box.querySelectorAll("input:checked")].map(x=>x.value);
@@ -2346,6 +2409,7 @@ function detalleCancion(c){const PS=pasosDe(c),live=esLive(c);const d=c.data||{}
     ${puedeMusica()?panelSamply(c):""}
     ${puedeMusica()?`<div class="egestion cgest">
       <label for="cEtapa">Etapa<select class="field" id="cEtapa" data-cetapa="${esc(c.id)}">${ETAPAS.map(([k,n])=>`<option value="${k}" ${c.etapa===k?"selected":""}>${esc(n)}</option>`).join("")}</select><small class="ehint">${esc((ETAPAS.find(x=>x[0]===c.etapa)||[])[2]||"")} Avanza sola al completar pasos.</small></label>
+      <label for="cTipoProd">Tipo de producción<select class="field" id="cTipoProd" data-ctipoprod="${esc(c.id)}">${Object.entries(AGENDA.TIPOS_PROD).map(([k,t])=>`<option value="${k}" ${tipoProdDe(c)===k?"selected":""}>${esc(t.n)} · ${t.dias} días</option>`).join("")}</select><small class="ehint">${esc(AGENDA.TIPOS_PROD[tipoProdDe(c)].desc)} Con esto se busca el hueco al agendar.</small></label>
       <label for="cMin">Ministerio${selectMinisterio(`id="cMin" data-cmin="${esc(c.id)}"`,ministerioDe(c))}</label>
       <div class="ccolab"><span>En colaboración con</span><div class="cemulti" data-ccolab="${esc(c.id)}">${chipsColab("colab",colaboranDe(c),ministerioDe(c))||`<small class="ehint">Crea ligas o agrega canciones de otros ministerios para elegirlos.</small>`}</div><small class="ehint">La canción aparece también en el tablero de cada ministerio que marques.</small></div>
       ${live?"":`<label class="cunautor"><input type="checkbox" data-cunautor="${esc(c.id)}" ${unAutor(c)?"checked":""}> <span><b>👤 Un solo autor</b><small>El splitsheet (paso ${PASO_SPLIT}) se da por hecho y no pide archivo.</small></span></label>`}
@@ -2371,6 +2435,9 @@ function agendarCancion(id,lunes){const c=canciones.find(x=>x.id===id);if(!c)ret
   const e=etapaSegun(c.etapa,cambios.checklist,c);if(e!==c.etapa)cambios.etapa=e;
   guardarCancion(id,cambios,true)}
 function fechaGrabacion(c){const g=eventos.find(e=>e.cancion_id===c.id&&e.tipo==="grabacion");return g?g.fecha:null}
+/* Tipo de producción de la canción: acústica o live (2 días), full band (semana) o grande (2 semanas) */
+function tipoProdDe(c){const t=(c.data||{}).tipoProd;return AGENDA.TIPOS_PROD[t]?t:esLive(c)?"acustico":"fullband"}
+function primerHueco(tp){const s=AGENDA.disponibles(todosEventos(),key(addDays(new Date(),1)),52,tp).find(x=>x.opciones.length&&x.opciones[0].inicio>key(new Date()));return s?s.opciones[0]:null}
 function proximaLibre(){let l=mondayOf(new Date());for(let i=0;i<52;i++){const k=key(addDays(l,7*i));if(!producciones(k).length)return k}return key(l)}
 document.addEventListener("change",e=>{const t=e.target;
   if(t.dataset.cetapa){const c=canciones.find(x=>x.id===t.dataset.cetapa);guardarCancion(t.dataset.cetapa,{etapa:t.value},true,`Etapa: ${nombreEtapa(c,t.value)}.`);return}
@@ -2437,9 +2504,11 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)r
   if(ds.cvista){cancionesVista=ds.cvista;render();return}
   if(ds.cnueva!==undefined){nuevaCancion=ds.cnueva==="1";render();if(nuevaCancion)setTimeout(()=>$("cnTitulo").focus(),30);return}
   if(ds.cagendar){const c=canciones.find(x=>x.id===ds.cagendar);if(!c)return;
-    if(esLive(c)){const g=eventos.find(x=>x.cancion_id===c.id&&x.tipo==="grabacion");if(g)abrirEvento(g.id,null);else abrirEvento(null,key(addDays(new Date(),7)),{tipo:"grabacion",area:"musica",titulo:`Grabación live · «${tituloDe(c)}»`,notas:"Grabación en vivo de un día, en audio y video.",cancion_id:c.id});return}
+    // primer hueco que le queda según su tipo de producción (agenda-reglas.js)
+    const tp=tipoProdDe(c),op=primerHueco(tp),H=AGENDA.HORARIO;
+    if(esLive(c)){const g=eventos.find(x=>x.cancion_id===c.id&&x.tipo==="grabacion");if(g)abrirEvento(g.id,null);else abrirEvento(null,op?op.inicio:key(addDays(new Date(),7)),{tipo:"grabacion",area:"musica",titulo:`Grabación live · «${tituloDe(c)}»`,fin:op?op.fin:"",hora:H.inicio,horaFin:H.fin,notas:"1 día de grabación en vivo (audio y video) y ½ día de mezcla y master.",cancion_id:c.id});return}
     const ev=eventos.find(x=>x.cancion_id===c.id&&x.tipo==="produccion");
-    if(ev)abrirEvento(ev.id,null);else{const l=proximaLibre();abrirEvento(null,l,{tipo:"produccion",area:"musica",titulo:`Producción · «${(c.data||{}).titulo||"Sin título"}»`,fin:key(addDays(fromKey(l),4)),cancion_id:c.id})}return}
+    if(ev)abrirEvento(ev.id,null);else{const l=op?op.inicio:proximaLibre();abrirEvento(null,l,{tipo:"produccion",tipoProd:tp,area:"musica",titulo:`Producción · «${(c.data||{}).titulo||"Sin título"}»`,fin:op?op.fin:key(addDays(fromKey(l),4)),hora:H.inicio,horaFin:H.fin,cancion_id:c.id})}return}
   if(ds.cdel){const c=canciones.find(x=>x.id===ds.cdel);if(!c)return;
     confirmarAccion({titulo:"¿Borrar esta canción?",texto:`Vas a borrar «${tituloDe(c)}» de ${creditoDe(c)}. También se borran sus archivos, su pendiente abierto y sus fechas en el calendario. Esto no se puede deshacer.`,boton:"Sí, borrar canción"}).then(ok=>{if(ok)borrarCancion(c.id)});return}});
 /* Ventana de confirmación (en lugar de confirm del navegador) */
