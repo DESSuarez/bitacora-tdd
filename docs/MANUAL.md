@@ -124,7 +124,7 @@ docs/MANUAL.md          Este manual
 - **Lives:** se manejan con `CHECKLIST_LIVE`, de 6 pasos, y todo vive en Música.
   - Grabación (4) y Post (5) crean además un pendiente en **Audiovisual** (`AV_PASO_LIVE`, id `…-p<n>-av`).
   - Si se completa cualquiera de los dos, se cierran ambos.
-- **Vistas:** Música → Canciones (por ministerio, por etapa, ligas y agenda para artistas). Legal → Registros. Marketing → Lanzamientos. Desde cualquiera se abre el detalle de la canción.
+- **Vistas:** Música → Canciones (por ministerio, por etapa, ligas para nuevas canciones y agenda para artistas). Legal → Registros. Marketing → Lanzamientos. Desde cualquiera se abre el detalle de la canción.
 
 ## 8. Calendario y agenda de producción
 
