@@ -8,6 +8,7 @@
 //   el miércoles es para las demás áreas. Si el viernes está ocupado por una actividad externa
 //   (evento tipo «externo»), el bloque B es miércoles-jueves y ese viernes solo se trabaja de 9 a 11.
 // · Todos los miércoles de 9 a 12 hay oración (evento fijo).
+// · Los días inhábiles (evento tipo «inhabil»: vacaciones, festivos) no se pueden agendar.
 // · Tipos de producción: acústica o live = 1 bloque (2 días: 1 de grabación y ½ de mezcla y master);
 //   full band = la semana completa; producción grande = 2 semanas de producción seguidas.
 (function () {
@@ -53,8 +54,8 @@
   // Semana del mes: la n-ésima semana (de lunes) que empieza en ese mes
   function semanaDelMes(lunes) { return Math.floor((fromKey(lunes).getDate() - 1) / 7) + 1; }
   function esProduccion(lunes) { return semanaDelMes(lunes) <= 3; }
-  // Qué ocupa días de producción: producciones y grabaciones ligadas a una canción
-  function ocupaProduccion(ev) { return ev.tipo === "produccion" || (ev.tipo === "grabacion" && !!ev.cancion_id); }
+  // Qué ocupa días de producción: producciones, grabaciones ligadas a una canción y días inhábiles (vacaciones, festivos)
+  function ocupaProduccion(ev) { return ev.tipo === "produccion" || ev.tipo === "inhabil" || (ev.tipo === "grabacion" && !!ev.cancion_id); }
   function viernesOcupado(eventos, lunes) { const v = key(addDays(fromKey(lunes), 4)); return eventos.some((ev) => ev.tipo === "externo" && ocurrencias(ev, v, v).length); }
 
   /* Estado de una semana: {lunes, n (semana del mes), produccion, viernesOcupado, A:{dias, por[]}, B:{dias, por[]}} */

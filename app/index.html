@@ -53,6 +53,14 @@ body[data-area="operativo"]{--area:var(--sol);--area-ink:var(--sol-ink);--area-s
 body[data-area="legal"]{--area:var(--lav);--area-ink:var(--lav-ink);--area-soft:var(--lav-soft);--on-area:#FFFFFF}
 body[data-area="marketing"]{--area:var(--rosa);--area-ink:var(--rosa-ink);--area-soft:var(--rosa-soft);--on-area:#FFFFFF}
 .dtipos{margin:4px 0 10px}
+.rprod{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.rprod section{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;background:var(--surface)}
+.rprod h4{margin:0;display:flex;justify-content:space-between;gap:8px;font-size:14px}.rprod h4 span{font:600 12px "IBM Plex Mono",monospace;color:var(--muted)}
+.rprod ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}.rprod small{color:var(--muted);font:500 12px "IBM Plex Mono",monospace}
+.agform{display:flex;flex-direction:column;gap:10px}.agtipos{border:0;margin:0;padding:0;display:flex;gap:8px;flex-wrap:wrap}.agtipos legend{font-weight:700;margin-bottom:6px}
+.agtipos input{position:absolute;opacity:0;pointer-events:none}
+.agrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.agrow label{display:flex;flex-direction:column;gap:4px;font-weight:600}
+@media (max-width:640px){.agrow{grid-template-columns:1fr}}
 .disp2{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
 .dwk{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px;background:var(--surface)}
 .dwk time{font:600 12px "IBM Plex Mono",monospace;color:var(--muted)}.dwk>b{font-size:13px}
@@ -1620,7 +1628,7 @@ function renderKeep(){const ae=document.activeElement;
   const v=ae.value,a=ae.selectionStart,b=ae.selectionEnd;render();const n=document.querySelector(sel);
   if(n&&n!==ae){n.value=v;n.focus();try{n.setSelectionRange(a,b)}catch(e){}}}
 /* Al redibujar (por ejemplo, por cambios en tiempo real) se conserva lo escrito en los formularios abiertos */
-const FORMS_VIVOS=["cancionForm","gastoForm","pagoForm","ingresoForm","activoForm","ligaForm","cEditForm"];
+const FORMS_VIVOS=["agendaForm","cancionForm","gastoForm","pagoForm","ingresoForm","activoForm","ligaForm","cEditForm"];
 function guardarForms(){const out=[];FORMS_VIVOS.forEach(id=>{const f=document.getElementById(id);if(!f)return;
   out.push({id,campos:[...f.elements].filter(el=>el.name||el.id).map(el=>({k:el.id||el.name+"|"+el.value,v:el.value,c:el.checked,h:el.hidden,tipo:el.type}))})});
   const ae=document.activeElement;return {out,foco:ae&&ae.form&&FORMS_VIVOS.includes(ae.form.id)?(ae.id||ae.name+"|"+ae.value):null}}
@@ -1957,7 +1965,7 @@ function descargarEntradaPDF(id){const e=entradas.find(x=>x.id===id);if(!e)retur
    Tabla "eventos" (migración 013). Cada evento: {titulo, tipo, fecha, fin?, hora?, repetir?, hasta?,
    excepciones:[fechas], area, notas, cancion_id?, creado, creado_por}. Todo el equipo agenda.
    Una producción ocupa una semana (lunes a viernes); la disponibilidad muestra las semanas libres. */
-const TIPOS_EV={produccion:["Producción","var(--flame)"],fijo:["Fecha fija","var(--sea)"],reunion:["Reunión","var(--baby)"],ensayo:["Ensayo","var(--sol)"],evento:["Evento","#8E6BD8"],grabacion:["Grabación o contenido","#D9558E"],lanzamiento:["Lanzamiento","#1DB954"],cenaculo:["Cenáculo","#B0413E"],oracion:["Oración","#5B7DB1"],externo:["Actividad externa (viernes ocupado)","#55606A"],otro:["Otro","#7C8786"]};
+const TIPOS_EV={produccion:["Producción","var(--flame)"],fijo:["Fecha fija","var(--sea)"],reunion:["Reunión","var(--baby)"],ensayo:["Ensayo","var(--sol)"],evento:["Evento","#8E6BD8"],grabacion:["Grabación o contenido","#D9558E"],lanzamiento:["Lanzamiento","#1DB954"],cenaculo:["Cenáculo","#B0413E"],inhabil:["Día inhábil (vacaciones, festivo)","#9AA3A2"],oracion:["Oración","#5B7DB1"],externo:["Actividad externa (viernes ocupado)","#55606A"],otro:["Otro","#7C8786"]};
 /* Tipos que no se ofrecen al agendar (los pone el sistema) */
 const TIPOS_EV_FIJOS=["oracion"];
 const REPETIR={"":"No se repite",semanal:"Cada semana",quincenal:"Cada 2 semanas",mensual:"Cada mes",anual:"Cada año"};
@@ -2070,8 +2078,18 @@ function panelDisponibilidad(){const l0=addDays(mondayOf(new Date()),7*12*dispOf
     <div class="vistas dtipos" role="tablist" aria-label="Tipo de producción">${Object.entries(T).map(([k,t])=>`<button type="button" role="tab" class="vista" data-disptipo="${k}" aria-selected="${dispTipo===k}" title="${esc(t.desc)}">${esc(t.n)} · ${t.dias} días</button>`).join("")}</div>
     <div class="dispr"><b>${l0.getDate()} ${MESES[l0.getMonth()]} ${l0.getFullYear()} – ${lf.getDate()} ${MESES[lf.getMonth()]} ${lf.getFullYear()}</b><span>${cabe} semana${cabe===1?"":"s"} con lugar para ${esc(T[dispTipo].n.toLowerCase())} · ${esc(T[dispTipo].desc)}</span></div>
     <div class="disp2">${cards}</div></div>`}
+/* Canciones en producción por mes (6 meses desde el mes del calendario): qué se produce y cuántos bloques quedan */
+function resumenProduccion(){const m0=new Date(anchor.getFullYear(),anchor.getMonth(),1),T=AGENDA.TIPOS_PROD;
+  const meses=[...Array(6)].map((_,i)=>{const ini=new Date(m0.getFullYear(),m0.getMonth()+i,1),fin=new Date(ini.getFullYear(),ini.getMonth()+1,0),a=key(ini),b=key(fin);
+    const prods=[...new Map(ocurrenciasRango(a,b).filter(o=>AGENDA.ocupaProduccion(o.ev)&&o.ini>=a).map(o=>[o.ev.id+o.ini,o])).values()].sort((x,y)=>x.ini.localeCompare(y.ini));
+    let libres=0,total=0;for(let l=mondayOf(ini);key(l)<=b;l=addDays(l,7)){if(l.getMonth()!==ini.getMonth())continue;const s=AGENDA.semana(todosEventos(),key(l));if(!s.produccion)continue;total+=2;libres+=["A","B"].filter(x=>!s[x].por.length).length}
+    return {ini,prods,libres,total}});
+  return `<div class="dpanel"><div class="disph"><div><h3>Producción por mes</h3><p>Canciones agendadas para producir o grabar en cada mes, y bloques de 2 días que siguen libres.</p></div></div>
+    <div class="rprod">${meses.map(m=>`<section><h4>${MESES_L[m.ini.getMonth()][0].toUpperCase()+MESES_L[m.ini.getMonth()].slice(1)} ${m.ini.getFullYear()}<span>${m.prods.length} canci${m.prods.length===1?"ón":"ones"}</span></h4>
+      ${m.prods.length?`<ul>${m.prods.map(o=>`<li><button type="button" class="cmev" style="--c:${colorEv(o.ev)}" data-evabrir="${esc(o.ev.id)}|${o.ini}"><b>${fromKey(o.ini).getDate()} ${MESES[fromKey(o.ini).getMonth()]}</b> ${esc((o.ev.titulo||"").replace(/^Producción · /,""))}${o.ev.tipoProd&&T[o.ev.tipoProd]?` · ${esc(T[o.ev.tipoProd].n)}`:""}</button></li>`).join("")}</ul>`:`<p class="none" style="margin:0">Sin producciones.</p>`}
+      <small>${m.libres} de ${m.total} bloques libres</small></section>`).join("")}</div></div>`}
 /* ---------- Eventos: cenáculos, eventos y actividades externas (próximas 8 semanas) ---------- */
-const TIPOS_APARTADO=["evento","cenaculo","reunion","fijo","externo"];
+const TIPOS_APARTADO=["evento","cenaculo","reunion","fijo","externo","inhabil"];
 function panelEventos(){const hoy=key(new Date()),hasta=key(addDays(new Date(),56));
   const occ=ocurrenciasRango(hoy,hasta).filter(o=>TIPOS_APARTADO.includes(o.ev.tipo)).sort((a,b)=>(a.ini+(a.ev.hora||"")).localeCompare(b.ini+(b.ev.hora||"")));
   return `<div class="dpanel"><div class="disph"><div><h3>Eventos</h3><p>Cenáculos (algunos martes, 19–21 o 20–22), eventos y viernes ocupados por actividades externas. Los de noche no chocan con la jornada de producción.</p></div>
@@ -2085,6 +2103,7 @@ function renderDashboard(){const V=$("vDash"),hoy=key(new Date());
   // disponibilidad de producción y pendientes de la semana (debajo de día y semana)
   let extra="";
   if(dashView==="semana"||dashView==="dia")extra=panelDisponibilidad();
+  if(puedeMusica())extra=resumenProduccion()+extra;
   extra+=panelEventos();
   V.innerHTML=`${evangelioHTML(fEv)}
     <div class="dhead"><div class="vistas" role="tablist" aria-label="Vista del calendario">${VISTAS.map(([k,n])=>`<button type="button" role="tab" class="vista" data-vista="${k}" aria-selected="${dashView===k}">${n}</button>`).join("")}</div>
@@ -2176,7 +2195,7 @@ function nombreEtapa(c,k){return esLive(c)&&ETAPAS_LIVE[k]?ETAPAS_LIVE[k][0]:ETA
 function descEtapa(c,k){return esLive(c)&&ETAPAS_LIVE[k]?ETAPAS_LIVE[k][1]:((ETAPAS.find(x=>x[0]===k)||[])[2]||"")}
 function insigniaLive(c){return esLive(c)?`<span class="clive" title="Canción live">🎤 Live</span>`:""}
 const ETAPA_C={intake:"var(--baby)",preproduccion:"var(--sol)",agendada:"#8E6BD8",produccion:"var(--flame)",registro:"#D9558E",marketing:"var(--sea)",completado:"#4CAF7A",bloqueado:"#7C8786"};
-let canciones=[],ligas=[],loadedC=false,cancionesErr="",cancionSel=null,cancionesCh=null;
+let agendasArt=[],canciones=[],ligas=[],loadedC=false,cancionesErr="",cancionSel=null,cancionesCh=null;
 function puedeMusica(){return esPM()||enArea(perfil,"musica")}
 /* Ven y trabajan canciones: Música, Legal, Marketing, Audiovisual (lives) y la PM */
 function puedeCanciones(){return esPM()||["musica","legal","marketing","audiovisual"].some(a=>enArea(perfil,a))}
@@ -2188,11 +2207,13 @@ function cargarCanciones(){if(cancionesCh||!sb||!puedeCanciones())return;
     const err=c.error||l.error;
     if(err)cancionesErr=/canciones|ligas_artistas|PGRST205|42P01/.test((err.message||"")+(err.code||""))?"Falta correr la migración 013 en Supabase para registrar canciones.":"No se pudieron leer las canciones: "+err.message;
     else{canciones=c.data||[];ligas=l.data||[];cancionesErr=""}
+    if(puedeMusica()){const g=await sb.from("agendas_artistas").select("*").order("creado",{ascending:false}).limit(500);agendasArt=g.error?[]:g.data||[]}
     loadedC=true;renderKeep()};
   const upd=(arr,p,nueva)=>{if(p.eventType==="DELETE")return arr.filter(x=>x.id!==(p.old&&p.old.id));const i=arr.findIndex(x=>x.id===p.new.id);if(i>=0){arr[i]=p.new;return arr}nueva&&nueva(p.new);return [p.new,...arr]};
   cancionesCh=sb.channel("rt-canciones")
     .on("postgres_changes",{event:"*",schema:"public",table:"canciones"},p=>{canciones=upd(canciones,p,c=>{if(p.eventType==="INSERT")toast(`Nueva canción registrada: «${(c.data||{}).titulo||"Sin título"}»`)});renderKeep()})
     .on("postgres_changes",{event:"*",schema:"public",table:"ligas_artistas"},p=>{ligas=upd(ligas,p);renderKeep()})
+    .on("postgres_changes",{event:"*",schema:"public",table:"agendas_artistas"},p=>{agendasArt=upd(agendasArt,p,a=>{});if(p.eventType==="UPDATE"&&p.new.reservado&&!(p.old||{}).reservado)toast(`📅 ${p.new.nombre||"Un artista"} apartó sus fechas de producción.`);renderKeep()})
     .subscribe(st=>{if(st==="SUBSCRIBED")load()})}
 function etapaPill(k,c){return `<span class="cpill" style="--c:${ETAPA_C[k]||"var(--muted)"}">${esc(nombreEtapa(c,k))}</span>`}
 function semanaTxt(k){const l=fromKey(k),v=addDays(l,4);return `${l.getDate()} ${MESES[l.getMonth()]} – ${v.getDate()} ${MESES[v.getMonth()]}`}
@@ -2338,6 +2359,30 @@ function formNuevaCancion(){const live=formatoNueva==="live",PN=live?PASOS_LIVE:
     <label class="c2">BPM <small>(opcional)</small><input class="field" id="cnBpm" maxlength="20"></label>
     <label class="c2">Tonalidad <small>(opcional)</small><input class="field" id="cnTono" maxlength="40"></label>
     <div class="row"><span class="dlnote">Se marcan como hechos los pasos hasta el que elijas y se crea el pendiente del siguiente.</span><button type="button" class="btn ghost" data-cnueva="0">Cancelar</button><button class="btn" type="submit">Agregar canción</button></div></form>`}
+/* ---------- Enlace de agenda de producción para artistas (/agenda/<código>, migración 022) ----------
+   Se arma marcando el tipo de producción del artista; el artista ve solo las semanas con lugar para ese tipo
+   y al apartar queda la producción en el calendario de Música (y la canción ligada, agendada). */
+function ligaAgenda(a){return location.origin+location.pathname.replace(/[^/]*$/,"")+"agenda/"+a.token}
+let agTipo="fullband";
+function vistaAgendaArt(){const T=AGENDA.TIPOS_PROD;
+  return `<div class="eliga" style="flex-direction:column;align-items:stretch">
+    <div><h3>Enlace de agenda de producción</h3><p>Marca el tipo de producción del artista y crea su enlace. Ahí verá solo las semanas con lugar para ese tipo (3 semanas de producción al mes, de 9 a 17) y, cuando aparte, se marca en el calendario de producción.</p></div>
+    <form class="agform" id="agendaForm" autocomplete="off">
+      <fieldset class="agtipos"><legend>Tipo de producción</legend>${Object.entries(T).map(([k,t])=>`<label class="tchip ${agTipo===k?"on":""}" style="--c:var(--flame);--on:#fff"><input type="radio" name="agTipo" value="${k}" ${agTipo===k?"checked":""}>${esc(t.n)} · ${t.dias} días</label>`).join("")}</fieldset>
+      <small class="ehint">${esc(T[agTipo].desc)}</small>
+      <div class="agrow"><label>Artista o ministerio${selectMinisterio('id="agNombre" required',"")}</label>
+        <label>Canción <small>(opcional)</small><select class="field" id="agCancion"><option value="">Sin canción ligada</option>${canciones.filter(c=>c.etapa!=="completado").sort((a,b)=>tituloDe(a).localeCompare(tituloDe(b),"es")).map(c=>`<option value="${esc(c.id)}">${esc(tituloDe(c))} · ${esc(creditoDe(c))}</option>`).join("")}</select></label></div>
+      <button class="btn" type="submit">Crear enlace</button></form>
+    ${agendasArt.length?`<ul class="ligasart">${agendasArt.map(a=>{const c=canciones.find(x=>x.id===a.cancion_id),r=a.reservado;
+      return `<li class="${a.activa?"":"off"}"><b>${esc(a.nombre||"Sin nombre")} · ${esc((T[a.tipo]||{}).n||a.tipo)}<code class="lurl">${esc(ligaAgenda(a).replace(/^https?:\/\//,""))}</code></b><small>${c?`🎵 ${esc(tituloDe(c))} · `:""}${r?`✅ Apartó ${esc(diasTxt(String(r.inicio).slice(0,10),String(r.fin).slice(0,10)))} · ${esc(r.nombre||"")}`:a.activa?"Esperando a que elija fechas":"Desactivado"}</small>
+        ${a.activa&&!r?`<button type="button" class="btn sm" data-copiaragenda="${esc(a.id)}">Copiar enlace</button>`:""}<button type="button" class="btn ghost sm" data-agendaonoff="${esc(a.id)}">${a.activa?"Desactivar":"Activar"}</button></li>`}).join("")}</ul>`:""}</div>`}
+async function crearAgendaArt(datos){if(!sb)return null;const {data,error}=await sb.from("agendas_artistas").insert(datos).select().single();
+  if(error){toast("No se pudo crear el enlace: "+(/agendas_artistas|PGRST205|42P01/.test(error.message+(error.code||""))?"falta correr la migración 022.":error.message));return null}
+  agendasArt=[data,...agendasArt.filter(x=>x.id!==data.id)];return data}
+document.addEventListener("change",e=>{if(e.target.name==="agTipo"){agTipo=e.target.value;render()}
+  if(e.target.id==="agNombre"&&e.target.value==="__nuevo"){const n=(window.prompt("Nombre del artista o ministerio:")||"").trim();if(n){const o=document.createElement("option");o.value=o.textContent=n;e.target.insertBefore(o,e.target.lastElementChild);e.target.value=n}else e.target.value=""}});
+document.addEventListener("submit",async e=>{if(e.target.id!=="agendaForm")return;e.preventDefault();const nombre=$("agNombre").value;if(!nombre||nombre==="__nuevo"){toast("Elige el artista o ministerio.");return}
+  const a=await crearAgendaArt({tipo:agTipo,nombre:nombre.slice(0,120),cancion_id:$("agCancion").value||null});if(!a)return;render();copiarTexto(ligaAgenda(a),`Enlace de agenda de ${nombre} copiado. Mándaselo por WhatsApp o correo.`)});
 /* Legal (Registros) y Marketing (Lanzamientos): las canciones en su área, como proyecto aparte */
 function vistaPista(a){const cs=canciones.filter(c=>pasosPista(c,a).length);
   const curso=cs.filter(c=>siguienteEn(c,a)),listas=cs.filter(c=>pistaCompleta(c,a)),espera=cs.filter(c=>!pistaAbierta(c,a)&&c.etapa!=="bloqueado");
@@ -2355,12 +2400,12 @@ function renderCanciones(){const V=$("vCanciones");
   if(cancionSel){const c=canciones.find(x=>x.id===cancionSel);if(c){V.innerHTML=detalleCancion(c);return}if(loadedC)cancionSel=null}
   const cuenta=id=>canciones.filter(c=>c.liga===id).length;
   const act=canciones.filter(c=>c.etapa!=="completado"),prom=act.length?Math.round(act.reduce((s,c)=>s+avance(c),0)/act.length):0;
-  V.innerHTML=`<div class="dhead"><div class="vistas" role="tablist" aria-label="Vista de canciones">${[["ministerios","Por ministerio"],["etapas","Por etapa"],["ligas","Ligas"]].map(([k,n])=>`<button type="button" role="tab" class="vista" data-cvista="${k}" aria-selected="${cancionesVista===k}">${n}</button>`).join("")}</div>
+  V.innerHTML=`<div class="dhead"><div class="vistas" role="tablist" aria-label="Vista de canciones">${[["ministerios","Por ministerio"],["etapas","Por etapa"],["ligas","Ligas"],["agenda","Agenda para artistas"]].map(([k,n])=>`<button type="button" role="tab" class="vista" data-cvista="${k}" aria-selected="${cancionesVista===k}">${n}</button>`).join("")}</div>
       <button type="button" class="btn" data-cnueva="1">+ Agregar canción</button></div>
     ${nuevaCancion?formNuevaCancion():""}
     ${cancionesErr?`<div class="readonly">${esc(cancionesErr)}</div>`:""}
     ${loadedC&&canciones.length?`<div class="ctot"><div><b>${act.length}</b><span>activas</span></div><div><b>${canciones.filter(c=>c.etapa==="produccion").length}</b><span>en producción</span></div><div><b>${canciones.filter(c=>c.etapa==="completado").length}</b><span>lanzadas</span></div><div><b>${prom}%</b><span>avance promedio</span></div></div>`:""}
-    ${cancionesVista==="ligas"?`<div class="eliga" style="flex-direction:column;align-items:stretch">
+    ${cancionesVista==="agenda"?vistaAgendaArt():cancionesVista==="ligas"?`<div class="eliga" style="flex-direction:column;align-items:stretch">
       <div><h3>Ligas para artistas</h3><p>Crea una liga personal para cada artista o ministerio. Con ella registra sus canciones (letra, BPM, referencias y demo). Puedes desactivarla cuando quieras.</p></div>
       <form class="ligaform" id="ligaForm"><input class="field" id="ligaNombre" maxlength="120" placeholder="Nombre del artista o ministerio" aria-label="Nombre del artista"><button class="btn" type="submit">Crear liga</button></form>
       ${ligas.length?`<ul class="ligasart">${ligas.slice().sort((a,b)=>(a.nombre||"").localeCompare(b.nombre||"","es",{sensitivity:"base"})).map(l=>`<li class="${l.activa?"":"off"}"><b>${esc(l.nombre)}<code class="lurl">${esc(ligaCancion(l.id).replace(/^https?:\/\//,""))}</code></b><small>${cuenta(l.id)} canci${cuenta(l.id)===1?"ón":"ones"} · ${l.activa?"activa":"desactivada"}</small>${l.activa?`<button type="button" class="btn sm" data-copiarligac="${esc(l.id)}">Copiar liga</button>`:""}<button type="button" class="btn ghost sm" data-ligaonoff="${esc(l.id)}">${l.activa?"Desactivar":"Activar"}</button></li>`).join("")}</ul>`:""}
@@ -2402,7 +2447,7 @@ function detalleCancion(c){const PS=pasosDe(c),live=esLive(c);const d=c.data||{}
     <div class="ehead"><div class="etop">${etapaPill(c.etapa,c)}${d.tipo?`<span class="chip tipo">${esc(d.tipo)}</span>`:""}<time datetime="${esc(c.creado)}">Registrada el ${fechaHora(c.creado)}</time></div>
       <h2>${esc(tituloDe(c))} ${insigniaLive(c)}</h2><p>${esc(creditoDe(c))}${d.nombre&&d.nombre!==ministerioDe(c)?" · "+esc(d.nombre):""}${d.bpm?" · "+esc(d.bpm)+" BPM":""}${d.tonalidad?" · "+esc(d.tonalidad):""}</p>
       <div class="cavance"><div class="cprog grande">${barra(p)}<b style="color:${colorAvance(p)}">${p}%</b></div><small>${live?`${hechos} de ${PS.length} pasos, desde la solicitud hasta que queda lista para publicar`:`Música: ${hechosPista(c,"musica")} de ${pasosPista(c,"musica").length} pasos de producción`}</small>${live?"":`<div class="cpistas">${pistasMini(c)}</div>`}</div>
-      ${puedeMusica()?`<div class="rbtns"><button type="button" class="btn" data-cagendar="${esc(c.id)}">${live?(c.semana?"Cambiar fecha de grabación":"Agendar grabación"):c.semana?"Cambiar semana de producción":"Agendar semana de producción"}</button><button type="button" class="btn ghost ebor" data-cdel="${esc(c.id)}" title="Borrar esta canción">${ICON_DEL} Borrar canción</button></div>`:""}</div>
+      ${puedeMusica()?`<div class="rbtns"><button type="button" class="btn" data-cagendar="${esc(c.id)}">${live?(c.semana?"Cambiar fecha de grabación":"Agendar grabación"):c.semana?"Cambiar semana de producción":"Agendar semana de producción"}</button>${c.semana?"":`<button type="button" class="btn ghost" data-cagendalink="${esc(c.id)}" title="El artista elige sus fechas">🔗 Enlace de agenda para el artista</button>`}<button type="button" class="btn ghost ebor" data-cdel="${esc(c.id)}" title="Borrar esta canción">${ICON_DEL} Borrar canción</button></div>`:""}</div>
     <div class="cpendiente">${pends.length?`<div><span class="evk2">Pendiente${pends.length>1?"s":""} actual${pends.length>1?"es":""}</span>${pends.map(t=>`<div class="cpend1"><strong><span class="cpar" style="--c:${AREAS[areaOf(t)].c}">${esc(AREAS[areaOf(t)].n)}</span> ${esc(t.titulo)}</strong><small>${esc(t.responsable||"Sin responsable")} · vence ${shortDate(venceDe(t))} <button type="button" class="btn ghost sm" data-verpend="${esc(t.id)}">Ver en Pendientes</button></small></div>`).join("")}</div>`
       :n?`<div><span class="evk2">Siguiente paso</span><strong>${n}. ${esc(PS[n-1][0])}</strong><small>${esc(PS[n-1][2])} · todavía sin pendiente</small></div><button type="button" class="btn sm" data-cpend="${esc(c.id)}">Crear pendiente</button>`
       :procesoCompleto(c)?`<div><span class="evk2">Proceso completo</span><strong>${live?"Canción live lista y publicada 🎉":"Canción lanzada y reportada 🎉"}</strong></div>`:`<div><span class="evk2">En espera</span><strong>Legal se abre al aprobar la composición (paso 2).</strong></div>`}</div>
@@ -2492,6 +2537,11 @@ document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)r
   if(ds.cancion){cancionSel=ds.cancion;render();window.scrollTo(0,0);return}
   if(ds.cvolver){cancionSel=null;cancionEdit=null;render();window.scrollTo(0,0);return}
   if(ds.vercancion){cancionSel=ds.vercancion;const a=puedeMusica()?"musica":["legal","marketing"].find(x=>enArea(perfil,x))||"musica";areaView[a]="canciones";if(location.hash==="#"+a)render();else location.hash=a;window.scrollTo(0,0);return}
+  if(ds.copiaragenda){const a=agendasArt.find(x=>x.id===ds.copiaragenda);if(a)copiarTexto(ligaAgenda(a),`Enlace de agenda de ${a.nombre||"el artista"} copiado.`);return}
+  if(ds.agendaonoff){const a=agendasArt.find(x=>x.id===ds.agendaonoff);if(!a||!sb)return;a.activa=!a.activa;render();sb.from("agendas_artistas").update({activa:a.activa}).eq("id",a.id).then(({error})=>{if(error){a.activa=!a.activa;render();toast("No se pudo cambiar: "+error.message)}});return}
+  if(ds.cagendalink){const c=canciones.find(x=>x.id===ds.cagendalink);if(!c)return;const ya=agendasArt.find(a=>a.cancion_id===c.id&&a.activa&&!a.reservado);
+    if(ya){copiarTexto(ligaAgenda(ya),"Enlace de agenda copiado.");return}
+    crearAgendaArt({tipo:tipoProdDe(c),nombre:ministerioDe(c).slice(0,120),cancion_id:c.id}).then(a=>{if(a){render();copiarTexto(ligaAgenda(a),`Enlace de agenda (${AGENDA.TIPOS_PROD[a.tipo].n}) copiado. Mándaselo al artista.`)}});return}
   if(ds.copiarligac){const l=ligas.find(x=>x.id===ds.copiarligac);copiarTexto(ligaCancion(ds.copiarligac),`Liga de ${l?l.nombre:"el artista"} copiada.`);return}
   if(ds.ligaonoff){const l=ligas.find(x=>x.id===ds.ligaonoff);if(!l)return;const activa=!l.activa;l.activa=activa;render();
     sb.from("ligas_artistas").update({activa}).eq("id",l.id).then(({error})=>{if(error){l.activa=!activa;render();toast("No se pudo cambiar: "+error.message)}else toast(activa?"Liga activada.":"Liga desactivada: ya no sirve para registrar.")});return}
