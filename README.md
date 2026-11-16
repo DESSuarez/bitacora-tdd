@@ -139,6 +139,9 @@ Corre `supabase/migraciones/020_ligas_limpias.sql`. Cada ministerio queda con un
 ### 23. Legal, Marketing, agenda de producción y accesos por área
 Corre `supabase/migraciones/022_legal_marketing_calendario.sql`. Agrega las áreas **Legal** y **Marketing** (el checklist de cada canción se reparte en Música, Legal y Marketing), el **enlace de agenda para artistas** (`pm.tiempodedios.mx/agenda/<código>`, el `.htaccess` lo abre) y las **solicitudes de acceso** a áreas. Después, en Equipo, asigna a quien trabaje en Legal o Marketing. Las reglas de la agenda de producción están en `app/agenda-reglas.js` y todo el detalle en `docs/MANUAL.md`.
 
+### 24. Liga fija de agenda por ministerio
+Corre `supabase/migraciones/023_agenda_por_ministerio.sql`. En Música → Canciones → «Agenda para artistas» cada ministerio del colectivo tiene su liga fija por tipo de producción (ej. `pm.tiempodedios.mx/agenda/surgit-iglessia-fullband`), que sirve para todas sus canciones; para artistas de fuera del colectivo hay un generador de ligas de un solo uso.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 

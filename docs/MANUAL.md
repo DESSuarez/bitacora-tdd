@@ -157,9 +157,12 @@ docs/MANUAL.md          Este manual
   - disponibilidad de 12 semanas por bloques, con selector de tipo;
   - **producción por mes** de los próximos 6 meses;
   - apartado de **Eventos**: cenáculos, eventos y viernes ocupados.
-- **Enlace de agenda para artistas:**
-  - **Se arma en** Música → Canciones → «Agenda para artistas», o con el botón «🔗 Enlace de agenda» de cada canción. Se marca el tipo de producción.
-  - **Se guarda en** la tabla `agendas_artistas`, con un `token` y la dirección `/agenda/<token>`.
+- **Enlace de agenda para artistas** (Música → Canciones → «Agenda para artistas»):
+  - **Ministerios del colectivo:** cada uno tiene una **liga fija por tipo de producción**, `/agenda/<ministerio>-<acustica|fullband|grande>`. El ministerio es el mismo slug de su liga de canciones o, si no tiene, uno sacado del nombre.
+    - Se crea la primera vez que se copia (`ligaFija`, con `reutilizable = true`).
+    - Sirve para cada canción nueva: el artista puede escribir qué canción es y, al terminar, «Agendar otra canción».
+  - **Artista invitado (fuera del colectivo):** generador de una liga especial de **un solo uso** con código aleatorio, que se cierra al apartar. Igual funciona el botón «🔗 Enlace de agenda» de cada canción, que liga la reserva a esa canción.
+  - **Se guarda en** la tabla `agendas_artistas`: `token`, `tipo`, `nombre`, `reutilizable`, `reservado` (la última reserva) y `reservas` (todas).
   - **Funciones públicas** (security definer):
     - `agenda_ver(t)`: devuelve el tipo y **solo las fechas ocupadas**, sin títulos ni notas;
     - `agenda_reservar(...)`: vuelve a revisar que las fechas sigan libres, crea el evento de producción y marca la canción como agendada.
@@ -189,6 +192,7 @@ docs/MANUAL.md          Este manual
 | 019 | Activos |
 | 020 | Ligas limpias `/cancion/<ministerio>` |
 | 021 | Paso DistroKid (checklist de 24 pasos) |
+| **023** | Liga fija de agenda por ministerio (`reutilizable`, `reservas`; códigos con guiones) |
 | **022** | Áreas Legal y Marketing, permisos de canciones para Legal, Marketing y Audiovisual, pendientes del funnel por área, `agendas_artistas` y sus funciones públicas, `solicitudes_area` |
 
 ## 11. Seguridad
@@ -209,6 +213,8 @@ docs/MANUAL.md          Este manual
 
 Formato: fecha · qué cambió · dónde.
 
+- **2026-11-16** (tarde)
+  - **Agenda:** liga fija por ministerio del colectivo y tipo de producción (`/agenda/surgit-iglessia-fullband`) y generador de ligas de un solo uso para artistas invitados (`index.html`, `agenda/index.html`, `.htaccess`, migración 023).
 - **2026-11-16**
   - **Tema Retro solo colores:** sin letra pixelada ni efectos (`index.html`).
   - **Áreas Legal y Marketing:**
