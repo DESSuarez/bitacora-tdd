@@ -9,7 +9,7 @@
 window.CAMPOS_CANCION = [
   { id: "artista", titulo: "Sobre ti", intro: "Para saber quién comparte la canción y cómo contactarte.", campos: [
     { k: "nombre", l: "Nombre completo", req: true },
-    { k: "nombreArtistico", l: "Artista o ministerio", tipo: "ministerio", ayuda: "Elige tu ministerio del colectivo. Si no aparece, elige «Otro…» y escribe cómo quieres que aparezca en la canción." },
+    { k: "nombreArtistico", l: "Artista o ministerio", tipo: "ministerio", ayuda: "Si no aparece el tuyo, elige «Otro…» y escríbelo." },
     { k: "correo", l: "Correo", tipo: "email", req: true },
     { k: "telefono", l: "Teléfono o WhatsApp", tipo: "tel", req: true },
     { k: "ciudad", l: "Ciudad" },
