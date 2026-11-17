@@ -222,6 +222,7 @@ docs/MANUAL.md          Este manual
 Formato: fecha · qué cambió · dónde.
 
 - **2026-11-17** (noche)
+  - **Inicio:** al entrar a la app siempre aparece el Dashboard, para todos los roles. Las ligas con `#área` o `#persona/…` siguen abriendo su página (`index.html`: `readHash` y arranque).
   - **Reabrir lo que se marcó por error:**
     - «Completado esta semana» (perfil y Mi trabajo) tiene casilla para desmarcar.
     - `puedeTarea(t)`: quien está en el área, o quien trabaja canciones para cualquier paso de canción. Así Música puede reabrir un paso de Legal o Marketing.

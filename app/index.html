@@ -1562,7 +1562,7 @@ function heat(n){return n<=0?"":n<=2?"h1":n<=4?"h2":"h3"}
 function scope(){if(route==="equipo")return "team";if(route==="finanzas")return finView==="mes"?"month":"finsol";if(route==="dashboard")return {dia:"day",mes:"month",ano:"year"}[dashView]||"week";if(route==="persona")return "week";if(route==="pm")return pmView==="cal"?({dia:"day",mes:"month",ano:"year"}[dashView]||"week"):pmView==="tasks"?"week":pmView;const v=areaView[route];if(v==="entradas"||v==="canciones")return v;return v==="tasks"||v==="report"?"week":"month"}
 function readHash(){const h=decodeURIComponent((location.hash||"").replace("#","").split("&")[0]);
   if(h.startsWith("persona/")){route="persona";personaId=h.slice(8);return}
-  route=(AREAS[h]||h==="pm"||h==="equipo"||h==="dashboard"||h==="finanzas")?h:"formacion"}
+  route=(AREAS[h]||h==="pm"||h==="equipo"||h==="dashboard"||h==="finanzas")?h:"dashboard"}
 window.addEventListener("hashchange",()=>{readHash();render();window.scrollTo(0,0)});
 
 /* Acciones de tareas */
@@ -3613,7 +3613,8 @@ async function start(){
   perfil=p||{id:user.id,nombre:user.email,rol:"colaborador",area:null};perfil.email=user.email;
   $("auth").hidden=true;$("userbar").hidden=false;
   pintarCuenta(user.email);
-  if(!location.hash){route=esPM()?"pm":(perfil.area||(perfil.areas||[]).find(a=>AREAS[a])||"dashboard");history.replaceState(null,"",location.pathname+"#"+route)}
+  // Al entrar a la app siempre abre el Dashboard (las ligas con #área o #persona siguen abriendo su página)
+  if(!location.hash||location.hash==="#"){route="dashboard";history.replaceState(null,"",location.pathname+"#dashboard")}
   if(started){render();return}started=true;
   sb.from("perfiles").select("*").then(({data})=>{perfiles=data||[];render()});
   tasksCol=makeCol("tareas");logrosCol=makeCol("logros");
