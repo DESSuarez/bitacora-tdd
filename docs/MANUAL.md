@@ -168,6 +168,7 @@ docs/MANUAL.md          Este manual
     - Sirve para cada canción nueva: el artista puede escribir qué canción es y, al terminar, «Agendar otra canción».
   - **Artista invitado (fuera del colectivo):** generador de una liga especial de **un solo uso** con código aleatorio, que se cierra al apartar. Igual funciona el botón «🔗 Enlace de agenda» de cada canción, que liga la reserva a esa canción.
   - **Se guarda en** la tabla `agendas_artistas`: `token`, `tipo`, `nombre`, `reutilizable`, `reservado` (la última reserva) y `reservas` (todas).
+  - El artista ve **12 meses** de disponibilidad desde el día en que abre la liga. Sus datos de contacto se llenan solos si ya los dio en ese dispositivo.
   - **Funciones públicas** (security definer):
     - `agenda_ver(t)`: devuelve el tipo y **solo las fechas ocupadas**, sin títulos ni notas;
     - `agenda_reservar(...)`: vuelve a revisar que las fechas sigan libres, crea el evento de producción y marca la canción como agendada.
@@ -219,6 +220,12 @@ docs/MANUAL.md          Este manual
 
 Formato: fecha · qué cambió · dónde.
 
+- **2026-11-17**
+  - **Formularios de artistas:**
+    - Los datos de contacto (nombre, nombre artístico, correo, teléfono, ciudad, redes) se guardan en el dispositivo del artista al enviar y se llenan solos la siguiente vez, en el registro de canción y en la agenda. Hay un botón «No soy yo» para borrarlos. Nunca se leen de la base.
+    - El nombre artístico se llena con el nombre del ministerio de la liga.
+    - Archivos: `cancion/index.html` y `agenda/index.html`, clave `tdd-contacto-artista` en localStorage.
+  - **Agenda para artistas:** muestra 12 meses de disponibilidad desde el día en que se abre la liga (`agenda/index.html`).
 - **2026-11-16** (noche)
   - **Disponibilidad:** full band y grande se agendan por semana completa (lun, mar, jue, vie, o lun a jue con el viernes ocupado), con selección de varias semanas a la vez. Las producciones ya no ocupan el miércoles (`agenda-reglas.js`, `index.html`, migración 024).
 - **2026-11-16** (tarde)
