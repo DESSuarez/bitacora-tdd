@@ -198,6 +198,7 @@ docs/MANUAL.md          Este manual
 | 019 | Activos |
 | 020 | Ligas limpias `/cancion/<ministerio>` |
 | 021 | Paso DistroKid (checklist de 24 pasos) |
+| **025** | Del registro de canción a la agenda: `ministerios_colectivo()`, `agenda_de_liga()`, `agendas_artistas.liga` y `agenda_reservar(..., c_id)` ligada a la canción |
 | **024** | `agenda_reservar` guarda los días exactos (`dias`) de lo que aparta un artista |
 | **023** | Liga fija de agenda por ministerio (`reutilizable`, `reservas`; códigos con guiones) |
 | **022** | Áreas Legal y Marketing, permisos de canciones para Legal, Marketing y Audiovisual, pendientes del funnel por área, `agendas_artistas` y sus funciones públicas, `solicitudes_area` |
@@ -220,6 +221,15 @@ docs/MANUAL.md          Este manual
 
 Formato: fecha · qué cambió · dónde.
 
+- **2026-11-17** (tarde)
+  - **Registro de canción:**
+    - «Artista o ministerio» es un selector con los ministerios del colectivo (`ministerios_colectivo()`). El de la liga ya viene elegido y tiene «Otro…».
+    - «Canciones de referencia» va en renglones con liga y «qué te gusta», más «+ Agregar otra referencia» (tipo `lista`, guardado en `referencias` y `referenciasLista`).
+  - **Fechas:**
+    - El artista elige el tipo de producción (`tipoProduccion`).
+    - Al enviar, pasa a la liga fija de agenda de su ministerio para ese tipo (`agenda_de_liga()`) con `?c=<canción>`. Lo que aparte queda ligado a la canción y cierra el pendiente «Agendar producción».
+    - Si prefiere no elegir, el pendiente sigue abierto para que Música coordine.
+    - Archivos: `campos-cancion.js`, `cancion/index.html`, `agenda/index.html` y migración 025.
 - **2026-11-17**
   - **Registro de canción: «Compositores»** es una lista que crece. Empieza con un renglón (nombre y % opcional) y tiene «+ Agregar otro compositor». Valida que los porcentajes no pasen de 100 %.
     - Se guarda como texto en `compositores` y como lista en `compositoresLista`.

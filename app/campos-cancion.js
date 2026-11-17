@@ -4,10 +4,12 @@
 // si: { k, v } muestra la pregunta solo cuando el campo k (multi o chips) incluye la opción v.
 // tipo: text | email | tel | area (texto largo) | chips (opción única) | multi (varias opciones) | files (archivos)
 //       personas (lista que crece: nombre + % opcional; se guarda como texto en k y como lista en k+"Lista")
+//       lista (renglones que crecen con los subcampos de «sub»; texto en k y lista en k+"Lista")
+//       ministerio (selector con los ministerios del colectivo y «Otro…»)
 window.CAMPOS_CANCION = [
   { id: "artista", titulo: "Sobre ti", intro: "Para saber quién comparte la canción y cómo contactarte.", campos: [
     { k: "nombre", l: "Nombre completo", req: true },
-    { k: "nombreArtistico", l: "Nombre artístico o del ministerio", ayuda: "Como quieres que aparezca en la canción." },
+    { k: "nombreArtistico", l: "Artista o ministerio", tipo: "ministerio", ayuda: "Elige tu ministerio del colectivo. Si no aparece, elige «Otro…» y escribe cómo quieres que aparezca en la canción." },
     { k: "correo", l: "Correo", tipo: "email", req: true },
     { k: "telefono", l: "Teléfono o WhatsApp", tipo: "tel", req: true },
     { k: "ciudad", l: "Ciudad" },
@@ -31,7 +33,9 @@ window.CAMPOS_CANCION = [
     { k: "estructura", l: "Estructura", tipo: "area", ayuda: "Ej. Intro, Verso 1, Coro, Verso 2, Coro, Puente, Coro x2, Final." }
   ]},
   { id: "referencias", titulo: "Referencias y arreglo", intro: "Cómo te imaginas que suene.", campos: [
-    { k: "referencias", l: "Canciones de referencia", tipo: "area", req: true, ayuda: "Pega ligas de YouTube o Spotify y dinos qué te gusta de cada una (el sonido, la voz, el ritmo…)." },
+    { k: "referencias", l: "Canciones de referencia", tipo: "lista", req: true, add: "+ Agregar otra referencia",
+      ayuda: "Pega la liga de cada canción (YouTube o Spotify) y dinos qué te gusta de ella.",
+      sub: [{ k: "liga", l: "Liga", ph: "https://open.spotify.com/… o https://youtube.com/…" }, { k: "gusta", l: "¿Qué te gusta?", ph: "El sonido, la voz, el ritmo, la batería…" }] },
     { k: "instrumentos", l: "Instrumentos que imaginas", tipo: "multi", ops: ["Piano o teclado", "Guitarra acústica", "Guitarra eléctrica", "Bajo", "Batería", "Percusiones", "Cuerdas", "Sintetizadores", "Vientos", "Otro"] },
     { k: "voces", l: "Voces", tipo: "chips", ops: ["Solista", "Dueto", "Coros o grupo", "Por definir"] },
     { k: "arreglo", l: "Ideas de arreglo o producción", tipo: "area", ayuda: "Momentos clave, dinámicas, cómo empieza o termina, algo que no debe faltar." }
@@ -41,7 +45,9 @@ window.CAMPOS_CANCION = [
     { k: "ligaDemo", l: "Liga a tu demo (opcional)", ayuda: "Si tu archivo pesa más de 50 MB, súbelo a Drive o Dropbox y pega la liga aquí." }
   ]},
   { id: "fechas", titulo: "Fechas", intro: "Para planear la semana de producción con el ministerio.", campos: [
-    { k: "disponibilidad", l: "¿Qué semanas o fechas podrías venir a producir?", tipo: "area", req: true, ayuda: "Según el tipo de producción: acústica 2 días, full band una semana, producción grande 2 semanas. También te podemos mandar un enlace para que elijas tu semana." },
+    { k: "tipoProduccion", l: "¿Qué tipo de producción buscas?", tipo: "chips", req: true, ops: ["Acústica o live (2 días)", "Full band (1 semana)", "Producción grande (2 semanas)", "No lo sé todavía"],
+      ayuda: "Al enviar tu canción te llevamos a la agenda para que elijas tus fechas de producción. Si no sabes, el equipo de Música lo ve contigo." },
+    { k: "disponibilidad", l: "¿Algo que debamos saber de tus fechas?", tipo: "area", ayuda: "Opcional: semanas que no puedes, viajes, fechas importantes…" },
     { k: "lanzamiento", l: "¿Tienes una fecha ideal de lanzamiento?", ayuda: "Ej. marzo 2027, o «sin prisa»." },
     { k: "comentarios", l: "¿Algo más que debamos saber?", tipo: "area" }
   ]}
@@ -131,3 +137,6 @@ window.DIAS_PRODUCCION = ["Maqueteo", "Instrumentación", "Creación de contenid
 window.AREA_PASO = { 13: "legal", 14: "legal", 16: "marketing", 17: "marketing", 18: "marketing", 19: "marketing", 20: "marketing", 21: "marketing", 22: "marketing", 23: "marketing", 24: "marketing" };
 // Canciones live: Grabación (4) y Post (5) crean además un pendiente en Audiovisual (es el mismo paso: al completarlo cualquiera, se cierran los dos).
 window.AV_PASO_LIVE = [4, 5];
+
+// Respuesta del formulario («¿Qué tipo de producción buscas?») → tipo de producción de la agenda (agenda-reglas.js)
+window.TIPO_PROD_RESPUESTA = { "Acústica o live (2 días)": "acustico", "Full band (1 semana)": "fullband", "Producción grande (2 semanas)": "grande" };

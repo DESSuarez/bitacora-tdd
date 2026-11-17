@@ -2588,7 +2588,7 @@ function agendarCancion(id,lunes){const c=canciones.find(x=>x.id===id);if(!c)ret
   guardarCancion(id,cambios,true)}
 function fechaGrabacion(c){const g=eventos.find(e=>e.cancion_id===c.id&&e.tipo==="grabacion");return g?g.fecha:null}
 /* Tipo de producción de la canción: acústica o live (2 días), full band (semana) o grande (2 semanas) */
-function tipoProdDe(c){const t=(c.data||{}).tipoProd;return AGENDA.TIPOS_PROD[t]?t:esLive(c)?"acustico":"fullband"}
+function tipoProdDe(c){const d=c.data||{},t=d.tipoProd||(window.TIPO_PROD_RESPUESTA||{})[d.tipoProduccion];return AGENDA.TIPOS_PROD[t]?t:esLive(c)?"acustico":"fullband"}
 function primerHueco(tp){const s=AGENDA.disponibles(todosEventos(),key(addDays(new Date(),1)),52,tp).find(x=>x.opciones.length&&x.opciones[0].inicio>key(new Date()));return s?s.opciones[0]:null}
 function proximaLibre(){let l=mondayOf(new Date());for(let i=0;i<52;i++){const k=key(addDays(l,7*i));if(!producciones(k).length)return k}return key(l)}
 document.addEventListener("change",e=>{const t=e.target;

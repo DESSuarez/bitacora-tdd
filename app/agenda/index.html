@@ -88,6 +88,8 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;"
 const rango=(a,b)=>{const x=fromKey(a),y=fromKey(b);return `${DIAS[x.getDay()]} ${x.getDate()}${x.getMonth()!==y.getMonth()?" "+MESES[x.getMonth()]:""} – ${DIAS[y.getDay()]} ${y.getDate()} ${MESES[y.getMonth()]}`};
 // Código del enlace: /agenda/<código> o agenda/?t=<código>
 const token=(location.pathname.match(/\/agenda\/([a-z0-9-]+)\/?$/i)||[])[1]||new URLSearchParams(location.search).get("t")||"";
+// Si viene del registro de canción: ?c=<id de la canción> para que la reserva quede ligada a ella
+const CANCION=(new URLSearchParams(location.search).get("c")||"").match(/^[0-9a-f-]{36}$/i)?new URLSearchParams(location.search).get("c"):null;
 const cfg=window.BITACORA_CONFIG||{};let sb=null,datos=null,elegida=null;
 if(window.supabase&&cfg.supabaseUrl&&cfg.supabaseAnonKey)sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey,{auth:{persistSession:false}});
 const app=$("app");
@@ -116,7 +118,7 @@ function pintar(){const T=A.TIPOS_PROD[datos.tipo]||A.TIPOS_PROD.fullband,manana
       <div class="fields"><div class="f"><label for="nom">Nombre</label><input class="in" id="nom" required maxlength="120" autocomplete="name"></div>
         <div class="f"><label for="cor">Correo</label><input class="in" id="cor" type="email" required maxlength="160" autocomplete="email"></div>
         <div class="f"><label for="tel">Teléfono o WhatsApp</label><input class="in" id="tel" maxlength="40" autocomplete="tel"></div>
-        ${datos.reutilizable?`<div class="f full"><label for="can">¿Qué canción vas a producir? <small>(opcional)</small></label><input class="in" id="can" maxlength="120"></div>`:""}
+        ${datos.reutilizable&&!CANCION?`<div class="f full"><label for="can">¿Qué canción vas a producir? <small>(opcional)</small></label><input class="in" id="can" maxlength="120"></div>`:""}
         <div class="f full"><label for="not">¿Algo que debamos saber? <small>(opcional)</small></label><textarea class="in" id="not" maxlength="1000"></textarea></div></div>
       <button class="btn" type="submit" id="enviar">Apartar estas fechas</button></form>`}
 function hecho(a,b,ya){$("tipo").hidden=false;app.innerHTML=`<div class="done"><h2>${ya?"Tus fechas ya están apartadas":"¡Listo! Tus fechas quedaron apartadas"}</h2><p><b>${rango(String(a).slice(0,10),String(b).slice(0,10))}</b>, de 9:00 a 17:00.</p><p>El equipo de Música te va a contactar para confirmar los detalles. Si necesitas cambiar la fecha, escríbeles directamente.</p>${datos&&datos.reutilizable?`<button type="button" class="btn" id="otra">Agendar otra canción</button>`:""}</div>`;
@@ -125,7 +127,7 @@ app.addEventListener("click",e=>{const b=e.target.closest("[data-op]");if(!b)ret
   const can=$("can")&&$("can").value,nom=$("nom")&&$("nom").value,cor=$("cor")&&$("cor").value,tel=$("tel")&&$("tel").value,not=$("not")&&$("not").value;pintar();
   if(nom)$("nom").value=nom;else contacto();if(can&&$("can"))$("can").value=can;if(cor)$("cor").value=cor;if(tel)$("tel").value=tel;if(not)$("not").value=not;$("form").scrollIntoView({behavior:"smooth",block:"start"})});
 app.addEventListener("submit",async e=>{e.preventDefault();if(!elegida)return;const btn=$("enviar");btn.disabled=true;btn.textContent="Apartando…";
-  const {error}=await sb.rpc("agenda_reservar",{t:token,inicio:elegida.inicio,fin:elegida.fin,nombre:$("nom").value.trim(),correo:$("cor").value.trim(),telefono:$("tel").value.trim(),notas:[$("can")&&$("can").value.trim()?"Canción: "+$("can").value.trim():"",$("not").value.trim()].filter(Boolean).join("\n")});
+  const {error}=await sb.rpc("agenda_reservar",{t:token,inicio:elegida.inicio,fin:elegida.fin,nombre:$("nom").value.trim(),correo:$("cor").value.trim(),telefono:$("tel").value.trim(),notas:[$("can")&&$("can").value.trim()?"Canción: "+$("can").value.trim():"",$("not").value.trim()].filter(Boolean).join("\n"),...(CANCION?{c_id:CANCION}:{})});
   if(error){btn.disabled=false;btn.textContent="Apartar estas fechas";alert(error.message||"No se pudo apartar. Intenta de nuevo.");if(/apartar esas fechas/.test(error.message||"")){elegida=null;cargar()}return}
   try{const c=JSON.parse(localStorage.getItem(CONTACTO)||"{}")||{};localStorage.setItem(CONTACTO,JSON.stringify({...c,nombre:$("nom").value.trim(),correo:$("cor").value.trim(),telefono:$("tel").value.trim()}))}catch(e){}
   hecho(elegida.inicio,elegida.fin,false)});

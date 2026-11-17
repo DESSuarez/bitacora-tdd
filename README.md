@@ -142,6 +142,9 @@ Corre `supabase/migraciones/022_legal_marketing_calendario.sql`. Agrega las áre
 ### 24. Liga fija de agenda por ministerio
 Corre `supabase/migraciones/023_agenda_por_ministerio.sql`. En Música → Canciones → «Agenda para artistas» cada ministerio del colectivo tiene su liga fija por tipo de producción (ej. `pm.tiempodedios.mx/agenda/surgit-iglessia-fullband`), que sirve para todas sus canciones; para artistas de fuera del colectivo hay un generador de ligas de un solo uso.
 
+### 25. Del registro de canción a la agenda
+Corre `supabase/migraciones/025_cancion_a_agenda.sql`. El formulario de canciones muestra la lista de ministerios del colectivo y, al enviar, lleva al artista a la agenda de su ministerio para el tipo de producción que eligió; lo que aparte queda ligado a la canción.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 
