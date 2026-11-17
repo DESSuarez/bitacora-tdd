@@ -221,6 +221,10 @@ docs/MANUAL.md          Este manual
 Formato: fecha · qué cambió · dónde.
 
 - **2026-11-17**
+  - **Registro de canción: «Compositores»** es una lista que crece. Empieza con un renglón (nombre y % opcional) y tiene «+ Agregar otro compositor». Valida que los porcentajes no pasen de 100 %.
+    - Se guarda como texto en `compositores` y como lista en `compositoresLista`.
+    - Con un solo compositor, `data.unAutor = true`, y Legal da por hecho el splitsheet.
+    - Archivos: `campos-cancion.js` (tipo `personas`) y `cancion/index.html`.
   - **Formularios de artistas:**
     - Los datos de contacto (nombre, nombre artístico, correo, teléfono, ciudad, redes) se guardan en el dispositivo del artista al enviar y se llenan solos la siguiente vez, en el registro de canción y en la agenda. Hay un botón «No soy yo» para borrarlos. Nunca se leen de la base.
     - El nombre artístico se llena con el nombre del ministerio de la liga.

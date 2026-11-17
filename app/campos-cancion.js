@@ -3,6 +3,7 @@
 // Para agregar o cambiar una pregunta, edítala solo aquí.
 // si: { k, v } muestra la pregunta solo cuando el campo k (multi o chips) incluye la opción v.
 // tipo: text | email | tel | area (texto largo) | chips (opción única) | multi (varias opciones) | files (archivos)
+//       personas (lista que crece: nombre + % opcional; se guarda como texto en k y como lista en k+"Lista")
 window.CAMPOS_CANCION = [
   { id: "artista", titulo: "Sobre ti", intro: "Para saber quién comparte la canción y cómo contactarte.", campos: [
     { k: "nombre", l: "Nombre completo", req: true },
@@ -16,7 +17,7 @@ window.CAMPOS_CANCION = [
     { k: "titulo", l: "Título de la canción", req: true },
     { k: "tipo", l: "¿Qué es?", tipo: "chips", ops: ["Canción original", "Cover o versión", "Adaptación o traducción"], req: true },
     { k: "original", l: "¿De qué canción es la versión y quién es el autor?", req: true, si: { k: "tipo", v: "Cover o versión" } },
-    { k: "compositores", l: "Compositores", req: true, ayuda: "Nombre completo de cada persona que escribió letra o música y, si lo sabes, el porcentaje de cada una." },
+    { k: "compositores", l: "Compositores", tipo: "personas", req: true, ayuda: "Nombre completo de cada persona que escribió letra o música y, si lo sabes, su porcentaje. Usa «+ Agregar otro compositor» para sumar a alguien más." },
     { k: "idioma", l: "Idioma", tipo: "chips", ops: ["Español", "Inglés", "Bilingüe", "Otro"] },
     { k: "letra", l: "Letra completa", tipo: "area", req: true, ayuda: "Marca las partes si puedes: [Verso 1], [Coro], [Puente]…" },
     { k: "mensaje", l: "¿De qué habla la canción y por qué es importante para ti?", tipo: "area" }
