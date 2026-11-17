@@ -475,6 +475,10 @@ a.chip.who{text-decoration:none}a.chip.who:hover{filter:brightness(.95)}
 .pitem{display:flex;gap:12px;align-items:center;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg)}
 .pitem .txt{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
 .pitem .txt small{color:var(--muted);font-size:12.5px}
+.pitem .ptit{all:unset;cursor:pointer;display:block}.pitem .ptit:hover strong{text-decoration:underline}.pitem .ptit:focus-visible{outline:3px solid var(--baby);outline-offset:2px;border-radius:6px}
+.pitem .padd{flex:none;width:32px;height:32px;border-radius:8px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);font-size:18px;line-height:1;cursor:pointer}
+.pitem.pabierta{border-color:var(--area,var(--line))}
+.pdet{list-style:none;margin:-4px 0 6px}.pdet>.list{margin:0;padding:0}
 .pitem time{font-family:var(--mono);font-size:12px;color:var(--muted)}
 .chip.area{border-color:transparent;color:#fff}
 .filters{display:flex;gap:10px;flex-wrap:wrap}
@@ -3036,10 +3040,15 @@ function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
   $("personPM").innerHTML=resumenPM(p,self,chipA,wkNow);
   $("personPendH").textContent=self?"Mis pendientes":"Sus pendientes";
   $("personDoneH").textContent=actual?"Completado esta semana":"Completado · "+weekLabel(ws).toLowerCase();
+  // Tocar el nombre (o «+») abre aquí mismo el editor completo de la tarea, igual que en Pendientes del área
+  const abiertas=new Set();
   $("personPend").innerHTML=pend.length?pend.map(({t,s})=>{const x=s||t,a=areaOf(t);
     const cuando=t.semana<wkNow?`<span style="color:var(--flame)">Viene de la ${weekLabel(fromKey(t.semana)).toLowerCase()}</span>`:t.semana>wkNow?weekLabel(fromKey(t.semana)):"Esta semana";
-    return `<li class="pitem"><button class="check ${s?"sub":""}" role="checkbox" aria-checked="false" aria-label="Marcar ${esc(x.titulo)}" ${s?`data-st="${t.id}|${s.id}"`:`data-tt="${t.id}"`} ${puedeTarea(t)?"":"disabled"}>${CHECK}</button>
-      <div class="txt"><strong>${esc(x.titulo)}</strong><small>${s?`Subtarea de ${esc(t.titulo)} · `:""}${cuando}${t.proyecto?" · "+esc(t.proyecto):""}</small></div>${chipA(a)}</li>`}).join(""):`<li class="none">Nada pendiente.</li>`;
+    const exp=open.has(t.id)&&!abiertas.has(t.id);if(exp)abiertas.add(t.id);
+    return `<li class="pitem ${exp?"pabierta":""}"><button class="check ${s?"sub":""}" role="checkbox" aria-checked="false" aria-label="Marcar ${esc(x.titulo)}" ${s?`data-st="${t.id}|${s.id}"`:`data-tt="${t.id}"`} ${puedeTarea(t)?"":"disabled"}>${CHECK}</button>
+      <div class="txt"><button type="button" class="ptit" data-open="${t.id}" aria-expanded="${open.has(t.id)}" title="${open.has(t.id)?"Cerrar":"Abrir para editar, agregar notas, ligas, archivos y subtareas"}"><strong>${esc(x.titulo)}</strong></button><small>${s?`Subtarea de ${esc(t.titulo)} · `:""}${cuando}${t.proyecto?" · "+esc(t.proyecto):""}</small></div>${chipA(a)}
+      <button type="button" class="padd" data-open="${t.id}" aria-label="${open.has(t.id)?"Cerrar":"Abrir"} ${esc(t.titulo)}" title="${open.has(t.id)?"Cerrar":"Abrir detalle"}">${open.has(t.id)?"−":"+"}</button></li>
+      ${exp?`<li class="pdet"><ul class="list">${taskItem(t)}</ul></li>`:""}`}).join(""):`<li class="none">Nada pendiente.</li>`;
   $("personDone").innerHTML=done.length?done.map(x=>`<li class="pitem hecha"><button class="check ${x.tipo==="s"?"sub":""}" role="checkbox" aria-checked="true" aria-label="Reabrir ${esc(x.titulo)}" title="${puedeTarea(x.t)?"Desmarcar (si se marcó por error)":"No puedes cambiar tareas de esta área"}" ${x.tipo==="s"?`data-st="${x.t.id}|${x.obj.id}"`:`data-tt="${x.t.id}"`} ${puedeTarea(x.t)?"":"disabled"}>${CHECK}</button><time datetime="${x.hecha}">${DIAS[new Date(x.hecha).getDay()].slice(0,3)} ${hhmm(x.hecha)}</time><div class="txt"><strong>${esc(x.titulo)}</strong>${x.tipo==="s"?`<small>Subtarea de ${esc(x.padre)}</small>`:""}${x.obj&&x.obj.cierre?`<small class="pmcierre">💬 ${esc(x.obj.cierre)}</small>`:""}</div>${chipA(x.area)}</li>`).join(""):`<li class="none">Nada completado en esta semana.</li>`}
 
 /* Carta de presentación: portada con el color de sus áreas, foto grande, rol, áreas, correo y "Sobre mí" */
