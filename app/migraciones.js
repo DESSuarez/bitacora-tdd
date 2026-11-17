@@ -1,0 +1,30 @@
+// Scripts de Supabase (supabase/migraciones/) para que el desarrollador vea en Sugerencias cuáles faltan por correr.
+// Al crear una migración nueva: agrégala aquí y termínala con
+//   insert into public.migraciones_aplicadas (nombre) values ('NNN_nombre') on conflict (nombre) do nothing;
+window.MIGRACIONES = [
+  { n: "002_perfil_y_fotos", resumen: "perfil de usuario con fotografía" },
+  { n: "003_rol_desarrollador", resumen: "rol \"desarrollador\"" },
+  { n: "004_usuario", resumen: "nombre de usuario (@usuario) separado del nombre" },
+  { n: "005_fotos_lectura", resumen: "permiso de lectura en el bucket \"fotos\"" },
+  { n: "006_entregables", resumen: "archivos entregables en tareas y subtareas" },
+  { n: "007_operativo_y_varias_areas", resumen: "área \"operativo\" y personas en varias áreas" },
+  { n: "008_avisos_por_correo", resumen: "avisos automáticos por correo" },
+  { n: "009_presentacion", resumen: "\"Sobre mí\" en el perfil (carta de presentación)" },
+  { n: "010_avisos_nombre_funcion", resumen: "la función de avisos quedó desplegada como \"bright-task\"" },
+  { n: "011_perfil_propio", resumen: "cada quien edita solo su propio perfil" },
+  { n: "012_entradas_formacion", resumen: "Entradas de formación" },
+  { n: "013_calendario_y_canciones", resumen: "calendario interno y canciones por producir" },
+  { n: "014_portada", resumen: "portada en la carta de presentación" },
+  { n: "015_ministerios_y_lanzamiento", resumen: "ministerios, lanzamiento y canciones agregadas a mano" },
+  { n: "016_saludo", resumen: "saludo del Dashboard" },
+  { n: "017_finanzas", resumen: "Finanzas (solicitudes de gasto e ingresos)" },
+  { n: "018_samply", resumen: "Samply y las dos escuchas del master" },
+  { n: "019_activos", resumen: "activos (Finanzas → Activos)" },
+  { n: "020_ligas_limpias", resumen: "ligas limpias e inamovibles para registrar canciones" },
+  { n: "021_paso_distrokid", resumen: "paso «Subir canción a plataformas (DistroKid)»" },
+  { n: "022_legal_marketing_calendario", resumen: "áreas Legal y Marketing, funnel de canciones en tres áreas," },
+  { n: "023_agenda_por_ministerio", resumen: "liga fija de agenda por ministerio" },
+  { n: "024_dias_de_produccion", resumen: "días exactos en las producciones que aparta un artista" },
+  { n: "025_cancion_a_agenda", resumen: "del registro de canción directo a la agenda de producción" },
+  { n: "026_trivia_y_sugerencias", resumen: "trivia del día, sugerencias y registro de scripts corridos" }
+];

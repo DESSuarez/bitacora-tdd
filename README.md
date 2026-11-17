@@ -145,6 +145,9 @@ Corre `supabase/migraciones/023_agenda_por_ministerio.sql`. En Música → Canci
 ### 25. Del registro de canción a la agenda
 Corre `supabase/migraciones/025_cancion_a_agenda.sql`. El formulario de canciones muestra la lista de ministerios del colectivo y, al enviar, lleva al artista a la agenda de su ministerio para el tipo de producción que eligió; lo que aparte queda ligado a la canción.
 
+### 26. Trivia del día, sugerencias y scripts pendientes
+Corre `supabase/migraciones/026_trivia_y_sugerencias.sql`. Activa la trivia diaria con racha, la sección Sugerencias y el registro de scripts corridos: desde aquí cada migración se registra sola y el desarrollador ve en Sugerencias cuáles faltan.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 

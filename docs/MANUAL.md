@@ -185,6 +185,22 @@ docs/MANUAL.md          Este manual
 - **Entradas de Formación:** formulario público. Las preguntas viven en `campos-entrada.js`.
 - **Temas:** Día, Noche, Retro y Auto. **Retro solo cambia la paleta** (neón sobre morado). Cualquier color nuevo se define en los tres temas.
 
+## 9 bis. Trivia del día y Sugerencias
+
+- **Trivia del día:**
+  - **Preguntas:** viven en `app/trivia.js` (`TRIVIA_CATEGORIAS`, `TRIVIA`). Cada una lleva `{id, cat, q, ops[4], ok, exp, fuente}` y se verifica contra el Catecismo (vatican.va), la Biblia, documentos del Magisterio o fuentes de historia confiables.
+  - **Para agregar preguntas:** súmalas al final con un `id` nuevo, sin cambiar los ids existentes.
+  - **Cuáles salen:** 3 al día, iguales para todo el equipo (`preguntasDelDia`), recorriendo cada categoría en orden.
+  - **Ventana:** sale sola una vez al día al entrar (`popupTrivia`). Se puede cerrar y jugar desde Mi trabajo.
+  - **Respuestas y racha:** se guardan en `trivia_respuestas`, una por persona y día. La **racha 🔥** cuenta los días seguidos con la trivia hecha (`racha`, `mejorRacha`) y se ve en el perfil y en Equipo.
+- **Sugerencias** (`#sugerencias`, menú General):
+  - **Quién propone:** cualquiera propone una mejora, un error o una idea, con un máximo de 5 abiertas por persona (la RLS lo hace cumplir).
+  - **Quién gestiona:** la PM y el desarrollador las aprueban o no, con una respuesta, y las mueven a «En proceso» y «Hecha». Quien la propuso recibe un aviso cuando cambia de estado.
+  - **Para trabajarlas con Claude Code:** «📋 Copiar aprobadas» copia la lista lista para pegar.
+- **Scripts pendientes:**
+  - Solo el desarrollador ve en Sugerencias qué migraciones faltan. La app compara `app/migraciones.js` contra la tabla `migraciones_aplicadas`.
+  - **Regla:** cada migración nueva se agrega a `migraciones.js` y termina con `insert into public.migraciones_aplicadas (nombre) values ('NNN_nombre') on conflict (nombre) do nothing;`. Así se registra sola al correrla.
+
 ## 10. Migraciones
 
 | # | Qué hace |
@@ -198,6 +214,7 @@ docs/MANUAL.md          Este manual
 | 019 | Activos |
 | 020 | Ligas limpias `/cancion/<ministerio>` |
 | 021 | Paso DistroKid (checklist de 24 pasos) |
+| **026** | `trivia_respuestas`, `sugerencias`, `migraciones_aplicadas`; el responsable de una tarea la puede editar aunque sea de otra área; archivos entregables para áreas adicionales y responsables |
 | **025** | Del registro de canción a la agenda: `ministerios_colectivo()`, `agenda_de_liga()`, `agendas_artistas.liga` y `agenda_reservar(..., c_id)` ligada a la canción |
 | **024** | `agenda_reservar` guarda los días exactos (`dias`) de lo que aparta un artista |
 | **023** | Liga fija de agenda por ministerio (`reutilizable`, `reservas`; códigos con guiones) |
@@ -221,6 +238,11 @@ docs/MANUAL.md          Este manual
 
 Formato: fecha · qué cambió · dónde.
 
+- **2026-11-17** (noche, 2)
+  - **Trivia del día:** banco verificado en `trivia.js`, ventana una vez al día y racha 🔥 en el perfil y en Equipo.
+  - **Sugerencias:** sección para proponer cambios, con aprobación y seguimiento de la PM y el desarrollador, y copia para Claude. El desarrollador ve ahí los scripts pendientes (`migraciones.js`).
+  - **Tareas:** el responsable de una tarea (o de una subtarea) la puede editar y completar aunque sea de otra área. Los archivos entregables ya aceptan las áreas adicionales.
+  - Todo esto con la migración 026.
 - **2026-11-17** (noche)
   - **Mi trabajo:** tocar el nombre de un pendiente (o «+») abre ahí mismo el editor completo de la tarea: datos, notas, ligas, archivos y subtareas (`taskItem` dentro de `#personPend`).
   - **Inicio:** al entrar a la app siempre aparece el Dashboard, para todos los roles. Las ligas con `#área` o `#persona/…` siguen abriendo su página (`index.html`: `readHash` y arranque).

@@ -53,6 +53,27 @@ body[data-area="operativo"]{--area:var(--sol);--area-ink:var(--sol-ink);--area-s
 body[data-area="legal"]{--area:var(--lav);--area-ink:var(--lav-ink);--area-soft:var(--lav-soft);--on-area:#FFFFFF}
 body[data-area="marketing"]{--area:var(--rosa);--area-ink:var(--rosa-ink);--area-soft:var(--rosa-soft);--on-area:#FFFFFF}
 .dtipos{margin:4px 0 10px}
+.trivcard{max-width:560px;width:100%;display:flex;flex-direction:column;gap:12px}
+.trhead{display:flex;align-items:center;gap:10px}.trk{font:700 12px "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.trracha{margin-left:auto;font-weight:800;background:color-mix(in srgb,#FF8A00 18%,var(--surface));border:1px solid color-mix(in srgb,#FF8A00 50%,var(--line));padding:3px 10px;border-radius:999px;font-size:13px}
+.trx{border:0;background:none;color:var(--muted);font-size:26px;line-height:1;cursor:pointer;padding:0 4px}
+.trprog{display:flex;justify-content:space-between;font:600 12px "IBM Plex Mono",monospace;color:var(--muted)}.trcat{color:var(--area-ink,var(--fg))}
+.trq,.trtit{margin:0;font-size:20px;line-height:1.25}.trsub{margin:0;color:var(--muted);font-size:14px}
+.trops{display:grid;gap:8px}.trop{display:flex;gap:10px;align-items:center;text-align:left;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--bg);color:var(--fg);font:inherit;font-weight:600;cursor:pointer}
+.trop:hover:not([disabled]){border-color:var(--area)}.trop[disabled]{cursor:default}.trop.ok{border-color:#1DB954;background:color-mix(in srgb,#1DB954 15%,var(--bg))}.trop.mal{border-color:#E5484D;background:color-mix(in srgb,#E5484D 13%,var(--bg))}
+.trl{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--surface);font:700 12px "IBM Plex Mono",monospace}
+.trexp{border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.45;border-left:4px solid #1DB954;background:var(--surface)}.trexp.mal{border-left-color:#E5484D}.trexp a{color:var(--area-ink,var(--fg))}
+.trpie{display:flex;justify-content:flex-end}
+.trres{list-style:none;margin:0;padding:0;display:grid;gap:8px}.trres li{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:10px;background:var(--surface)}.trres li>span{font-weight:900;color:#1DB954}.trres li.mal>span{color:#E5484D}.trres small{display:block;color:var(--muted)}
+.strivia{display:flex;flex-direction:column;gap:6px}.strivia .btn{align-self:flex-start}
+.pcard .racha{font:700 12px "IBM Plex Mono",monospace;color:#FF8A00}
+.caja{border:1px solid var(--line);border-radius:16px;padding:18px;background:var(--surface);margin:0 0 16px}.caja h3{margin:0 0 8px}
+.sugform{display:flex;flex-direction:column;gap:10px}.sugform h3{margin:0}.sugform .row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.sugtipos{align-self:flex-start}.sugdet{display:flex;flex-direction:column;gap:4px;font-weight:600}
+.suglist{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.sug{border:1px solid var(--line);border-left:5px solid var(--c);border-radius:12px;padding:12px 14px;background:var(--surface);display:flex;flex-direction:column;gap:6px}
+.sug h4{margin:0;font-size:16px}.sug p{margin:0;white-space:pre-wrap;color:var(--fg)}.sugtop{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.sugtop .sp{flex:1}.sugtop small{color:var(--muted)}
+.sugtipo{font-weight:700;font-size:13px}.sugresp{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:13px}.sugacc{display:flex;gap:6px;flex-wrap:wrap}
+.sugr{font-size:14px;background:var(--bg);border-radius:10px;padding:8px 10px}
 .calfil{margin:0 0 10px;flex-wrap:wrap}.cevar{display:block;font:700 9.5px/1.2 "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.06em;opacity:.75}
 .sinacc{max-width:560px;margin:30px auto;padding:28px;border:1px solid var(--line);border-top:6px solid var(--c);border-radius:16px;background:var(--surface);display:flex;flex-direction:column;gap:12px;align-items:flex-start}
 .sinacc .ic{width:40px;height:40px;color:var(--c)}.sinacc .ic svg{width:100%;height:100%}.sinacc h2{margin:0}.sinacc p{margin:0;color:var(--muted)}
@@ -1078,6 +1099,7 @@ select:disabled{cursor:default;opacity:.7}
 </head>
 <body>
 
+<div class="cropper" id="trivModal" role="dialog" aria-modal="true" aria-labelledby="trivTit" hidden><div class="cropcard trivcard" id="trivCard"></div></div>
 <div class="cropper" id="evModal" role="dialog" aria-modal="true" aria-labelledby="evTitle" hidden>
   <form class="cropcard evcard" id="evForm" autocomplete="off">
     <h3 id="evTitle">Agendar</h3>
@@ -1139,6 +1161,7 @@ select:disabled{cursor:default;opacity:.7}
     <div class="sidesec">General</div>
     <a href="#equipo" data-route="equipo" style="--c:#6E7A79;--on:#fff"><span class="ic" data-ic="equipo"></span><span class="lb">Equipo</span></a>
     <a href="#finanzas" data-route="finanzas" style="--c:#3F9E6A;--on:#fff"><span class="ic" data-ic="finanzas"></span><span class="lb">Finanzas</span><span class="cnt" data-cnt="finanzas"></span></a>
+    <a href="#sugerencias" data-route="sugerencias" style="--c:#C98A1B;--on:#fff"><span class="ic" data-ic="sugerencias"></span><span class="lb">Sugerencias</span><span class="cnt" data-cnt="sugerencias"></span></a>
     <a href="#pm" data-route="pm" style="--c:var(--pmc);--on:#fff"><span class="ic" data-ic="pm"></span><span class="lb">Project Manager</span></a>
   </nav>
   <div class="userbar" id="userbar" hidden>
@@ -1257,6 +1280,7 @@ select:disabled{cursor:default;opacity:.7}
 
     <!-- Finanzas: solicitudes de gasto e ingresos y egresos del mes -->
     <section class="view" id="vFinanzas" hidden></section>
+    <section class="view" id="vSugerencias" hidden></section>
 
     <!-- Dashboard: calendario semanal, disponibilidad de producción y pendientes generales -->
     <section class="view" id="vDash" hidden></section>
@@ -1371,6 +1395,8 @@ select:disabled{cursor:default;opacity:.7}
 <!-- Preguntas del formulario de canciones, etapas y checklist de producción -->
 <script src="campos-cancion.js"></script>
 <script src="agenda-reglas.js"></script>
+<script src="trivia.js"></script>
+<script src="migraciones.js"></script>
 <script>
 (function(){
 const DIAS=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
@@ -1395,6 +1421,7 @@ const AREA_ICON={
  pm:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
  equipo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14.5c2.4 0 4 1.5 4.5 4"/></svg>'};
 AREA_ICON.persona=AREA_ICON.equipo;
+AREA_ICON.sugerencias='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21.5h4M12 2.5a6.5 6.5 0 0 0-3.8 11.8c.5.4.8 1 .8 1.6V16h6v-.1c0-.6.3-1.2.8-1.6A6.5 6.5 0 0 0 12 2.5z"/></svg>';
 AREA_ICON.finanzas='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="13" rx="2.5"/><path d="M2.5 10.5h19M6.5 15h4"/></svg>';
 AREA_ICON.dashboard='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16.5" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4M7.5 13.5h3M13.5 13.5h3M7.5 17h3"/></svg>';
 const AREA_TABS=[["tasks","Pendientes"],["report","Reporte diario"],["month","Mes"],["logros","Logros"]];
@@ -1531,7 +1558,7 @@ function pendientesDe(pid){const out=[];
 function esPM(){return !!perfil&&ACCESO_TOTAL.includes(perfil.rol)}
 function canEdit(a){return esPM()||enArea(perfil,a)}
 /* ¿Puede marcar o desmarcar esta tarea? Su área, o cualquier paso de canciones si trabaja canciones (Música puede reabrir un paso de Legal o Marketing) */
-function puedeTarea(t){return canEdit(areaOf(t))||(!!t.cancion_id&&puedeCanciones())}
+function puedeTarea(t){return canEdit(areaOf(t))||(!!t.cancion_id&&puedeCanciones())||(!!perfil&&(t.responsable_id===perfil.id||(t.subtareas||[]).some(x=>x.responsable_id===perfil.id)))}  // responsable de la tarea o de una subtarea (migración 026)
 function areaOf(x){return AREAS[x.area]?x.area:"formacion"}
 function safeUrl(u){if(!u)return"";u=u.trim();if(!/^https?:\/\//i.test(u))u="https://"+u;try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:""}catch(e){return""}}
 function hostOf(u){try{return new URL(u).hostname.replace(/^www\./,"")}catch(e){return"liga"}}
@@ -1563,10 +1590,10 @@ function shortRange(ws,ms){const r=monthRange(ms);let a=ws,b=addDays(ws,6);if(ke
 function heat(n){return n<=0?"":n<=2?"h1":n<=4?"h2":"h3"}
 
 /* Navegación */
-function scope(){if(route==="equipo")return "team";if(route==="finanzas")return finView==="mes"?"month":"finsol";if(route==="dashboard")return {dia:"day",mes:"month",ano:"year"}[dashView]||"week";if(route==="persona")return "week";if(route==="pm")return pmView==="cal"?({dia:"day",mes:"month",ano:"year"}[dashView]||"week"):pmView==="tasks"?"week":pmView;const v=areaView[route];if(v==="entradas"||v==="canciones")return v;return v==="tasks"||v==="report"?"week":"month"}
+function scope(){if(route==="equipo")return "team";if(route==="sugerencias")return "sug";if(route==="finanzas")return finView==="mes"?"month":"finsol";if(route==="dashboard")return {dia:"day",mes:"month",ano:"year"}[dashView]||"week";if(route==="persona")return "week";if(route==="pm")return pmView==="cal"?({dia:"day",mes:"month",ano:"year"}[dashView]||"week"):pmView==="tasks"?"week":pmView;const v=areaView[route];if(v==="entradas"||v==="canciones")return v;return v==="tasks"||v==="report"?"week":"month"}
 function readHash(){const h=decodeURIComponent((location.hash||"").replace("#","").split("&")[0]);
   if(h.startsWith("persona/")){route="persona";personaId=h.slice(8);return}
-  route=(AREAS[h]||h==="pm"||h==="equipo"||h==="dashboard"||h==="finanzas")?h:"dashboard"}
+  route=(AREAS[h]||h==="pm"||h==="equipo"||h==="dashboard"||h==="finanzas"||h==="sugerencias")?h:"dashboard"}
 window.addEventListener("hashchange",()=>{readHash();render();window.scrollTo(0,0)});
 
 /* Acciones de tareas */
@@ -1578,7 +1605,7 @@ function findT(id){return tasks.find(x=>x.id===id)}
 /* ---------- Comentario final al completar («¿Cómo quedó?») ----------
    Se guarda en la tarea o subtarea como «cierre» y aparece en la tarea, el Reporte diario, el panel de la PM y el PDF semanal. */
 let cierreAbierto=null;
-function abrirCierre(id,sid){const t=findT(id);if(!t)return;const x=sid?t.subtareas.find(z=>z.id===sid):t;if(!x||!x.hecha||!canEdit(areaOf(t)))return;
+function abrirCierre(id,sid){const t=findT(id);if(!t)return;const x=sid?t.subtareas.find(z=>z.id===sid):t;if(!x||!x.hecha||!puedeTarea(t))return;
   cierreAbierto={id,sid};let c=$("cierreCard");
   if(!c){c=document.createElement("form");c.id="cierreCard";c.className="cierrecard";c.setAttribute("role","dialog");c.setAttribute("aria-label","Comentario final");document.body.appendChild(c)}
   c.innerHTML=`<div class="cierreh"><span class="cierreok">✓</span><div><b>${esc(x.titulo)}</b><small>¿Cómo quedó? Escríbelo para que quede claro cómo se completó (opcional).</small></div><button type="button" class="icon" data-cierre="omitir" aria-label="Cerrar">✕</button></div>
@@ -1645,7 +1672,7 @@ function confirmDel(btn,id,fn){
 /* ---------- Render ---------- */
 /* Cambios que llegan en tiempo real: vuelve a pintar sin perder el campo que se está escribiendo */
 function renderKeep(){const ae=document.activeElement;
-  if((ae&&(ae.id==="eNotas"||ae.id==="cNotas"))||arrastre||ajPortada||cancionEdit||(ae&&ae.closest&&ae.closest("#gastoForm,#pagoForm,#ingresoForm,#activoForm"))||!$("evModal").hidden){esperaRender=true;return}
+  if((ae&&(ae.id==="eNotas"||ae.id==="cNotas"||(ae.dataset&&ae.dataset.sugresp!==undefined)))||!$("trivModal").hidden||arrastre||ajPortada||cancionEdit||(ae&&ae.closest&&ae.closest("#gastoForm,#pagoForm,#ingresoForm,#activoForm"))||!$("evModal").hidden){esperaRender=true;return}
   if(ae&&ae.dataset&&ae.dataset.grip){const g=ae.dataset.grip;render();const n=document.querySelector(`[data-grip="${g}"]`);if(n)n.focus();return}
   const sel=!ae||!ae.matches("input,textarea")||ae.classList.contains("otro-in")?null:ae.id?"#"+CSS.escape(ae.id):
     ["tedit","snota","hecha"].map(k=>ae.dataset[k]!=null?`[data-${k}="${CSS.escape(ae.dataset[k])}"]`+(k==="tedit"?`[data-f="${ae.dataset.f}"]`:""):"").find(Boolean)||null;
@@ -1654,7 +1681,7 @@ function renderKeep(){const ae=document.activeElement;
   const v=ae.value,a=ae.selectionStart,b=ae.selectionEnd;render();const n=document.querySelector(sel);
   if(n&&n!==ae){n.value=v;n.focus();try{n.setSelectionRange(a,b)}catch(e){}}}
 /* Al redibujar (por ejemplo, por cambios en tiempo real) se conserva lo escrito en los formularios abiertos */
-const FORMS_VIVOS=["agendaForm","cancionForm","gastoForm","pagoForm","ingresoForm","activoForm","ligaForm","cEditForm"];
+const FORMS_VIVOS=["sugForm","agendaForm","cancionForm","gastoForm","pagoForm","ingresoForm","activoForm","ligaForm","cEditForm"];
 function guardarForms(){const out=[];FORMS_VIVOS.forEach(id=>{const f=document.getElementById(id);if(!f)return;
   out.push({id,campos:[...f.elements].filter(el=>el.name||el.id).map(el=>({k:el.id||el.name+"|"+el.value,v:el.value,c:el.checked,h:el.hidden,tipo:el.type}))})});
   const ae=document.activeElement;return {out,foco:ae&&ae.form&&FORMS_VIVOS.includes(ae.form.id)?(ae.id||ae.name+"|"+ae.value):null}}
@@ -1666,13 +1693,13 @@ function restaurarForms(g){g.out.forEach(({id,campos})=>{const f=document.getEle
 function render(){const g=guardarForms();dibujar();restaurarForms(g)}
 function dibujar(){
   barrerPendientes();
-  const isPM=route==="pm",D=route==="dashboard",F=route==="finanzas",P=route==="equipo"||route==="persona"||D||F,A=!isPM&&!P;
+  const isPM=route==="pm",D=route==="dashboard",F=route==="finanzas",SG=route==="sugerencias",P=route==="equipo"||route==="persona"||D||F||SG,A=!isPM&&!P;
   const pp=route==="persona"?perfiles.find(x=>x.id===personaId):null;
-  document.body.dataset.area=D||F?miArea():P?(pp&&pp.id!==(perfil&&perfil.id)?areaPrincipal(pp):miArea()):isPM?miArea():route;
+  document.body.dataset.area=D||F||SG?miArea():P?(pp&&pp.id!==(perfil&&perfil.id)?areaPrincipal(pp):miArea()):isPM?miArea():route;
   pintarMenu();
-  const nombre=D?"Dashboard":F?"Finanzas":P?(route==="equipo"?"Equipo":pp?pp.nombre:"Perfil"):isPM?"Project Manager":AREAS[route].n;
+  const nombre=D?"Dashboard":F?"Finanzas":SG?"Sugerencias":P?(route==="equipo"?"Equipo":pp?pp.nombre:"Perfil"):isPM?"Project Manager":AREAS[route].n;
   $("areaTag").innerHTML=(AREA_ICON[route]||"")+esc(route==="persona"?"Perfil":nombre);
-  $("h1").innerHTML=D?saludoH1():F?`Las cuentas <em>claras</em>`:route==="equipo"?`El equipo <em>en orden</em>`:route==="persona"?esc(nombre):isPM?`Las áreas <em>en orden</em>`:`La semana <em>en orden</em>`;
+  $("h1").innerHTML=D?saludoH1():F?`Las cuentas <em>claras</em>`:SG?`Las ideas <em>en orden</em>`:route==="equipo"?`El equipo <em>en orden</em>`:route==="persona"?esc(nombre):isPM?`Las áreas <em>en orden</em>`:`La semana <em>en orden</em>`;
   document.title=nombre+" · Bitácora Tiempo de Dios";
   // pestañas
   if(PM_SOLO.includes(pmView)&&!esPM())pmView="week";
@@ -1690,7 +1717,8 @@ function dibujar(){
   $("todayP").textContent=sc==="day"?"Hoy":sc==="week"?"Esta semana":sc==="month"?"Este mes":"Este año";
   $("todayP").disabled=same;$("todayP").style.opacity=same?.45:1;
   if(A&&!canEdit(route))$("periodLabel").textContent=`Sin acceso a ${AREAS[route].n}`;
-  $("todayP").parentElement.style.display=(A&&!canEdit(route))||sc==="team"||sc==="entradas"||sc==="canciones"||sc==="finsol"?"none":"";if(sc==="finsol")$("periodLabel").textContent=finView==="activos"?`Activos · ${dinero(activos.reduce((s,a)=>s+(Number(a.valor)||0),0))} en total`:`Solicitudes de gasto · ${gastos.filter(g=>g.estado==="pendiente").length} por revisar`;if(sc==="canciones")$("periodLabel").textContent=route==="legal"?`Registros de canciones · ${canciones.filter(c=>siguienteEn(c,"legal")).length} en trámite`:route==="marketing"?`Lanzamientos · ${canciones.filter(c=>siguienteEn(c,"marketing")).length} en campaña`:`Canciones por producir · ${canciones.filter(c=>c.etapa!=="completado").length} en proceso`;if(sc==="entradas")$("periodLabel").textContent=`Formulario para formadores · ${entradas.length} entrada${entradas.length===1?"":"s"}`;if(sc==="team")$("periodLabel").textContent=route==="equipo"?`${perfiles.length} persona${perfiles.length===1?"":"s"} en la bitácora`:"Administración del equipo";
+  if(sc==="sug")$("periodLabel").textContent=`${sugerencias.filter(x=>["nueva","aprobada","en_proceso"].includes(x.estado)).length} sugerencias abiertas`;
+  $("todayP").parentElement.style.display=(A&&!canEdit(route))||sc==="sug"||sc==="team"||sc==="entradas"||sc==="canciones"||sc==="finsol"?"none":"";if(sc==="finsol")$("periodLabel").textContent=finView==="activos"?`Activos · ${dinero(activos.reduce((s,a)=>s+(Number(a.valor)||0),0))} en total`:`Solicitudes de gasto · ${gastos.filter(g=>g.estado==="pendiente").length} por revisar`;if(sc==="canciones")$("periodLabel").textContent=route==="legal"?`Registros de canciones · ${canciones.filter(c=>siguienteEn(c,"legal")).length} en trámite`:route==="marketing"?`Lanzamientos · ${canciones.filter(c=>siguienteEn(c,"marketing")).length} en campaña`:`Canciones por producir · ${canciones.filter(c=>c.etapa!=="completado").length} en proceso`;if(sc==="entradas")$("periodLabel").textContent=`Formulario para formadores · ${entradas.length} entrada${entradas.length===1?"":"s"}`;if(sc==="team")$("periodLabel").textContent=route==="equipo"?`${perfiles.length} persona${perfiles.length===1?"":"s"} en la bitácora`:"Administración del equipo";
   // datalists
   const projs=[...new Set(tasks.map(t=>t.proyecto).filter(Boolean))];
   $("projList").innerHTML=projs.map(p=>`<option value="${esc(p)}">`).join("");
@@ -1698,12 +1726,12 @@ function dibujar(){
   $("whoList").innerHTML=people.map(p=>`<option value="${esc(p)}">`).join("");
   // vistas
   const B=A&&!sinAcceso;
-  const show={vTasks:B&&cur==="tasks",vReport:B&&cur==="report",vMonth:B&&cur==="month",vLogros:B&&cur==="logros",vEntradas:B&&cur==="entradas",vPM:isPM&&!PM_SOLO.includes(cur),vPMTasks:isPM&&cur==="tasks",vTeam:isPM&&cur==="team",vPeople:route==="equipo",vPerson:route==="persona",vDash:D||(isPM&&cur==="cal"),vCanciones:B&&cur==="canciones",vFinanzas:F,vSinAcceso:sinAcceso};
+  const show={vTasks:B&&cur==="tasks",vReport:B&&cur==="report",vMonth:B&&cur==="month",vLogros:B&&cur==="logros",vEntradas:B&&cur==="entradas",vPM:isPM&&!PM_SOLO.includes(cur),vPMTasks:isPM&&cur==="tasks",vTeam:isPM&&cur==="team",vPeople:route==="equipo",vPerson:route==="persona",vDash:D||(isPM&&cur==="cal"),vCanciones:B&&cur==="canciones",vFinanzas:F,vSugerencias:SG,vSinAcceso:sinAcceso};
   Object.entries(show).forEach(([id,v])=>{$(id).hidden=!v});
   if(A){const ro=!canEdit(route);const msg=ro?`Vista de solo lectura. Solo el equipo de ${AREAS[route].n} y la project manager pueden registrar aquí.`:"";
     $("roTasks").hidden=$("roLogros").hidden=!ro;$("roTasks").textContent=$("roLogros").textContent=msg;$("addForm").hidden=ro;$("logroForm").hidden=ro}
   if(sinAcceso){renderSinAcceso();return}
-  if(D||(isPM&&cur==="cal"))renderDashboard();else if(F)renderFinanzas();else if(route==="equipo")renderPeople();else if(route==="persona")renderPerson();else if(isPM&&cur==="team")renderTeam();else if(isPM&&cur==="tasks")renderPMTasks();else if(isPM)renderPM();else if(cur==="tasks")renderTasks();else if(cur==="report")renderReport();else if(cur==="month")renderMonth();else if(cur==="entradas")renderEntradas();else if(cur==="canciones")renderCanciones();else renderLogros();
+  if(D||(isPM&&cur==="cal"))renderDashboard();else if(F)renderFinanzas();else if(SG)renderSugerencias();else if(route==="equipo")renderPeople();else if(route==="persona")renderPerson();else if(isPM&&cur==="team")renderTeam();else if(isPM&&cur==="tasks")renderPMTasks();else if(isPM)renderPM();else if(cur==="tasks")renderTasks();else if(cur==="report")renderReport();else if(cur==="month")renderMonth();else if(cur==="entradas")renderEntradas();else if(cur==="canciones")renderCanciones();else renderLogros();
 }
 function tabCounts(a){const ws=weekStart(),ms=monthStart(),r=monthRange(ms);
   return {tasks:weekTasksOf(a,ws).filter(t=>!t.hecha).length,report:logRange(key(ws),key(addDays(ws,6)),a).length,month:logRange(r.s,r.e,a).length,logros:logrosRange(r.s,r.e,a).length,entradas:a==="formacion"?entradas.filter(e=>e.estado==="nueva").length:0,canciones:a==="musica"?canciones.filter(c=>c.etapa==="intake").length:a==="legal"||a==="marketing"?canciones.filter(c=>siguienteEn(c,a)).length:0}}
@@ -1802,7 +1830,7 @@ function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen
         </div>
         <div class="tactions">
           <button class="icon" data-open="${t.id}" aria-label="Editar, subtareas y responsable" title="Editar y subtareas">${ICON_SUB}</button>
-          ${ed?`<button class="icon del" data-del="${t.id}" aria-label="Borrar tarea" title="Borrar">${ICON_DEL}</button>`:""}
+          ${canEdit(a)?`<button class="icon del" data-del="${t.id}" aria-label="Borrar tarea" title="Borrar">${ICON_DEL}</button>`:""}
         </div>
       </div>
       ${(isOpen||t.subtareas.length)?`<div class="subs"${eo?` data-adjdrop="${t.id}"`:""}>
@@ -1991,6 +2019,128 @@ function descargarEntradaPDF(id){const e=entradas.find(x=>x.id===id);if(!e)retur
     const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`TdD-entrada-${slug}-${String(e.creado).slice(0,10)}.pdf`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);toast("PDF descargado.")}
   catch(err){console.error(err);toast("No se pudo generar el PDF.")}}
 
+/* ---------- Trivia del día (preguntas en trivia.js; respuestas en trivia_respuestas, migración 026) ----------
+   3 preguntas al día, iguales para todo el equipo, que rotan entre las categorías. Sale sola una vez al día al entrar;
+   se puede cerrar y jugar después desde Mi trabajo. Completarla suma a la racha 🔥 (días seguidos). */
+const TRIVIA=window.TRIVIA||[],TRIVIA_CAT=window.TRIVIA_CATEGORIAS||{},TRIVIA_N=3;
+let triviaRes=[],triviaCh=null,triviaCargada=false,triv=null;  // triv: {fecha, qs, i, elegidas:[]}
+function preguntasDelDia(f){const cats=Object.keys(TRIVIA_CAT).filter(c=>TRIVIA.some(q=>q.cat===c));if(!cats.length)return [];
+  const d=Math.round((fromKey(f)-new Date(2026,0,1))/864e5),out=[];
+  for(let i=0;i<Math.min(TRIVIA_N,TRIVIA.length);i++){const k=d*TRIVIA_N+i,c=cats[((k%cats.length)+cats.length)%cats.length],qs=TRIVIA.filter(q=>q.cat===c);
+    out.push(qs[((Math.floor(k/cats.length)%qs.length)+qs.length)%qs.length])}  // recorre cada categoría en orden, sin repetir hasta acabarla
+  return out}
+function respuestaDe(uid,f){return triviaRes.find(r=>r.usuario===uid&&r.fecha===f)}
+/* Racha: días seguidos con la trivia hecha, hasta hoy (o hasta ayer si hoy todavía no la hace) */
+function racha(uid){const dias=new Set(triviaRes.filter(r=>r.usuario===uid).map(r=>r.fecha));let d=new Date();if(!dias.has(key(d)))d=addDays(d,-1);let n=0;while(dias.has(key(d))){n++;d=addDays(d,-1)}return n}
+function mejorRacha(uid){const ds=triviaRes.filter(r=>r.usuario===uid).map(r=>r.fecha).sort();let m=0,n=0,prev=null;ds.forEach(f=>{n=prev&&key(addDays(fromKey(prev),1))===f?n+1:1;m=Math.max(m,n);prev=f});return m}
+function cargarTrivia(){if(triviaCh||!sb)return;
+  const load=async()=>{const {data,error}=await sb.from("trivia_respuestas").select("usuario,fecha,aciertos,total,respuestas").gte("fecha",key(addDays(new Date(),-400))).limit(20000);
+    if(!error)triviaRes=data||[];triviaCargada=!error;renderKeep();setTimeout(popupTrivia,600)};
+  triviaCh=sb.channel("rt-trivia").on("postgres_changes",{event:"INSERT",schema:"public",table:"trivia_respuestas"},p=>{if(!respuestaDe(p.new.usuario,p.new.fecha))triviaRes.push(p.new);renderKeep()}).subscribe(st=>{if(st==="SUBSCRIBED")load()})}
+/* Una vez al día, al entrar (si no la ha hecho y no se le ha mostrado hoy en este navegador) */
+function popupTrivia(){if(!perfil||!triviaCargada||!TRIVIA.length)return;const f=key(new Date()),k="bitacora-trivia-vista-"+perfil.id;
+  if(respuestaDe(perfil.id,f))return;let vista="";try{vista=localStorage.getItem(k)||""}catch(e){}if(vista===f)return;
+  try{localStorage.setItem(k,f)}catch(e){}abrirTrivia()}
+function abrirTrivia(){if(!TRIVIA.length){toast("Todavía no hay preguntas para la trivia.");return}const f=key(new Date());
+  if(!triv||triv.fecha!==f)triv={fecha:f,qs:preguntasDelDia(f),i:0,elegidas:[]};
+  $("trivModal").hidden=false;pintarTrivia();setTimeout(()=>{const b=$("trivCard").querySelector(".trop:not([disabled]),.btn");if(b)b.focus()},40)}
+function cerrarTrivia(){$("trivModal").hidden=true;if(esperaRender){esperaRender=false;render()}}
+function pintarTrivia(){const C=$("trivCard"),hecha=perfil&&respuestaDe(perfil.id,triv.fecha),r=perfil?racha(perfil.id):0;
+  const cab=`<div class="trhead"><span class="trk">🧠 Trivia del día</span><span class="trracha" title="Días seguidos">🔥 ${r} día${r===1?"":"s"}</span><button type="button" class="trx" data-trcerrar="1" aria-label="Cerrar la trivia">×</button></div>`;
+  if(hecha||triv.i>=triv.qs.length){const res=hecha||{aciertos:triv.elegidas.filter((e,i)=>e===triv.qs[i].ok).length,total:triv.qs.length,respuestas:[]};
+    const lista=triv.qs.map((q,i)=>{const el=triv.elegidas[i]!=null?triv.elegidas[i]:((res.respuestas||[]).find(x=>x.id===q.id)||{}).elegida;return `<li class="${el===q.ok?"ok":"mal"}"><span>${el===q.ok?"✓":"✗"}</span><div><b>${esc(q.q)}</b><small>${esc(q.ops[q.ok])} · ${esc(TRIVIA_CAT[q.cat]||q.cat)}</small></div></li>`}).join("");
+    C.innerHTML=`${cab}<h3 id="trivTit" class="trtit">${res.aciertos===res.total?"¡Perfecta! 🎉":res.aciertos?"¡Bien hecho!":"¡Mañana más!"} ${res.aciertos} de ${res.total}</h3>
+      <p class="trsub">${r?`Llevas <b>🔥 ${r} día${r===1?"":"s"}</b> seguidos. Vuelve mañana para no perder tu racha.`:"Vuelve mañana para empezar tu racha."}</p><ul class="trres">${lista}</ul>
+      <div class="trpie"><button type="button" class="btn" data-trcerrar="1">Cerrar</button></div>`;return}
+  const q=triv.qs[triv.i],el=triv.elegidas[triv.i],resp=el!=null;
+  C.innerHTML=`${cab}<div class="trprog"><span>Pregunta ${triv.i+1} de ${triv.qs.length}</span><span class="trcat">${esc(TRIVIA_CAT[q.cat]||q.cat)}</span></div>
+    <h3 id="trivTit" class="trq">${esc(q.q)}</h3>
+    <div class="trops">${q.ops.map((o,k)=>`<button type="button" class="trop ${resp?(k===q.ok?"ok":k===el?"mal":""):""}" data-trop="${k}" ${resp?"disabled":""}><span class="trl">${"ABCD"[k]}</span>${esc(o)}</button>`).join("")}</div>
+    ${resp?`<div class="trexp ${el===q.ok?"ok":"mal"}"><b>${el===q.ok?"¡Correcto!":"Casi…"}</b> ${esc(q.exp||"")}${q.fuente?` <a href="${esc(safeUrl(q.fuente))}" target="_blank" rel="noopener noreferrer">Fuente ↗</a>`:""}</div>
+      <div class="trpie"><button type="button" class="btn" data-trsig="1">${triv.i+1<triv.qs.length?"Siguiente →":"Ver resultado"}</button></div>`:`<p class="trsub">Elige una respuesta. Puedes cerrar y seguir después desde Mi trabajo.</p>`}`}
+async function guardarTrivia(){if(!sb||!perfil)return;const aciertos=triv.elegidas.filter((e,i)=>e===triv.qs[i].ok).length;
+  const fila={usuario:perfil.id,fecha:triv.fecha,aciertos,total:triv.qs.length,respuestas:triv.qs.map((q,i)=>({id:q.id,elegida:triv.elegidas[i],ok:triv.elegidas[i]===q.ok}))};
+  if(!respuestaDe(perfil.id,triv.fecha))triviaRes.push(fila);pintarTrivia();render();
+  const {error}=await sb.from("trivia_respuestas").insert(fila);
+  if(error&&!/duplicate|23505/.test(error.message+(error.code||"")))toast("No se pudo guardar tu trivia: "+(/trivia_respuestas|PGRST205|42P01/.test(error.message+(error.code||""))?"falta correr la migración 026.":error.message))}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-trop],[data-trsig],[data-trcerrar],[data-trabrir]");if(!b)return;
+  if(b.dataset.trabrir){abrirTrivia();return}
+  if(b.dataset.trcerrar){cerrarTrivia();return}
+  if(b.dataset.trop!==undefined&&triv&&triv.elegidas[triv.i]==null){triv.elegidas[triv.i]=+b.dataset.trop;pintarTrivia();const s=$("trivCard").querySelector("[data-trsig]");if(s)s.focus();return}
+  if(b.dataset.trsig){triv.i++;if(triv.i>=triv.qs.length)guardarTrivia();else pintarTrivia();const o=$("trivCard").querySelector(".trop");if(o)o.focus()}});
+$("trivModal").addEventListener("click",e=>{if(e.target===$("trivModal"))cerrarTrivia()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("trivModal").hidden)cerrarTrivia()});
+/* En el perfil: racha y botón para jugar (solo en el propio) */
+function statTrivia(p,self){const r=racha(p.id),m=mejorRacha(p.id),hoy=respuestaDe(p.id,key(new Date()));
+  return `<div class="stat s4 strivia"><b>🔥 ${r}</b><span>día${r===1?"":"s"} de racha${m>r?` · mejor: ${m}`:""}</span>${self&&TRIVIA.length?`<button type="button" class="btn sm ${hoy?"ghost":""}" data-trabrir="1">${hoy?`Trivia de hoy ✓ ${hoy.aciertos}/${hoy.total}`:"🧠 Jugar la trivia de hoy"}</button>`:hoy?`<small>Hoy: ${hoy.aciertos}/${hoy.total}</small>`:""}</div>`}
+
+/* ---------- Sugerencias (migración 026) ----------
+   Cualquiera propone mejoras, errores o ideas (máx. 5 abiertas por persona). La PM y el desarrollador las aprueban,
+   las pasan a «En proceso» y «Hecha», y pueden copiar las aprobadas para trabajarlas con Claude.
+   El desarrollador ve además los scripts de Supabase que faltan por correr (migraciones.js vs. migraciones_aplicadas). */
+const SUG_ESTADOS=[["nueva","Por revisar","var(--baby)"],["aprobada","Aprobadas","var(--sea)"],["en_proceso","En proceso","var(--sol)"],["hecha","Hechas","#1DB954"],["rechazada","No aprobadas","#7C8786"]];
+const SUG_TIPOS={mejora:["✨","Mejora"],error:["🐞","Error"],idea:["💡","Idea nueva"]},SUG_MAX=5;
+let sugerencias=[],sugCh=null,sugErr="",sugFiltro=null,sugTipo="mejora",migAplicadas=null,migErr="";
+function esDev(){return !!perfil&&perfil.rol==="desarrollador"}
+function cargarSugerencias(){if(sugCh||!sb)return;
+  const load=async()=>{const {data,error}=await sb.from("sugerencias").select("*").order("creado",{ascending:false}).limit(1000);
+    sugErr=error?(/sugerencias|PGRST205|42P01/.test(error.message+(error.code||""))?"Falta correr la migración 026 en Supabase para usar Sugerencias.":"No se pudieron leer las sugerencias: "+error.message):"";if(!error)sugerencias=data||[];
+    if(esDev()){const m=await sb.from("migraciones_aplicadas").select("nombre");migAplicadas=m.error?null:new Set((m.data||[]).map(x=>x.nombre));migErr=m.error?m.error.message:""}
+    renderKeep()};
+  sugCh=sb.channel("rt-sugerencias").on("postgres_changes",{event:"*",schema:"public",table:"sugerencias"},p=>{
+    if(p.eventType==="DELETE")sugerencias=sugerencias.filter(x=>x.id!==(p.old&&p.old.id));else{const i=sugerencias.findIndex(x=>x.id===p.new.id);if(i>=0)sugerencias[i]=p.new;else{sugerencias.unshift(p.new);if(esPM()&&perfil&&p.new.autor!==perfil.id)toast("💡 Nueva sugerencia: «"+p.new.titulo+"»")}
+      if(p.eventType==="UPDATE"&&perfil&&p.new.autor===perfil.id&&(p.old||{}).estado!==p.new.estado)toast(`Tu sugerencia «${p.new.titulo}» pasó a «${(SUG_ESTADOS.find(x=>x[0]===p.new.estado)||[])[1]||p.new.estado}».`)}
+    renderKeep()}).subscribe(st=>{if(st==="SUBSCRIBED")load()})}
+function sugAbiertasMias(){return sugerencias.filter(x=>perfil&&x.autor===perfil.id&&["nueva","aprobada","en_proceso"].includes(x.estado)).length}
+function sugCard(x){const q=perfiles.find(p=>p.id===x.autor),E=SUG_ESTADOS.find(e=>e[0]===x.estado)||SUG_ESTADOS[0],T=SUG_TIPOS[x.tipo]||SUG_TIPOS.mejora,pm=esPM(),mia=perfil&&x.autor===perfil.id;
+  const acc={nueva:[["aprobada","Aprobar",""],["rechazada","No aprobar","ghost"]],aprobada:[["en_proceso","En proceso",""],["hecha","Hecha",""],["rechazada","No aprobar","ghost"]],en_proceso:[["hecha","Hecha",""],["aprobada","Regresar a aprobadas","ghost"]],hecha:[["en_proceso","Reabrir","ghost"]],rechazada:[["nueva","Volver a revisar","ghost"]]}[x.estado]||[];
+  return `<li class="sug" style="--c:${E[2]}"><div class="sugtop"><span class="sugtipo">${T[0]} ${T[1]}</span>${x.area&&AREAS[x.area]?`<span class="cpar" style="--c:${AREAS[x.area].c}">${esc(AREAS[x.area].n)}</span>`:""}<span class="cpill" style="--c:${E[2]}">${esc(E[1].replace(/s$/,"").replace("Por revisar","Por revisar"))}</span><span class="sp"></span><small>${q?esc(q.nombre):"Alguien"} · ${shortDate(String(x.creado).slice(0,10))}</small></div>
+    <h4>${esc(x.titulo)}</h4>${x.detalle?`<p>${esc(x.detalle)}</p>`:""}
+    ${pm?`<label class="sugresp"><span>Respuesta para ${q?esc((q.nombre||"").split(" ")[0]):"quien la propuso"} <small>(opcional)</small></span><textarea class="field" rows="2" maxlength="2000" data-sugresp="${esc(x.id)}" placeholder="Ej. Lo hacemos esta semana · ya existe en Mi trabajo · por ahora no">${esc(x.respuesta||"")}</textarea></label>
+      <div class="sugacc">${acc.map(([k,n,cl])=>`<button type="button" class="btn sm ${cl}" data-sugest="${esc(x.id)}|${k}">${n}</button>`).join("")}${mia&&x.estado==="nueva"||pm?`<button type="button" class="btn ghost sm ebor" data-sugdel="${esc(x.id)}" title="Borrar">${ICON_DEL}</button>`:""}</div>`
+      :`${x.respuesta?`<div class="sugr"><b>Respuesta:</b> ${esc(x.respuesta)}</div>`:""}${mia&&x.estado==="nueva"?`<div class="sugacc"><button type="button" class="btn ghost sm ebor" data-sugdel="${esc(x.id)}">${ICON_DEL} Borrar</button></div>`:""}`}</li>`}
+function panelScripts(){if(!esDev())return "";const ref=((window.BITACORA_CONFIG||{}).supabaseUrl||"").replace(/^https?:\/\//,"").split(".")[0];
+  const todas=window.MIGRACIONES||[],pend=migAplicadas?todas.filter(m=>!migAplicadas.has(m.n)):todas.slice(-1);
+  return `<div class="eliga" style="flex-direction:column;align-items:stretch"><div><h3>🛠 Scripts pendientes de correr</h3><p>Migraciones de Supabase que la app todavía no ve como corridas. Ábrela, cópiala en el SQL Editor de Supabase y córrela: al terminar se registra sola (o márcala aquí).</p></div>
+    ${!migAplicadas?`<div class="readonly">Corre primero la migración 026: con ella la app lleva el registro de los scripts.</div>`:""}
+    ${pend.length?`<ul class="ligasart">${pend.map(m=>`<li><b>${esc(m.n)}<code class="lurl">${esc(m.resumen||"")}</code></b><span class="sp"></span>
+      <a class="btn ghost sm" href="https://github.com/DESSuarez/bitacora-tdd/blob/main/supabase/migraciones/${encodeURIComponent(m.n)}.sql" target="_blank" rel="noopener noreferrer">Ver SQL ↗</a>
+      ${ref?`<a class="btn ghost sm" href="https://supabase.com/dashboard/project/${encodeURIComponent(ref)}/sql/new" target="_blank" rel="noopener noreferrer">SQL Editor ↗</a>`:""}
+      ${migAplicadas?`<button type="button" class="btn sm" data-migok="${esc(m.n)}">Ya la corrí</button>`:""}</li>`).join("")}</ul>`:`<p class="none" style="margin:0">✓ Todo al día: no hay scripts pendientes.</p>`}</div>`}
+function renderSugerencias(){const V=$("vSugerencias"),pm=esPM(),fil=sugFiltro||(pm?"nueva":"mias");  // por omisión: PM y desarrollador ven «Por revisar»; los demás, las suyas
+  const filtros=[["mias","Mías"],...SUG_ESTADOS.map(e=>[e[0],e[1]])],cuenta=k=>k==="mias"?sugerencias.filter(x=>perfil&&x.autor===perfil.id).length:sugerencias.filter(x=>x.estado===k).length;
+  const lista=sugerencias.filter(x=>fil==="mias"?perfil&&x.autor===perfil.id:x.estado===fil),ab=sugAbiertasMias(),aprob=sugerencias.filter(x=>x.estado==="aprobada"||x.estado==="en_proceso");
+  V.innerHTML=`${sugErr?`<div class="readonly">${esc(sugErr)}</div>`:""}
+    <form class="sugform caja" id="sugForm" autocomplete="off"><h3>💡 Sugiere un cambio para la Bitácora</h3><p class="dlnote" style="margin:0">Algo que mejorar, un error o una idea nueva. La Project Manager y el desarrollador lo revisan y te avisamos cómo va. Tienes ${ab} de ${SUG_MAX} abiertas.</p>
+      <div class="vistas sugtipos" role="radiogroup" aria-label="Tipo">${Object.entries(SUG_TIPOS).map(([k,[i,n]])=>`<button type="button" class="vista" role="radio" data-sugtipo="${k}" aria-selected="${sugTipo===k}" aria-checked="${sugTipo===k}">${i} ${n}</button>`).join("")}</div>
+      <div class="agrow"><label>¿Qué propones?<input class="field" id="sugTitulo" maxlength="140" required placeholder="${sugTipo==="error"?"Ej. No puedo subir archivos desde el celular":"Ej. Que los pendientes tengan prioridad"}"></label>
+        <label>¿De qué parte? <small>(opcional)</small><select class="field" id="sugArea"><option value="">General</option>${AREA_IDS.map(a=>`<option value="${a}">${esc(AREAS[a].n)}</option>`).join("")}</select></label></div>
+      <label class="sugdet">Cuéntanos más <small>(opcional)</small><textarea class="field" id="sugDetalle" rows="3" maxlength="4000" placeholder="${sugTipo==="error"?"Qué hiciste, qué esperabas y qué pasó":"Para qué serviría y cómo te lo imaginas"}"></textarea></label>
+      <div class="row"><span class="dlnote">${ab>=SUG_MAX?"Ya tienes 5 abiertas: espera a que se resuelva alguna para proponer otra.":""}</span><button class="btn" type="submit" ${ab>=SUG_MAX?"disabled":""}>Enviar sugerencia</button></div></form>
+    ${panelScripts()}
+    <div class="dhead"><div class="vistas" role="tablist" aria-label="Filtrar sugerencias">${filtros.map(([k,n])=>`<button type="button" role="tab" class="vista" data-sugfil="${k}" aria-selected="${fil===k}">${n}${cuenta(k)?` · ${cuenta(k)}`:""}</button>`).join("")}</div>
+      ${pm&&aprob.length?`<button type="button" class="btn ghost" data-sugcopiar="1" title="Copia las aprobadas y en proceso para trabajarlas con Claude">📋 Copiar aprobadas (${aprob.length})</button>`:""}</div>
+    ${lista.length?`<ul class="suglist">${lista.map(sugCard).join("")}</ul>`:`<div class="none">${fil==="mias"?"Aún no has enviado sugerencias.":"Nada aquí por ahora."}</div>`}`}
+document.addEventListener("submit",async e=>{if(e.target.id!=="sugForm")return;e.preventDefault();if(!sb||!perfil)return;const titulo=$("sugTitulo").value.trim();if(titulo.length<3){toast("Escribe qué propones.");return}
+  if(sugAbiertasMias()>=SUG_MAX){toast("Ya tienes 5 sugerencias abiertas.");return}
+  const {data,error}=await sb.from("sugerencias").insert({autor:perfil.id,tipo:sugTipo,area:$("sugArea").value||null,titulo:titulo.slice(0,140),detalle:$("sugDetalle").value.trim().slice(0,4000),estado:"nueva",respuesta:""}).select().single();
+  if(error){toast("No se pudo enviar: "+(/sugerencias|PGRST205|42P01/.test(error.message+(error.code||""))?"falta correr la migración 026.":/row-level/i.test(error.message)?"ya tienes 5 sugerencias abiertas.":error.message));return}
+  sugerencias=[data,...sugerencias.filter(x=>x.id!==data.id)];e.target.reset();sugFiltro="mias";render();toast("¡Gracias! Tu sugerencia llegó a la Project Manager y al desarrollador.")});
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-sugtipo],[data-sugfil],[data-sugest],[data-sugdel],[data-sugcopiar],[data-migok]");if(!b)return;const ds=b.dataset;
+  if(ds.sugtipo){sugTipo=ds.sugtipo;render();return}
+  if(ds.sugfil){sugFiltro=ds.sugfil;render();return}
+  if(ds.sugest){const [id,estado]=ds.sugest.split("|"),x=sugerencias.find(y=>y.id===id);if(!x||!sb)return;const ta=document.querySelector(`[data-sugresp="${CSS.escape(id)}"]`),respuesta=ta?ta.value.trim().slice(0,2000):x.respuesta;
+    const antes={...x};Object.assign(x,{estado,respuesta,resuelto_por:perfil.id});esperaRender=false;render();
+    const {error}=await sb.from("sugerencias").update({estado,respuesta,resuelto_por:perfil.id}).eq("id",id);if(error){Object.assign(x,antes);render();toast("No se pudo guardar: "+error.message)}else toast(`Pasó a «${(SUG_ESTADOS.find(z=>z[0]===estado)||[])[1]}».`);return}
+  if(ds.sugdel){const x=sugerencias.find(y=>y.id===ds.sugdel);if(!x||!sb)return;confirmarAccion({titulo:"¿Borrar esta sugerencia?",texto:`«${x.titulo}» se borra para siempre.`,boton:"Sí, borrar"}).then(async ok=>{if(!ok)return;
+      const {error}=await sb.from("sugerencias").delete().eq("id",x.id);if(error){toast("No se pudo borrar: "+error.message);return}sugerencias=sugerencias.filter(y=>y.id!==x.id);render()});return}
+  if(ds.sugcopiar){const xs=sugerencias.filter(x=>x.estado==="aprobada"||x.estado==="en_proceso");
+    const txt="Sugerencias aprobadas de la Bitácora para trabajar:\n\n"+xs.map((x,i)=>{const q=perfiles.find(p=>p.id===x.autor);return `${i+1}. [${SUG_TIPOS[x.tipo][1]}${x.area&&AREAS[x.area]?" · "+AREAS[x.area].n:""}] ${x.titulo}${x.detalle?"\n   "+x.detalle.replace(/\n/g,"\n   "):""}\n   (propuesta por ${q?q.nombre:"alguien"}; estado: ${(SUG_ESTADOS.find(z=>z[0]===x.estado)||[])[1]}${x.respuesta?"; nota: "+x.respuesta:""})`}).join("\n\n");
+    copiarTexto(txt,`${xs.length} sugerencias copiadas. Pégalas en Claude Code para trabajarlas.`);return}
+  if(ds.migok){if(!sb)return;const {error}=await sb.from("migraciones_aplicadas").insert({nombre:ds.migok});if(error&&!/duplicate|23505/.test(error.message+(error.code||""))){toast("No se pudo marcar: "+error.message);return}
+    migAplicadas.add(ds.migok);render();toast("Marcada como corrida.")}});
+document.addEventListener("focusout",e=>{if(e.target.dataset&&e.target.dataset.sugresp!==undefined&&esperaRender){esperaRender=false;setTimeout(render,50)}});
+
 /* ---------- Acceso a áreas (migración 022): cada quien ve solo sus áreas y pide las demás ----------
    Tabla "solicitudes_area" {id, usuario, area, nota, estado: pendiente | aprobada | rechazada}. La PM aprueba en Equipo. */
 let solicitudes=[],solicitudesCh=null;
@@ -2017,7 +2167,7 @@ document.addEventListener("submit",async e=>{if(e.target.id!=="pedirForm")return
 document.addEventListener("click",e=>{const l=e.target.closest("#navPedir");if(!l)return;e.preventDefault();const a=AREA_IDS.find(x=>!canEdit(x));if(a)location.hash=a});
 /* Equipo (PM): solicitudes pendientes */
 function solicitudesHTML(){const ps=solicitudes.filter(x=>x.estado==="pendiente");if(!ps.length)return "";
-  return `<div class="lform solic"><h3>Solicitudes de acceso · ${ps.length}</h3><ul>${ps.map(x=>{const q=perfiles.find(p=>p.id===x.usuario),A=AREAS[x.area]||{n:x.area,c:"var(--muted)"};
+  return `<div class="caja solic"><h3>Solicitudes de acceso · ${ps.length}</h3><ul>${ps.map(x=>{const q=perfiles.find(p=>p.id===x.usuario),A=AREAS[x.area]||{n:x.area,c:"var(--muted)"};
     return `<li><span class="cpar" style="--c:${A.c}">${esc(A.n)}</span><b>${esc(q?q.nombre:"Alguien")}</b>${x.nota?`<small>«${esc(x.nota)}»</small>`:""}<span class="sp"></span><button class="btn sm" data-solic="${esc(x.id)}|aprobada">Aprobar</button><button class="btn ghost sm" data-solic="${esc(x.id)}|rechazada">Rechazar</button></li>`}).join("")}</ul></div>`}
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-solic]");if(!b||!sb)return;const [id,estado]=b.dataset.solic.split("|"),x=solicitudes.find(y=>y.id===id);if(!x)return;
   if(estado==="aprobada"){const q=perfiles.find(p=>p.id===x.usuario);if(q&&!enArea(q,x.area))await actualizarPerfil(q.id,q.area?{areas:[...new Set([...(q.areas||[]),x.area])]}:{area:x.area})}
@@ -3023,7 +3173,7 @@ function renderPeople(){const G=$("peopleGrid");
   const orden={pm:0,lider:1,colaborador:2,desarrollador:3};
   const pos=p=>p.rol==="desarrollador"?9:AREA_IDS.indexOf(p.area);
   G.innerHTML=perfiles.slice().sort((a,b)=>(pos(a)-pos(b))||(orden[a.rol]-orden[b.rol])||(a.nombre||"").localeCompare(b.nombre||"")).map(p=>{const n=pendientesDe(p.id).length;
-    return `<a class="pcard" href="#persona/${p.id}" style="--c:${AREAS[p.area]?AREAS[p.area].c:"var(--flame)"}">${av(p,"lg")}<b>${esc(p.nombre)}</b>${p.usuario?`<span class="u">${esc(arroba(p))}</span>`:""}<span>${esc(rolDe(p))}</span>${p.bio?`<span class="bio">${esc(p.bio)}</span>`:""}<span class="n">${n?`${n} pendiente${n>1?"s":""}`:"Sin pendientes"}</span></a>`}).join("")+
+    return `<a class="pcard" href="#persona/${p.id}" style="--c:${AREAS[p.area]?AREAS[p.area].c:"var(--flame)"}">${av(p,"lg")}<b>${esc(p.nombre)}</b>${p.usuario?`<span class="u">${esc(arroba(p))}</span>`:""}<span>${esc(rolDe(p))}</span>${p.bio?`<span class="bio">${esc(p.bio)}</span>`:""}<span class="n">${n?`${n} pendiente${n>1?"s":""}`:"Sin pendientes"}</span>${racha(p.id)?`<span class="racha" title="Días seguidos haciendo la trivia del día">🔥 ${racha(p.id)} día${racha(p.id)===1?"":"s"}</span>`:""}</a>`}).join("")+
     (esPM()?`<button type="button" class="pcard add" data-goteam="invitar"><span class="plus">+</span><b>Invitar a alguien</b><span>Le llega un correo para crear su contraseña</span></button>`:"")}
 function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
   if(!p){$("personCard").innerHTML=perfiles.length?`<div class="empty"><strong>No encontramos a esta persona</strong><p>Puede que ya no tenga acceso a la bitácora. <a href="#equipo">Ver el equipo</a></p></div>`:`<div class="none">Cargando…</div>`;
@@ -3036,7 +3186,7 @@ function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
   const pend=pendientesDe(p.id),done=logRange(key(ws),key(addDays(ws,6))).filter(x=>asignadoA({responsable_id:x.rid,responsable:x.responsable},p.id));
   const r=monthRange(monthStart()),lg=logrosRange(r.s,r.e).filter(l=>asignadoA(l,p.id));
   const chipA=a=>`<span class="chip area" style="background:${AREAS[a].c};color:${AREAS[a].on}">${AREAS[a].n}</span>`;
-  $("personStats").innerHTML=`<div class="stat s1"><b>${pend.length}</b><span>pendientes</span></div><div class="stat s2"><b>${done.length}</b><span>completadas ${actual?"esta semana":"en la semana"}</span></div><div class="stat s3"><b>${lg.length}</b><span>logros en ${MESES_L[monthStart().getMonth()]}</span></div>`;
+  $("personStats").innerHTML=`<div class="stat s1"><b>${pend.length}</b><span>pendientes</span></div><div class="stat s2"><b>${done.length}</b><span>completadas ${actual?"esta semana":"en la semana"}</span></div><div class="stat s3"><b>${lg.length}</b><span>logros en ${MESES_L[monthStart().getMonth()]}</span></div>${statTrivia(p,self)}`;
   $("personPM").innerHTML=resumenPM(p,self,chipA,wkNow);
   $("personPendH").textContent=self?"Mis pendientes":"Sus pendientes";
   $("personDoneH").textContent=actual?"Completado esta semana":"Completado · "+weekLabel(ws).toLowerCase();
@@ -3534,6 +3684,7 @@ function pintarMenu(){const yo=perfil&&perfil.id,esYo=route==="persona"&&persona
   if(!loadedT)return;
   AREA_IDS.forEach(a=>{const n=areaTasks(a).filter(t=>!t.hecha&&t.semana<=wk).length,c=document.querySelector(`[data-cnt="${a}"]`);if(c){c.textContent=n||"";c.title=n?`${n} pendiente${n>1?"s":""}`:""}});
   const cf=document.querySelector('[data-cnt="finanzas"]');if(cf){const n=puedeFin()?gastos.filter(g=>g.estado==="pendiente"||g.estado==="aprobada").length:gastos.filter(g=>perfil&&g.solicitante===perfil.id&&g.estado==="pendiente").length;cf.textContent=n||"";cf.title=n?(puedeFin()?`${n} por revisar o pagar`:`${n} solicitud${n>1?"es":""} tuya${n>1?"s":""} pendiente${n>1?"s":""}`):""}
+  const cs=document.querySelector('[data-cnt="sugerencias"]');if(cs){const n=esPM()?sugerencias.filter(x=>x.estado==="nueva").length:0;cs.textContent=n||"";cs.title=n?`${n} por revisar`:""}
   const cd=document.querySelector('[data-cnt="dashboard"]');if(cd){const h=key(new Date()),n=ocurrenciasRango(h,h).length;cd.textContent=n||"";cd.title=n?`${n} evento${n>1?"s":""} hoy`:""}
   const cy=document.querySelector('[data-cnt="yo"]');if(cy&&yo){const n=pendientesDe(yo).length;cy.textContent=n||"";cy.title=n?`${n} pendiente${n>1?"s":""}`:""}}
 document.querySelectorAll("[data-ic]").forEach(i=>{i.innerHTML=i.dataset.ic==="yo"?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>':AREA_ICON[i.dataset.ic]||""});
@@ -3627,7 +3778,7 @@ async function start(){
   if(started){render();return}started=true;
   sb.from("perfiles").select("*").then(({data})=>{perfiles=data||[];render()});
   tasksCol=makeCol("tareas");logrosCol=makeCol("logros");
-  cargarEntradas();cargarSolicitudes();cargarCalendario();cargarCanciones();cargarFinanzas();cargarSamplyEventos();cargarActivos();
+  cargarEntradas();cargarSolicitudes();cargarTrivia();cargarSugerencias();cargarCalendario();cargarCanciones();cargarFinanzas();cargarSamplyEventos();cargarActivos();
   let gotT=false,gotL=false;
   const timer=setTimeout(()=>setStatus("No se pudo conectar todavía; revisa tu conexión.",true),10000);
   const done=()=>{if(gotT&&gotL){clearTimeout(timer);setStatus("")}};
