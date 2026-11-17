@@ -190,6 +190,7 @@ docs/MANUAL.md          Este manual
 - **Trivia del día:**
   - **Preguntas:** viven en `app/trivia.js` (`TRIVIA_CATEGORIAS`, `TRIVIA`). Cada una lleva `{id, cat, q, ops[4], ok, exp, fuente}` y se verifica contra el Catecismo (vatican.va), la Biblia, documentos del Magisterio o fuentes de historia confiables.
   - **Para agregar preguntas:** súmalas al final con un `id` nuevo, sin cambiar los ids existentes.
+  - **Criterio:** cada pregunta debe verificarse contra su fuente antes de entrar. Si un dato está en duda, no se pregunta.
   - **Cuáles salen:** 3 al día, iguales para todo el equipo (`preguntasDelDia`), recorriendo cada categoría en orden.
   - **Ventana:** sale sola una vez al día al entrar (`popupTrivia`). Se puede cerrar y jugar desde Mi trabajo.
   - **Respuestas y racha:** se guardan en `trivia_respuestas`, una por persona y día. La **racha 🔥** cuenta los días seguidos con la trivia hecha (`racha`, `mejorRacha`) y se ve en el perfil y en Equipo.
@@ -238,6 +239,11 @@ docs/MANUAL.md          Este manual
 
 Formato: fecha · qué cambió · dónde.
 
+- **2026-11-17** (noche, 4)
+  - **Trivia:** banco ampliado a **230 preguntas**: 60 de Catecismo, 48 de Historia, 65 de Nuevo Testamento y 57 de Apologética. Alcanza para unos 2½ meses sin repetir.
+    - Las nuevas (ids `v…`) se verificaron contra el texto oficial del Catecismo y de la Biblia del Pueblo de Dios en vatican.va, documentos de la Santa Sede y la Catholic Encyclopedia.
+    - Se quitaron 22 que repetían las del banco inicial.
+    - Quedaron fuera los datos discutidos o sin fuente clara, como fechas inciertas de canonización o de patronazgos, y los temas pastoralmente delicados.
 - **2026-11-17** (noche, 3)
   - **Trivia:** banco inicial de 53 preguntas con fuente: 15 de Catecismo, 14 de Historia, 12 de Nuevo Testamento y 12 de Apologética. Con él ya salen la ventana diaria y el botón en Mi trabajo. El banco ampliado y verificado se sumará después, conservando estos ids (`app/trivia.js`).
 - **2026-11-17** (noche, 2)
