@@ -238,6 +238,8 @@ docs/MANUAL.md          Este manual
 
 Formato: fecha · qué cambió · dónde.
 
+- **2026-11-17** (noche, 3)
+  - **Trivia:** banco inicial de 53 preguntas con fuente: 15 de Catecismo, 14 de Historia, 12 de Nuevo Testamento y 12 de Apologética. Con él ya salen la ventana diaria y el botón en Mi trabajo. El banco ampliado y verificado se sumará después, conservando estos ids (`app/trivia.js`).
 - **2026-11-17** (noche, 2)
   - **Trivia del día:** banco verificado en `trivia.js`, ventana una vez al día y racha 🔥 en el perfil y en Equipo.
   - **Sugerencias:** sección para proponer cambios, con aprobación y seguimiento de la PM y el desarrollador, y copia para Claude. El desarrollador ve ahí los scripts pendientes (`migraciones.js`).
