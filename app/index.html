@@ -1526,6 +1526,8 @@ function pendientesDe(pid){const out=[];
   return out.sort((a,b)=>a.t.semana<b.t.semana?-1:a.t.semana>b.t.semana?1:0)}
 function esPM(){return !!perfil&&ACCESO_TOTAL.includes(perfil.rol)}
 function canEdit(a){return esPM()||enArea(perfil,a)}
+/* ¿Puede marcar o desmarcar esta tarea? Su área, o cualquier paso de canciones si trabaja canciones (Música puede reabrir un paso de Legal o Marketing) */
+function puedeTarea(t){return canEdit(areaOf(t))||(!!t.cancion_id&&puedeCanciones())}
 function areaOf(x){return AREAS[x.area]?x.area:"formacion"}
 function safeUrl(u){if(!u)return"";u=u.trim();if(!/^https?:\/\//i.test(u))u="https://"+u;try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:""}catch(e){return""}}
 function hostOf(u){try{return new URL(u).hostname.replace(/^www\./,"")}catch(e){return"liga"}}
@@ -1545,8 +1547,8 @@ function areaTasks(a){return tasks.filter(t=>areaOf(t)===a)}
 function weekTasksOf(a,ws){const wk=key(ws);return areaTasks(a).filter(t=>t.semana===wk).sort((x,y)=>(x.orden||0)-(y.orden||0))}
 function logRange(start,end,a){const out=[];
   tasks.forEach(t=>{const ar=areaOf(t);if(a&&ar!==a)return;
-    t.subtareas.forEach(s=>{if(s.hecha){const k=dayKeyOf(s.hecha);if(k>=start&&k<=end)out.push({tipo:"s",obj:s,area:ar,titulo:s.titulo,padre:t.titulo,proyecto:t.proyecto,responsable:s.responsable||t.responsable||"",rid:s.responsable?(s.responsable_id||null):(t.responsable_id||null),hecha:s.hecha,dia:k})}});
-    if(t.hecha){const k=dayKeyOf(t.hecha);if(k>=start&&k<=end)out.push({tipo:"t",obj:t,area:ar,titulo:t.titulo,proyecto:t.proyecto,responsable:t.responsable||"",rid:t.responsable_id||null,hecha:t.hecha,dia:k})}});
+    t.subtareas.forEach(s=>{if(s.hecha){const k=dayKeyOf(s.hecha);if(k>=start&&k<=end)out.push({tipo:"s",obj:s,t,area:ar,titulo:s.titulo,padre:t.titulo,proyecto:t.proyecto,responsable:s.responsable||t.responsable||"",rid:s.responsable?(s.responsable_id||null):(t.responsable_id||null),hecha:s.hecha,dia:k})}});
+    if(t.hecha){const k=dayKeyOf(t.hecha);if(k>=start&&k<=end)out.push({tipo:"t",obj:t,t,area:ar,titulo:t.titulo,proyecto:t.proyecto,responsable:t.responsable||"",rid:t.responsable_id||null,hecha:t.hecha,dia:k})}});
   return out.sort((x,y)=>x.hecha<y.hecha?-1:x.hecha>y.hecha?1:(x.tipo==="s"?-1:1))}
 function logrosRange(start,end,a){return logros.filter(l=>(!a||areaOf(l)===a)&&l.fecha>=start&&l.fecha<=end).sort((x,y)=>x.fecha<y.fecha?-1:x.fecha>y.fecha?1:0)}
 function tiposOf(a){const base=AREAS[a].tipos.slice();logros.filter(l=>areaOf(l)===a).forEach(l=>{if(l.tipo&&!base.includes(l.tipo))base.push(l.tipo)});return base}
@@ -1782,7 +1784,7 @@ document.addEventListener("keydown",e=>{const g=e.target.closest&&e.target.close
 function listaTareas(ts){ts=ts.filter(t=>!(t.hecha&&t.cancion_id&&t.paso));  // los pasos de canciones ya completados viven en su checklist: aquí solo se ve el siguiente
   const p=ts.filter(t=>!t.hecha),d=ts.filter(t=>t.hecha).sort((a,b)=>a.hecha<b.hecha?1:-1);
   return p.map(taskItem).join("")+(d.length?`<li class="donesep">Completadas · ${d.length}</li>`+d.map(taskItem).join(""):"")}
-function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen=open.has(t.id),a=areaOf(t),ed=canEdit(a),eo=isOpen&&ed;
+function taskItem(t){const subsDone=t.subtareas.filter(s=>s.hecha).length,isOpen=open.has(t.id),a=areaOf(t),ed=puedeTarea(t),eo=isOpen&&ed;
     const ord=ed&&!t.hecha;
     return `<li class="task ${t.hecha?"done":""} ${ord?"ord":""} ${recienMovida===t.id?"recien":""}" data-tid="${t.id}">
       <div class="trow">
@@ -3036,9 +3038,9 @@ function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
   $("personDoneH").textContent=actual?"Completado esta semana":"Completado · "+weekLabel(ws).toLowerCase();
   $("personPend").innerHTML=pend.length?pend.map(({t,s})=>{const x=s||t,a=areaOf(t);
     const cuando=t.semana<wkNow?`<span style="color:var(--flame)">Viene de la ${weekLabel(fromKey(t.semana)).toLowerCase()}</span>`:t.semana>wkNow?weekLabel(fromKey(t.semana)):"Esta semana";
-    return `<li class="pitem"><button class="check ${s?"sub":""}" role="checkbox" aria-checked="false" aria-label="Marcar ${esc(x.titulo)}" ${s?`data-st="${t.id}|${s.id}"`:`data-tt="${t.id}"`} ${canEdit(a)?"":"disabled"}>${CHECK}</button>
+    return `<li class="pitem"><button class="check ${s?"sub":""}" role="checkbox" aria-checked="false" aria-label="Marcar ${esc(x.titulo)}" ${s?`data-st="${t.id}|${s.id}"`:`data-tt="${t.id}"`} ${puedeTarea(t)?"":"disabled"}>${CHECK}</button>
       <div class="txt"><strong>${esc(x.titulo)}</strong><small>${s?`Subtarea de ${esc(t.titulo)} · `:""}${cuando}${t.proyecto?" · "+esc(t.proyecto):""}</small></div>${chipA(a)}</li>`}).join(""):`<li class="none">Nada pendiente.</li>`;
-  $("personDone").innerHTML=done.length?done.map(x=>`<li class="pitem"><time datetime="${x.hecha}">${DIAS[new Date(x.hecha).getDay()].slice(0,3)} ${hhmm(x.hecha)}</time><div class="txt"><strong>${esc(x.titulo)}</strong>${x.tipo==="s"?`<small>Subtarea de ${esc(x.padre)}</small>`:""}${x.obj&&x.obj.cierre?`<small class="pmcierre">💬 ${esc(x.obj.cierre)}</small>`:""}</div>${chipA(x.area)}</li>`).join(""):`<li class="none">Nada completado en esta semana.</li>`}
+  $("personDone").innerHTML=done.length?done.map(x=>`<li class="pitem hecha"><button class="check ${x.tipo==="s"?"sub":""}" role="checkbox" aria-checked="true" aria-label="Reabrir ${esc(x.titulo)}" title="${puedeTarea(x.t)?"Desmarcar (si se marcó por error)":"No puedes cambiar tareas de esta área"}" ${x.tipo==="s"?`data-st="${x.t.id}|${x.obj.id}"`:`data-tt="${x.t.id}"`} ${puedeTarea(x.t)?"":"disabled"}>${CHECK}</button><time datetime="${x.hecha}">${DIAS[new Date(x.hecha).getDay()].slice(0,3)} ${hhmm(x.hecha)}</time><div class="txt"><strong>${esc(x.titulo)}</strong>${x.tipo==="s"?`<small>Subtarea de ${esc(x.padre)}</small>`:""}${x.obj&&x.obj.cierre?`<small class="pmcierre">💬 ${esc(x.obj.cierre)}</small>`:""}</div>${chipA(x.area)}</li>`).join(""):`<li class="none">Nada completado en esta semana.</li>`}
 
 /* Carta de presentación: portada con el color de sus áreas, foto grande, rol, áreas, correo y "Sobre mí" */
 function cartaPersona(p,self,puede,email){const ar=[p.area,...(p.areas||[])].filter((a,i,l)=>AREAS[a]&&l.indexOf(a)===i);
@@ -3073,7 +3075,7 @@ function resumenPM(p,self,chipA,wkNow){const ms=monthStart(),weeks=monthWeeks(ms
   const hechas=its.filter(i=>i.x.hecha).length,pct=Math.round(hechas/its.length*100),atr=its.filter(i=>!i.x.hecha&&venceDe(i.t)<key(new Date())).length;
   const porArea=AREA_IDS.map(a=>{const l=its.filter(i=>areaOf(i.t)===a);return {a,n:l.length,d:l.filter(i=>i.x.hecha).length}}).filter(z=>z.n);
   const li=i=>{const a=areaOf(i.t),x=i.x,cuando=x.hecha?`✓ ${DIAS[new Date(x.hecha).getDay()].slice(0,3)} ${new Date(x.hecha).getDate()} ${MESES[new Date(x.hecha).getMonth()]} · ${hhmm(x.hecha)}`:venceDe(i.t)<key(new Date())?`<span style="color:var(--flame)">Atrasada · venció el ${fechaCorta(venceDe(i.t))}</span>`:i.t.semana===wkNow?"Esta semana":weekLabel(fromKey(i.t.semana));
-    return `<li class="pitem ${x.hecha?"hecha":""}"><button class="check ${i.s?"sub":""}" role="checkbox" aria-checked="${!!x.hecha}" aria-label="Marcar ${esc(x.titulo)}" ${i.s?`data-st="${i.t.id}|${i.s.id}"`:`data-tt="${i.t.id}"`} ${canEdit(a)?"":"disabled"}>${CHECK}</button>
+    return `<li class="pitem ${x.hecha?"hecha":""}"><button class="check ${i.s?"sub":""}" role="checkbox" aria-checked="${!!x.hecha}" aria-label="Marcar ${esc(x.titulo)}" ${i.s?`data-st="${i.t.id}|${i.s.id}"`:`data-tt="${i.t.id}"`} ${puedeTarea(i.t)?"":"disabled"}>${CHECK}</button>
       <div class="txt"><strong>${esc(x.titulo)}</strong><small>${i.s?`Subtarea de ${esc(i.t.titulo)} · `:""}${cuando}${i.t.proyecto?" · "+esc(i.t.proyecto):""}</small>${ligasDe(x,"")}</div>${chipA(a)}</li>`};
   const pend=its.filter(i=>!i.x.hecha).sort((a,b)=>a.t.semana<b.t.semana?-1:a.t.semana>b.t.semana?1:0),done=its.filter(i=>i.x.hecha).sort((a,b)=>a.x.hecha<b.x.hecha?1:-1);
   return `<div class="panel pmres">${titulo}<div class="pct"><b>${pct}%</b><small>de avance</small></div></div>

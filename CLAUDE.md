@@ -88,7 +88,7 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
 ### Roles (RLS)
 - `pm` y `desarrollador`: leen y escriben todo y administran el equipo (`es_pm()` en SQL, `esPM()` y `ACCESO_TOTAL` en la app). Solo cambia la etiqueta: "Project Manager" o "Desarrollador web".
 - `lider` y `colaborador`: leen todo y escriben solo filas de su `area` o de sus `areas` adicionales.
-- La UI oculta los formularios cuando no hay permiso (`canEdit`).
+- La UI oculta los formularios cuando no hay permiso (`canEdit`). Marcar o desmarcar una tarea: `puedeTarea(t)` (su área, o cualquier paso de canción si `puedeCanciones()`); «Completado esta semana» del perfil tiene casilla para reabrir lo marcado por error.
 - **Sesión:** se cierra sola tras 24 h sin actividad en ese navegador (`bitacora-actividad` en localStorage, `INACTIVO_MS`); al volver muestra el motivo en el login.
 
 ## Identidad visual

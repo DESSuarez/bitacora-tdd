@@ -222,6 +222,10 @@ docs/MANUAL.md          Este manual
 Formato: fecha · qué cambió · dónde.
 
 - **2026-11-17** (noche)
+  - **Reabrir lo que se marcó por error:**
+    - «Completado esta semana» (perfil y Mi trabajo) tiene casilla para desmarcar.
+    - `puedeTarea(t)`: quien está en el área, o quien trabaja canciones para cualquier paso de canción. Así Música puede reabrir un paso de Legal o Marketing.
+    - Al reabrir un paso de canción, también se desmarca en su checklist.
   - **Tareas:** completar una tarea ya no completa sus subtareas, que se marcan por separado. Si todas las subtareas quedan hechas, la tarea se marca sola (`index.html`: `toggleTask`, `toggleSub`).
 - **2026-11-17** (tarde)
   - **Registro de canción:**
