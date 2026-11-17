@@ -53,8 +53,8 @@ Si se migra a columnas normalizadas, conviene mantener esa interfaz o reescribir
   - Personas sin cuenta: `responsable_id` es null y solo se guarda el nombre. En las listas su valor es `txt:<nombre>` ("✎ Escribir otro nombre…").
   - La fecha y hora de `hecha` se puede corregir al abrir la tarea (campo "Hecha el"); no se aceptan fechas futuras.
   - **Comentario final** (`cierre`, en tareas y subtareas): al completar aparece la tarjeta «¿Cómo quedó?» (`abrirCierre`, opcional; Enter guarda). Se ve en la tarea (con ✎), en el Reporte diario, en el panel de la PM, en el perfil, en el texto para copiar y en el PDF semanal («Cómo quedó: …»).
-  - Al marcar la tarea padre se completan todas sus subtareas abiertas.
-  - Al completar todas las subtareas, la tarea se marca sola.
+  - Al marcar la tarea padre **no** se completan sus subtareas: cada una se marca por separado (avisa cuántas siguen abiertas).
+  - Al completar todas las subtareas, la tarea se marca sola (`hechaPorSubs`); si luego se reabre una, la tarea se reabre solo si se había marcado así.
 - **Logro:**
   `{area, tipo, titulo, fecha:"YYYY-MM-DD", liga, responsable, nota, testimonios:[{id, texto, autor, creado}], creado}`
   - Todos los logros entran a los resúmenes del mes y del año.

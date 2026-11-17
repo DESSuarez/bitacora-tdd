@@ -1594,12 +1594,15 @@ function toggleTask(id){const t=findT(id);if(!t)return;const now=new Date().toIS
   if(!t.hecha&&t.cancion_id&&t.paso){const c=canciones.find(x=>x.id===t.cancion_id);
     if(c&&requiereDoc(t.paso,c)&&!docsPaso(c,t.paso).length){toast(`Para completar este paso sube ${requiereDoc(t.paso,c)}.`);pedirDocPaso(c,t.paso);return}
     if(c&&requiereLiga(t.paso,c)&&!(c.data||{}).drive){pedirLigaPaso(c,t.paso);return}}
-  if(t.hecha)t.hecha=null;else{t.hecha=now;t.subtareas=t.subtareas.map(s=>s.hecha?s:{...s,hecha:now})}
-  render();saveTask(t);pasoDeTarea(t);if(t.hecha)abrirCierre(t.id,null)}
+  // Completar la tarea ya no completa sus subtareas: cada una se marca por separado
+  if(t.hecha){t.hecha=null;delete t.hechaPorSubs}else{t.hecha=now;delete t.hechaPorSubs}
+  render();saveTask(t);pasoDeTarea(t);
+  if(t.hecha){const ab=t.subtareas.filter(s=>!s.hecha).length;if(ab)toast(ab===1?"Tarea completada. Su subtarea sigue abierta.":`Tarea completada. Sus ${ab} subtareas siguen abiertas.`);abrirCierre(t.id,null)}}
 function toggleSub(id,sid){const t=findT(id);if(!t)return;const now=new Date().toISOString();
   t.subtareas=t.subtareas.map(s=>s.id===sid?{...s,hecha:s.hecha?null:now}:s);
   const all=t.subtareas.length&&t.subtareas.every(s=>s.hecha);
-  const antes=!!t.hecha;if(all&&!t.hecha)t.hecha=now;if(!all&&t.hecha)t.hecha=null;render();saveTask(t);if(antes!==!!t.hecha)pasoDeTarea(t);
+  // Al completar todas las subtareas la tarea se marca sola; si se reabre una, la tarea solo se reabre si se había marcado así
+  const antes=!!t.hecha;if(all&&!t.hecha){t.hecha=now;t.hechaPorSubs=true}if(!all&&t.hecha&&t.hechaPorSubs){t.hecha=null;delete t.hechaPorSubs}render();saveTask(t);if(antes!==!!t.hecha)pasoDeTarea(t);
   const ss=t.subtareas.find(x=>x.id===sid);if(t.hecha&&!antes)abrirCierre(t.id,null);else if(ss&&ss.hecha)abrirCierre(t.id,sid)}
 function addSub(id,titulo,respVal){const t=findT(id);if(!t)return;const p=respDe(respVal);t.subtareas=[...t.subtareas,{id:uid(),titulo,responsable:p.nombre,responsable_id:p.id,hecha:null}];if(t.hecha)t.hecha=null;open.add(id);render();saveTask(t)}
 function delSub(id,sid){const t=findT(id);if(!t)return;t.subtareas=t.subtareas.filter(s=>s.id!==sid);render();saveTask(t)}

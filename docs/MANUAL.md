@@ -221,6 +221,8 @@ docs/MANUAL.md          Este manual
 
 Formato: fecha · qué cambió · dónde.
 
+- **2026-11-17** (noche)
+  - **Tareas:** completar una tarea ya no completa sus subtareas, que se marcan por separado. Si todas las subtareas quedan hechas, la tarea se marca sola (`index.html`: `toggleTask`, `toggleSub`).
 - **2026-11-17** (tarde)
   - **Registro de canción:**
     - «Artista o ministerio» es un selector con los ministerios del colectivo (`ministerios_colectivo()`). El de la liga ya viene elegido y tiene «Otro…».
