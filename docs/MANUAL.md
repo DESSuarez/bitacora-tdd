@@ -202,6 +202,14 @@ docs/MANUAL.md          Este manual
   - Solo el desarrollador ve en Sugerencias qué migraciones faltan. La app compara `app/migraciones.js` contra la tabla `migraciones_aplicadas`.
   - **Regla:** cada migración nueva se agrega a `migraciones.js` y termina con `insert into public.migraciones_aplicadas (nombre) values ('NNN_nombre') on conflict (nombre) do nothing;`. Así se registra sola al correrla.
 
+## 9 ter. Documentos
+
+- **`#documentos`** (menú General) junta en un solo lugar todos los archivos y ligas subidos a tareas y subtareas.
+- **Se arma solo** a partir de las tareas (`entregablesRange`): no hay que subir nada dos veces y se actualiza en vivo.
+- **Buscador:** encuentra por nombre, tarea, proyecto o quién lo subió.
+- **Filtros:** por tipo (archivos o ligas), por periodo y por área. Tocar el nombre de la tarea lleva a esa tarea en Pendientes.
+- **Quién ve qué:** cada quien ve los de sus áreas y los de las tareas que tiene asignadas; la PM y el desarrollador, todos (`docsVisibles`).
+
 ## 10. Migraciones
 
 | # | Qué hace |
@@ -239,6 +247,8 @@ docs/MANUAL.md          Este manual
 
 Formato: fecha · qué cambió · dónde.
 
+- **2026-11-19**
+  - **Documentos:** nueva sección con todos los archivos y ligas de las tareas, con buscador y filtros. La pidió Ceci y se arma sola desde las tareas (`index.html`: `renderDocumentos`).
 - **2026-11-17** (noche, 4)
   - **Trivia:** banco ampliado a **230 preguntas**: 60 de Catecismo, 48 de Historia, 65 de Nuevo Testamento y 57 de Apologética. Alcanza para unos 2½ meses sin repetir.
     - Las nuevas (ids `v…`) se verificaron contra el texto oficial del Catecismo y de la Biblia del Pueblo de Dios en vatican.va, documentos de la Santa Sede y la Catholic Encyclopedia.
