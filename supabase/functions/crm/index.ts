@@ -48,6 +48,12 @@ const sumar = (k: string, n: number) => { const d = deKey(k); d.setUTCDate(d.get
 const larga = (k: string) => { const d = deKey(k); return `${DIAS[d.getUTCDay()]} ${d.getUTCDate()} de ${MESES[d.getUTCMonth()]}`; };
 const hora12 = (h: string) => { if (!h) return ""; const [H, M] = h.split(":").map(Number); return `${((H + 11) % 12) + 1}:${String(M).padStart(2, "0")} ${H < 12 ? "a. m." : "p. m."}`; };
 const primerNombre = (n: string) => String(n || "").trim().split(/\s+/)[0] || "";
+// «Este martes 24 de noviembre a las 8:00 p. m.» (igual que cuandoMsg() en la app)
+function cuandoMsg(d: Record<string, any>, f: string) {
+  const dias = Math.round((deKey(f).getTime() - deKey(hoyMx()).getTime()) / 864e5), x = deKey(f);
+  const pre = dias === 0 ? "Hoy, " : dias === 1 ? "Mañana, " : dias > 1 && dias < 7 ? "Este " : "El ";
+  return `${pre}${DIAS[x.getUTCDay()]} ${x.getUTCDate()} de ${MESES[x.getUTCMonth()]}${d.hora ? " a las " + hora12(d.hora) : ""}`;
+}
 
 type Ev = { id: string; data: Record<string, any> };
 // ¿El evento ocurre ese día? (misma regla que evento_ocurre en SQL y ocurrencias() en la app)
@@ -211,11 +217,12 @@ Deno.serve(async (req) => {
         const p = ps?.find((x) => x.id === a.persona);
         if (!p || !p.acepta_whatsapp || String(p.telefono).replace(/\D/g, "").length < 10) continue;
         const id = await reservar({ persona: p.id, canal: "whatsapp", tipo: "recordatorio", evento: ev.id, fecha_evento: f, clave: `wa2|${a.id}`,
-          texto: `Recordatorio: ${ev.data.titulo}, ${larga(f)}${ev.data.hora ? " a las " + hora12(ev.data.hora) : ""}. Botones «Sí voy» / «No podré».` });
+          texto: `¡Hola, ${primerNombre(p.nombre)}! 🤍 Te esperamos en nuestro cenáculo con Tiempo de Dios. ${cuandoMsg(ev.data, f)}. Sembradora: ${ev.data.sembradora || "—"}. 📍 ${ev.data.lugar || "—"}. ¿Nos confirmas si vienes?` });
         if (!id) continue;
         try {
           const wid = await wa(p.telefono, { type: "template", template: { name: WA.plantilla, language: { code: WA.idioma }, components: [
-            { type: "body", parameters: [primerNombre(p.nombre) || "hola", ev.data.titulo || "el evento", larga(f), hora12(ev.data.hora) || "la hora de siempre"].map((t) => ({ type: "text", text: t })) },
+            // Plantilla: ¡Hola, {{1}}! 🤍 / Te esperamos en nuestro cenáculo con Tiempo de Dios / {{2}} / Sembradora: {{3}} / 📍 {{4}} / ¿Nos confirmas si vienes?
+            { type: "body", parameters: [primerNombre(p.nombre) || "hola", cuandoMsg(ev.data, f), ev.data.sembradora || "Tiempo de Dios", ev.data.lugar || "por confirmar"].map((t) => ({ type: "text", text: t })) },
             { type: "button", sub_type: "quick_reply", index: "0", parameters: [{ type: "payload", payload: `si|${a.id}` }] },
             { type: "button", sub_type: "quick_reply", index: "1", parameters: [{ type: "payload", payload: `no|${a.id}` }] },
           ] } });

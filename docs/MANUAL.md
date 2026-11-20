@@ -247,7 +247,8 @@ Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `
 - **Conectar WhatsApp (una sola vez):**
   1. En Meta Business (business.facebook.com) crea una app de tipo Business con el producto **WhatsApp** y agrega el número de la empresa. Ojo: el número pasa a la API (con la «coexistencia» de Meta se puede seguir usando la app de WhatsApp Business en el celular).
   2. Crea un **usuario del sistema** con token permanente (permisos `whatsapp_business_messaging` y `whatsapp_business_management`).
-  3. Crea la plantilla **`recordatorio_evento`** (categoría Utilidad, idioma Español (MEX) `es_MX`). Cuerpo: «Hola {{1}}, te esperamos en {{2}} el {{3}} a las {{4}}. ¿Nos confirmas si vienes?». Dos botones de respuesta rápida: «Sí voy» y «No podré». Espera la aprobación.
+  3. Crea la plantilla **`recordatorio_evento`** (categoría Utilidad, idioma Español (MEX) `es_MX`). Cuerpo, igual al mensaje que se manda a mano desde Cenáculos:
+     «¡Hola, {{1}}! 🤍 / Te esperamos en nuestro cenáculo con Tiempo de Dios / {{2}} / Sembradora: {{3}} / 📍 {{4}} / ¿Nos confirmas si vienes?» (cada «/» es un salto de línea; {{2}} = «Este martes 24 de noviembre a las 8:00 p. m.», {{3}} = sembradora, {{4}} = lugar). Dos botones de respuesta rápida: «Sí voy» y «No podré». Espera la aprobación.
   4. En Supabase → Edge Functions → `crm` → Secrets: `WA_TOKEN`, `WA_PHONE_ID` (Phone number ID), `WA_VERIFY_TOKEN` (una palabra que inventes), `WA_APP_SECRET` (App secret) y, si cambian, `WA_PLANTILLA` y `WA_IDIOMA`.
   5. En Meta → WhatsApp → Configuración → Webhook: URL `https://zhzqvetehynndfjbrzti.supabase.co/functions/v1/crm`, token de verificación = `WA_VERIFY_TOKEN`, y suscríbete a **messages**.
   6. En la app, Operativo → Personas → Correos y WhatsApp debe decir «Conectado».
@@ -307,6 +308,7 @@ Pestaña **Proyectos** en Formación, entre Logros y Entradas (`areaView.formaci
 Formato: fecha · qué cambió · dónde.
 
 - **2026-11-20**
+  - **Cenáculos → Mensaje para los inscritos:** el texto de WhatsApp es el de Operativo («¡Hola, …! 🤍 Te esperamos en nuestro cenáculo…», día y hora, sembradora y lugar). «💬 Enviar» abre WhatsApp con el mensaje listo y queda «✓ Enviado» (en `crm_mensajes`); «Enviar al siguiente» recorre a los que faltan. Nuevo campo **Sembradora** en el cenáculo (`msgCenaculo`, `cuandoMsg`). La plantilla de la API usa el mismo texto (función `crm`).
   - **Personas → Resumen:** las tarjetas de cada renglón tienen la misma altura.
   - **Personas:** la pestaña «Pase de lista» ahora se llama «Cenáculos».
   - **Formación → Proyectos:** planeación en 6 pasos (Charter, EDT con Pipeline, RACI, Gantt, Kanban con indicadores, Cierre), Gantt general, PDF, equipos guardados y eventos de proyecto en el calendario general y en la pestaña Mes. Integrado del paquete `modulo-proyectos-tdd` (`index.html`, migración 031).

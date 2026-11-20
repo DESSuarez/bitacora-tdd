@@ -62,20 +62,22 @@ Las invitaciones y el newsletter ya tienen diseño en la función `crm`: banda n
 
 El botón lleva a la liga personal de cada quien, que registra con un clic sin volver a escribir sus datos.
 
-### 4.3 Recordatorio por WhatsApp · 2 días antes
+### 4.3 Mensaje por WhatsApp a los inscritos · antes del cenáculo
 
-Es una plantilla que Meta debe aprobar. Va en categoría Utilidad, se llama `recordatorio_evento` y el idioma es `es_MX`.
+Se manda desde **Operativo → Personas → Cenáculos → «💬 Enviar»**: abre WhatsApp con el mensaje y el nombre de cada quien, y queda marcado «✓ Enviado». Cuando la API esté conectada, sale solo 2 días antes con la plantilla `recordatorio_evento` (mismo texto, más botones «Sí voy» / «No podré»).
 
-> Hola {{1}}, te esperamos en {{2}} el {{3}} a las {{4}}. ¿Nos confirmas si vienes?
+> ¡Hola, {nombre}! 🤍
 >
-> [Sí voy] [No podré]
+> Te esperamos en nuestro cenáculo con Tiempo de Dios
+>
+> Este martes 24 de noviembre a las 8:00 p. m.
+>
+> Sembradora: Priscila Oceguera
+> 📍 Villa Verona 7500, Int. F13
+>
+> ¿Nos confirmas si vienes?
 
-- **Variables:** {{1}} nombre, {{2}} evento, {{3}} fecha, {{4}} hora.
-- **Al tocar un botón,** la lista cambia sola a «Confirmó» o «Canceló».
-
-**Mientras no esté conectado**, el botón 💬 del pase de lista abre el chat con este texto, que incluye su liga para confirmar:
-
-> Hola {nombre} 👋 Te esperamos en Cenáculo el martes 2 de diciembre a las 7:00 p. m. ¿Nos confirmas si vienes? Aquí puedes responder: https://pm.tiempodedios.mx/registro/?t=…
+La sembradora y el lugar se ponen al programar el cenáculo. «Este» cambia solo a «Hoy», «Mañana» o «El» según la fecha.
 
 ### 4.4 Gracias por venir · 1 a 3 días después (personal, por WhatsApp)
 

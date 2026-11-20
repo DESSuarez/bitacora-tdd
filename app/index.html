@@ -1415,6 +1415,8 @@ button.cmore:hover{color:var(--fg)}
 .crmchk{flex-direction:row!important;align-items:center;gap:8px!important;font-weight:600!important}.crmchk input{width:18px;height:18px;accent-color:var(--area)}
 .sugarchs{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.sugarchb{cursor:pointer;font-size:13px;height:28px;gap:6px;color:var(--fg)}.sugarchb small{color:var(--muted);font-family:var(--mono);font-size:11px}
 .sugarch{height:auto;padding:10px 14px}
+.crmwabox .wamsg{margin:0;white-space:pre-wrap;font:inherit;font-size:14px;line-height:1.5;background:color-mix(in srgb,#25D366 10%,var(--bg));border:1px solid color-mix(in srgb,#25D366 35%,var(--line));border-radius:12px;padding:12px 14px}
+.btn.pwa{background:#25D366;color:#fff}
 .crmrec{flex-basis:100%;margin-top:6px}.crmrec .vistas{flex-wrap:wrap}
 .crmdup{margin:0;font-size:13.5px;background:color-mix(in srgb,var(--flame) 12%,var(--bg));border-radius:10px;padding:8px 12px}
 .linkbtn{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--area-ink);text-decoration:underline;cursor:pointer}
@@ -1518,6 +1520,7 @@ select:disabled{cursor:default;opacity:.7}
     <h3 id="evTitle">Agendar</h3>
     <label>Título<input class="field" id="evTitulo" maxlength="140" required placeholder="Ej. Ensayo general, Producción de «Canción»"></label>
     <div class="evrow"><label>Tipo<select class="field" id="evTipo"></select></label><label>Calendario<select class="field" id="evArea"></select></label></div>
+    <label id="evSembW" hidden><span>Sembradora <small>(quien recibe el cenáculo; sale en el mensaje de WhatsApp)</small></span><input class="field" id="evSemb" maxlength="120" placeholder="Ej. Priscila Oceguera"></label>
     <label id="evLugarW" hidden><span>Lugar <small>(sale en el registro y en las invitaciones)</small></span><input class="field" id="evLugar" maxlength="160" placeholder="Ej. Capilla de Tiempo de Dios"></label>
     <div class="evreg" id="evRegW" hidden><label id="evRegL"><input type="checkbox" id="evRegistro"> Registro de asistentes (liga pública y lista en Operativo → Personas → Cenáculos)</label><label><input type="checkbox" id="evInvitar"> Invitar por correo 15 y 7 días antes</label></div>
     <label id="evCancionW" hidden>Canción<select class="field" id="evCancion"></select></label>
@@ -2847,13 +2850,13 @@ function abrirEvento(id,fecha,base){const ev=id?eventos.find(x=>x.id===id):null;
   $("evRepetir").innerHTML=Object.entries(REPETIR).map(([k,n])=>`<option value="${k}">${n}</option>`).join("");
   $("evCancion").innerHTML=`<option value="">Sin canción ligada</option>`+canciones.filter(c=>c.etapa!=="completado").map(c=>`<option value="${esc(c.id)}">${esc((c.data||{}).titulo||"Sin título")} · ${esc(artistaDe(c))}</option>`).join("");
   $("evTitulo").value=v.titulo||"";$("evTipo").value=TIPOS_EV[v.tipo]?v.tipo:"otro";$("evArea").value=v.area||"general";$("evFecha").value=v.fecha||"";$("evFin").value=v.fin||"";
-  $("evHora").value=v.hora||"";$("evLugar").value=v.lugar||"";$("evRegistro").checked=!!v.registro;$("evInvitar").checked=!!v.invitar;$("evRepetir").value=v.repetir||"";$("evHasta").value=v.hasta||"";$("evNotas").value=v.notas||"";$("evCancion").value=v.cancion_id||"";
+  $("evHora").value=v.hora||"";$("evLugar").value=v.lugar||"";$("evSemb").value=v.sembradora||"";$("evRegistro").checked=!!v.registro;$("evInvitar").checked=!!v.invitar;$("evRepetir").value=v.repetir||"";$("evHasta").value=v.hasta||"";$("evNotas").value=v.notas||"";$("evCancion").value=v.cancion_id||"";
   $("evBorrar").hidden=!ev;$("evBorrar").textContent=ev&&ev.repetir?"Borrar toda la serie":"Borrar";$("evSoloEste").hidden=!(ev&&ev.repetir&&fecha);
   evCampos();$("evModal").hidden=false;setTimeout(()=>$("evTitulo").focus(),30)}
 function cerrarEvento(){$("evModal").hidden=true;evEdit=null;if(esperaRender){esperaRender=false;render()}}
 /* Muestra u oculta campos y avisa si la semana de producción ya está ocupada */
 function evCampos(){const tipo=$("evTipo").value,prod=tipo==="produccion";$("evProdW").hidden=!prod;$("evAtajos").hidden=tipo!=="cenaculo";
-  const reg=tipo==="cenaculo"||tipo==="evento";$("evLugarW").hidden=$("evRegW").hidden=!reg;$("evRegL").hidden=tipo==="cenaculo";$("evInvitar").disabled=tipo==="evento"&&!$("evRegistro").checked;
+  const reg=tipo==="cenaculo"||tipo==="evento";$("evLugarW").hidden=$("evRegW").hidden=!reg;$("evRegL").hidden=tipo==="cenaculo";$("evSembW").hidden=tipo!=="cenaculo";$("evInvitar").disabled=tipo==="evento"&&!$("evRegistro").checked;
   $("evCancionW").hidden=!(prod||tipo==="grabacion")||!puedeMusica()&&!$("evCancion").value;$("evHastaW").hidden=!$("evRepetir").value;
   if(prod&&evEdit.semanas&&evEdit.semanas.length>1){$("evAviso").hidden=false;$("evAviso").className="evaviso ok";
     $("evAviso").textContent=`Se ${$("evTipoProd").value==="grande"?"agenda una producción grande en":"agendan producciones en"} ${evEdit.semanas.length} semanas: ${evEdit.semanas.map(w=>diasTxt(w.fecha,w.fin)).join(" · ")} (sin el miércoles cuando se trabaja el viernes).`}
@@ -2883,7 +2886,7 @@ $("evForm").addEventListener("submit",e=>{e.preventDefault();if(!eventosCol||!ev
     repetir:$("evRepetir").value,hasta:$("evRepetir").value?$("evHasta").value:"",area:$("evArea").value,notas:$("evNotas").value.trim().slice(0,1000),
     cancion_id:["produccion","grabacion"].includes($("evTipo").value)?$("evCancion").value||null:null};
   // cenáculos y eventos: lugar, registro de asistentes e invitaciones por correo (Operativo → Personas)
-  if(["cenaculo","evento"].includes(ev.tipo)){ev.lugar=$("evLugar").value.trim().slice(0,160);ev.registro=ev.tipo==="cenaculo"||$("evRegistro").checked;ev.invitar=ev.registro&&$("evInvitar").checked}else{delete ev.lugar;delete ev.registro;delete ev.invitar}
+  if(["cenaculo","evento"].includes(ev.tipo)){ev.lugar=$("evLugar").value.trim().slice(0,160);if(ev.tipo==="cenaculo")ev.sembradora=$("evSemb").value.trim().slice(0,120);else delete ev.sembradora;ev.registro=ev.tipo==="cenaculo"||$("evRegistro").checked;ev.invitar=ev.registro&&$("evInvitar").checked}else{delete ev.lugar;delete ev.registro;delete ev.invitar}
   if(!prev){ev.creado=new Date().toISOString();ev.creado_por=perfil?perfil.id:null;ev.excepciones=[]}
   // producciones: los días exactos (sin el miércoles cuando ese viernes también se produce)
   if(ev.tipo==="produccion")ev.dias=AGENDA.diasHabiles(ev.fecha,ev.fin||ev.fecha);else delete ev.dias;
@@ -4335,7 +4338,7 @@ function crmPaseLista(){const os=crmOcurrencias(),h=key(new Date());
   if(!crmOcc||!os.some(o=>o.ev+"|"+o.fecha===crmOcc)){const d=occPorDefecto();crmOcc=d?d.ev+"|"+d.fecha:null}
   if(!crmOcc)return agendaCenaculos()+`<div class="empty"><strong>No hay cenáculos ni eventos con registro</strong><p>Programa el primero con «+ Programar cenáculo». Sale en el calendario de todo el equipo y aquí aparecen sus fechas para pasar lista.</p></div>`;
   const [evId,f]=crmOcc.split("|"),ev=evDe(evId)||{titulo:"Evento borrado"},L=crmA.filter(a=>a.evento===evId&&a.fecha===f);
-  const cnt=k=>L.filter(a=>a.estado===k).length,fut=f>h,dias=Math.round((fromKey(f)-fromKey(h))/864e5);
+  const cnt=k=>L.filter(a=>a.estado===k).length,fut=f>=h,dias=Math.round((fromKey(f)-fromKey(h))/864e5);
   const filas=L.map(a=>({a,p:crmP.find(x=>x.id===a.persona)})).filter(x=>x.p).sort((x,y)=>(x.p.nombre||"").localeCompare(y.p.nombre||""));
   const futuras=os.filter(o=>o.fecha>=h),pasadas=os.filter(o=>o.fecha<h).reverse();
   const opt=o=>{const n=crmA.filter(a=>a.evento===o.ev&&a.fecha===o.fecha&&a.estado!=="cancelo").length;return `<option value="${esc(o.ev+"|"+o.fecha)}" ${o.ev+"|"+o.fecha===crmOcc?"selected":""}>${esc(shortDate(o.fecha))} · ${esc(evTitulo(o.ev))}${n?` (${n})`:""}${o.fecha===h?" · hoy":""}</option>`};
@@ -4346,7 +4349,11 @@ function crmPaseLista(){const os=crmOcurrencias(),h=key(new Date());
   <div class="eliga"><div><h3>Liga de registro</h3><p>Mándala por WhatsApp o ponla en redes. Cada quien deja nombre, teléfono, correo y cumpleaños, y aparece aquí al momento.</p><code>${esc(ligaRegistro(evId,ev.tipo==="cenaculo"?"":f))}</code></div>
     <div class="rbtns"><button type="button" class="btn sm" data-crmcopiar="${esc(ligaRegistro(evId,ev.tipo==="cenaculo"?"":f))}">Copiar liga</button><a class="btn ghost sm" href="${esc(ligaRegistro(evId,f))}" target="_blank" rel="noopener noreferrer">Abrir ↗</a></div></div>
   <div class="ctot crmkpi"><div><b>${L.filter(a=>a.estado!=="cancelo").length}</b><span>registrados</span></div><div><b>${cnt("confirmo")}</b><span>confirmaron</span></div><div><b>${cnt("asistio")}</b><span>vinieron${L.filter(a=>a.origen==="puerta").length?` · ${L.filter(a=>a.origen==="puerta").length} en la puerta`:""}</span></div><div><b>${cnt("no_asistio")+cnt("cancelo")}</b><span>no vinieron o cancelaron</span></div></div>
-  ${fut&&dias<=7&&pend.length?`<div class="crmbox"><h3>💬 Recordatorio para confirmar</h3><p class="fsub" style="margin:0 0 8px">${crmCon&&crmCon.whatsapp?`El recordatorio sale solo 2 días antes. Si quieres mandarlo ya a los ${pend.length} que no han confirmado:`:`WhatsApp todavía no está conectado: usa el botón 💬 de cada persona (abre el chat con el mensaje y su liga para confirmar).`}</p>${crmCon&&crmCon.whatsapp?`<button type="button" class="btn sm" data-crmrecordar="${esc(crmOcc)}">Mandar recordatorio a ${pend.length}</button>`:""}</div>`:""}
+  ${fut&&filas.length?(()=>{const cand=filas.filter(({a,p})=>["registrado","invitado","confirmo"].includes(a.estado)&&telDig(p.telefono).length===10),falt=cand.filter(({a})=>!waEnviado(a)),ej=cand[0]||filas[0];
+    return `<div class="crmbox crmwabox"><div class="dhead"><h3>💬 Mensaje para los inscritos</h3><span class="count">${cand.length-falt.length} de ${cand.length} enviados</span></div>
+    <p class="fsub" style="margin:0">El botón <b>💬 Enviar</b> de cada persona abre WhatsApp con este mensaje y su nombre; al mandarlo queda marcado «✓ Enviado».${ev.tipo==="cenaculo"&&!ev.sembradora?` Falta poner la <b>sembradora</b> en el cenáculo (📅 Cenáculos programados → Editar).`:""}</p>
+    <pre class="wamsg">${esc(msgCenaculo(ej.p,ev,f))}</pre>
+    <div class="rbtns">${falt.length?`<button type="button" class="btn sm" data-crmwa="${esc(falt[0].a.id)}">💬 Enviar al siguiente: ${esc(primerN(falt[0].p.nombre))} (faltan ${falt.length})</button>`:cand.length?`<span class="dlnote">✓ Ya se mandó a todos.</span>`:`<span class="dlnote">Nadie inscrito tiene teléfono de 10 dígitos.</span>`}${crmCon&&crmCon.whatsapp&&pend.length?`<button type="button" class="btn ghost sm" data-crmrecordar="${esc(crmOcc)}">Mandar por la API a ${pend.length}</button>`:""}</div></div>`})():""}
   ${(()=>{const c={};L.filter(a=>a.medio).forEach(a=>{const k=a.medio==="invitacion"?"invitacion":a.medio;c[k]=(c[k]||0)+1});const e=Object.entries(c).sort((x,y)=>y[1]-x[1]);return e.length?`<div class="crmmedios"><b>Cómo se enteraron:</b> ${e.map(([k,n])=>`<span class="cpill" style="--c:#78C4D2">${esc((MEDIOS_EV.find(m=>m[0]===k)||[,k])[1])} · ${n}</span>`).join("")}</div>`:""})()}
   <div class="crmbusca"><input class="field" id="listaBusq" type="search" placeholder="Buscar en la lista" value="${esc(listaBusq)}" autocomplete="off"></div>
   <ul class="clist plista" id="paseLista">${filas.length?filas.map(({a,p})=>paseFila(a,p,ev,f,fut)).join(""):`<li class="empty"><strong>Nadie en la lista todavía</strong><p>${fut?"Comparte la liga de registro.":"Agrega a quien vino con «Alta en la puerta»."}</p></li>`}</ul>
@@ -4363,9 +4370,15 @@ function crmPaseLista(){const os=crmOcurrencias(),h=key(new Date());
         <button class="btn pc2" type="submit">Agregar y marcar «Vino»</button></div></form>
     <div class="crmbox"><h3>➕ Agregar a alguien de la base</h3><input class="field" id="agBusq" type="search" placeholder="Escribe un nombre" value="${esc(agBusq)}" autocomplete="off"><ul class="clist" id="agLista">${agListaHTML()}</ul></div>
   </div>`}
-function paseFila(a,p,ev,f,fut){const st=a.estado,wa=fut&&["registrado","invitado","confirmo"].includes(st)?waLiga(p.telefono,`Hola ${primerN(p.nombre)} 👋 Te esperamos en ${ev.titulo||"el evento"} el ${fechaLargaK(f).toLowerCase()}${ev.hora?" a las "+hora12(ev.hora):""}. ¿Nos confirmas si vienes? Aquí puedes responder: ${ligaPersonal(p,a.evento,f,"si")}`):"";
+/* Mensaje de WhatsApp para quien se inscribió (el mismo que usa la plantilla de la API) */
+function cuandoMsg(ev,f){const d=fromKey(f),dias=Math.round((d-fromKey(key(new Date())))/864e5);
+  const pre=dias===0?"Hoy, ":dias===1?"Mañana, ":dias>1&&dias<7?"Este ":"El ";return `${pre}${DIAS[d.getDay()]} ${d.getDate()} de ${MESES_L[d.getMonth()]}${ev.hora?" a las "+hora12(ev.hora):""}`}
+function msgCenaculo(p,ev,f){const cen=ev.tipo==="cenaculo";
+  return `¡Hola, ${primerN(p.nombre)}! 🤍\n\nTe esperamos en ${cen?"nuestro cenáculo con Tiempo de Dios":(ev.titulo||"nuestro evento")}\n\n${cuandoMsg(ev,f)}\n\n${ev.sembradora?`Sembradora: ${ev.sembradora}\n`:""}${ev.lugar?`📍 ${ev.lugar}\n`:""}${ev.sembradora||ev.lugar?"\n":""}¿Nos confirmas si vienes?`}
+function waEnviado(a){return crmM.some(m=>m.clave==="wa2|"+a.id)}
+function paseFila(a,p,ev,f,fut){const st=a.estado,wa=fut&&["registrado","invitado","confirmo"].includes(st)&&telDig(p.telefono).length===10,env=wa&&waEnviado(a);
   return `<li class="pfila" data-nombre="${esc(normTxt(p.nombre))}"><button type="button" class="pn" data-crmabrir="${esc(p.id)}"><b>${esc(p.nombre)}${a.origen==="puerta"?' <span class="pnew" title="Se dio de alta en la puerta">nuevo</span>':""}${p.donador?" 💛":""}</b><small>${esc(p.telefono||p.correo||"")}${a.medio?` · ${a.medio==="invitacion"?"":"vía "}${esc(medioTxt(a))}`:""}</small></button>${asisPill(st)}
-    <span class="pbtns">${wa?`<a class="btn ghost sm" href="${esc(wa)}" target="_blank" rel="noopener noreferrer" title="Mandar recordatorio por WhatsApp">💬</a>`:""}<button type="button" class="btn sm pvino" data-crmasis="${esc(a.id)}|asistio" aria-pressed="${st==="asistio"}">✓ Vino</button><button type="button" class="btn ghost sm pnovino" data-crmasis="${esc(a.id)}|no_asistio" aria-pressed="${st==="no_asistio"}">✗ No vino</button></span></li>`}
+    <span class="pbtns">${wa?`<button type="button" class="btn sm ${env?"ghost":"pwa"}" data-crmwa="${esc(a.id)}" title="${env?"Ya se mandó; tócalo para abrir el chat otra vez":"Abre WhatsApp con el mensaje del cenáculo listo"}">${env?"✓ Enviado":"💬 Enviar"}</button>`:""}<button type="button" class="btn sm pvino" data-crmasis="${esc(a.id)}|asistio" aria-pressed="${st==="asistio"}">✓ Vino</button><button type="button" class="btn ghost sm pnovino" data-crmasis="${esc(a.id)}|no_asistio" aria-pressed="${st==="no_asistio"}">✗ No vino</button></span></li>`}
 function agListaHTML(){const q=normTxt(agBusq.trim());if(q.length<2||!crmOcc)return "";const [evId,f]=crmOcc.split("|"),ya=new Set(crmA.filter(a=>a.evento===evId&&a.fecha===f).map(a=>a.persona));
   const l=crmP.filter(p=>!ya.has(p.id)&&normTxt(p.nombre+" "+p.correo).includes(q)).slice(0,6);
   return l.length?l.map(p=>`<li class="agf"><span><b>${esc(p.nombre)}</b><small>${esc(p.telefono||p.correo||"")}</small></span><button type="button" class="btn sm" data-crmagregar="${esc(p.id)}">Agregar</button></li>`).join(""):`<li class="none">Nadie con ese nombre. Usa «Alta en la puerta».</li>`}
@@ -4373,7 +4386,7 @@ function agListaHTML(){const q=normTxt(agBusq.trim());if(q.length<2||!crmOcc)ret
 /* Agenda de cenáculos: Operativo los programa aquí y salen en el calendario general (de todos) */
 function agendaCenaculos(){const h=key(new Date()),cs=eventos.filter(e=>e.tipo==="cenaculo").map(e=>({e,prox:ocurrencias(e,h,key(addDays(new Date(),400)))[0]})).filter(x=>x.prox).sort((a,b)=>a.prox.ini.localeCompare(b.prox.ini));
   return `<div class="crmbox"><div class="dhead"><h3>📅 Cenáculos programados</h3><button type="button" class="btn sm" data-crmcenaculo="1">+ Programar cenáculo</button></div>
-    ${cs.length?`<ul class="clist">${cs.map(({e,prox})=>`<li class="agf"><span><b>${esc(e.titulo)}</b><small>${e.repetir?"↻ "+esc((REPETIR[e.repetir]||"").toLowerCase())+" · ":""}próximo: ${esc(fechaLargaK(prox.ini))}${e.hora?" · "+esc(hora12(e.hora)):""}${e.lugar?" · "+esc(e.lugar):""}${e.invitar?" · 📨 invitaciones":""}</small></span><button type="button" class="btn ghost sm" data-crmcenedit="${esc(e.id)}|${prox.ini}">Editar</button></li>`).join("")}</ul>`:`<p class="none" style="margin:0">Aún no hay cenáculos programados.</p>`}
+    ${cs.length?`<ul class="clist">${cs.map(({e,prox})=>`<li class="agf"><span><b>${esc(e.titulo)}</b><small>${e.repetir?"↻ "+esc((REPETIR[e.repetir]||"").toLowerCase())+" · ":""}próximo: ${esc(fechaLargaK(prox.ini))}${e.hora?" · "+esc(hora12(e.hora)):""}${e.lugar?" · "+esc(e.lugar):""}${e.sembradora?" · Sembradora: "+esc(e.sembradora):""}${e.invitar?" · 📨 invitaciones":""}</small></span><button type="button" class="btn ghost sm" data-crmcenedit="${esc(e.id)}|${prox.ini}">Editar</button></li>`).join("")}</ul>`:`<p class="none" style="margin:0">Aún no hay cenáculos programados.</p>`}
     <p class="dlnote" style="margin:0">Salen en el calendario general de todo el equipo. Para quitar una sola fecha de una serie, ábrela y usa «Quitar solo este día».</p></div>`}
 /* ---------- Correos y WhatsApp ---------- */
 function crmCorreos(){const h=key(new Date()),evs=crmEventos(),acepta=crmP.filter(p=>p.acepta_correos&&p.correo).length,baja=crmP.filter(p=>!p.acepta_correos).length;
@@ -4443,7 +4456,7 @@ document.addEventListener("change",async e=>{const t=e.target;if(!t.dataset)retu
   if(t.dataset.crmestado){const p=crmP.find(x=>x.id===t.dataset.crmestado);if(!p||p.estado===t.value)return;const antes=p.estado;
     if(await crmUpd("crm_personas",crmP,p.id,{estado:t.value})){const s=await crmIns("crm_seguimientos",{persona:p.id,medio:"sistema",responsable:perfil&&perfil.id,resumen:`Estado: ${crmEstado(antes)[1]} → ${crmEstado(t.value)[1]}`,estado:t.value});crmAdd(crmS,s);render()}return}
   if(t.dataset.crmrespp){const p=crmP.find(x=>x.id===t.dataset.crmrespp);if(!p)return;await crmUpd("crm_personas",crmP,p.id,{responsable:t.value||null});toast(t.value?`Ahora ${primerN(nombreDe(t.value))} le da seguimiento.`:"Sin responsable.");return}});
-document.addEventListener("click",async e=>{const b=e.target.closest("[data-crmview],[data-crmabrir],[data-crmvolver],[data-crmnueva],[data-crmcancelar],[data-crmest],[data-crmcsv],[data-crminfo],[data-crmborrar],[data-crmdon],[data-crmdonest],[data-crmrecibir],[data-crmverfin],[data-crmcenaculo],[data-crmcenedit],[data-crmrefedit],[data-crmocc],[data-crmasis],[data-crmagregar],[data-crmcerrar],[data-crmcopiar],[data-crmrecordar],[data-crminvitar],[data-crmprueba],[data-crmbol],[data-crmprevia],[data-crmbolprueba],[data-crmbolenviar]");if(!b||!sb)return;const ds=b.dataset;
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-crmview],[data-crmabrir],[data-crmvolver],[data-crmnueva],[data-crmcancelar],[data-crmest],[data-crmcsv],[data-crminfo],[data-crmborrar],[data-crmdon],[data-crmdonest],[data-crmrecibir],[data-crmverfin],[data-crmcenaculo],[data-crmcenedit],[data-crmwa],[data-crmrefedit],[data-crmocc],[data-crmasis],[data-crmagregar],[data-crmcerrar],[data-crmcopiar],[data-crmrecordar],[data-crminvitar],[data-crmprueba],[data-crmbol],[data-crmprevia],[data-crmbolprueba],[data-crmbolenviar]");if(!b||!sb)return;const ds=b.dataset;
   if(ds.crmview){crmView=ds.crmview;crmSel=null;render();return}
   if(ds.crmabrir){crmSel=ds.crmabrir;crmInfo=false;crmDonNueva=false;crmNueva=false;if(route!=="operativo"||areaView.operativo!=="crm"){areaView.operativo="crm";location.hash="operativo"}render();window.scrollTo(0,0);return}
   if(ds.crmvolver){crmSel=null;render();return}
@@ -4460,6 +4473,10 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-crmv
   if(ds.crmdonest){const [id,est]=ds.crmdonest.split("|");await crmUpd("crm_donaciones",crmD,id,{estado:est});toast(est==="cancelada"?"Donación cancelada.":"Donación reabierta.");return}
   if(ds.crmrefedit){const r=crmR.find(x=>x.id===ds.crmrefedit);if(!r)return;const n=prompt(`Así se mostrará siempre (formas en que lo han escrito: ${Object.keys(r.variantes||{}).join(" · ")}):`,r.nombre);if(!n||n.trim().length<2||n.trim()===r.nombre)return;
     const {error}=await sb.from("crm_referidos").update({nombre:n.trim().slice(0,120),fijo:true}).eq("id",r.id);if(error){toast("No se pudo guardar: "+error.message);return}r.nombre=n.trim();r.fijo=true;render();toast("Nombre corregido.");return}
+  if(ds.crmwa){const a=crmA.find(x=>x.id===ds.crmwa),p=a&&crmP.find(x=>x.id===a.persona),ev=a&&evDe(a.evento);if(!a||!p||!ev)return;
+    const texto=msgCenaculo(p,ev,a.fecha),url=waLiga(p.telefono,texto);if(!url){toast("Esa persona no tiene un teléfono de 10 dígitos.");return}
+    window.open(url,"_blank","noopener");
+    if(!waEnviado(a)){const r=await crmIns("crm_mensajes",{persona:p.id,canal:"whatsapp",direccion:"salida",tipo:"recordatorio",texto,evento:a.evento,fecha_evento:a.fecha,clave:"wa2|"+a.id,estado:"enviado",creado_por:perfil&&perfil.id});if(r)crmAdd(crmM,r);render()}return}
   if(ds.crmcenaculo){abrirEvento(null,proximoDia(2),{tipo:"cenaculo",titulo:"Cenáculo",hora:"19:00",horaFin:"21:00",area:"general",repetir:"semanal",registro:true});return}
   if(ds.crmcenedit){const [id,f]=ds.crmcenedit.split("|");abrirEvento(id,f);return}
   if(ds.crmrecibir!==undefined){crmRecibir=ds.crmrecibir||null;render();return}
