@@ -237,7 +237,7 @@ Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `
 - **Calendario:** los cenáculos siempre tienen registro. En un evento normal se marca «Registro de asistentes» (`registro`) y, en ambos, «Invitar por correo 15 y 7 días antes» (`invitar`) y el **Lugar** (`lugar`).
 - **Registro público** `app/registro/index.html`:
   - `/registro/cenaculo` muestra los próximos cenáculos; `/registro/<id del evento>` uno solo; `?e=<id>&f=<fecha>` preselecciona la fecha.
-  - Pide nombre, teléfono, correo y cumpleaños, más la casilla de correos. Tiene campo trampa contra bots y recuerda los datos en ese navegador («No soy yo»).
+  - Primero pregunta «¿Ya has venido antes?». «Es mi primera vez» pide nombre, teléfono, correo y cumpleaños (todos obligatorios) más la casilla de correos. «Ya he ido a un cenáculo» busca su nombre (`registro_buscar`: solo nombre e inicial del apellido) y confirma con su teléfono o correo (`registro_rapido`). Tiene campo trampa contra bots y recuerda los datos en ese navegador («No soy yo»).
   - Funciones públicas: `registro_eventos()` (solo título, fecha, hora y lugar), `registro_evento(...)`, `crm_responder(t, ev, f, r)` (liga personal: `info`, `registrar`, `si`, `no`) y `crm_baja(t)`. `evento_ocurre()` revisa en SQL que la fecha sí sea del evento (misma regla que `ocurrencias()`).
 - **Edge Function `crm`** (`supabase/functions/crm/index.ts`; desplegar con **Verify JWT apagado**):
   - `diario` (pg_cron `bitacora-crm`, 9:00 de México): invitaciones por correo 15 y 7 días antes a quien acepta correos y no se ha registrado (máximo una invitación cada 6 días por persona y `CRM_MAX_DIA` correos por corrida); WhatsApp 2 días antes a los registrados; resumen por correo a cada persona de Operativo (sus seguimientos de hoy y vencidos, cumpleaños; a los líderes, lo que no tiene responsable); los lunes, a Finanzas, las donaciones comprometidas que ya pasaron su fecha.
@@ -266,6 +266,7 @@ Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `
 | 019 | Activos |
 | 020 | Ligas limpias `/cancion/<ministerio>` |
 | 021 | Paso DistroKid (checklist de 24 pasos) |
+| **029** | Registro rápido: `registro_buscar(q)` (nombre + inicial, máx. 6) y `registro_rapido(p, dato, ev, f)` (confirma con teléfono o correo) |
 | **028** | `crm_donaciones.ingreso` (donación recibida = ingreso de Finanzas, sin duplicar) y archivos en Sugerencias (`sugerencias.archivos`, bucket privado `sugerencias`, 50 MB) |
 | **027** | Operativo → Personas: `crm_personas`, `crm_asistencias`, `crm_seguimientos`, `crm_donaciones`, `crm_mensajes`, `crm_boletines`; funciones públicas del registro; cron `bitacora-crm` que llama a la función `crm` |
 | **026** | `trivia_respuestas`, `sugerencias`, `migraciones_aplicadas`; el responsable de una tarea la puede editar aunque sea de otra área; archivos entregables para áreas adicionales y responsables |
@@ -294,6 +295,8 @@ Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `
 Formato: fecha · qué cambió · dónde.
 
 - **2026-11-20**
+  - **Registro a cenáculos:** opción «Ya he ido a un cenáculo»: busca su nombre y confirma con su teléfono o correo, sin volver a llenar datos (migración 029, `app/registro/`). Al terminar ya no dice lo del mensaje de 2 días antes.
+  - **Pase de lista:** el alta en la puerta pide todos los campos. «📅 Cenáculos programados» deja a Operativo programar y editar cenáculos, que salen en el calendario general de todos (`agendaCenaculos`).
   - **Donaciones y Finanzas:** lo recibido ya no se registra dos veces: cada donación recibida se liga a su ingreso de Finanzas y toma de ahí el monto (migración 028, `index.html`: `formRecibir`).
   - **Sugerencias con archivos:** capturas, documentos o .zip con prompts (hasta 50 MB), que se descargan con liga temporal. Al copiar las aprobadas salen los nombres de los archivos. Lo pidió Ceci (`index.html`, migración 028).
   - **Navegación:** los botones ‹ › miden lo mismo de alto que la etiqueta del área.

@@ -59,6 +59,7 @@ h2{margin:0;font-family:var(--display);font-weight:900;font-size:22px;font-stret
 .trampa{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 @media (max-width:600px){.fields{grid-template-columns:1fr}.sec{padding:18px 16px}}
 .btns{display:flex;gap:10px;flex-wrap:wrap}
+.modos{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media (max-width:480px){.modos{grid-template-columns:1fr}}
 .btn{height:52px;border:0;border-radius:12px;padding:0 26px;font-family:var(--display);font-weight:900;font-size:17px;background:var(--flame);color:#fff}
 .btn.ghost{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--line)}
 .btn:disabled{opacity:.55;cursor:default}
@@ -119,7 +120,7 @@ async function personal(t,ev,f,r){
     const res=await sb.rpc("crm_responder",{t,ev,f,r:b.dataset.r});
     if(res.error){aviso(esc(errTxt(res.error)),true);return}
     const no=b.dataset.r==="no";
-    app.innerHTML=`<div class="done${no?" no":""}"><h2>${no?"Gracias por avisarnos.":"¡Listo! Te esperamos."}</h2><p class="cuando">${esc(d.titulo)} · ${esc(cuandoTxt(d))}</p><p>${no?"Ojalá te veamos en el siguiente. Si cambias de planes, vuelve a abrir esta liga.":"Te mandaremos un recordatorio unos días antes."}</p></div>`})}
+    app.innerHTML=`<div class="done${no?" no":""}"><h2>${no?"Gracias por avisarnos.":"¡Listo! Te esperamos."}</h2><p class="cuando">${esc(d.titulo)} · ${esc(cuandoTxt(d))}</p><p>${no?"Ojalá te veamos en el siguiente. Si cambias de planes, vuelve a abrir esta liga.":"¡Te esperamos!"}</p></div>`})}
 
 /* ---------- Formulario abierto ---------- */
 const KEY="tdd-registro";
@@ -137,6 +138,12 @@ async function formulario(){
   titulo(soloCen?"Regístrate al <em>cenáculo</em>":"Regístrate a un <em>evento</em>","Aparta tu lugar en un minuto. Te mandaremos un recordatorio unos días antes.");
   const g=guardado();
   app.innerHTML=`<section class="sec"><h2>¿A cuál vienes?</h2><div class="ops" id="ops">${ops.map((o,i)=>`<button type="button" class="op" data-i="${i}" aria-pressed="${o===sel}"><b>${esc(o.ev.titulo)}</b><span>${esc(larga(o.fecha))}${o.ev.hora?" · "+esc(hora12(o.ev.hora)):""}</span>${o.ev.lugar?`<span>${esc(o.ev.lugar)}</span>`:""}</button>`).join("")}</div></section>
+  <section class="sec"><h2>¿Ya has venido antes?</h2><div class="modos" role="radiogroup" aria-label="¿Ya has venido antes?"><button type="button" class="op modo" data-modo="nuevo" aria-pressed="true"><b>Es mi primera vez</b><span>Te pedimos tus datos</span></button><button type="button" class="op modo" data-modo="ya" aria-pressed="false"><b>Ya he ido a un cenáculo</b><span>Busca tu nombre y listo</span></button></div></section>
+  <section class="sec" id="ya" hidden><h2>Busca tu nombre</h2>
+    <div class="f"><label for="busca">Tu nombre o apellido</label><input class="in" id="busca" autocomplete="off" placeholder="Escribe al menos 3 letras"></div>
+    <div class="ops" id="encontrados"></div>
+    <form id="fya" hidden novalidate class="f"><label for="dato">Para confirmar que eres tú, escribe tu teléfono (10 dígitos) o tu correo</label><input class="in" id="dato" autocomplete="tel" value="${esc(g&&g.tel||"")}"><p id="msgya" class="notice err" hidden></p><button class="btn" type="submit" id="enviarya">Registrarme</button></form>
+    <button type="button" class="link" data-modo="nuevo">No me encuentro: registrarme con mis datos</button></section>
   <form class="sec" id="f" autocomplete="on" novalidate><h2>Tus datos</h2>
     ${g?`<p style="margin:0;color:var(--muted)" id="yaw">Usamos los datos que pusiste la vez pasada. <button type="button" class="link" id="noyo">No soy ${esc((g.nombre||"").split(" ")[0])}</button></p>`:""}
     <div class="fields">
@@ -151,6 +158,20 @@ async function formulario(){
     <button class="btn" type="submit" id="enviar">Registrarme</button>
     <p style="margin:0;font-size:13px;color:var(--muted)">Usamos tus datos solo para los eventos y la comunidad de Tiempo de Dios. No los compartimos con nadie.</p>
   </form>`;
+  // «Ya he ido a un cenáculo»: buscar el nombre y confirmar con el teléfono o el correo
+  let elegido=null,busT=0;
+  app.querySelectorAll("[data-modo]").forEach(b=>b.onclick=()=>{const ya=b.dataset.modo==="ya";$("ya").hidden=!ya;$("f").hidden=ya;app.querySelectorAll(".modo").forEach(x=>x.setAttribute("aria-pressed",x.dataset.modo===b.dataset.modo));(ya?$("busca"):$("nombre")).focus()});
+  $("busca").oninput=()=>{clearTimeout(busT);elegido=null;$("fya").hidden=true;const q=$("busca").value.trim();if(q.length<3){$("encontrados").innerHTML="";return}
+    busT=setTimeout(async()=>{const {data}=await sb.rpc("registro_buscar",{q});const l=data||[];
+      $("encontrados").innerHTML=l.length?l.map(x=>`<button type="button" class="op" data-ref="${esc(x.ref)}" aria-pressed="false"><b>${esc(x.nombre)}</b><span>${x.tel?"Teléfono que termina en ••"+esc(x.tel):x.con_correo?"Con correo registrado":""}</span></button>`).join(""):`<p style="margin:0;color:var(--muted)">No encontramos ese nombre. Prueba con tu apellido o regístrate con tus datos.</p>`},300)};
+  $("encontrados").onclick=e=>{const b=e.target.closest("[data-ref]");if(!b)return;elegido=b.dataset.ref;$("encontrados").querySelectorAll(".op").forEach(x=>x.setAttribute("aria-pressed",x===b));$("fya").hidden=false;$("dato").focus()};
+  $("fya").onsubmit=async e=>{e.preventDefault();const m=$("msgya");m.hidden=true;const dato=$("dato").value.trim();
+    if(!elegido){m.textContent="Elige tu nombre de la lista.";m.hidden=false;return}
+    if(dato.replace(/\D/g,"").length<10&&!/@/.test(dato)){m.textContent="Escribe tu teléfono a 10 dígitos o tu correo.";m.hidden=false;return}
+    $("enviarya").disabled=true;const {data:r,error}=await sb.rpc("registro_rapido",{p:elegido,dato,ev:sel.ev.id,f:sel.fecha});$("enviarya").disabled=false;
+    if(error){m.textContent=errTxt(error);m.hidden=false;return}listo(r&&r.nombre||"")};
+  function listo(nombre){titulo(`¡Nos vemos${nombre?`, <em>${esc(nombre)}</em>`:""}!`,"");
+    app.innerHTML=`<div class="done"><h2>Ya estás registrado.</h2><p class="cuando">${esc(sel.ev.titulo)} · ${esc(larga(sel.fecha))}${sel.ev.hora?" · "+esc(hora12(sel.ev.hora)):""}${sel.ev.lugar?" · "+esc(sel.ev.lugar):""}</p><p>¡Te esperamos!</p></div>`;window.scrollTo(0,0)}
   $("ops").onclick=e=>{const b=e.target.closest("[data-i]");if(!b)return;sel=ops[+b.dataset.i];$("ops").querySelectorAll(".op").forEach(x=>x.setAttribute("aria-pressed",x===b))};
   if($("noyo"))$("noyo").onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}["nombre","tel","correo","nac"].forEach(i=>$(i).value="");$("yaw").remove();$("nombre").focus()};
   $("f").onsubmit=async e=>{e.preventDefault();const m=$("msg");m.hidden=true;
@@ -162,9 +183,7 @@ async function formulario(){
     const {data:r,error}=await sb.rpc("registro_evento",{ev:sel.ev.id,f:sel.fecha,nombre,telefono:tel,correo,nacimiento:nac,acepta:$("acepta").checked});
     if(error){m.textContent=errTxt(error);m.hidden=false;$("enviar").disabled=false;$("enviar").textContent="Registrarme";return}
     try{localStorage.setItem(KEY,JSON.stringify({nombre,tel,correo,nac}))}catch(e){}
-    titulo(`¡Nos vemos, <em>${esc(nombre.split(" ")[0])}</em>!`,"");
-    app.innerHTML=`<div class="done"><h2>Ya estás registrado.</h2><p class="cuando">${esc(sel.ev.titulo)} · ${esc(larga(sel.fecha))}${sel.ev.hora?" · "+esc(hora12(sel.ev.hora)):""}${sel.ev.lugar?" · "+esc(sel.ev.lugar):""}</p><p>Dos días antes te escribiremos por WhatsApp para confirmar. Si al final no puedes, contéstanos ahí.</p></div>`;
-    window.scrollTo(0,0)}}
+    listo(nombre.split(" ")[0])}}
 
 (async()=>{
   if(!sb){aviso("El registro todavía no está configurado.",true);return}
