@@ -37,7 +37,7 @@ Plataforma de trabajo de Tiempo de Dios en **pm.tiempodedios.mx**. Cada área re
 | Interfaz | `app/index.html`: HTML, CSS y JS en un solo archivo, **sin framework ni build** |
 | Librerías (CDN) | `@supabase/supabase-js@2.45.4` (UMD) y `jspdf@2.5.1` (PDF en el navegador) |
 | Base de datos, sesión, archivos y tiempo real | Supabase: Postgres con RLS, Auth, Storage, Realtime y pg_cron |
-| Funciones del servidor | Supabase Edge Functions (Deno): `equipo`, `bright-task` (avisos por correo) y `samply` |
+| Funciones del servidor | Supabase Edge Functions (Deno): `equipo`, `bright-task` (avisos por correo), `samply` y `crm` (correos y WhatsApp de Personas) |
 | Lecturas del día | `app/evangelio.php`, que corre en Hostinger |
 | Hosting | Hostinger: cada push a `main` se despliega solo. El `.htaccess` sirve únicamente `app/` |
 
@@ -55,14 +55,17 @@ app/
   entrada/index.html    Formulario público de Formación (/entrada/)
   cancion/index.html    Formulario privado de canciones (/cancion/<ministerio>)
   agenda/index.html     Enlace de agenda para artistas (/agenda/<código>)
+  registro/index.html   Registro público a cenáculos y eventos (/registro/cenaculo), liga personal
+                        para confirmar (?t=…&e=…&f=…) y baja de correos (?baja=…)
   evangelio.php         Lecturas del día (Vatican News + salmo de dominicos.org)
 supabase/
   schema.sql            Esquema base (proyectos nuevos)
   migraciones/NNN_*.sql Cambios para el proyecto que ya existe (se corren en orden)
-  functions/            Edge Functions (equipo, avisos → «bright-task», samply)
+  functions/            Edge Functions (equipo, avisos → «bright-task», samply, crm)
   correos/              Plantillas de correo en español
 docs/MANUAL.md          Este manual
-.htaccess               Reescrituras: /cancion/<slug>, /agenda/<código> y todo lo demás → app/
+docs/ESTRATEGIA-CORREO.md  Estrategia de correo y WhatsApp para la comunidad (plantillas y calendario)
+.htaccess               Reescrituras: /cancion/<slug>, /agenda/<código>, /registro/<evento> y todo lo demás → app/
 ```
 
 ## 4. Cómo trabajar
@@ -210,6 +213,43 @@ docs/MANUAL.md          Este manual
 - **Filtros:** por tipo (archivos o ligas), por periodo y por área. Tocar el nombre de la tarea lleva a esa tarea en Pendientes.
 - **Quién ve qué:** cada quien ve los de sus áreas y los de las tareas que tiene asignadas; la PM y el desarrollador, todos (`docsVisibles`).
 
+## 9 quater. Operativo → Personas (asistentes, seguimiento y donadores)
+
+Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `#operativo/personas`). La ven Operativo (también como área adicional), la PM y el desarrollador (`puedeCrm()`; en SQL `puede_area('operativo')`). Migración **027**, Edge Function **`crm`**.
+
+- **Tablas:**
+  - `crm_personas`: un perfil único por persona (nombre, teléfono, correo, cumpleaños, empresa, cargo, ciudad, origen, responsable, `estado`, `proxima_accion`/`proxima_fecha`, notas, `acepta_correos`, `acepta_whatsapp`, `donador`, `token` para su liga personal). Índice único por correo; `tel_digitos` (últimos 10 dígitos) para buscar por teléfono.
+  - `crm_asistencias`: persona × evento × fecha (`evento` = id en `eventos`; los cenáculos se repiten, por eso va la fecha). Estados: invitado, registrado, confirmo, asistio, no_asistio, cancelo. `origen`: formulario, puerta o manual.
+  - `crm_seguimientos`: historial de conversaciones (medio, resumen, interés, próxima acción y fecha, estado al que pasó). Los cambios de estado hechos a mano quedan como `medio = 'sistema'`.
+  - `crm_donaciones`: solo Finanzas, la PM y el desarrollador (`puede_finanzas() or es_pm()`). Estados comprometida / recibida / cancelada; **los totales solo suman las recibidas**. Un trigger pone `crm_personas.donador` para que Operativo vea 💛 sin ver montos.
+  - `crm_mensajes`: correos y WhatsApp enviados y recibidos; `clave` única evita mandar dos veces lo mismo.
+  - `crm_boletines`: newsletters (borrador → enviando → enviado).
+- **Sin duplicados:** `crm_guardar_persona()` busca por correo y luego por teléfono (si alguno de los dos no tiene correo) y completa lo que falte. La usan el registro público y el alta en la puerta. Al dar de alta a mano, la app avisa si ya existe alguien con ese correo o teléfono (`crmDuplicado`).
+- **Vistas** (`renderCrm`):
+  - **Resumen:** indicadores (personas, donadores, recibido y comprometido solo para Finanzas/PM, sin contactar, seguimientos de hoy y vencidos) y listas: seguimientos de hoy, «vinieron y nadie los ha contactado», interesados, sin próxima acción, cumpleaños de la semana, donaciones comprometidas sin recibir y próximas fechas. Filtro por responsable.
+  - **Personas:** buscador (nombre, teléfono, correo), filtros por estado y donadores, «+ Persona» y CSV de respaldo (montos solo para Finanzas/PM).
+  - **Perfil** (`crmPersonaHTML`): contacto con botones de WhatsApp, llamada y correo; estado y responsable; registrar conversación (con próxima acción y fecha); historial cronológico (conversaciones + correos + WhatsApp); eventos; donaciones; datos generales. Solo la PM borra personas.
+  - **Pase de lista** (`crmPaseLista`): elige la fecha (cenáculos y eventos con registro, 90 días atrás y 60 adelante), liga de registro para copiar, ✓ Vino / ✗ No vino por persona (tocar otra vez lo regresa a «Registrado»), **alta en la puerta** (`crm_puerta()`: la crea o la encuentra y la marca «Vino»), agregar a alguien de la base y, al final, «Marcar No vino» a quien no se marcó. Antes del evento, botón 💬 por persona con el mensaje y su liga para confirmar.
+  - **Correos y WhatsApp** (`crmCorreos`): estado de las conexiones, calendario de envíos, invitaciones automáticas por evento (botón por evento), newsletter (borrador, vista previa, prueba a tu correo y envío en tandas de 40) y últimos mensajes de WhatsApp.
+- **Calendario:** los cenáculos siempre tienen registro. En un evento normal se marca «Registro de asistentes» (`registro`) y, en ambos, «Invitar por correo 15 y 7 días antes» (`invitar`) y el **Lugar** (`lugar`).
+- **Registro público** `app/registro/index.html`:
+  - `/registro/cenaculo` muestra los próximos cenáculos; `/registro/<id del evento>` uno solo; `?e=<id>&f=<fecha>` preselecciona la fecha.
+  - Pide nombre, teléfono, correo y cumpleaños, más la casilla de correos. Tiene campo trampa contra bots y recuerda los datos en ese navegador («No soy yo»).
+  - Funciones públicas: `registro_eventos()` (solo título, fecha, hora y lugar), `registro_evento(...)`, `crm_responder(t, ev, f, r)` (liga personal: `info`, `registrar`, `si`, `no`) y `crm_baja(t)`. `evento_ocurre()` revisa en SQL que la fecha sí sea del evento (misma regla que `ocurrencias()`).
+- **Edge Function `crm`** (`supabase/functions/crm/index.ts`; desplegar con **Verify JWT apagado**):
+  - `diario` (pg_cron `bitacora-crm`, 9:00 de México): invitaciones por correo 15 y 7 días antes a quien acepta correos y no se ha registrado (máximo una invitación cada 6 días por persona y `CRM_MAX_DIA` correos por corrida); WhatsApp 2 días antes a los registrados; resumen por correo a cada persona de Operativo (sus seguimientos de hoy y vencidos, cumpleaños; a los líderes, lo que no tiene responsable); los lunes, a Finanzas, las donaciones comprometidas que ya pasaron su fecha.
+  - `boletin`, `prueba`, `wa_recordar`, `wa_texto` y `estado` (solo Operativo, PM y desarrollador).
+  - Webhook de WhatsApp: verifica con `WA_VERIFY_TOKEN`, revisa la firma con `WA_APP_SECRET`, guarda los mensajes, marca «Confirmó» o «Canceló» con los botones y actualiza el estado de entrega (enviado, entregado, leído).
+  - Correos con remitente «Tiempo de Dios», logo incrustado y liga para darse de baja (también en la cabecera `List-Unsubscribe`).
+- **Conectar WhatsApp (una sola vez):**
+  1. En Meta Business (business.facebook.com) crea una app de tipo Business con el producto **WhatsApp** y agrega el número de la empresa. Ojo: el número pasa a la API (con la «coexistencia» de Meta se puede seguir usando la app de WhatsApp Business en el celular).
+  2. Crea un **usuario del sistema** con token permanente (permisos `whatsapp_business_messaging` y `whatsapp_business_management`).
+  3. Crea la plantilla **`recordatorio_evento`** (categoría Utilidad, idioma Español (MEX) `es_MX`). Cuerpo: «Hola {{1}}, te esperamos en {{2}} el {{3}} a las {{4}}. ¿Nos confirmas si vienes?». Dos botones de respuesta rápida: «Sí voy» y «No podré». Espera la aprobación.
+  4. En Supabase → Edge Functions → `crm` → Secrets: `WA_TOKEN`, `WA_PHONE_ID` (Phone number ID), `WA_VERIFY_TOKEN` (una palabra que inventes), `WA_APP_SECRET` (App secret) y, si cambian, `WA_PLANTILLA` y `WA_IDIOMA`.
+  5. En Meta → WhatsApp → Configuración → Webhook: URL `https://zhzqvetehynndfjbrzti.supabase.co/functions/v1/crm`, token de verificación = `WA_VERIFY_TOKEN`, y suscríbete a **messages**.
+  6. En la app, Operativo → Personas → Correos y WhatsApp debe decir «Conectado».
+- **Estrategia de correo y plantillas:** `docs/ESTRATEGIA-CORREO.md`.
+
 ## 10. Migraciones
 
 | # | Qué hace |
@@ -223,6 +263,7 @@ docs/MANUAL.md          Este manual
 | 019 | Activos |
 | 020 | Ligas limpias `/cancion/<ministerio>` |
 | 021 | Paso DistroKid (checklist de 24 pasos) |
+| **027** | Operativo → Personas: `crm_personas`, `crm_asistencias`, `crm_seguimientos`, `crm_donaciones`, `crm_mensajes`, `crm_boletines`; funciones públicas del registro; cron `bitacora-crm` que llama a la función `crm` |
 | **026** | `trivia_respuestas`, `sugerencias`, `migraciones_aplicadas`; el responsable de una tarea la puede editar aunque sea de otra área; archivos entregables para áreas adicionales y responsables |
 | **025** | Del registro de canción a la agenda: `ministerios_colectivo()`, `agenda_de_liga()`, `agendas_artistas.liga` y `agenda_reservar(..., c_id)` ligada a la canción |
 | **024** | `agenda_reservar` guarda los días exactos (`dias`) de lo que aparta un artista |
@@ -233,7 +274,8 @@ docs/MANUAL.md          Este manual
 
 - La anon key es pública. Lo que protege es la RLS.
 - La service_role key y los tokens (Samply, SMTP) viven solo en Supabase.
-- Los formularios públicos (entrada, canción, agenda) usan funciones `security definer` que devuelven lo mínimo. Además llevan `noindex` y `no-referrer`.
+- Los datos de Personas solo los leen Operativo, la PM y el desarrollador; los montos de donaciones, solo Finanzas, la PM y el desarrollador. El registro público no puede leer la base: solo llama funciones que devuelven lo mínimo (título, fecha, hora y lugar del evento, o el primer nombre con la liga personal).
+- Los formularios públicos (entrada, canción, agenda, registro) usan funciones `security definer` que devuelven lo mínimo. Además llevan `noindex` y `no-referrer`.
 - Un token que se haya compartido por chat o correo se **rota**.
 
 ## 12. Pendientes conocidos
@@ -247,6 +289,12 @@ docs/MANUAL.md          Este manual
 
 Formato: fecha · qué cambió · dónde.
 
+- **2026-11-20**
+  - **Operativo → Personas:** base de asistentes y donadores con perfil único, seguimiento (estados, conversaciones, próxima acción, responsable), cumpleaños, donaciones (montos solo Finanzas/PM), pase de lista por fecha de cenáculo o evento con alta en la puerta, y resumen con alertas (`index.html`: `renderCrm` y vecinas; migración 027).
+  - **Registro público** `/registro/cenaculo` con nombre, teléfono, correo y cumpleaños; liga personal para confirmar o cancelar y baja de correos (`app/registro/`, `.htaccess`).
+  - **Correos y WhatsApp:** invitaciones 15 y 7 días antes, newsletter en tandas, recordatorio por WhatsApp 2 días antes con botones (listo para conectar a la API de Meta) y resumen diario para Operativo (`supabase/functions/crm`, cron `bitacora-crm`).
+  - **Calendario:** lugar, registro de asistentes e invitaciones por correo en cenáculos y eventos (`index.html`: editor de eventos).
+  - **Estrategia de correo** con plantillas (`docs/ESTRATEGIA-CORREO.md`).
 - **2026-11-19**
   - **Documentos:** nueva sección con todos los archivos y ligas de las tareas, con buscador y filtros. La pidió Ceci y se arma sola desde las tareas (`index.html`: `renderDocumentos`).
 - **2026-11-17** (noche, 4)

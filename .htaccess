@@ -6,6 +6,8 @@ RewriteEngine On
 RewriteRule ^cancion/([a-z0-9-]+)/?$ app/cancion/index.html [L]
 # Enlace de agenda de producción para artistas: /agenda/<código> (app/agenda/index.html)
 RewriteRule ^agenda/([a-z0-9-]+)/?$ app/agenda/index.html [L]
+# Registro público a cenáculos y eventos: /registro/cenaculo o /registro/<id del evento> (app/registro/index.html)
+RewriteRule ^registro/([a-z0-9-]+)/?$ app/registro/index.html [L]
 RewriteCond %{REQUEST_URI} !^/app/
 RewriteRule ^(.*)$ app/$1 [L]
 

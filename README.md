@@ -148,6 +148,13 @@ Corre `supabase/migraciones/025_cancion_a_agenda.sql`. El formulario de cancione
 ### 26. Trivia del día, sugerencias y scripts pendientes
 Corre `supabase/migraciones/026_trivia_y_sugerencias.sql`. Activa la trivia diaria con racha, la sección Sugerencias y el registro de scripts corridos: desde aquí cada migración se registra sola y el desarrollador ve en Sugerencias cuáles faltan.
 
+### 27. Operativo → Personas (asistentes, seguimiento y donadores)
+1. Corre `supabase/migraciones/027_personas_y_eventos.sql`. Crea la base de personas, asistencias, seguimientos, donaciones, mensajes y newsletters, las funciones del registro público y el envío diario (cron `bitacora-crm`).
+2. **Edge Functions → Deploy a new function → Via Editor**, nombre exacto `crm`. Pega `supabase/functions/crm/index.ts` y **apaga «Verify JWT»** antes de **Deploy**: Meta tiene que poder llamar al webhook de WhatsApp sin sesión.
+3. En **Secrets** de la función `crm` agrega `SMTP_USER` y `SMTP_PASS`, los mismos de `bright-task`.
+4. WhatsApp, cuando el número esté en la API de Meta: sigue los pasos de `docs/MANUAL.md` (sección 9 quater).
+5. La liga de registro para compartir es `https://pm.tiempodedios.mx/registro/cenaculo`.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 

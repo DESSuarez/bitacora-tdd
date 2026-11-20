@@ -26,5 +26,6 @@ window.MIGRACIONES = [
   { n: "023_agenda_por_ministerio", resumen: "liga fija de agenda por ministerio" },
   { n: "024_dias_de_produccion", resumen: "días exactos en las producciones que aparta un artista" },
   { n: "025_cancion_a_agenda", resumen: "del registro de canción directo a la agenda de producción" },
-  { n: "026_trivia_y_sugerencias", resumen: "trivia del día, sugerencias y registro de scripts corridos" }
+  { n: "026_trivia_y_sugerencias", resumen: "trivia del día, sugerencias y registro de scripts corridos" },
+  { n: "027_personas_y_eventos", resumen: "Operativo → Personas: asistentes, seguimiento, donaciones, registro público y correos" }
 ];
