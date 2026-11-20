@@ -253,6 +253,16 @@ Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `
   6. En la app, Operativo → Personas → Correos y WhatsApp debe decir «Conectado».
 - **Estrategia de correo y plantillas:** `docs/ESTRATEGIA-CORREO.md`.
 
+## 9 quinquies. Formación → Proyectos (planeación en 6 pasos)
+
+Pestaña **Proyectos** en Formación, entre Logros y Entradas (`areaView.formacion = "proyectos"`). Viene del paquete `modulo-proyectos-tdd` (prompt, referencia y capturas) y se integró casi tal cual: el código del módulo está en `index.html` después de Operativo → Personas (`renderProyectos`, `PJ_PASOS`, `stepCharter`…`stepCierre`, `proyectoPDF`) y sus estilos van encerrados en `#vProy` (los del calendario del Mes, en `#vMonth`).
+
+- **Datos:** tablas `proyectos` y `equipos` (`id`, `area`, `data` jsonb) por `makeCol`, en tiempo real. El modelo de `data` está en el prompt del paquete: `charter`, `equipo`, `items` (entregables y paquetes con `raci`, `ini`, `fin`, `hito`, `estado`), `indicadores` y `cierre`. Permisos: leen todos; escriben la PM, el desarrollador y quien está en el área (`puede_area(area)`, migración 031).
+- **Reglas del piloto que se respetan:** se copia lo que llega de la base antes de editar; guardado con debounce de 700 ms, una escritura a la vez y número de secuencia (`savePj`); en tiempo real gana la versión local si tiene cambios o es más nueva; no se redibuja mientras alguien escribe o mantiene presionado un botón (`renderProyectos`, `flushPj`).
+- **Seis pasos:** Charter (con resumen en tabla, equipo con varios roles, equipos guardados y listas automáticas), WBS/EDT (Estructura y Pipeline del proceso con avisos), RACI, Gantt (semanal o mensual), Kanban con indicadores y «+ Semana» (crea la tarea en Pendientes de Formación con el R como responsable), y Cierre. PDF con `pdfWriter`.
+- **Eventos en el calendario:** un proyecto marcado «Este proyecto es un evento» aparece solo, sin copiarse a `eventos`: `eventosDeProyectos()` se suma a `todosEventos()` como tipo `proyecto` (★, Flame, calendario general) y al tocarlo abre el proyecto (`abrirProyecto`). También sale en la pestaña Mes de Formación (días con ★ y la línea del evento). La vista SQL `eventos_proyectos` queda para consultas.
+- **Acceso:** como las demás áreas, quien no está en Formación ve «No estás en Formación» y puede pedir acceso; la base no lo deja guardar.
+
 ## 10. Migraciones
 
 | # | Qué hace |
@@ -266,6 +276,7 @@ Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `
 | 019 | Activos |
 | 020 | Ligas limpias `/cancion/<ministerio>` |
 | 021 | Paso DistroKid (checklist de 24 pasos) |
+| **031** | Formación → Proyectos: `proyectos`, `equipos`, vista `eventos_proyectos` y datos del piloto (Eleva tu música, Plataforma de formación, Cursos masivos de formación, «Equipo base»; solo si no existen) |
 | **030** | «¿Cómo te enteraste?»: `crm_asistencias.medio`, `medio_otro` y `referido`; `crm_referidos` unifica a quien invita (sin importar mayúsculas, acentos ni pequeñas diferencias, con pg_trgm) y muestra la forma mejor escrita (`nombre_puntaje`); `registro_invitan(q)` para sugerir nombres; `registro_evento`, `registro_rapido` y `crm_puerta` reciben `medio` y `quien` |
 | **029** | Registro rápido: `registro_buscar(q)` (nombre + inicial, máx. 6) y `registro_rapido(p, dato, ev, f)` (confirma con teléfono o correo) |
 | **028** | `crm_donaciones.ingreso` (donación recibida = ingreso de Finanzas, sin duplicar) y archivos en Sugerencias (`sugerencias.archivos`, bucket privado `sugerencias`, 50 MB) |
@@ -296,6 +307,7 @@ Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `
 Formato: fecha · qué cambió · dónde.
 
 - **2026-11-20**
+  - **Formación → Proyectos:** planeación en 6 pasos (Charter, EDT con Pipeline, RACI, Gantt, Kanban con indicadores, Cierre), Gantt general, PDF, equipos guardados y eventos de proyecto en el calendario general y en la pestaña Mes. Integrado del paquete `modulo-proyectos-tdd` (`index.html`, migración 031).
   - **¿Cómo te enteraste?** En el registro y en el alta en la puerta (obligatorio). Si lo invitó alguien, se escribe el nombre con sugerencias, y las distintas formas de escribirlo se juntan en una sola persona con la forma más correcta («ricarDo Bañuelos Sanches» → «Ricardo Bañuelos Sánchez»). El pase de lista muestra cómo se enteraron y el Resumen, «Quién invita más», con ✎ para corregir el nombre (migración 030).
   - **Alta en la puerta** reacomodada en dos columnas con etiquetas. Los botones ‹ › y la etiqueta del área miden 34 px (40 en celular).
   - **Registro a cenáculos:** opción «Ya he ido a un cenáculo»: busca su nombre y confirma con su teléfono o correo, sin volver a llenar datos (migración 029, `app/registro/`). Al terminar ya no dice lo del mensaje de 2 días antes.

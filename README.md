@@ -158,6 +158,9 @@ Corre `supabase/migraciones/026_trivia_y_sugerencias.sql`. Activa la trivia diar
 ### 28. Donaciones ligadas a Finanzas y archivos en Sugerencias
 Corre `supabase/migraciones/028_donaciones_finanzas_y_adjuntos.sql`. Una donación recibida queda registrada como ingreso de Finanzas (sin capturarla dos veces) y las sugerencias aceptan archivos, incluidos .zip.
 
+### 31. Formación → Proyectos
+Corre `supabase/migraciones/031_proyectos_formacion.sql`. Crea las tablas de proyectos y equipos guardados y carga los proyectos del piloto (Eleva tu música, Plataforma de formación y Cursos masivos de formación) y el «Equipo base», solo si todavía no existen.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 
