@@ -290,6 +290,8 @@ Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `
 Formato: fecha · qué cambió · dónde.
 
 - **2026-11-20**
+  - **Dashboard:** flechas ← → junto a Día/Semana/Mes/Año para moverse por el calendario, con «Hoy» para regresar (`index.html`: `calNav`).
+  - **Personas:** el botón CSV es del mismo tamaño que «+ Persona».
   - **Operativo → Personas:** base de asistentes y donadores con perfil único, seguimiento (estados, conversaciones, próxima acción, responsable), cumpleaños, donaciones (montos solo Finanzas/PM), pase de lista por fecha de cenáculo o evento con alta en la puerta, y resumen con alertas (`index.html`: `renderCrm` y vecinas; migración 027).
   - **Registro público** `/registro/cenaculo` con nombre, teléfono, correo y cumpleaños; liga personal para confirmar o cancelar y baja de correos (`app/registro/`, `.htaccess`).
   - **Correos y WhatsApp:** invitaciones 15 y 7 días antes, newsletter en tandas, recordatorio por WhatsApp 2 días antes con botones (listo para conectar a la API de Meta) y resumen diario para Operativo (`supabase/functions/crm`, cron `bitacora-crm`).
