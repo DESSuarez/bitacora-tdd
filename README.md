@@ -155,6 +155,9 @@ Corre `supabase/migraciones/026_trivia_y_sugerencias.sql`. Activa la trivia diar
 4. WhatsApp, cuando el número esté en la API de Meta: sigue los pasos de `docs/MANUAL.md` (sección 9 quater).
 5. La liga de registro para compartir es `https://pm.tiempodedios.mx/registro/cenaculo`.
 
+### 28. Donaciones ligadas a Finanzas y archivos en Sugerencias
+Corre `supabase/migraciones/028_donaciones_finanzas_y_adjuntos.sql`. Una donación recibida queda registrada como ingreso de Finanzas (sin capturarla dos veces) y las sugerencias aceptan archivos, incluidos .zip.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 

@@ -205,6 +205,8 @@ docs/ESTRATEGIA-CORREO.md  Estrategia de correo y WhatsApp para la comunidad (pl
   - Solo el desarrollador ve en Sugerencias qué migraciones faltan. La app compara `app/migraciones.js` contra la tabla `migraciones_aplicadas`.
   - **Regla:** cada migración nueva se agrega a `migraciones.js` y termina con `insert into public.migraciones_aplicadas (nombre) values ('NNN_nombre') on conflict (nombre) do nothing;`. Así se registra sola al correrla.
 
+- **Archivos:** cada sugerencia puede llevar archivos (capturas, documentos, .zip con prompts; 50 MB c/u) en el bucket privado `sugerencias` (`<usuario>/<sugerencia>/…`); se descargan con URL firmada de 1 h (028).
+
 ## 9 ter. Documentos
 
 - **`#documentos`** (menú General) junta en un solo lugar todos los archivos y ligas subidos a tareas y subtareas.
@@ -221,7 +223,8 @@ Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `
   - `crm_personas`: un perfil único por persona (nombre, teléfono, correo, cumpleaños, empresa, cargo, ciudad, origen, responsable, `estado`, `proxima_accion`/`proxima_fecha`, notas, `acepta_correos`, `acepta_whatsapp`, `donador`, `token` para su liga personal). Índice único por correo; `tel_digitos` (últimos 10 dígitos) para buscar por teléfono.
   - `crm_asistencias`: persona × evento × fecha (`evento` = id en `eventos`; los cenáculos se repiten, por eso va la fecha). Estados: invitado, registrado, confirmo, asistio, no_asistio, cancelo. `origen`: formulario, puerta o manual.
   - `crm_seguimientos`: historial de conversaciones (medio, resumen, interés, próxima acción y fecha, estado al que pasó). Los cambios de estado hechos a mano quedan como `medio = 'sistema'`.
-  - `crm_donaciones`: solo Finanzas, la PM y el desarrollador (`puede_finanzas() or es_pm()`). Estados comprometida / recibida / cancelada; **los totales solo suman las recibidas**. Un trigger pone `crm_personas.donador` para que Operativo vea 💛 sin ver montos.
+  - `crm_donaciones`: solo Finanzas, la PM y el desarrollador (`puede_finanzas() or es_pm()`). Estados comprometida / recibida / cancelada; **los totales solo suman las recibidas**.
+  - **Finanzas es la fuente única del dinero (028):** una donación es el compromiso; al recibirse queda ligada a su ingreso de Finanzas (`crm_donaciones.ingreso` → `ingresos.id`) y el monto que cuenta es el del ingreso (`montoDon`, `recibidoDe`). «Marcar recibida» (solo quien tiene 💰 Finanzas) registra un ingreso nuevo categoría «Donativos» o liga uno que Finanzas ya había registrado (`formRecibir`). Un trigger impide «recibida» sin ingreso y la regresa a «comprometida» si en Finanzas se borra el ingreso. Las tablas de Finanzas no cambian. Un trigger pone `crm_personas.donador` para que Operativo vea 💛 sin ver montos.
   - `crm_mensajes`: correos y WhatsApp enviados y recibidos; `clave` única evita mandar dos veces lo mismo.
   - `crm_boletines`: newsletters (borrador → enviando → enviado).
 - **Sin duplicados:** `crm_guardar_persona()` busca por correo y luego por teléfono (si alguno de los dos no tiene correo) y completa lo que falte. La usan el registro público y el alta en la puerta. Al dar de alta a mano, la app avisa si ya existe alguien con ese correo o teléfono (`crmDuplicado`).
@@ -263,6 +266,7 @@ Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `
 | 019 | Activos |
 | 020 | Ligas limpias `/cancion/<ministerio>` |
 | 021 | Paso DistroKid (checklist de 24 pasos) |
+| **028** | `crm_donaciones.ingreso` (donación recibida = ingreso de Finanzas, sin duplicar) y archivos en Sugerencias (`sugerencias.archivos`, bucket privado `sugerencias`, 50 MB) |
 | **027** | Operativo → Personas: `crm_personas`, `crm_asistencias`, `crm_seguimientos`, `crm_donaciones`, `crm_mensajes`, `crm_boletines`; funciones públicas del registro; cron `bitacora-crm` que llama a la función `crm` |
 | **026** | `trivia_respuestas`, `sugerencias`, `migraciones_aplicadas`; el responsable de una tarea la puede editar aunque sea de otra área; archivos entregables para áreas adicionales y responsables |
 | **025** | Del registro de canción a la agenda: `ministerios_colectivo()`, `agenda_de_liga()`, `agendas_artistas.liga` y `agenda_reservar(..., c_id)` ligada a la canción |
@@ -290,6 +294,9 @@ Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `
 Formato: fecha · qué cambió · dónde.
 
 - **2026-11-20**
+  - **Donaciones y Finanzas:** lo recibido ya no se registra dos veces: cada donación recibida se liga a su ingreso de Finanzas y toma de ahí el monto (migración 028, `index.html`: `formRecibir`).
+  - **Sugerencias con archivos:** capturas, documentos o .zip con prompts (hasta 50 MB), que se descargan con liga temporal. Al copiar las aprobadas salen los nombres de los archivos. Lo pidió Ceci (`index.html`, migración 028).
+  - **Navegación:** los botones ‹ › miden lo mismo de alto que la etiqueta del área.
   - **Navegación:** botones ‹ › de atrás y adelante en la banda de todas las pantallas. Recuerdan sección, pestaña y detalle abierto, también entre pestañas de una misma área (`index.html`: `registrarNav`, `irNav`).
   - **Dashboard:** flechas ← → junto a Día/Semana/Mes/Año para moverse por el calendario, con «Hoy» para regresar (`index.html`: `calNav`).
   - **Personas:** el botón CSV es del mismo tamaño que «+ Persona».

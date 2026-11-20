@@ -217,10 +217,12 @@ a{color:var(--area-ink)}
 .areatag{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;background:var(--area);color:var(--on-area);font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px 4px 8px;border-radius:6px;line-height:1.2}
 .areatag svg{width:14px;height:14px;flex:none}
 .titleblock{display:flex;flex-direction:column;gap:10px}
-.titlerow{display:flex;align-items:center;gap:12px}
-.histnav{display:inline-flex;gap:4px;background:rgba(255,255,255,.06);border:1px solid #3A3D39;border-radius:999px;padding:3px}
-.histbtn{width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:#fff;display:grid;place-items:center;padding:0;cursor:pointer;transition:background .15s,color .15s}
-.histbtn svg{width:16px;height:16px}
+.titlerow{display:flex;align-items:stretch;gap:8px}
+.titlerow .areatag{align-self:stretch}
+/* Atrás / Adelante: mismo alto que la etiqueta del área, sin borde para que no se vea más grande */
+.histnav{display:inline-flex;gap:2px;background:rgba(255,255,255,.08);border-radius:6px;padding:0;overflow:hidden}
+.histbtn{width:26px;height:auto;border:0;border-radius:0;background:transparent;color:#fff;display:grid;place-items:center;padding:0;cursor:pointer;transition:background .15s,color .15s}
+.histbtn svg{width:14px;height:14px}
 .histbtn:hover:not(:disabled){background:var(--area);color:var(--on-area)}
 .histbtn:disabled{opacity:.3;cursor:default}
 h1{font-family:var(--display);font-weight:900;font-stretch:112%;font-size:clamp(30px,6vw,48px);line-height:1;letter-spacing:-.02em;margin:0;text-wrap:balance}
@@ -1087,6 +1089,9 @@ button.cmore:hover{color:var(--fg)}
 .crmdl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 16px;margin:0}.crmdl dt{font-size:12px;color:var(--muted);font-weight:700}.crmdl dd{margin:0;overflow-wrap:anywhere}
 .crmnotas{margin:0;white-space:pre-wrap;background:var(--surface);border-radius:10px;padding:10px 12px}
 .crmchk{flex-direction:row!important;align-items:center;gap:8px!important;font-weight:600!important}.crmchk input{width:18px;height:18px;accent-color:var(--area)}
+.sugarchs{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.sugarchb{cursor:pointer;font-size:13px;height:28px;gap:6px;color:var(--fg)}.sugarchb small{color:var(--muted);font-family:var(--mono);font-size:11px}
+.sugarch{height:auto;padding:10px 14px}
+.crmrec{flex-basis:100%;margin-top:6px}.crmrec .vistas{flex-wrap:wrap}
 .crmdup{margin:0;font-size:13.5px;background:color-mix(in srgb,var(--flame) 12%,var(--bg));border-radius:10px;padding:8px 12px}
 .linkbtn{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--area-ink);text-decoration:underline;cursor:pointer}
 .pfila{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px 10px;align-items:center;background:var(--surface);border-radius:12px;padding:8px 10px}
@@ -1770,7 +1775,7 @@ function renderKeep(){const ae=document.activeElement;
   const v=ae.value,a=ae.selectionStart,b=ae.selectionEnd;render();const n=document.querySelector(sel);
   if(n&&n!==ae){n.value=v;n.focus();try{n.setSelectionRange(a,b)}catch(e){}}}
 /* Al redibujar (por ejemplo, por cambios en tiempo real) se conserva lo escrito en los formularios abiertos */
-const FORMS_VIVOS=["crmPForm","crmSegForm","crmDonForm","crmPuertaForm","crmWaForm","crmBolForm","sugForm","agendaForm","cancionForm","gastoForm","pagoForm","ingresoForm","activoForm","ligaForm","cEditForm"];
+const FORMS_VIVOS=["crmRecForm","crmPForm","crmSegForm","crmDonForm","crmPuertaForm","crmWaForm","crmBolForm","sugForm","agendaForm","cancionForm","gastoForm","pagoForm","ingresoForm","activoForm","ligaForm","cEditForm"];
 function guardarForms(){const out=[];FORMS_VIVOS.forEach(id=>{const f=document.getElementById(id);if(!f)return;
   out.push({id,campos:[...f.elements].filter(el=>el.name||el.id).map(el=>({k:el.id||el.name+"|"+el.value,v:el.value,c:el.checked,h:el.hidden,tipo:el.type}))})});
   const ae=document.activeElement;return {out,foco:ae&&ae.form&&FORMS_VIVOS.includes(ae.form.id)?(ae.id||ae.name+"|"+ae.value):null}}
@@ -2217,6 +2222,7 @@ function sugCard(x){const q=perfiles.find(p=>p.id===x.autor),E=SUG_ESTADOS.find(
   const acc={nueva:[["aprobada","Aprobar",""],["rechazada","No aprobar","ghost"]],aprobada:[["en_proceso","En proceso",""],["hecha","Hecha",""],["rechazada","No aprobar","ghost"]],en_proceso:[["hecha","Hecha",""],["aprobada","Regresar a aprobadas","ghost"]],hecha:[["en_proceso","Reabrir","ghost"]],rechazada:[["nueva","Volver a revisar","ghost"]]}[x.estado]||[];
   return `<li class="sug" style="--c:${E[2]}"><div class="sugtop"><span class="sugtipo">${T[0]} ${T[1]}</span>${x.area&&AREAS[x.area]?`<span class="cpar" style="--c:${AREAS[x.area].c}">${esc(AREAS[x.area].n)}</span>`:""}<span class="cpill" style="--c:${E[2]}">${esc(E[1].replace(/s$/,"").replace("Por revisar","Por revisar"))}</span><span class="sp"></span><small>${q?esc(q.nombre):"Alguien"} · ${shortDate(String(x.creado).slice(0,10))}</small></div>
     <h4>${esc(x.titulo)}</h4>${x.detalle?`<p>${esc(x.detalle)}</p>`:""}
+    ${(x.archivos||[]).length?`<div class="sugarchs">${x.archivos.map(a=>`<button type="button" class="chip sugarchb" data-sugarch="${esc(a.ruta)}" title="Descargar">${/\.zip$/i.test(a.nombre)?"🗜":"📎"} ${esc(a.nombre)} <small>${a.tam>=1048576?(a.tam/1048576).toFixed(1)+" MB":Math.max(1,Math.round(a.tam/1024))+" KB"}</small></button>`).join("")}</div>`:""}
     ${pm?`<label class="sugresp"><span>Respuesta para ${q?esc((q.nombre||"").split(" ")[0]):"quien la propuso"} <small>(opcional)</small></span><textarea class="field" rows="2" maxlength="2000" data-sugresp="${esc(x.id)}" placeholder="Ej. Lo hacemos esta semana · ya existe en Mi trabajo · por ahora no">${esc(x.respuesta||"")}</textarea></label>
       <div class="sugacc">${acc.map(([k,n,cl])=>`<button type="button" class="btn sm ${cl}" data-sugest="${esc(x.id)}|${k}">${n}</button>`).join("")}${mia&&x.estado==="nueva"||pm?`<button type="button" class="btn ghost sm ebor" data-sugdel="${esc(x.id)}" title="Borrar">${ICON_DEL}</button>`:""}</div>`
       :`${x.respuesta?`<div class="sugr"><b>Respuesta:</b> ${esc(x.respuesta)}</div>`:""}${mia&&x.estado==="nueva"?`<div class="sugacc"><button type="button" class="btn ghost sm ebor" data-sugdel="${esc(x.id)}">${ICON_DEL} Borrar</button></div>`:""}`}</li>`}
@@ -2237,6 +2243,7 @@ function renderSugerencias(){const V=$("vSugerencias"),pm=esPM(),fil=sugFiltro||
       <div class="agrow"><label>¿Qué propones?<input class="field" id="sugTitulo" maxlength="140" required placeholder="${sugTipo==="error"?"Ej. No puedo subir archivos desde el celular":"Ej. Que los pendientes tengan prioridad"}"></label>
         <label>¿De qué parte? <small>(opcional)</small><select class="field" id="sugArea"><option value="">General</option>${AREA_IDS.map(a=>`<option value="${a}">${esc(AREAS[a].n)}</option>`).join("")}</select></label></div>
       <label class="sugdet">Cuéntanos más <small>(opcional)</small><textarea class="field" id="sugDetalle" rows="3" maxlength="4000" placeholder="${sugTipo==="error"?"Qué hiciste, qué esperabas y qué pasó":"Para qué serviría y cómo te lo imaginas"}"></textarea></label>
+      <label class="sugdet">Archivos <small>(opcional: capturas, documentos o un .zip con prompts; hasta 50 MB cada uno)</small><input class="field sugarch" type="file" id="sugArch" multiple></label>
       <div class="row"><span class="dlnote">${ab>=SUG_MAX?"Ya tienes 5 abiertas: espera a que se resuelva alguna para proponer otra.":""}</span><button class="btn" type="submit" ${ab>=SUG_MAX?"disabled":""}>Enviar sugerencia</button></div></form>
     ${panelScripts()}
     <div class="dhead"><div class="vistas" role="tablist" aria-label="Filtrar sugerencias">${filtros.map(([k,n])=>`<button type="button" role="tab" class="vista" data-sugfil="${k}" aria-selected="${fil===k}">${n}${cuenta(k)?` · ${cuenta(k)}`:""}</button>`).join("")}</div>
@@ -2244,9 +2251,19 @@ function renderSugerencias(){const V=$("vSugerencias"),pm=esPM(),fil=sugFiltro||
     ${lista.length?`<ul class="suglist">${lista.map(sugCard).join("")}</ul>`:`<div class="none">${fil==="mias"?"Aún no has enviado sugerencias.":"Nada aquí por ahora."}</div>`}`}
 document.addEventListener("submit",async e=>{if(e.target.id!=="sugForm")return;e.preventDefault();if(!sb||!perfil)return;const titulo=$("sugTitulo").value.trim();if(titulo.length<3){toast("Escribe qué propones.");return}
   if(sugAbiertasMias()>=SUG_MAX){toast("Ya tienes 5 sugerencias abiertas.");return}
-  const {data,error}=await sb.from("sugerencias").insert({autor:perfil.id,tipo:sugTipo,area:$("sugArea").value||null,titulo:titulo.slice(0,140),detalle:$("sugDetalle").value.trim().slice(0,4000),estado:"nueva",respuesta:""}).select().single();
-  if(error){toast("No se pudo enviar: "+(/sugerencias|PGRST205|42P01/.test(error.message+(error.code||""))?"falta correr la migración 026.":/row-level/i.test(error.message)?"ya tienes 5 sugerencias abiertas.":error.message));return}
+  const sid=crypto.randomUUID(),files=[...($("sugArch").files||[])],btn=e.target.querySelector("[type=submit]");
+  if(files.some(f=>f.size>50*1024*1024)){toast("Cada archivo puede pesar hasta 50 MB.");return}
+  const archivos=[];btn.disabled=true;
+  for(const f of files){toast(`Subiendo ${f.name}…`);const ruta=`${perfil.id}/${sid}/${Date.now()}-${f.name.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\w.\-]+/g,"_").slice(-120)}`;
+    const up=await sb.storage.from("sugerencias").upload(ruta,f,{contentType:f.type||"application/octet-stream"});
+    if(up.error){btn.disabled=false;toast("No se pudo subir "+f.name+": "+(/bucket/i.test(up.error.message)?"falta correr la migración 028.":up.error.message));return}
+    archivos.push({nombre:f.name.slice(0,160),ruta,tam:f.size,tipo:f.type||""})}
+  const {data,error}=await sb.from("sugerencias").insert({id:sid,archivos,autor:perfil.id,tipo:sugTipo,area:$("sugArea").value||null,titulo:titulo.slice(0,140),detalle:$("sugDetalle").value.trim().slice(0,4000),estado:"nueva",respuesta:""}).select().single();
+  btn.disabled=false;
+  if(error){if(archivos.length)sb.storage.from("sugerencias").remove(archivos.map(a=>a.ruta));toast("No se pudo enviar: "+(/archivos/.test(error.message)?"falta correr la migración 028.":/sugerencias|PGRST205|42P01/.test(error.message+(error.code||""))?"falta correr la migración 026.":/row-level/i.test(error.message)?"ya tienes 5 sugerencias abiertas.":error.message));return}
   sugerencias=[data,...sugerencias.filter(x=>x.id!==data.id)];e.target.reset();sugFiltro="mias";render();toast("¡Gracias! Tu sugerencia llegó a la Project Manager y al desarrollador.")});
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-sugarch]");if(!b||!sb)return;
+  const {data,error}=await sb.storage.from("sugerencias").createSignedUrl(b.dataset.sugarch,3600,{download:true});if(error){toast("No se pudo abrir: "+error.message);return}window.open(data.signedUrl,"_blank","noopener")});
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-sugtipo],[data-sugfil],[data-sugest],[data-sugdel],[data-sugcopiar],[data-migok]");if(!b)return;const ds=b.dataset;
   if(ds.sugtipo){sugTipo=ds.sugtipo;render();return}
   if(ds.sugfil){sugFiltro=ds.sugfil;render();return}
@@ -2254,9 +2271,9 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-sugt
     const antes={...x};Object.assign(x,{estado,respuesta,resuelto_por:perfil.id});esperaRender=false;render();
     const {error}=await sb.from("sugerencias").update({estado,respuesta,resuelto_por:perfil.id}).eq("id",id);if(error){Object.assign(x,antes);render();toast("No se pudo guardar: "+error.message)}else toast(`Pasó a «${(SUG_ESTADOS.find(z=>z[0]===estado)||[])[1]}».`);return}
   if(ds.sugdel){const x=sugerencias.find(y=>y.id===ds.sugdel);if(!x||!sb)return;confirmarAccion({titulo:"¿Borrar esta sugerencia?",texto:`«${x.titulo}» se borra para siempre.`,boton:"Sí, borrar"}).then(async ok=>{if(!ok)return;
-      const {error}=await sb.from("sugerencias").delete().eq("id",x.id);if(error){toast("No se pudo borrar: "+error.message);return}sugerencias=sugerencias.filter(y=>y.id!==x.id);render()});return}
+      const {error}=await sb.from("sugerencias").delete().eq("id",x.id);if(error){toast("No se pudo borrar: "+error.message);return}if((x.archivos||[]).length)sb.storage.from("sugerencias").remove(x.archivos.map(a=>a.ruta));sugerencias=sugerencias.filter(y=>y.id!==x.id);render()});return}
   if(ds.sugcopiar){const xs=sugerencias.filter(x=>x.estado==="aprobada"||x.estado==="en_proceso");
-    const txt="Sugerencias aprobadas de la Bitácora para trabajar:\n\n"+xs.map((x,i)=>{const q=perfiles.find(p=>p.id===x.autor);return `${i+1}. [${SUG_TIPOS[x.tipo][1]}${x.area&&AREAS[x.area]?" · "+AREAS[x.area].n:""}] ${x.titulo}${x.detalle?"\n   "+x.detalle.replace(/\n/g,"\n   "):""}\n   (propuesta por ${q?q.nombre:"alguien"}; estado: ${(SUG_ESTADOS.find(z=>z[0]===x.estado)||[])[1]}${x.respuesta?"; nota: "+x.respuesta:""})`}).join("\n\n");
+    const txt="Sugerencias aprobadas de la Bitácora para trabajar:\n\n"+xs.map((x,i)=>{const q=perfiles.find(p=>p.id===x.autor);return `${i+1}. [${SUG_TIPOS[x.tipo][1]}${x.area&&AREAS[x.area]?" · "+AREAS[x.area].n:""}] ${x.titulo}${x.detalle?"\n   "+x.detalle.replace(/\n/g,"\n   "):""}\n   (propuesta por ${q?q.nombre:"alguien"}; estado: ${(SUG_ESTADOS.find(z=>z[0]===x.estado)||[])[1]}${x.respuesta?"; nota: "+x.respuesta:""})${(x.archivos||[]).length?"\n   Archivos adjuntos (descárgalos en Sugerencias): "+x.archivos.map(a=>a.nombre).join(", "):""}`}).join("\n\n");
     copiarTexto(txt,`${xs.length} sugerencias copiadas. Pégalas en Claude Code para trabajarlas.`);return}
   if(ds.migok){if(!sb)return;const {error}=await sb.from("migraciones_aplicadas").insert({nombre:ds.migok});if(error&&!/duplicate|23505/.test(error.message+(error.code||""))){toast("No se pudo marcar: "+error.message);return}
     migAplicadas.add(ds.migok);render();toast("Marcada como corrida.")}});
@@ -3775,6 +3792,12 @@ const CRM_ESTADOS=[["sin_contactar","Sin contactar","#9AA3A2"],["contacto_inicia
 const CRM_ASIS={invitado:["Invitado","#9AA3A2"],registrado:["Registrado","#78C4D2"],confirmo:["Confirmó","#5B7DB1"],asistio:["Vino","#1DB954"],no_asistio:["No vino","#FF3D1A"],cancelo:["Canceló","#7C8786"]};
 const CRM_MEDIOS={whatsapp:"💬 WhatsApp",llamada:"📞 Llamada",en_persona:"🤝 En persona",correo:"✉️ Correo",otro:"Otro"};
 const DON_EST={comprometida:["Comprometida","#F2B33D"],recibida:["Recibida","#1DB954"],cancelada:["Cancelada","#7C8786"]};
+/* Finanzas es la fuente única del dinero: una donación recibida está ligada a su ingreso (crm_donaciones.ingreso, migración 028)
+   y cuenta el monto de ese ingreso. Aquí solo se lee «ingresosF», que ya carga Finanzas en tiempo real. */
+function ingresoDe(d){return d&&d.ingreso?ingresosF.find(i=>i.id===d.ingreso)||null:null}
+function montoDon(d){const i=ingresoDe(d);return Number(i?i.monto:d.monto)||0}
+function recibidoDe(l){return l.filter(d=>d.estado==="recibida").reduce((s,d)=>s+montoDon(d),0)}
+let crmRecibir=null;
 const CRM_VISTAS=[["resumen","Resumen"],["personas","Personas"],["lista","Pase de lista"],["correos","Correos y WhatsApp"]];
 let crmP=[],crmA=[],crmS=[],crmD=[],crmM=[],crmB=[],crmCh=null,crmErr="",loadedCrm=false,crmView="resumen",crmSel=null,crmBusq="",crmEst="todos",crmResp="todos",crmOcc=null,crmNueva=false,crmInfo=false,crmBol=null,crmPrevia=false,crmCon=null,crmDonNueva=false,listaBusq="",agBusq="";
 function puedeCrm(){return canEdit("operativo")}
@@ -3850,12 +3873,12 @@ function crmResumen(){const h=key(new Date()),P=filtrarResp(crmP),ids=new Set(P.
   const inter=P.filter(p=>p.estado==="interesado");
   const sinProx=P.filter(p=>["contacto_inicial","en_conversacion","interesado","seguimiento_pendiente","relacion_activa"].includes(p.estado)&&!p.proxima_fecha);
   const cumple=P.filter(p=>{const d=diasACumple(p.nacimiento);return d!=null&&d<=7}).sort((a,b)=>diasACumple(a.nacimiento)-diasACumple(b.nacimiento));
-  const D=crmD.filter(d=>ids.has(d.persona)),rec=D.filter(d=>d.estado==="recibida").reduce((s,d)=>s+Number(d.monto),0),com=D.filter(d=>d.estado==="comprometida");
+  const D=crmD.filter(d=>ids.has(d.persona)),rec=recibidoDe(D),com=D.filter(d=>d.estado==="comprometida");
   const prox=crmOcurrencias().filter(o=>o.fecha>=h).slice(0,4);
   return `<div class="dhead"><div><h2 class="fh2">Personas</h2><p class="fsub">Quién viene a los eventos, cómo va la relación con cada quien y quién ya dona. Todo se actualiza solo.</p></div>${filtroResp()}</div>
   <div class="ctot crmkpi">
     <div><b>${P.length}</b><span>personas</span></div><div><b>${P.filter(p=>p.donador).length}</b><span>donadores</span></div>
-    ${verMontos()?`<div><b>${dinero(rec)}</b><span>donaciones recibidas</span></div><div><b>${dinero(com.reduce((s,d)=>s+Number(d.monto),0))}</b><span>${com.length} comprometida${com.length===1?"":"s"}</span></div>`:`<div><b>${inter.length}</b><span>interesados en donar</span></div><div><b>${sinProx.length}</b><span>sin próxima acción</span></div>`}
+    ${verMontos()?`<div><b>${dinero(rec)}</b><span>donaciones recibidas (Finanzas)</span></div><div><b>${dinero(com.reduce((s,d)=>s+Number(d.monto),0))}</b><span>${com.length} comprometida${com.length===1?"":"s"}</span></div>`:`<div><b>${inter.length}</b><span>interesados en donar</span></div><div><b>${sinProx.length}</b><span>sin próxima acción</span></div>`}
     <div><b>${sinC.length}</b><span>sin contactar</span></div><div><b>${hoy.length-venc}</b><span>seguimientos para hoy</span></div><div class="${venc?"malo":""}"><b>${venc}</b><span>seguimientos vencidos</span></div><div><b>${prox.length}</b><span>próximas fechas con registro</span></div>
   </div>
   <div class="crmgrid">
@@ -3941,21 +3964,37 @@ function segItem(s){const r=s.responsable?nombreDe(s.responsable):s.creado_por?n
     ${s.resumen?`<p>${esc(s.resumen)}</p>`:""}${s.interes||e||s.proxima_accion?`<p class="hx">${s.interes?`Interés: <b>${esc(s.interes)}</b> `:""}${e?`· Pasó a <b>${esc(e)}</b> `:""}${s.proxima_accion?`· Siguiente: <b>${esc(s.proxima_accion)}</b>${s.proxima_fecha?" ("+esc(shortDate(s.proxima_fecha))+")":""}`:""}</p>`:""}</li>`}
 function msjItem(m){const ent=m.direccion==="entrada",tipo={invitacion15:"Invitación (15 días antes)",invitacion7:"Invitación (7 días antes)",recordatorio:"Recordatorio 2 días antes",boletin:"Newsletter",respuesta:"Respuesta",texto:"Mensaje"}[m.tipo]||m.tipo;
   return `<li class="msj ${ent?"ent":""}"><div class="hm"><b>${m.canal==="whatsapp"?"💬":"✉️"} ${ent?"Recibido":"Enviado"} · ${esc(tipo)}</b><small>${esc(fhLocal(m.creado))}${m.estado&&!["enviado","recibido"].includes(m.estado)?" · "+esc({delivered:"entregado",read:"leído",failed:"falló",error:"falló",sent:"enviado"}[m.estado]||m.estado):""}</small></div>${m.texto?`<p>${esc(m.texto)}</p>`:""}${m.error?`<p class="hx" style="color:var(--flame)">${esc(m.error)}</p>`:""}</li>`}
-function crmDonaciones(p,dons,as){const rec=dons.filter(d=>d.estado==="recibida").reduce((s,d)=>s+Number(d.monto),0),com=dons.filter(d=>d.estado==="comprometida").reduce((s,d)=>s+Number(d.monto),0);
+function crmDonaciones(p,dons,as){const rec=recibidoDe(dons),com=dons.filter(d=>d.estado==="comprometida").reduce((s,d)=>s+Number(d.monto),0);
   return `<section class="crmsec"><div class="dhead"><h3>Donaciones</h3><button type="button" class="btn sm" data-crmdon="1">+ Donación</button></div>
     <div class="ctot" style="grid-template-columns:repeat(3,1fr)"><div><b>${dinero(rec)}</b><span>recibido</span></div><div><b>${dinero(com)}</b><span>comprometido (aún no llega)</span></div><div><b>${dons.length}</b><span>registro${dons.length===1?"":"s"}</span></div></div>
     ${crmDonNueva?`<form class="cnueva" id="crmDonForm" data-pid="${esc(p.id)}" autocomplete="off"><h3>Registrar donación</h3>
       <label class="c2">Cantidad (MXN)<input class="field" id="cdMonto" type="number" min="1" step="0.01" required></label>
       <label class="c2">Fecha<input class="field" id="cdFecha" type="date" required value="${key(new Date())}"></label>
-      <label class="c2">Estado<select class="field" id="cdEstado"><option value="comprometida">Comprometida (aún no llega)</option><option value="recibida">Recibida</option></select></label>
+      <label class="c2">Estado<select class="field" id="cdEstado"><option value="comprometida">Comprometida (aún no llega)</option>${puedeFin()?`<option value="recibida">Ya la recibimos (se registra como ingreso en Finanzas)</option>`:""}</select></label>
+      <label class="c2" id="cdAreaW">Área del ingreso<select class="field" id="cdArea"><option value="general">General</option>${AREA_IDS.map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("")}</select></label>
       <label class="c2">Tipo<select class="field" id="cdTipo"><option value="unica">Única</option><option value="recurrente">Recurrente (mensual)</option></select></label>
       <label class="c2">Método de pago <small>(opcional)</small><input class="field" id="cdMetodo" maxlength="80" list="cdMetodos" placeholder="Transferencia"><datalist id="cdMetodos"><option>Transferencia</option><option>Tarjeta</option><option>Efectivo</option><option>Domiciliación</option></datalist></label>
       <label class="c2">Proyecto o destino <small>(opcional)</small><input class="field" id="cdDestino" maxlength="160" placeholder="Ej. Becas, Música, General"></label>
       <label class="c3">¿Salió de un evento? <small>(opcional)</small><select class="field" id="cdEvento"><option value="">No</option>${as.map(a=>`<option value="${esc(a.evento+"|"+a.fecha)}">${esc(evTitulo(a.evento))} · ${esc(shortDate(a.fecha))}</option>`).join("")}</select></label>
       <label class="c3">Comprobante <small>(liga o referencia, opcional)</small><input class="field" id="cdComp" maxlength="500"></label>
-      <div class="row"><span class="dlnote">Los reportes solo suman las recibidas.</span><button type="button" class="btn ghost" data-crmdon="0">Cancelar</button><button class="btn" type="submit">Guardar</button></div></form>`:""}
-    ${dons.length?`<ul class="crmdons">${dons.map(d=>`<li><b>${dinero(d.monto)}</b><span>${esc(shortDate(d.fecha))} ${d.fecha.slice(0,4)} · ${d.tipo==="recurrente"?"Recurrente":"Única"}${d.destino?" · "+esc(d.destino):""}${d.metodo?" · "+esc(d.metodo):""}${d.evento?" · "+esc(evTitulo(d.evento.split("|")[0])):""}${d.comprobante?` · ${/^https?:\/\//.test(d.comprobante)?`<a href="${esc(d.comprobante)}" target="_blank" rel="noopener noreferrer">comprobante ↗</a>`:esc(d.comprobante)}`:""}</span>
-      <span class="cpill" style="--c:${DON_EST[d.estado][1]}">${DON_EST[d.estado][0]}</span>${d.estado==="comprometida"?`<button type="button" class="btn sm" data-crmdonest="${esc(d.id)}|recibida">Marcar recibida</button><button type="button" class="btn ghost sm" data-crmdonest="${esc(d.id)}|cancelada">Cancelar</button>`:d.estado==="cancelada"?`<button type="button" class="btn ghost sm" data-crmdonest="${esc(d.id)}|comprometida">Reabrir</button>`:""}</li>`).join("")}</ul>`:""}</section>`}
+      <div class="row"><span class="dlnote">Lo recibido se registra en Finanzas; aquí solo se liga.</span><button type="button" class="btn ghost" data-crmdon="0">Cancelar</button><button class="btn" type="submit">Guardar</button></div></form>`:""}
+    ${dons.length?`<ul class="crmdons">${dons.map(d=>{const ing=ingresoDe(d);return `<li><b>${dinero(montoDon(d))}</b><span>${esc(shortDate(d.fecha))} ${d.fecha.slice(0,4)} · ${d.tipo==="recurrente"?"Recurrente":"Única"}${d.destino?" · "+esc(d.destino):""}${d.metodo?" · "+esc(d.metodo):""}${d.evento?" · "+esc(evTitulo(d.evento.split("|")[0])):""}${d.comprobante?` · ${/^https?:\/\//.test(d.comprobante)?`<a href="${esc(d.comprobante)}" target="_blank" rel="noopener noreferrer">comprobante ↗</a>`:esc(d.comprobante)}`:""}</span>
+      <span class="cpill" style="--c:${DON_EST[d.estado][1]}">${DON_EST[d.estado][0]}</span>
+      ${ing?`<button type="button" class="linkbtn" data-crmverfin="${esc(ing.fecha)}" title="${esc(ing.concepto)}">✓ En Finanzas · ${esc(shortDate(ing.fecha))}</button>`:d.estado==="recibida"?`<span class="crmvenc">⚠︎ Falta en Finanzas</span>`:""}
+      ${(d.estado==="comprometida"||(d.estado==="recibida"&&!ing))?(puedeFin()?`<button type="button" class="btn sm" data-crmrecibir="${esc(d.id)}">${d.estado==="recibida"?"Ligar a Finanzas":"Marcar recibida"}</button>`:`<small class="dlnote">La marca recibida Finanzas</small>`):""}${d.estado==="comprometida"?`<button type="button" class="btn ghost sm" data-crmdonest="${esc(d.id)}|cancelada">Cancelar</button>`:d.estado==="cancelada"?`<button type="button" class="btn ghost sm" data-crmdonest="${esc(d.id)}|comprometida">Reabrir</button>`:""}
+      ${crmRecibir===d.id?formRecibir(d,p):""}</li>`}).join("")}</ul>`:""}</section>`}
+/* Marcar recibida: se registra el ingreso en Finanzas (o se liga uno que ya registró Finanzas) */
+function formRecibir(d,p){const usados=new Set(crmD.map(x=>x.ingreso).filter(Boolean)),m=Number(d.monto);
+  const cand=ingresosF.filter(i=>!usados.has(i.id)).map(i=>({i,dist:Math.abs(Number(i.monto)-m)/Math.max(m,1)+Math.abs(fromKey(i.fecha)-fromKey(d.fecha))/864e5/60+(i.categoria==="Donativos"?0:.5)})).sort((a,b)=>a.dist-b.dist).slice(0,25).map(x=>x.i);
+  return `<form class="cnueva crmrec" id="crmRecForm" data-did="${esc(d.id)}" autocomplete="off"><h3>Registrar como recibida</h3>
+    <div class="c6 vistas" role="radiogroup"><label class="vista crmmedio"><input type="radio" name="crModo" value="nuevo" checked>Registrar ingreso nuevo en Finanzas</label><label class="vista crmmedio"><input type="radio" name="crModo" value="ligar" ${cand.length?"":"disabled"}>Ya está en Finanzas: ligarlo</label></div>
+    <label class="c2 crnuevo">Monto recibido<input class="field" id="crMonto" type="number" min="0.01" step="0.01" value="${esc(d.monto)}"></label>
+    <label class="c2 crnuevo">Fecha<input class="field" id="crFecha" type="date" value="${key(new Date())}"></label>
+    <label class="c2 crnuevo">Área<select class="field" id="crArea"><option value="general">General</option>${AREA_IDS.map(a=>`<option value="${a}">${AREAS[a].n}</option>`).join("")}</select></label>
+    <label class="c6 crligar" hidden>Ingreso de Finanzas<select class="field" id="crIngreso">${cand.map(i=>`<option value="${esc(i.id)}">${esc(shortDate(i.fecha))} ${i.fecha.slice(0,4)} · ${dinero(i.monto)} · ${esc(i.concepto)}${(i.data||{}).fuente?" · "+esc(i.data.fuente):""}</option>`).join("")}</select></label>
+    <div class="row"><span class="dlnote">Queda como ingreso «Donativos» de ${esc(p.nombre)} en Finanzas.</span><button type="button" class="btn ghost" data-crmrecibir="">Cancelar</button><button class="btn" type="submit">Guardar</button></div></form>`}
+async function crearIngresoDon(d,p,{monto,fecha,area}){const {data,error}=await sb.from("ingresos").insert({fecha,concepto:`Donativo · ${p.nombre}${d.destino?" · "+d.destino:""}`.slice(0,200),monto,area,categoria:"Donativos",data:{fuente:p.nombre,referencia:d.comprobante||""}}).select().single();
+  if(error){toast("No se pudo registrar en Finanzas: "+error.message);return null}if(!ingresosF.some(x=>x.id===data.id))ingresosF.unshift(data);return data}
 
 /* ---------- Pase de lista por fecha ---------- */
 function crmPaseLista(){const os=crmOcurrencias(),h=key(new Date());
@@ -4039,7 +4078,7 @@ async function enviarBoletin(id){let tot=0;for(let i=0;i<500;i++){const {data,er
 function crmCSV(){const c=v=>`"${String(v??"").replace(/"/g,'""')}"`,M=verMontos();
   const cab=["Nombre","Teléfono","Correo","Cumpleaños","Empresa","Cargo","Ciudad","Origen","Responsable","Estado","Próxima acción","Fecha próxima","Eventos (vino)","Donador",...(M?["Recibido MXN","Comprometido MXN"]:[]),"Acepta correos","Notas","Registro"];
   const filas=crmFiltradas().map(p=>[p.nombre,p.telefono,p.correo,p.nacimiento||"",p.empresa,p.cargo,p.ciudad,p.origen,p.responsable?nombreDe(p.responsable):"",crmEstado(p.estado)[1],p.proxima_accion,p.proxima_fecha||"",vinoA(p.id),p.donador?"Sí":"No",
-    ...(M?[crmD.filter(d=>d.persona===p.id&&d.estado==="recibida").reduce((s,d)=>s+Number(d.monto),0),crmD.filter(d=>d.persona===p.id&&d.estado==="comprometida").reduce((s,d)=>s+Number(d.monto),0)]:[]),p.acepta_correos?"Sí":"No",p.notas,diaLocal(p.creado)]);
+    ...(M?[recibidoDe(crmD.filter(d=>d.persona===p.id)),crmD.filter(d=>d.persona===p.id&&d.estado==="comprometida").reduce((s,d)=>s+Number(d.monto),0)]:[]),p.acepta_correos?"Sí":"No",p.notas,diaLocal(p.creado)]);
   const blob=new Blob(["﻿"+[cab,...filas].map(r=>r.map(c).join(",")).join("\n")],{type:"text/csv"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`personas-${key(new Date())}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
 
 /* ---------- Eventos de la vista ---------- */
@@ -4049,12 +4088,14 @@ document.addEventListener("input",e=>{const t=e.target;
   else if(t.id==="agBusq"){agBusq=t.value;const l=$("agLista");if(l)l.innerHTML=agListaHTML()}
   else if(t.id==="cpCorreo"||t.id==="cpTel"){const f=$("crmPForm"),d=crmDuplicado($("cpCorreo").value,$("cpTel").value,f&&f.dataset.pid),m=$("cpDup");if(m){m.hidden=!d;if(d)m.innerHTML=`⚠︎ Ya existe <b>${esc(d.nombre)}</b> con ese ${String(d.correo||"").toLowerCase()===$("cpCorreo").value.trim().toLowerCase()&&d.correo?"correo":"teléfono"}. <button type="button" class="linkbtn" data-crmabrir="${esc(d.id)}">Abrir su perfil</button>`}}});
 document.addEventListener("change",async e=>{const t=e.target;if(!t.dataset)return;
+  if(t.name==="crModo"){const l=t.value==="ligar";document.querySelectorAll("#crmRecForm .crnuevo").forEach(x=>x.hidden=l);document.querySelectorAll("#crmRecForm .crligar").forEach(x=>x.hidden=!l);return}
+  if(t.id==="cdEstado"){const w=$("cdAreaW");if(w)w.hidden=t.value!=="recibida";return}
   if(t.dataset.crmresp){crmResp=t.value;render();return}
   if(t.id==="crmOccSel"){crmOcc=t.value;listaBusq="";agBusq="";render();return}
   if(t.dataset.crmestado){const p=crmP.find(x=>x.id===t.dataset.crmestado);if(!p||p.estado===t.value)return;const antes=p.estado;
     if(await crmUpd("crm_personas",crmP,p.id,{estado:t.value})){const s=await crmIns("crm_seguimientos",{persona:p.id,medio:"sistema",responsable:perfil&&perfil.id,resumen:`Estado: ${crmEstado(antes)[1]} → ${crmEstado(t.value)[1]}`,estado:t.value});crmAdd(crmS,s);render()}return}
   if(t.dataset.crmrespp){const p=crmP.find(x=>x.id===t.dataset.crmrespp);if(!p)return;await crmUpd("crm_personas",crmP,p.id,{responsable:t.value||null});toast(t.value?`Ahora ${primerN(nombreDe(t.value))} le da seguimiento.`:"Sin responsable.");return}});
-document.addEventListener("click",async e=>{const b=e.target.closest("[data-crmview],[data-crmabrir],[data-crmvolver],[data-crmnueva],[data-crmcancelar],[data-crmest],[data-crmcsv],[data-crminfo],[data-crmborrar],[data-crmdon],[data-crmdonest],[data-crmocc],[data-crmasis],[data-crmagregar],[data-crmcerrar],[data-crmcopiar],[data-crmrecordar],[data-crminvitar],[data-crmprueba],[data-crmbol],[data-crmprevia],[data-crmbolprueba],[data-crmbolenviar]");if(!b||!sb)return;const ds=b.dataset;
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-crmview],[data-crmabrir],[data-crmvolver],[data-crmnueva],[data-crmcancelar],[data-crmest],[data-crmcsv],[data-crminfo],[data-crmborrar],[data-crmdon],[data-crmdonest],[data-crmrecibir],[data-crmverfin],[data-crmocc],[data-crmasis],[data-crmagregar],[data-crmcerrar],[data-crmcopiar],[data-crmrecordar],[data-crminvitar],[data-crmprueba],[data-crmbol],[data-crmprevia],[data-crmbolprueba],[data-crmbolenviar]");if(!b||!sb)return;const ds=b.dataset;
   if(ds.crmview){crmView=ds.crmview;crmSel=null;render();return}
   if(ds.crmabrir){crmSel=ds.crmabrir;crmInfo=false;crmDonNueva=false;crmNueva=false;if(route!=="operativo"||areaView.operativo!=="crm"){areaView.operativo="crm";location.hash="operativo"}render();window.scrollTo(0,0);return}
   if(ds.crmvolver){crmSel=null;render();return}
@@ -4068,8 +4109,9 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-crmv
     const {error}=await sb.from("crm_personas").delete().eq("id",p.id);if(error){toast("No se pudo borrar: "+error.message);return}
     crmP=crmP.filter(x=>x.id!==p.id);crmSel=null;render();toast("Persona borrada.");return}
   if(ds.crmdon!==undefined){crmDonNueva=ds.crmdon!=="0";render();return}
-  if(ds.crmdonest){const [id,est]=ds.crmdonest.split("|");await crmUpd("crm_donaciones",crmD,id,{estado:est});
-    const d=crmD.find(x=>x.id===id);if(d&&est==="recibida"){const p=crmP.find(x=>x.id===d.persona);if(p&&!p.donador){p.donador=true;render()}}toast(est==="recibida"?"Donación recibida. 💛":est==="cancelada"?"Donación cancelada.":"Donación reabierta.");return}
+  if(ds.crmdonest){const [id,est]=ds.crmdonest.split("|");await crmUpd("crm_donaciones",crmD,id,{estado:est});toast(est==="cancelada"?"Donación cancelada.":"Donación reabierta.");return}
+  if(ds.crmrecibir!==undefined){crmRecibir=ds.crmrecibir||null;render();return}
+  if(ds.crmverfin){finView="mes";const m=fromKey(ds.crmverfin);anchor=new Date(m.getFullYear(),m.getMonth(),1);location.hash="finanzas";return}
   if(ds.crmocc){crmOcc=ds.crmocc;crmView="lista";crmSel=null;render();return}
   if(ds.crmasis){const [id,est]=ds.crmasis.split("|"),a=crmA.find(x=>x.id===id);if(!a)return;const nuevo=a.estado===est?"registrado":est;  // tocar otra vez el mismo botón lo regresa a «Registrado»
    
@@ -4101,8 +4143,15 @@ document.addEventListener("submit",async e=>{const f=e.target;if(!sb)return;
     const s=await crmIns("crm_seguimientos",{persona:p.id,medio,responsable:perfil&&perfil.id,resumen,interes:$("csInteres").value.trim(),proxima_accion:accion,proxima_fecha:fecha,estado:estado!==p.estado?estado:null});if(!s)return;crmAdd(crmS,s);
     await crmUpd("crm_personas",crmP,p.id,{estado,proxima_accion:accion,proxima_fecha:fecha,...(p.responsable?{}:{responsable:perfil&&perfil.id})});toast(fecha?`Guardado. Te lo recordamos el ${shortDate(fecha)}.`:"Conversación guardada.");return}
   if(f.id==="crmDonForm"){e.preventDefault();const monto=Number($("cdMonto").value);if(!(monto>0)){toast("Escribe la cantidad.");return}
-    const r=await crmIns("crm_donaciones",{persona:f.dataset.pid,monto,fecha:$("cdFecha").value,estado:$("cdEstado").value,tipo:$("cdTipo").value,metodo:$("cdMetodo").value.trim(),destino:$("cdDestino").value.trim(),evento:$("cdEvento").value,comprobante:$("cdComp").value.trim(),creado_por:perfil&&perfil.id});
-    if(r){crmAdd(crmD,r);if(r.estado==="recibida"){const p=crmP.find(x=>x.id===r.persona);if(p)p.donador=true}crmDonNueva=false;render();toast("Donación registrada.")}return}
+    const p=crmP.find(x=>x.id===f.dataset.pid),rec=$("cdEstado").value==="recibida";let ing=null;
+    if(rec){if(!puedeFin()){toast("Solo Finanzas registra lo recibido.");return}ing=await crearIngresoDon({destino:$("cdDestino").value.trim(),comprobante:$("cdComp").value.trim()},p,{monto,fecha:$("cdFecha").value,area:$("cdArea").value});if(!ing)return}
+    const r=await crmIns("crm_donaciones",{persona:f.dataset.pid,monto,fecha:$("cdFecha").value,estado:$("cdEstado").value,ingreso:ing?ing.id:null,tipo:$("cdTipo").value,metodo:$("cdMetodo").value.trim(),destino:$("cdDestino").value.trim(),evento:$("cdEvento").value,comprobante:$("cdComp").value.trim(),creado_por:perfil&&perfil.id});
+    if(r){crmAdd(crmD,r);if(r.estado==="recibida"){const p=crmP.find(x=>x.id===r.persona);if(p)p.donador=true}crmDonNueva=false;render();toast(rec?"Donación registrada y sumada a los ingresos de Finanzas. 💛":"Donación comprometida registrada.")}return}
+  if(f.id==="crmRecForm"){e.preventDefault();const d=crmD.find(x=>x.id===f.dataset.did),p=d&&crmP.find(x=>x.id===d.persona);if(!d||!p)return;const btn=f.querySelector("[type=submit]");btn.disabled=true;
+    let iid=null;if((f.querySelector('input[name="crModo"]:checked')||{}).value==="ligar")iid=$("crIngreso").value;
+    else{const monto=Number($("crMonto").value);if(!(monto>0)){toast("Escribe el monto.");btn.disabled=false;return}const i=await crearIngresoDon(d,p,{monto,fecha:$("crFecha").value,area:$("crArea").value});if(!i){btn.disabled=false;return}iid=i.id}
+    if(!iid){btn.disabled=false;return}crmRecibir=null;
+    if(await crmUpd("crm_donaciones",crmD,d.id,{estado:"recibida",ingreso:iid})){p.donador=true;render();toast("Donación recibida y ligada a Finanzas. 💛")}return}
   if(f.id==="crmPuertaForm"){e.preventDefault();if(!crmOcc)return;const [ev,fe]=crmOcc.split("|"),nombre=$("ptNombre").value.trim();if(nombre.length<2){toast("Escribe el nombre.");return}
     const btn=f.querySelector("button[type=submit]");btn.disabled=true;
     const {data,error}=await sb.rpc("crm_puerta",{ev,f:fe,nombre,telefono:$("ptTel").value.trim(),correo:$("ptCorreo").value.trim(),nacimiento:$("ptNac").value||null});btn.disabled=false;
