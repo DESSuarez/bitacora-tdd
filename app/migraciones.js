@@ -29,5 +29,6 @@ window.MIGRACIONES = [
   { n: "026_trivia_y_sugerencias", resumen: "trivia del día, sugerencias y registro de scripts corridos" },
   { n: "027_personas_y_eventos", resumen: "Operativo → Personas: asistentes, seguimiento, donaciones, registro público y correos" },
   { n: "028_donaciones_finanzas_y_adjuntos", resumen: "donaciones recibidas ligadas a Finanzas y archivos en Sugerencias" },
-  { n: "029_registro_rapido", resumen: "«Ya he ido a un cenáculo»: registro con nombre y teléfono" }
+  { n: "029_registro_rapido", resumen: "«Ya he ido a un cenáculo»: registro con nombre y teléfono" },
+  { n: "030_como_se_entero", resumen: "«¿Cómo te enteraste?» y quién invitó, con nombres unificados" }
 ];

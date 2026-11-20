@@ -59,6 +59,7 @@ h2{margin:0;font-family:var(--display);font-weight:900;font-size:22px;font-stret
 .trampa{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 @media (max-width:600px){.fields{grid-template-columns:1fr}.sec{padding:18px 16px}}
 .btns{display:flex;gap:10px;flex-wrap:wrap}
+.medios{display:flex;flex-wrap:wrap;gap:8px}.chipm{border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:9px 16px;font-weight:700;font-size:14.5px}.chipm[aria-pressed="true"]{border-color:var(--sol);box-shadow:inset 0 0 0 2px var(--sol)}
 .modos{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media (max-width:480px){.modos{grid-template-columns:1fr}}
 .btn{height:52px;border:0;border-radius:12px;padding:0 26px;font-family:var(--display);font-weight:900;font-size:17px;background:var(--flame);color:#fff}
 .btn.ghost{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--line)}
@@ -124,6 +125,7 @@ async function personal(t,ev,f,r){
 
 /* ---------- Formulario abierto ---------- */
 const KEY="tdd-registro";
+const MEDIOS=[["invitacion","🤝 Me invitó alguien"],["instagram","Instagram"],["facebook","Facebook"],["tiktok","TikTok"],["whatsapp","WhatsApp"],["correo","Correo"],["parroquia","Mi parroquia o grupo"],["otro","Otro"]];
 function guardado(){try{return JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){return null}}
 async function formulario(){
   const {data,error}=await sb.rpc("registro_eventos");
@@ -139,6 +141,10 @@ async function formulario(){
   const g=guardado();
   app.innerHTML=`<section class="sec"><h2>¿A cuál vienes?</h2><div class="ops" id="ops">${ops.map((o,i)=>`<button type="button" class="op" data-i="${i}" aria-pressed="${o===sel}"><b>${esc(o.ev.titulo)}</b><span>${esc(larga(o.fecha))}${o.ev.hora?" · "+esc(hora12(o.ev.hora)):""}</span>${o.ev.lugar?`<span>${esc(o.ev.lugar)}</span>`:""}</button>`).join("")}</div></section>
   <section class="sec"><h2>¿Ya has venido antes?</h2><div class="modos" role="radiogroup" aria-label="¿Ya has venido antes?"><button type="button" class="op modo" data-modo="nuevo" aria-pressed="true"><b>Es mi primera vez</b><span>Te pedimos tus datos</span></button><button type="button" class="op modo" data-modo="ya" aria-pressed="false"><b>Ya he ido a un cenáculo</b><span>Busca tu nombre y listo</span></button></div></section>
+  <section class="sec" id="medioSec"><h2>¿Cómo te enteraste?</h2>
+    <div class="medios" role="radiogroup" aria-label="¿Cómo te enteraste?">${MEDIOS.map(([k,n])=>`<button type="button" class="chipm" data-medio="${k}" aria-pressed="false">${n}</button>`).join("")}</div>
+    <div class="f" id="quienW" hidden><label for="quien">¿Quién te invitó?</label><input class="in" id="quien" list="quienes" maxlength="120" autocomplete="off" placeholder="Nombre y apellido"><datalist id="quienes"></datalist></div>
+    <div class="f" id="otroW" hidden><label for="otro">¿Cuál?</label><input class="in" id="otro" maxlength="120" autocomplete="off"></div></section>
   <section class="sec" id="ya" hidden><h2>Busca tu nombre</h2>
     <div class="f"><label for="busca">Tu nombre o apellido</label><input class="in" id="busca" autocomplete="off" placeholder="Escribe al menos 3 letras"></div>
     <div class="ops" id="encontrados"></div>
@@ -158,6 +164,16 @@ async function formulario(){
     <button class="btn" type="submit" id="enviar">Registrarme</button>
     <p style="margin:0;font-size:13px;color:var(--muted)">Usamos tus datos solo para los eventos y la comunidad de Tiempo de Dios. No los compartimos con nadie.</p>
   </form>`;
+  // ¿Cómo te enteraste? (obligatorio en los dos caminos)
+  let medio="",invT=0;
+  app.querySelectorAll("[data-medio]").forEach(b=>b.onclick=()=>{medio=b.dataset.medio;app.querySelectorAll("[data-medio]").forEach(x=>x.setAttribute("aria-pressed",x===b));
+    $("quienW").hidden=medio!=="invitacion";$("otroW").hidden=medio!=="otro";if(medio==="invitacion")$("quien").focus();if(medio==="otro")$("otro").focus()});
+  $("quien").oninput=()=>{clearTimeout(invT);const q=$("quien").value.trim();if(q.length<3)return;
+    invT=setTimeout(async()=>{const {data}=await sb.rpc("registro_invitan",{q});$("quienes").innerHTML=(data||[]).map(n=>`<option value="${esc(n)}">`).join("")},250)};
+  function medioElegido(){if(!medio)return {err:"Cuéntanos cómo te enteraste del evento."};
+    if(medio==="invitacion"){const q=$("quien").value.trim();if(q.length<3)return {err:"Escribe el nombre de quien te invitó."};return {medio,quien:q}}
+    if(medio==="otro"){const q=$("otro").value.trim();if(!q)return {err:"Cuéntanos por qué medio te enteraste."};return {medio,quien:q}}
+    return {medio,quien:""}}
   // «Ya he ido a un cenáculo»: buscar el nombre y confirmar con el teléfono o el correo
   let elegido=null,busT=0;
   app.querySelectorAll("[data-modo]").forEach(b=>b.onclick=()=>{const ya=b.dataset.modo==="ya";$("ya").hidden=!ya;$("f").hidden=ya;app.querySelectorAll(".modo").forEach(x=>x.setAttribute("aria-pressed",x.dataset.modo===b.dataset.modo));(ya?$("busca"):$("nombre")).focus()});
@@ -168,7 +184,8 @@ async function formulario(){
   $("fya").onsubmit=async e=>{e.preventDefault();const m=$("msgya");m.hidden=true;const dato=$("dato").value.trim();
     if(!elegido){m.textContent="Elige tu nombre de la lista.";m.hidden=false;return}
     if(dato.replace(/\D/g,"").length<10&&!/@/.test(dato)){m.textContent="Escribe tu teléfono a 10 dígitos o tu correo.";m.hidden=false;return}
-    $("enviarya").disabled=true;const {data:r,error}=await sb.rpc("registro_rapido",{p:elegido,dato,ev:sel.ev.id,f:sel.fecha});$("enviarya").disabled=false;
+    const md=medioElegido();if(md.err){m.textContent=md.err;m.hidden=false;$("medioSec").scrollIntoView({behavior:"smooth",block:"center"});return}
+    $("enviarya").disabled=true;const {data:r,error}=await sb.rpc("registro_rapido",{p:elegido,dato,ev:sel.ev.id,f:sel.fecha,medio:md.medio,quien:md.quien});$("enviarya").disabled=false;
     if(error){m.textContent=errTxt(error);m.hidden=false;return}listo(r&&r.nombre||"")};
   function listo(nombre){titulo(`¡Nos vemos${nombre?`, <em>${esc(nombre)}</em>`:""}!`,"");
     app.innerHTML=`<div class="done"><h2>Ya estás registrado.</h2><p class="cuando">${esc(sel.ev.titulo)} · ${esc(larga(sel.fecha))}${sel.ev.hora?" · "+esc(hora12(sel.ev.hora)):""}${sel.ev.lugar?" · "+esc(sel.ev.lugar):""}</p><p>¡Te esperamos!</p></div>`;window.scrollTo(0,0)}
@@ -178,9 +195,10 @@ async function formulario(){
     if($("web").value)return;  // bot
     const nombre=$("nombre").value.trim(),tel=$("tel").value.trim(),correo=$("correo").value.trim(),nac=$("nac").value;
     const falta=nombre.length<2?"Escribe tu nombre.":tel.replace(/\D/g,"").length<10?"Escribe tu teléfono a 10 dígitos.":!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(correo)?"Revisa tu correo.":!nac?"Escribe tu fecha de nacimiento.":"";
+    const md=medioElegido();if(!falta&&md.err){m.textContent=md.err;m.hidden=false;$("medioSec").scrollIntoView({behavior:"smooth",block:"center"});return}
     if(falta){m.textContent=falta;m.hidden=false;return}
     $("enviar").disabled=true;$("enviar").textContent="Registrando…";
-    const {data:r,error}=await sb.rpc("registro_evento",{ev:sel.ev.id,f:sel.fecha,nombre,telefono:tel,correo,nacimiento:nac,acepta:$("acepta").checked});
+    const {data:r,error}=await sb.rpc("registro_evento",{ev:sel.ev.id,f:sel.fecha,nombre,telefono:tel,correo,nacimiento:nac,acepta:$("acepta").checked,medio:md.medio,quien:md.quien});
     if(error){m.textContent=errTxt(error);m.hidden=false;$("enviar").disabled=false;$("enviar").textContent="Registrarme";return}
     try{localStorage.setItem(KEY,JSON.stringify({nombre,tel,correo,nac}))}catch(e){}
     listo(nombre.split(" ")[0])}}

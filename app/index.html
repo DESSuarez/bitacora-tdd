@@ -217,12 +217,14 @@ a{color:var(--area-ink)}
 .areatag{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;background:var(--area);color:var(--on-area);font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px 4px 8px;border-radius:6px;line-height:1.2}
 .areatag svg{width:14px;height:14px;flex:none}
 .titleblock{display:flex;flex-direction:column;gap:10px}
-.titlerow{display:flex;align-items:stretch;gap:8px}
-.titlerow .areatag{align-self:stretch}
-/* Atrás / Adelante: mismo alto que la etiqueta del área, sin borde para que no se vea más grande */
-.histnav{display:inline-flex;gap:2px;background:rgba(255,255,255,.08);border-radius:6px;padding:0;overflow:hidden}
-.histbtn{width:26px;height:auto;border:0;border-radius:0;background:transparent;color:#fff;display:grid;place-items:center;padding:0;cursor:pointer;transition:background .15s,color .15s}
-.histbtn svg{width:14px;height:14px}
+.titlerow{display:flex;align-items:stretch;gap:8px;min-height:34px}
+.titlerow .areatag{align-self:stretch;padding:0 14px 0 11px;font-size:13px}
+.titlerow .areatag svg{width:16px;height:16px}
+/* Atrás / Adelante: mismo alto que la etiqueta del área (34 px; 40 px en celular, para el dedo) */
+.histnav{display:inline-flex;gap:2px;background:rgba(255,255,255,.08);border-radius:8px;padding:0;overflow:hidden}
+.histbtn{width:38px;height:auto;border:0;border-radius:0;background:transparent;color:#fff;display:grid;place-items:center;padding:0;cursor:pointer;transition:background .15s,color .15s}
+.histbtn svg{width:18px;height:18px}
+@media (max-width:900px){.titlerow{min-height:40px}.histbtn{width:44px}.histbtn svg{width:20px;height:20px}}
 .histbtn:hover:not(:disabled){background:var(--area);color:var(--on-area)}
 .histbtn:disabled{opacity:.3;cursor:default}
 h1{font-family:var(--display);font-weight:900;font-stretch:112%;font-size:clamp(30px,6vw,48px);line-height:1;letter-spacing:-.02em;margin:0;text-wrap:balance}
@@ -1102,12 +1104,14 @@ button.cmore:hover{color:var(--fg)}
 .pvino[aria-pressed="true"]{background:#1DB954;color:#fff}
 .pnovino[aria-pressed="true"]{background:var(--flame);color:#fff;border-color:var(--flame)}
 .agf{display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--surface);border-radius:10px;padding:8px 12px}.agf span{display:flex;flex-direction:column;min-width:0}.agf small{font-size:12.5px;color:var(--muted)}
-#crmPuertaForm .field{height:42px}.crmmini{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--muted)}
+#crmPuertaForm .field{height:44px}.crmduo{display:grid;grid-template-columns:3fr 2fr;gap:14px;align-items:start}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}.pgrid label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--muted);min-width:0}.pgrid .pc2{grid-column:1/-1}.pgrid .btn{margin-top:4px}
+.crmmedios{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13.5px}.crmmini{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--muted)}
 .crmcanales{display:grid;grid-template-columns:1fr 1fr;gap:10px}.crmcanales>div{border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}.crmcanales>div.ok{border-color:#1DB954}.crmcanales span{font-size:13.5px;color:var(--muted)}
 .crmcad{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}.crmcad li{background:var(--surface);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}.crmcad b{font-family:var(--display);font-size:14.5px}.crmcad span{font-size:13px;color:var(--muted)}
 .crmprevia iframe{width:100%;height:520px;border:1.5px solid var(--line);border-radius:12px;background:#F4F7F7}
 .evreg{display:flex;flex-direction:column;gap:6px;background:var(--surface);border-radius:10px;padding:10px 12px}.evreg label{flex-direction:row!important;align-items:center;gap:8px!important;font-weight:600!important}.evreg input{width:18px;height:18px;accent-color:var(--area)}
-@media (max-width:760px){.crmkpi{grid-template-columns:1fr 1fr}.crmres{grid-template-columns:1fr 1fr}.crmdl{grid-template-columns:1fr 1fr}.crmcanales{grid-template-columns:1fr}.crmsegrow{grid-template-columns:1fr}.crmgrid{grid-template-columns:1fr}}
+@media (max-width:760px){.crmduo,.pgrid{grid-template-columns:1fr}.crmkpi{grid-template-columns:1fr 1fr}.crmres{grid-template-columns:1fr 1fr}.crmdl{grid-template-columns:1fr 1fr}.crmcanales{grid-template-columns:1fr}.crmsegrow{grid-template-columns:1fr}.crmgrid{grid-template-columns:1fr}}
 @media (max-width:520px){.pfila{grid-template-columns:minmax(0,1fr) auto}.pfila .pbtns{grid-column:1/-1}.pfila .pbtns .btn{flex:1}.cm{max-width:120px}.crow{grid-template-columns:auto minmax(0,1fr)}.crow .cm{grid-column:2;align-items:flex-start;max-width:none}}
 /* Entradas de formación */
 .eliga{display:flex;flex-wrap:wrap;gap:24px 16px;align-items:center;justify-content:space-between;background:var(--area-soft);border-radius:16px;padding:18px 20px}
@@ -3798,6 +3802,9 @@ function ingresoDe(d){return d&&d.ingreso?ingresosF.find(i=>i.id===d.ingreso)||n
 function montoDon(d){const i=ingresoDe(d);return Number(i?i.monto:d.monto)||0}
 function recibidoDe(l){return l.filter(d=>d.estado==="recibida").reduce((s,d)=>s+montoDon(d),0)}
 let crmRecibir=null;
+const MEDIOS_EV=[["invitacion","🤝 Lo invitó alguien"],["instagram","Instagram"],["facebook","Facebook"],["tiktok","TikTok"],["whatsapp","WhatsApp"],["correo","Correo"],["parroquia","Su parroquia o grupo"],["otro","Otro"]];
+function medioTxt(a){if(!a||!a.medio)return "";const r=a.referido&&crmR.find(x=>x.id===a.referido);return a.medio==="invitacion"?`lo invitó ${r?r.nombre:"alguien"}`:a.medio==="otro"?(a.medio_otro||"otro medio"):(MEDIOS_EV.find(m=>m[0]===a.medio)||[,a.medio])[1].replace(/^\S+ /,"")}
+let crmR=[];
 const CRM_VISTAS=[["resumen","Resumen"],["personas","Personas"],["lista","Pase de lista"],["correos","Correos y WhatsApp"]];
 let crmP=[],crmA=[],crmS=[],crmD=[],crmM=[],crmB=[],crmCh=null,crmErr="",loadedCrm=false,crmView="resumen",crmSel=null,crmBusq="",crmEst="todos",crmResp="todos",crmOcc=null,crmNueva=false,crmInfo=false,crmBol=null,crmPrevia=false,crmCon=null,crmDonNueva=false,listaBusq="",agBusq="";
 function puedeCrm(){return canEdit("operativo")}
@@ -3808,7 +3815,8 @@ function cargarCrm(){if(crmCh||!sb||!puedeCrm())return;
     const r=await Promise.all(tablas.map(([t])=>q(t)));const e=r.find(x=>x.error);
     crmErr=e?(/crm_|PGRST205|42P01/.test((e.error.message||"")+(e.error.code||""))?"Falta correr la migración 027 en Supabase para usar Personas.":"No se pudieron leer las personas: "+e.error.message):"";
     if(!e)r.forEach((x,i)=>tablas[i][2](x.data||[]));loadedCrm=true;renderKeep()};
-  crmCh=sb.channel("rt-crm");
+  const loadR=async()=>{const {data,error}=await sb.from("crm_referidos").select("*").order("veces",{ascending:false}).limit(5000);if(!error){crmR=data||[];renderKeep()}};
+  crmCh=sb.channel("rt-crm");crmCh.on("postgres_changes",{event:"*",schema:"public",table:"crm_referidos"},()=>loadR());setTimeout(loadR,50);
   tablas.forEach(([t,get,set])=>crmCh.on("postgres_changes",{event:"*",schema:"public",table:t},p=>{let l=get();
     if(p.eventType==="DELETE")l=l.filter(x=>x.id!==(p.old&&p.old.id));else{const i=l.findIndex(x=>x.id===p.new.id);l=l.slice();if(i>=0)l[i]={...l[i],...p.new};else l.unshift(p.new)}
     set(l);renderKeep()}));
@@ -3888,6 +3896,7 @@ function crmResumen(){const h=key(new Date()),P=filtrarResp(crmP),ids=new Set(P.
     ${crmBloque("❔ Sin próxima acción",sinProx,"Todos tienen su siguiente paso.")}
     ${crmBloque("🎂 Cumpleaños esta semana",cumple,"Nadie cumple años en los próximos 7 días.",p=>{const d=diasACumple(p.nacimiento);return d===0?"¡Hoy!":`En ${d} día${d>1?"s":""} · ${cumpleTxt(p.nacimiento)}`})}
     ${verMontos()?`<div class="crmbox"><h3>💰 Donaciones comprometidas sin recibir <span class="count">${com.length}</span></h3>${com.length?`<ul class="clist">${com.slice(0,8).map(d=>{const p=crmP.find(x=>x.id===d.persona);return p?crmFila(p,`${dinero(d.monto)} · ${d.fecha<h?"desde el ":""}${shortDate(d.fecha)}`):""}).join("")}</ul>`:`<p class="none" style="margin:0">Nada pendiente.</p>`}</div>`:""}
+    <div class="crmbox"><h3>🤝 Quién invita más <span class="count">${crmR.length}</span></h3>${crmR.length?`<ul class="clist">${crmR.slice().sort((a,b)=>crmA.filter(x=>x.referido===b.id).length-crmA.filter(x=>x.referido===a.id).length).slice(0,8).map(r=>{const n=crmA.filter(x=>x.referido===r.id).length,v=Object.keys(r.variantes||{}).length;return `<li class="agf"><span><b>${esc(r.nombre)}</b><small>${n} invitado${n===1?"":"s"}${v>1?` · escrito de ${v} formas`:""}</small></span><button type="button" class="btn ghost sm" data-crmrefedit="${esc(r.id)}" title="Corregir cómo se escribe">✎</button></li>`}).join("")}</ul>`:`<p class="none" style="margin:0">Cuando alguien se registre diciendo quién lo invitó, aparecerá aquí.</p>`}</div>
     <div class="crmbox"><h3>📅 Próximas fechas</h3>${prox.length?`<ul class="clist">${prox.map(o=>{const n=crmA.filter(a=>a.evento===o.ev&&a.fecha===o.fecha&&a.estado!=="cancelo").length;return `<li><button type="button" class="crow" data-crmocc="${esc(o.ev)}|${o.fecha}"><span class="cav" style="--c:#B0413E">${fromKey(o.fecha).getDate()}</span><span class="cn"><b>${esc(evTitulo(o.ev))}</b><small>${esc(fechaLargaK(o.fecha))}${(evDe(o.ev)||{}).hora?" · "+esc(hora12(evDe(o.ev).hora)):""}</small></span><span class="cm"><span class="cpill" style="--c:#78C4D2">${n} registrado${n===1?"":"s"}</span></span></button></li>`}).join("")}</ul>`:`<p class="none" style="margin:0">No hay cenáculos ni eventos con registro. Agrégalos en el Dashboard con «+ Cenáculo».</p>`}</div>
   </div>`}
 
@@ -4013,17 +4022,24 @@ function crmPaseLista(){const os=crmOcurrencias(),h=key(new Date());
     <div class="rbtns"><button type="button" class="btn sm" data-crmcopiar="${esc(ligaRegistro(evId,ev.tipo==="cenaculo"?"":f))}">Copiar liga</button><a class="btn ghost sm" href="${esc(ligaRegistro(evId,f))}" target="_blank" rel="noopener noreferrer">Abrir ↗</a></div></div>
   <div class="ctot crmkpi"><div><b>${L.filter(a=>a.estado!=="cancelo").length}</b><span>registrados</span></div><div><b>${cnt("confirmo")}</b><span>confirmaron</span></div><div><b>${cnt("asistio")}</b><span>vinieron${L.filter(a=>a.origen==="puerta").length?` · ${L.filter(a=>a.origen==="puerta").length} en la puerta`:""}</span></div><div><b>${cnt("no_asistio")+cnt("cancelo")}</b><span>no vinieron o cancelaron</span></div></div>
   ${fut&&dias<=7&&pend.length?`<div class="crmbox"><h3>💬 Recordatorio para confirmar</h3><p class="fsub" style="margin:0 0 8px">${crmCon&&crmCon.whatsapp?`El recordatorio sale solo 2 días antes. Si quieres mandarlo ya a los ${pend.length} que no han confirmado:`:`WhatsApp todavía no está conectado: usa el botón 💬 de cada persona (abre el chat con el mensaje y su liga para confirmar).`}</p>${crmCon&&crmCon.whatsapp?`<button type="button" class="btn sm" data-crmrecordar="${esc(crmOcc)}">Mandar recordatorio a ${pend.length}</button>`:""}</div>`:""}
+  ${(()=>{const c={};L.filter(a=>a.medio).forEach(a=>{const k=a.medio==="invitacion"?"invitacion":a.medio;c[k]=(c[k]||0)+1});const e=Object.entries(c).sort((x,y)=>y[1]-x[1]);return e.length?`<div class="crmmedios"><b>Cómo se enteraron:</b> ${e.map(([k,n])=>`<span class="cpill" style="--c:#78C4D2">${esc((MEDIOS_EV.find(m=>m[0]===k)||[,k])[1])} · ${n}</span>`).join("")}</div>`:""})()}
   <div class="crmbusca"><input class="field" id="listaBusq" type="search" placeholder="Buscar en la lista" value="${esc(listaBusq)}" autocomplete="off"></div>
   <ul class="clist plista" id="paseLista">${filas.length?filas.map(({a,p})=>paseFila(a,p,ev,f,fut)).join(""):`<li class="empty"><strong>Nadie en la lista todavía</strong><p>${fut?"Comparte la liga de registro.":"Agrega a quien vino con «Alta en la puerta»."}</p></li>`}</ul>
   ${!fut&&pend.length?`<p><button type="button" class="btn ghost sm" data-crmcerrar="${esc(crmOcc)}">Marcar «No vino» a los ${pend.length} que no se marcaron</button></p>`:""}
-  <div class="crmgrid">
+  <div class="crmduo">
     <form class="crmbox" id="crmPuertaForm" autocomplete="off"><h3>🚪 Alta en la puerta</h3><p class="fsub" style="margin:0">Para quien llega sin registrarse: queda en la base y marcado como «Vino».</p>
-      <input class="field" id="ptNombre" maxlength="120" required placeholder="Nombre completo"><input class="field" id="ptTel" type="tel" maxlength="40" required placeholder="Teléfono (10 dígitos)"><input class="field" id="ptCorreo" type="email" maxlength="160" required placeholder="Correo"><label class="crmmini">Cumpleaños<input class="field" id="ptNac" type="date" required max="${h}"></label>
-      <button class="btn" type="submit">Agregar y marcar «Vino»</button></form>
+      <div class="pgrid">
+        <label class="pc2">Nombre completo<input class="field" id="ptNombre" maxlength="120" required></label>
+        <label>Teléfono<input class="field" id="ptTel" type="tel" maxlength="40" required placeholder="10 dígitos"></label>
+        <label>Correo<input class="field" id="ptCorreo" type="email" maxlength="160" required></label>
+        <label>Cumpleaños<input class="field" id="ptNac" type="date" required max="${h}"></label>
+        <label>¿Cómo se enteró?<select class="field" id="ptMedio" required><option value="">Elige…</option>${MEDIOS_EV.map(([k,n])=>`<option value="${k}">${esc(n)}</option>`).join("")}</select></label>
+        <label class="pc2" id="ptQuienW" hidden><span id="ptQuienL">¿Quién lo invitó?</span><input class="field" id="ptQuien" maxlength="120" list="ptQuienes" autocomplete="off"><datalist id="ptQuienes">${crmR.map(r=>`<option value="${esc(r.nombre)}">`).join("")}</datalist></label>
+        <button class="btn pc2" type="submit">Agregar y marcar «Vino»</button></div></form>
     <div class="crmbox"><h3>➕ Agregar a alguien de la base</h3><input class="field" id="agBusq" type="search" placeholder="Escribe un nombre" value="${esc(agBusq)}" autocomplete="off"><ul class="clist" id="agLista">${agListaHTML()}</ul></div>
   </div>`}
 function paseFila(a,p,ev,f,fut){const st=a.estado,wa=fut&&["registrado","invitado","confirmo"].includes(st)?waLiga(p.telefono,`Hola ${primerN(p.nombre)} 👋 Te esperamos en ${ev.titulo||"el evento"} el ${fechaLargaK(f).toLowerCase()}${ev.hora?" a las "+hora12(ev.hora):""}. ¿Nos confirmas si vienes? Aquí puedes responder: ${ligaPersonal(p,a.evento,f,"si")}`):"";
-  return `<li class="pfila" data-nombre="${esc(normTxt(p.nombre))}"><button type="button" class="pn" data-crmabrir="${esc(p.id)}"><b>${esc(p.nombre)}${a.origen==="puerta"?' <span class="pnew" title="Se dio de alta en la puerta">nuevo</span>':""}${p.donador?" 💛":""}</b><small>${esc(p.telefono||p.correo||"")}</small></button>${asisPill(st)}
+  return `<li class="pfila" data-nombre="${esc(normTxt(p.nombre))}"><button type="button" class="pn" data-crmabrir="${esc(p.id)}"><b>${esc(p.nombre)}${a.origen==="puerta"?' <span class="pnew" title="Se dio de alta en la puerta">nuevo</span>':""}${p.donador?" 💛":""}</b><small>${esc(p.telefono||p.correo||"")}${a.medio?` · ${a.medio==="invitacion"?"":"vía "}${esc(medioTxt(a))}`:""}</small></button>${asisPill(st)}
     <span class="pbtns">${wa?`<a class="btn ghost sm" href="${esc(wa)}" target="_blank" rel="noopener noreferrer" title="Mandar recordatorio por WhatsApp">💬</a>`:""}<button type="button" class="btn sm pvino" data-crmasis="${esc(a.id)}|asistio" aria-pressed="${st==="asistio"}">✓ Vino</button><button type="button" class="btn ghost sm pnovino" data-crmasis="${esc(a.id)}|no_asistio" aria-pressed="${st==="no_asistio"}">✗ No vino</button></span></li>`}
 function agListaHTML(){const q=normTxt(agBusq.trim());if(q.length<2||!crmOcc)return "";const [evId,f]=crmOcc.split("|"),ya=new Set(crmA.filter(a=>a.evento===evId&&a.fecha===f).map(a=>a.persona));
   const l=crmP.filter(p=>!ya.has(p.id)&&normTxt(p.nombre+" "+p.correo).includes(q)).slice(0,6);
@@ -4097,11 +4113,12 @@ document.addEventListener("change",async e=>{const t=e.target;if(!t.dataset)retu
   if(t.name==="crModo"){const l=t.value==="ligar";document.querySelectorAll("#crmRecForm .crnuevo").forEach(x=>x.hidden=l);document.querySelectorAll("#crmRecForm .crligar").forEach(x=>x.hidden=!l);return}
   if(t.id==="cdEstado"){const w=$("cdAreaW");if(w)w.hidden=t.value!=="recibida";return}
   if(t.dataset.crmresp){crmResp=t.value;render();return}
+  if(t.id==="ptMedio"){const v=t.value;$("ptQuienW").hidden=!["invitacion","otro"].includes(v);$("ptQuienL").textContent=v==="otro"?"¿Cuál?":"¿Quién lo invitó?";$("ptQuien").setAttribute("list",v==="invitacion"?"ptQuienes":"");return}
   if(t.id==="crmOccSel"){crmOcc=t.value;listaBusq="";agBusq="";render();return}
   if(t.dataset.crmestado){const p=crmP.find(x=>x.id===t.dataset.crmestado);if(!p||p.estado===t.value)return;const antes=p.estado;
     if(await crmUpd("crm_personas",crmP,p.id,{estado:t.value})){const s=await crmIns("crm_seguimientos",{persona:p.id,medio:"sistema",responsable:perfil&&perfil.id,resumen:`Estado: ${crmEstado(antes)[1]} → ${crmEstado(t.value)[1]}`,estado:t.value});crmAdd(crmS,s);render()}return}
   if(t.dataset.crmrespp){const p=crmP.find(x=>x.id===t.dataset.crmrespp);if(!p)return;await crmUpd("crm_personas",crmP,p.id,{responsable:t.value||null});toast(t.value?`Ahora ${primerN(nombreDe(t.value))} le da seguimiento.`:"Sin responsable.");return}});
-document.addEventListener("click",async e=>{const b=e.target.closest("[data-crmview],[data-crmabrir],[data-crmvolver],[data-crmnueva],[data-crmcancelar],[data-crmest],[data-crmcsv],[data-crminfo],[data-crmborrar],[data-crmdon],[data-crmdonest],[data-crmrecibir],[data-crmverfin],[data-crmcenaculo],[data-crmcenedit],[data-crmocc],[data-crmasis],[data-crmagregar],[data-crmcerrar],[data-crmcopiar],[data-crmrecordar],[data-crminvitar],[data-crmprueba],[data-crmbol],[data-crmprevia],[data-crmbolprueba],[data-crmbolenviar]");if(!b||!sb)return;const ds=b.dataset;
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-crmview],[data-crmabrir],[data-crmvolver],[data-crmnueva],[data-crmcancelar],[data-crmest],[data-crmcsv],[data-crminfo],[data-crmborrar],[data-crmdon],[data-crmdonest],[data-crmrecibir],[data-crmverfin],[data-crmcenaculo],[data-crmcenedit],[data-crmrefedit],[data-crmocc],[data-crmasis],[data-crmagregar],[data-crmcerrar],[data-crmcopiar],[data-crmrecordar],[data-crminvitar],[data-crmprueba],[data-crmbol],[data-crmprevia],[data-crmbolprueba],[data-crmbolenviar]");if(!b||!sb)return;const ds=b.dataset;
   if(ds.crmview){crmView=ds.crmview;crmSel=null;render();return}
   if(ds.crmabrir){crmSel=ds.crmabrir;crmInfo=false;crmDonNueva=false;crmNueva=false;if(route!=="operativo"||areaView.operativo!=="crm"){areaView.operativo="crm";location.hash="operativo"}render();window.scrollTo(0,0);return}
   if(ds.crmvolver){crmSel=null;render();return}
@@ -4116,6 +4133,8 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-crmv
     crmP=crmP.filter(x=>x.id!==p.id);crmSel=null;render();toast("Persona borrada.");return}
   if(ds.crmdon!==undefined){crmDonNueva=ds.crmdon!=="0";render();return}
   if(ds.crmdonest){const [id,est]=ds.crmdonest.split("|");await crmUpd("crm_donaciones",crmD,id,{estado:est});toast(est==="cancelada"?"Donación cancelada.":"Donación reabierta.");return}
+  if(ds.crmrefedit){const r=crmR.find(x=>x.id===ds.crmrefedit);if(!r)return;const n=prompt(`Así se mostrará siempre (formas en que lo han escrito: ${Object.keys(r.variantes||{}).join(" · ")}):`,r.nombre);if(!n||n.trim().length<2||n.trim()===r.nombre)return;
+    const {error}=await sb.from("crm_referidos").update({nombre:n.trim().slice(0,120),fijo:true}).eq("id",r.id);if(error){toast("No se pudo guardar: "+error.message);return}r.nombre=n.trim();r.fijo=true;render();toast("Nombre corregido.");return}
   if(ds.crmcenaculo){abrirEvento(null,proximoDia(2),{tipo:"cenaculo",titulo:"Cenáculo",hora:"19:00",horaFin:"21:00",area:"general",repetir:"semanal",registro:true});return}
   if(ds.crmcenedit){const [id,f]=ds.crmcenedit.split("|");abrirEvento(id,f);return}
   if(ds.crmrecibir!==undefined){crmRecibir=ds.crmrecibir||null;render();return}
@@ -4161,14 +4180,14 @@ document.addEventListener("submit",async e=>{const f=e.target;if(!sb)return;
     if(!iid){btn.disabled=false;return}crmRecibir=null;
     if(await crmUpd("crm_donaciones",crmD,d.id,{estado:"recibida",ingreso:iid})){p.donador=true;render();toast("Donación recibida y ligada a Finanzas. 💛")}return}
   if(f.id==="crmPuertaForm"){e.preventDefault();if(!crmOcc)return;const [ev,fe]=crmOcc.split("|"),nombre=$("ptNombre").value.trim();
-    const falta=nombre.length<2?"Escribe el nombre.":$("ptTel").value.replace(/\D/g,"").length<10?"Escribe el teléfono a 10 dígitos.":!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($("ptCorreo").value.trim())?"Escribe un correo válido.":!$("ptNac").value?"Escribe la fecha de cumpleaños.":"";if(falta){toast(falta);return}
+    const falta=nombre.length<2?"Escribe el nombre.":$("ptTel").value.replace(/\D/g,"").length<10?"Escribe el teléfono a 10 dígitos.":!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($("ptCorreo").value.trim())?"Escribe un correo válido.":!$("ptNac").value?"Escribe la fecha de cumpleaños.":!$("ptMedio").value?"Elige cómo se enteró.":["invitacion","otro"].includes($("ptMedio").value)&&$("ptQuien").value.trim().length<2?($("ptMedio").value==="otro"?"Escribe por qué medio se enteró.":"Escribe quién lo invitó."):"";if(falta){toast(falta);return}
     const btn=f.querySelector("button[type=submit]");btn.disabled=true;
-    const {data,error}=await sb.rpc("crm_puerta",{ev,f:fe,nombre,telefono:$("ptTel").value.trim(),correo:$("ptCorreo").value.trim(),nacimiento:$("ptNac").value||null});btn.disabled=false;
+    const {data,error}=await sb.rpc("crm_puerta",{ev,f:fe,nombre,telefono:$("ptTel").value.trim(),correo:$("ptCorreo").value.trim(),nacimiento:$("ptNac").value||null,medio:$("ptMedio").value,quien:$("ptQuien").value.trim()});btn.disabled=false;
     if(error){toast("No se pudo: "+error.message);return}
     // si no llegó por tiempo real, se recarga lo de esa persona
     const [p,a]=await Promise.all([sb.from("crm_personas").select("*").eq("id",data).single(),sb.from("crm_asistencias").select("*").eq("persona",data).eq("evento",ev).eq("fecha",fe).single()]);
     if(p.data){const i=crmP.findIndex(x=>x.id===p.data.id);if(i>=0)crmP[i]=p.data;else crmP.unshift(p.data)}if(a.data){const i=crmA.findIndex(x=>x.id===a.data.id);if(i>=0)crmA[i]=a.data;else crmA.unshift(a.data)}
-    ["ptNombre","ptTel","ptCorreo","ptNac"].forEach(i=>$(i).value="");render();toast(`${primerN(nombre)} quedó en la lista. ✓`);setTimeout(()=>$("ptNombre")&&$("ptNombre").focus(),30);return}
+    ["ptNombre","ptTel","ptCorreo","ptNac","ptMedio","ptQuien"].forEach(i=>$(i).value="");render();toast(`${primerN(nombre)} quedó en la lista. ✓`);setTimeout(()=>$("ptNombre")&&$("ptNombre").focus(),30);return}
   if(f.id==="crmWaForm"){e.preventDefault();const texto=$("cwTexto").value.trim();if(!texto)return;const btn=f.querySelector("button[type=submit]");btn.disabled=true;
     const {data,error}=await sb.functions.invoke("crm",{body:{accion:"wa_texto",persona:f.dataset.pid,texto}});btn.disabled=false;
     if(error||!data||data.error){toast((data&&data.error)||"No se pudo enviar.");return}$("cwTexto").value="";toast("Mensaje enviado por WhatsApp.");return}

@@ -266,6 +266,7 @@ Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `
 | 019 | Activos |
 | 020 | Ligas limpias `/cancion/<ministerio>` |
 | 021 | Paso DistroKid (checklist de 24 pasos) |
+| **030** | «¿Cómo te enteraste?»: `crm_asistencias.medio`, `medio_otro` y `referido`; `crm_referidos` unifica a quien invita (sin importar mayúsculas, acentos ni pequeñas diferencias, con pg_trgm) y muestra la forma mejor escrita (`nombre_puntaje`); `registro_invitan(q)` para sugerir nombres; `registro_evento`, `registro_rapido` y `crm_puerta` reciben `medio` y `quien` |
 | **029** | Registro rápido: `registro_buscar(q)` (nombre + inicial, máx. 6) y `registro_rapido(p, dato, ev, f)` (confirma con teléfono o correo) |
 | **028** | `crm_donaciones.ingreso` (donación recibida = ingreso de Finanzas, sin duplicar) y archivos en Sugerencias (`sugerencias.archivos`, bucket privado `sugerencias`, 50 MB) |
 | **027** | Operativo → Personas: `crm_personas`, `crm_asistencias`, `crm_seguimientos`, `crm_donaciones`, `crm_mensajes`, `crm_boletines`; funciones públicas del registro; cron `bitacora-crm` que llama a la función `crm` |
@@ -295,6 +296,8 @@ Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `
 Formato: fecha · qué cambió · dónde.
 
 - **2026-11-20**
+  - **¿Cómo te enteraste?** En el registro y en el alta en la puerta (obligatorio). Si lo invitó alguien, se escribe el nombre con sugerencias, y las distintas formas de escribirlo se juntan en una sola persona con la forma más correcta («ricarDo Bañuelos Sanches» → «Ricardo Bañuelos Sánchez»). El pase de lista muestra cómo se enteraron y el Resumen, «Quién invita más», con ✎ para corregir el nombre (migración 030).
+  - **Alta en la puerta** reacomodada en dos columnas con etiquetas. Los botones ‹ › y la etiqueta del área miden 34 px (40 en celular).
   - **Registro a cenáculos:** opción «Ya he ido a un cenáculo»: busca su nombre y confirma con su teléfono o correo, sin volver a llenar datos (migración 029, `app/registro/`). Al terminar ya no dice lo del mensaje de 2 días antes.
   - **Pase de lista:** el alta en la puerta pide todos los campos. «📅 Cenáculos programados» deja a Operativo programar y editar cenáculos, que salen en el calendario general de todos (`agendaCenaculos`).
   - **Donaciones y Finanzas:** lo recibido ya no se registra dos veces: cada donación recibida se liga a su ingreso de Finanzas y toma de ahí el monto (migración 028, `index.html`: `formRecibir`).
