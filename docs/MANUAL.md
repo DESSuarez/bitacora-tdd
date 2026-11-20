@@ -307,6 +307,7 @@ Pestaña **Proyectos** en Formación, entre Logros y Entradas (`areaView.formaci
 Formato: fecha · qué cambió · dónde.
 
 - **2026-11-20**
+  - **Personas → Resumen:** las tarjetas de cada renglón tienen la misma altura.
   - **Personas:** la pestaña «Pase de lista» ahora se llama «Cenáculos».
   - **Formación → Proyectos:** planeación en 6 pasos (Charter, EDT con Pipeline, RACI, Gantt, Kanban con indicadores, Cierre), Gantt general, PDF, equipos guardados y eventos de proyecto en el calendario general y en la pestaña Mes. Integrado del paquete `modulo-proyectos-tdd` (`index.html`, migración 031).
   - **¿Cómo te enteraste?** En el registro y en el alta en la puerta (obligatorio). Si lo invitó alguien, se escribe el nombre con sugerencias, y las distintas formas de escribirlo se juntan en una sola persona con la forma más correcta («ricarDo Bañuelos Sanches» → «Ricardo Bañuelos Sánchez»). El pase de lista muestra cómo se enteraron y el Resumen, «Quién invita más», con ✎ para corregir el nombre (migración 030).
