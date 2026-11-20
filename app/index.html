@@ -217,6 +217,12 @@ a{color:var(--area-ink)}
 .areatag{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;background:var(--area);color:var(--on-area);font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px 4px 8px;border-radius:6px;line-height:1.2}
 .areatag svg{width:14px;height:14px;flex:none}
 .titleblock{display:flex;flex-direction:column;gap:10px}
+.titlerow{display:flex;align-items:center;gap:12px}
+.histnav{display:inline-flex;gap:4px;background:rgba(255,255,255,.06);border:1px solid #3A3D39;border-radius:999px;padding:3px}
+.histbtn{width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:#fff;display:grid;place-items:center;padding:0;cursor:pointer;transition:background .15s,color .15s}
+.histbtn svg{width:16px;height:16px}
+.histbtn:hover:not(:disabled){background:var(--area);color:var(--on-area)}
+.histbtn:disabled{opacity:.3;cursor:default}
 h1{font-family:var(--display);font-weight:900;font-stretch:112%;font-size:clamp(30px,6vw,48px);line-height:1;letter-spacing:-.02em;margin:0;text-wrap:balance}
 h1 em{font-style:normal;color:var(--area)}
 .weekrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
@@ -1261,7 +1267,7 @@ select:disabled{cursor:default;opacity:.7}
 <header class="band">
   <div class="wrap">
     <div class="mtop"><button type="button" class="hamb" id="sideOpen" aria-label="Abrir menú" aria-controls="side" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div class="brandrow"><span class="dots"><i style="background:#FF3D1A"></i><i style="background:#98D5E0"></i><i style="background:#457A7F"></i></span>Tiempo de Dios · Bitácora</div></div>
-    <div class="titleblock"><div class="areatag" id="areaTag">Formación</div><h1 id="h1">La semana <em>en orden</em></h1></div>
+    <div class="titleblock"><div class="titlerow"><div class="histnav" role="group" aria-label="Navegación"><button type="button" class="histbtn" id="navAtras" title="Atrás" aria-label="Atrás" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button><button type="button" class="histbtn" id="navAdelante" title="Adelante" aria-label="Adelante" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button></div><div class="areatag" id="areaTag">Formación</div></div><h1 id="h1">La semana <em>en orden</em></h1></div>
     <div class="weekrow">
       <div class="weeklabel" id="periodLabel">Semana</div>
       <div class="weeknav">
@@ -1773,7 +1779,7 @@ function restaurarForms(g){g.out.forEach(({id,campos})=>{const f=document.getEle
     if(el.type==="checkbox"||el.type==="radio"){el.checked=x.c;const l=el.closest("label.tchip");if(l)l.classList.toggle("on",x.c)}else el.value=x.v;
     if(el.id==="cnMinOtro"){el.hidden=x.h;el.required=!x.h}})});
   if(g.foco){const el=document.getElementById(g.foco);if(el&&document.activeElement!==el)try{el.focus({preventScroll:true})}catch(e){}}}
-function render(){const g=guardarForms();dibujar();restaurarForms(g)}
+function render(){const g=guardarForms();dibujar();restaurarForms(g);registrarNav()}
 function dibujar(){
   barrerPendientes();
   const isPM=route==="pm",D=route==="dashboard",F=route==="finanzas",SG=route==="sugerencias",DC=route==="documentos",P=route==="equipo"||route==="persona"||D||F||SG||DC,A=!isPM&&!P;
@@ -4110,6 +4116,20 @@ document.addEventListener("submit",async e=>{const f=e.target;if(!sb)return;
     if(error||!data||data.error){toast((data&&data.error)||"No se pudo enviar.");return}$("cwTexto").value="";toast("Mensaje enviado por WhatsApp.");return}
   if(f.id==="crmBolForm"){e.preventDefault();const id=await guardarBoletin();if(id){toast("Borrador guardado.");render()}return}});
 
+/* ---------- Atrás / Adelante dentro de la app ----------
+   Guarda cada pantalla que se visita (sección, pestaña y detalle abierto) y permite ir y volver entre ellas,
+   también entre pestañas de una misma área, que no cambian la dirección. */
+let navPila=[],navIdx=-1,navRestaurando=false;
+function fotoNav(){return {hash:location.hash||"#dashboard",areaView:{...areaView},pmView,finView,dashView,crmView,crmSel,cancionSel,entradaSel}}
+function registrarNav(){if(navRestaurando||!perfil)return;const f=fotoNav(),j=JSON.stringify(f);
+  if(navIdx>=0&&JSON.stringify(navPila[navIdx])===j){pintarNav();return}
+  navPila=navPila.slice(0,navIdx+1);navPila.push(f);if(navPila.length>60)navPila.shift();navIdx=navPila.length-1;pintarNav()}
+function pintarNav(){$("navAtras").disabled=navIdx<=0;$("navAdelante").disabled=navIdx>=navPila.length-1}
+function irNav(d){const i=navIdx+d;if(i<0||i>=navPila.length)return;const f=navPila[i];navIdx=i;navRestaurando=true;
+  Object.assign(areaView,f.areaView);pmView=f.pmView;finView=f.finView;dashView=f.dashView;crmView=f.crmView;crmSel=f.crmSel;cancionSel=f.cancionSel;entradaSel=f.entradaSel;
+  if(location.hash!==f.hash){history.replaceState(null,"",location.pathname+location.search+f.hash);readHash();if(f.hash==="#operativo/personas")areaView.operativo=f.areaView.operativo}
+  try{render()}finally{navRestaurando=false}pintarNav();window.scrollTo(0,0)}
+$("navAtras").onclick=()=>irNav(-1);$("navAdelante").onclick=()=>irNav(1);
 readHash();render();
 
 /* ---------- Conexión con Supabase ---------- */

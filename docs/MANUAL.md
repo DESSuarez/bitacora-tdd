@@ -290,6 +290,7 @@ Pestaña **Personas** en Operativo (`areaView.operativo = "crm"`, liga directa `
 Formato: fecha · qué cambió · dónde.
 
 - **2026-11-20**
+  - **Navegación:** botones ‹ › de atrás y adelante en la banda de todas las pantallas. Recuerdan sección, pestaña y detalle abierto, también entre pestañas de una misma área (`index.html`: `registrarNav`, `irNav`).
   - **Dashboard:** flechas ← → junto a Día/Semana/Mes/Año para moverse por el calendario, con «Hoy» para regresar (`index.html`: `calNav`).
   - **Personas:** el botón CSV es del mismo tamaño que «+ Persona».
   - **Operativo → Personas:** base de asistentes y donadores con perfil único, seguimiento (estados, conversaciones, próxima acción, responsable), cumpleaños, donaciones (montos solo Finanzas/PM), pase de lista por fecha de cenáculo o evento con alta en la puerta, y resumen con alertas (`index.html`: `renderCrm` y vecinas; migración 027).
