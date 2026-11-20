@@ -1518,7 +1518,7 @@ select:disabled{cursor:default;opacity:.7}
     <label>Título<input class="field" id="evTitulo" maxlength="140" required placeholder="Ej. Ensayo general, Producción de «Canción»"></label>
     <div class="evrow"><label>Tipo<select class="field" id="evTipo"></select></label><label>Calendario<select class="field" id="evArea"></select></label></div>
     <label id="evLugarW" hidden><span>Lugar <small>(sale en el registro y en las invitaciones)</small></span><input class="field" id="evLugar" maxlength="160" placeholder="Ej. Capilla de Tiempo de Dios"></label>
-    <div class="evreg" id="evRegW" hidden><label id="evRegL"><input type="checkbox" id="evRegistro"> Registro de asistentes (liga pública y pase de lista en Operativo → Personas)</label><label><input type="checkbox" id="evInvitar"> Invitar por correo 15 y 7 días antes</label></div>
+    <div class="evreg" id="evRegW" hidden><label id="evRegL"><input type="checkbox" id="evRegistro"> Registro de asistentes (liga pública y lista en Operativo → Personas → Cenáculos)</label><label><input type="checkbox" id="evInvitar"> Invitar por correo 15 y 7 días antes</label></div>
     <label id="evCancionW" hidden>Canción<select class="field" id="evCancion"></select></label>
     <div class="evrow"><label>Fecha<input type="date" class="field" id="evFecha" required></label><label><span>Hasta el <small>(opcional)</small></span><input type="date" class="field" id="evFin"></label></div>
     <label id="evProdW" hidden>Tipo de producción<select class="field" id="evTipoProd"></select></label>
@@ -4129,7 +4129,7 @@ let crmRecibir=null;
 const MEDIOS_EV=[["invitacion","🤝 Lo invitó alguien"],["instagram","Instagram"],["facebook","Facebook"],["tiktok","TikTok"],["whatsapp","WhatsApp"],["correo","Correo"],["parroquia","Su parroquia o grupo"],["otro","Otro"]];
 function medioTxt(a){if(!a||!a.medio)return "";const r=a.referido&&crmR.find(x=>x.id===a.referido);return a.medio==="invitacion"?`lo invitó ${r?r.nombre:"alguien"}`:a.medio==="otro"?(a.medio_otro||"otro medio"):(MEDIOS_EV.find(m=>m[0]===a.medio)||[,a.medio])[1].replace(/^\S+ /,"")}
 let crmR=[];
-const CRM_VISTAS=[["resumen","Resumen"],["personas","Personas"],["lista","Pase de lista"],["correos","Correos y WhatsApp"]];
+const CRM_VISTAS=[["resumen","Resumen"],["personas","Personas"],["lista","Cenáculos"],["correos","Correos y WhatsApp"]];
 let crmP=[],crmA=[],crmS=[],crmD=[],crmM=[],crmB=[],crmCh=null,crmErr="",loadedCrm=false,crmView="resumen",crmSel=null,crmBusq="",crmEst="todos",crmResp="todos",crmOcc=null,crmNueva=false,crmInfo=false,crmBol=null,crmPrevia=false,crmCon=null,crmDonNueva=false,listaBusq="",agBusq="";
 function puedeCrm(){return canEdit("operativo")}
 function verMontos(){return esPM()||puedeFin()}
@@ -4382,7 +4382,7 @@ function crmCorreos(){const h=key(new Date()),evs=crmEventos(),acepta=crmP.filte
   const b=crmBol?crmB.find(x=>x.id===crmBol)||(crmBol==="nuevo"?null:undefined):undefined;
   return `<div class="dhead"><div><h2 class="fh2">Correos y WhatsApp</h2><p class="fsub">${acepta} persona${acepta===1?"":"s"} reciben correos${baja?` · ${baja} se dieron de baja`:""}. Los correos salen de bitacora@tiempodedios.mx con el nombre «Tiempo de Dios».</p></div><button type="button" class="btn ghost sm" data-crmprueba="1">Enviarme una invitación de ejemplo</button></div>
   <div class="crmcanales"><div class="${crmCon&&crmCon.correo?"ok":""}"><b>✉️ Correo</b><span>${crmCon===null||crmCon===false?"Revisando…":crmCon.falla?"Falta desplegar la función «crm» en Supabase.":crmCon.correo?"Conectado (Hostinger).":"Faltan los secretos SMTP en la función «crm»."}</span></div>
-    <div class="${crmCon&&crmCon.whatsapp?"ok":""}"><b>💬 WhatsApp</b><span>${crmCon&&crmCon.whatsapp?"Conectado: recordatorio automático 2 días antes con «Sí voy / No podré».":"Sin conectar: mientras, el pase de lista tiene un botón 💬 por persona. Los pasos están en el manual (sección 9 quater)."}</span></div></div>
+    <div class="${crmCon&&crmCon.whatsapp?"ok":""}"><b>💬 WhatsApp</b><span>${crmCon&&crmCon.whatsapp?"Conectado: recordatorio automático 2 días antes con «Sí voy / No podré».":"Sin conectar: mientras, la pestaña Cenáculos tiene un botón 💬 por persona. Los pasos están en el manual (sección 9 quater)."}</span></div></div>
   <div class="crmbox"><h3>🗓 Calendario de envíos</h3><ol class="crmcad">
     <li><b>15 días antes</b><span>Invitación por correo con botón «Sí, quiero ir» (a quien acepta correos y no se ha registrado).</span></li>
     <li><b>7 días antes</b><span>Segunda invitación por correo (nadie recibe más de una invitación por semana).</span></li>
