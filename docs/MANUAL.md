@@ -308,6 +308,7 @@ Pestaña **Proyectos** en Formación, entre Logros y Entradas (`areaView.formaci
 Formato: fecha · qué cambió · dónde.
 
 - **2026-11-23**
+  - **Formularios de la app alineados:** «(opcional)» y las notas pequeñas van en la misma línea que la etiqueta (35 campos: Sugerencias, Finanzas, Activos, Personas, Canciones, Newsletter…) y en las grillas de formulario los campos se alinean abajo de su etiqueta.
   - **Sin zoom y sin rebote** en la app y en todos los formularios públicos: `maximum-scale=1, user-scalable=no` en el viewport, bloqueo de pellizco (iOS), Ctrl/⌘ + rueda y Ctrl/⌘ + «+/−/0», y `overscroll-behavior` para que el scroll termine en el borde de arriba y de abajo (también en ventanas y tablas con desplazamiento).
   - **Formulario de Entradas de formación:** en los campos de media columna la ayuda va debajo del campo, así los dos campos de cada renglón quedan alineados (`app/entrada/index.html`).
 - **2026-11-20**
