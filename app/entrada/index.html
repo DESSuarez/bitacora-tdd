@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Entrada nueva · Formación Tiempo de Dios</title>
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="googlebot" content="noindex, nofollow">
@@ -104,7 +104,19 @@ textarea.in{height:auto;min-height:110px;padding:12px 14px;resize:vertical;line-
 .done p{margin:0;color:var(--muted);max-width:56ch}
 .done .btn{background:var(--sea);height:46px;font-size:15px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* Sin zoom y sin rebote: el desplazamiento termina en el borde de arriba y de abajo (también en ventanas y tablas con scroll) */
+html,body{overscroll-behavior:none}
+*{overscroll-behavior:contain}
+html{touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 </style>
+<script>
+/* Sin zoom: pellizcar en iPhone/iPad, Ctrl/⌘ + rueda o trackpad y Ctrl/⌘ + «+», «−» o «0» */
+(function(){const no=e=>e.preventDefault();
+  ["gesturestart","gesturechange","gestureend"].forEach(t=>document.addEventListener(t,no,{passive:false}));
+  document.addEventListener("touchmove",e=>{if(e.touches&&e.touches.length>1)e.preventDefault()},{passive:false});
+  document.addEventListener("wheel",e=>{if(e.ctrlKey||e.metaKey)e.preventDefault()},{passive:false});
+  document.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&["+","=","-","_","0"].includes(e.key))e.preventDefault()})})();
+</script>
 </head>
 <body>
 <header class="band">

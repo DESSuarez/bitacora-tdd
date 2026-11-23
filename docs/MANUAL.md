@@ -308,6 +308,7 @@ Pestaña **Proyectos** en Formación, entre Logros y Entradas (`areaView.formaci
 Formato: fecha · qué cambió · dónde.
 
 - **2026-11-23**
+  - **Sin zoom y sin rebote** en la app y en todos los formularios públicos: `maximum-scale=1, user-scalable=no` en el viewport, bloqueo de pellizco (iOS), Ctrl/⌘ + rueda y Ctrl/⌘ + «+/−/0», y `overscroll-behavior` para que el scroll termine en el borde de arriba y de abajo (también en ventanas y tablas con desplazamiento).
   - **Formulario de Entradas de formación:** en los campos de media columna la ayuda va debajo del campo, así los dos campos de cada renglón quedan alineados (`app/entrada/index.html`).
 - **2026-11-20**
   - **Cenáculos → Mensaje para los inscritos:** el texto de WhatsApp es el de Operativo («¡Hola, …! 🤍 Te esperamos en nuestro cenáculo…», día y hora, sembradora y lugar). «💬 Enviar» abre WhatsApp con el mensaje listo y queda «✓ Enviado» (en `crm_mensajes`); «Enviar al siguiente» recorre a los que faltan. Nuevo campo **Sembradora** en el cenáculo (`msgCenaculo`, `cuandoMsg`). La plantilla de la API usa el mismo texto (función `crm`).
