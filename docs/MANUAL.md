@@ -307,6 +307,8 @@ Pestaña **Proyectos** en Formación, entre Logros y Entradas (`areaView.formaci
 
 Formato: fecha · qué cambió · dónde.
 
+- **2026-11-23**
+  - **Formulario de Entradas de formación:** en los campos de media columna la ayuda va debajo del campo, así los dos campos de cada renglón quedan alineados (`app/entrada/index.html`).
 - **2026-11-20**
   - **Cenáculos → Mensaje para los inscritos:** el texto de WhatsApp es el de Operativo («¡Hola, …! 🤍 Te esperamos en nuestro cenáculo…», día y hora, sembradora y lugar). «💬 Enviar» abre WhatsApp con el mensaje listo y queda «✓ Enviado» (en `crm_mensajes`); «Enviar al siguiente» recorre a los que faltan. Nuevo campo **Sembradora** en el cenáculo (`msgCenaculo`, `cuandoMsg`). La plantilla de la API usa el mismo texto (función `crm`).
   - **Personas → Resumen:** las tarjetas de cada renglón tienen la misma altura.

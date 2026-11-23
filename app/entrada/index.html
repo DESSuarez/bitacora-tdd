@@ -58,6 +58,7 @@ form{display:flex;flex-direction:column;gap:22px}
 .f>label,.f>.lbl{font-weight:700;font-size:14.5px}
 .req{color:var(--flame);margin-left:3px}
 .help{font-size:13px;color:var(--muted);margin-top:-3px}
+.help.abajo{margin-top:0}
 .in{width:100%;min-width:0;height:46px;border:1.5px solid var(--line);border-radius:10px;padding:0 14px;background:var(--bg)}
 textarea.in{height:auto;min-height:110px;padding:12px 14px;resize:vertical;line-height:1.45}
 .in:focus{border-color:var(--sea-ink);outline:none}
@@ -162,7 +163,8 @@ function fieldHTML(c){
   else if(c.tipo==="files")ctl=`<div class="drop" data-drop="${c.k}" tabindex="0" role="button" aria-label="${esc(c.l)}: elegir archivos"><strong>Arrastra tus archivos aquí</strong><small>o toca para elegirlos · PDF, Word, PowerPoint, Excel o imágenes · hasta ${MAX_MB} MB cada uno</small></div><input type="file" id="fileIn_${c.k}" data-filein="${c.k}" multiple accept="${ACCEPT}" hidden><ul class="files" id="fileList_${c.k}"></ul>`;
   else ctl=`<input class="in" id="${id}" name="${c.k}" type="${c.tipo||"text"}"${desc} maxlength="300"${c.req?" required":""}${c.tipo==="email"?' autocomplete="email"':c.k==="nombre"?' autocomplete="name"':c.tipo==="tel"?' autocomplete="tel"':""}>`;
   const lbl=(c.tipo==="chips"||c.tipo==="multi"||c.tipo==="modulos"||c.tipo==="files")?`<div class="lbl" id="${id}_l">${esc(c.l)}${req}</div>`:`<label for="${id}">${esc(c.l)}${req}</label>`;
-  return `<div class="f${full}" data-k="${c.k}"${c.si?` data-si="${esc(c.si.k)}" data-siv="${esc(c.si.v)}" hidden`:""}>${lbl}${help}${ctl}<div class="err" hidden></div></div>`}
+  // En los campos de media columna la ayuda va debajo del campo, para que queden alineados con el de al lado
+  return `<div class="f${full}" data-k="${c.k}"${c.si?` data-si="${esc(c.si.k)}" data-siv="${esc(c.si.v)}" hidden`:""}>${lbl}${full?help:""}${ctl}${full?"":help.replace('class="help"','class="help abajo"')}<div class="err" hidden></div></div>`}
 function build(){
   $("form").innerHTML=SECS.map((s,i)=>`<section class="sec" aria-labelledby="sec_${s.id}"><div class="sec-h"><div class="num">${i+1}</div><div><h2 id="sec_${s.id}">${esc(s.titulo)}</h2>${s.intro?`<p>${esc(s.intro)}</p>`:""}</div></div><div class="fields">${s.campos.map(fieldHTML).join("")}</div></section>`).join("")+
   `<input class="hp" type="text" name="sitio_web" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
