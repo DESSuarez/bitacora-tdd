@@ -7,6 +7,11 @@
 <title>Bitácora Tiempo de Dios</title>
 <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bitácora">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="theme-color" content="#1B1C1A">
 <script>/* Tema guardado por cada quien: "dia", "noche", "retro" (80s / 8 bits) o automático (sigue al sistema) */
 function fuentesRetro(){}  /* el tema retro ya solo cambia colores: no hay fuentes extra */
@@ -1263,7 +1268,12 @@ button.cmore:hover{color:var(--fg)}
 #vProy .raci-legend div{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:start;font-size:13px;color:var(--muted)}
 #vProy .raci-legend b{color:var(--fg);display:block;font-size:13.5px}
 @media (max-width:640px){#vProy .raci-legend{grid-template-columns:1fr 1fr}}
-#vProy .raci-wrap{overflow-x:auto;border:1.5px solid var(--line);border-radius:14px}
+#vProy .raci-wrap{overflow:auto;max-height:calc(100vh - 140px);border:1.5px solid var(--line);border-radius:14px}
+/* Nombres del equipo fijos arriba (y el paquete fijo a la izquierda) al desplazarse por la tabla */
+#vProy .raci thead th{position:sticky;top:0;z-index:2;background:var(--surface);box-shadow:inset 0 -1px 0 var(--line)}
+#vProy .raci td.it,#vProy .raci thead th:first-child{position:sticky;left:0;z-index:1;background:var(--bg)}
+#vProy .raci thead th:first-child{z-index:3;background:var(--surface)}
+#vProy .raci tr.grp td{position:sticky;left:0}
 #vProy table.raci{border-collapse:collapse;width:100%;min-width:520px}
 #vProy .raci th,#vProy .raci td{padding:6px;border-top:1px solid var(--line);text-align:center;vertical-align:middle}
 #vProy .raci thead th{border-top:0;font-size:12.5px;font-weight:800;max-width:120px;line-height:1.2}
@@ -1377,7 +1387,11 @@ button.cmore:hover{color:var(--fg)}
 .crow:hover{border-color:var(--area-ink)}
 .cav{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:15px;background:color-mix(in srgb,var(--c) 22%,var(--bg));color:var(--fg);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 60%,transparent);flex:none}
 .cav.xl{width:64px;height:64px;font-size:26px}
-.cn{display:flex;flex-direction:column;min-width:0}.cn b{font-size:15px;overflow-wrap:anywhere}.cn small,.cm small{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cn{display:flex;flex-direction:column;min-width:0}.cn b{font-size:15px;overflow-wrap:break-word}
+/* En las tarjetas del Resumen (angostas) el estado y la próxima acción van debajo del nombre */
+.crmbox .crow{grid-template-columns:auto minmax(0,1fr)}
+.crmbox .crow .cm{grid-column:2;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:4px 8px;max-width:none}
+.crmbox .crow .cm small{white-space:normal}.cn small,.cm small{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cm{display:flex;flex-direction:column;align-items:flex-end;gap:3px;min-width:0;max-width:220px}
 .crmvenc{color:var(--flame);font-weight:700}.crmhoy{color:var(--area-ink);font-weight:700}
 .crmbusca{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.crmbusca>.field{flex:1 1 240px}
@@ -1417,6 +1431,8 @@ button.cmore:hover{color:var(--fg)}
 .sugarch{height:auto;padding:10px 14px}
 .crmwabox .wamsg{margin:0;white-space:pre-wrap;font:inherit;font-size:14px;line-height:1.5;background:color-mix(in srgb,#25D366 10%,var(--bg));border:1px solid color-mix(in srgb,#25D366 35%,var(--line));border-radius:12px;padding:12px 14px}
 .btn.pwa{background:#25D366;color:#fff}
+.presgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}.presc{display:flex;flex-direction:column;gap:4px}.presh{display:flex;justify-content:space-between;gap:8px;font-size:14px}.presh span{color:var(--muted);font-size:13px}.presc small{color:var(--muted);font-size:12px}.presc .trk,.prestrk{height:10px;border-radius:99px;background:var(--surface);overflow:hidden}.presc .trk i,.prestrk i{display:block;height:100%;border-radius:99px}
+.notifp{display:flex;flex-direction:column;gap:10px;margin-top:16px}.notifp .crmchk{display:flex}
 .crmrec{flex-basis:100%;margin-top:6px}.crmrec .vistas{flex-wrap:wrap}
 .crmdup{margin:0;font-size:13.5px;background:color-mix(in srgb,var(--flame) 12%,var(--bg));border-radius:10px;padding:8px 12px}
 .linkbtn{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--area-ink);text-decoration:underline;cursor:pointer}
@@ -2025,7 +2041,7 @@ function shortRange(ws,ms){const r=monthRange(ms);let a=ws,b=addDays(ws,6);if(ke
 function heat(n){return n<=0?"":n<=2?"h1":n<=4?"h2":"h3"}
 
 /* Navegación */
-function scope(){if(route==="equipo")return "team";if(route==="sugerencias")return "sug";if(route==="documentos")return "docs";if(route==="finanzas")return finView==="mes"?"month":"finsol";if(route==="dashboard")return {dia:"day",mes:"month",ano:"year"}[dashView]||"week";if(route==="persona")return "week";if(route==="pm")return pmView==="cal"?({dia:"day",mes:"month",ano:"year"}[dashView]||"week"):pmView==="tasks"?"week":pmView;const v=areaView[route];if(v==="entradas"||v==="canciones"||v==="crm"||v==="proyectos")return v;return v==="tasks"||v==="report"?"week":"month"}
+function scope(){if(route==="equipo")return "team";if(route==="sugerencias")return "sug";if(route==="documentos")return "docs";if(route==="finanzas")return finView==="mes"||finView==="presupuesto"?"month":"finsol";if(route==="dashboard")return {dia:"day",mes:"month",ano:"year"}[dashView]||"week";if(route==="persona")return "week";if(route==="pm")return pmView==="cal"?({dia:"day",mes:"month",ano:"year"}[dashView]||"week"):pmView==="tasks"?"week":pmView;const v=areaView[route];if(v==="entradas"||v==="canciones"||v==="crm"||v==="proyectos")return v;return v==="tasks"||v==="report"?"week":"month"}
 function readHash(){const h=decodeURIComponent((location.hash||"").replace("#","").split("&")[0]);
   if(h.startsWith("persona/")){route="persona";personaId=h.slice(8);return}
   if(h==="operativo/personas"){route="operativo";areaView.operativo="crm";return}
@@ -2108,7 +2124,7 @@ function confirmDel(btn,id,fn){
 /* ---------- Render ---------- */
 /* Cambios que llegan en tiempo real: vuelve a pintar sin perder el campo que se está escribiendo */
 function renderKeep(){const ae=document.activeElement;
-  if((ae&&(ae.id==="eNotas"||ae.id==="cNotas"||ae.id==="docBusq"||(ae.dataset&&ae.dataset.sugresp!==undefined)))||!$("trivModal").hidden||arrastre||ajPortada||cancionEdit||(ae&&ae.closest&&ae.closest("#gastoForm,#pagoForm,#ingresoForm,#activoForm"))||!$("evModal").hidden){esperaRender=true;return}
+  if((ae&&(ae.id==="eNotas"||ae.id==="cNotas"||ae.id==="docBusq"||(ae.dataset&&ae.dataset.sugresp!==undefined)))||!$("trivModal").hidden||arrastre||ajPortada||cancionEdit||(ae&&ae.closest&&ae.closest("#gastoForm,#pagoForm,#ingresoForm,#activoForm,#presForm"))||!$("evModal").hidden){esperaRender=true;return}
   if(ae&&ae.dataset&&ae.dataset.grip){const g=ae.dataset.grip;render();const n=document.querySelector(`[data-grip="${g}"]`);if(n)n.focus();return}
   const sel=!ae||!ae.matches("input,textarea")||ae.classList.contains("otro-in")?null:ae.id?"#"+CSS.escape(ae.id):
     ["tedit","snota","hecha"].map(k=>ae.dataset[k]!=null?`[data-${k}="${CSS.escape(ae.dataset[k])}"]`+(k==="tedit"?`[data-f="${ae.dataset.f}"]`:""):"").find(Boolean)||null;
@@ -2117,7 +2133,7 @@ function renderKeep(){const ae=document.activeElement;
   const v=ae.value,a=ae.selectionStart,b=ae.selectionEnd;render();const n=document.querySelector(sel);
   if(n&&n!==ae){n.value=v;n.focus();try{n.setSelectionRange(a,b)}catch(e){}}}
 /* Al redibujar (por ejemplo, por cambios en tiempo real) se conserva lo escrito en los formularios abiertos */
-const FORMS_VIVOS=["crmRecForm","crmPForm","crmSegForm","crmDonForm","crmPuertaForm","crmWaForm","crmBolForm","sugForm","agendaForm","cancionForm","gastoForm","pagoForm","ingresoForm","activoForm","ligaForm","cEditForm"];
+const FORMS_VIVOS=["presForm","crmRecForm","crmPForm","crmSegForm","crmDonForm","crmPuertaForm","crmWaForm","crmBolForm","sugForm","agendaForm","cancionForm","gastoForm","pagoForm","ingresoForm","activoForm","ligaForm","cEditForm"];
 function guardarForms(){const out=[];FORMS_VIVOS.forEach(id=>{const f=document.getElementById(id);if(!f)return;
   out.push({id,campos:[...f.elements].filter(el=>el.name||el.id).map(el=>({k:el.id||el.name+"|"+el.value,v:el.value,c:el.checked,h:el.hidden,tipo:el.type}))})});
   const ae=document.activeElement;return {out,foco:ae&&ae.form&&FORMS_VIVOS.includes(ae.form.id)?(ae.id||ae.name+"|"+ae.value):null}}
@@ -3327,13 +3343,13 @@ function confirmarAccion({titulo,texto,boton}){return new Promise(res=>{let m=$(
    Tablas "gastos" e "ingresos" (migración 017). Todo el equipo ve; cualquiera pide un gasto;
    solo Finanzas (perfiles.finanzas) y el desarrollador aprueban, rechazan, pagan y registran ingresos.
    Un gasto "pagada" (con fecha_pago) es un egreso del mes; los ingresos se registran aparte. */
-const FIN_TABS=[["solicitudes","Solicitudes de gasto"],["mes","Ingresos y egresos"],["activos","Activos"]];
+const FIN_TABS=[["solicitudes","Solicitudes de gasto"],["mes","Ingresos y egresos"],["presupuesto","Presupuesto"],["activos","Activos"]];
 const ESTADOS_G=[["pendiente","Pendiente","var(--sol)"],["aprobada","Aprobada","#8E6BD8"],["pagada","Pagada","#3F9E6A"],["rechazada","Rechazada","var(--flame)"],["cancelada","Cancelada","#7C8786"]];
 const ESTADO_G=Object.fromEntries(ESTADOS_G.map(([k,n,c])=>[k,{n,c}]));
 const CATS_GASTO=["Materiales","Equipo","Producción","Transporte","Alimentos","Hospedaje","Honorarios","Servicios","Publicidad","Eventos","Otro"];
-const CATS_INGRESO=["Donativos","Aportaciones","Venta","Patrocinio","Regalías","Reembolso","Otro"];
+const CATS_INGRESO=["Donativos","Aportaciones","Venta","Patrocinio","Regalías","Reembolso","Stripe","Otro"];
 const METODOS=["Transferencia","Efectivo","Tarjeta","Reembolso"];
-let finView="solicitudes",gastos=[],ingresosF=[],loadedF=false,finErr="",finCh=null,filtroG="activas",soloMias=false,gastoSel=null,nuevoGasto=false,pagoForm=null,nuevoIngreso=false,ingresoEdit=null;
+let presupuestosF=[],presErr="",presEdit=null,finView="solicitudes",gastos=[],ingresosF=[],loadedF=false,finErr="",finCh=null,filtroG="activas",soloMias=false,gastoSel=null,nuevoGasto=false,pagoForm=null,nuevoIngreso=false,ingresoEdit=null;
 const MXN=new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN"});
 function dinero(n){return MXN.format(Number(n)||0)}
 function puedeFin(){return !!perfil&&(!!perfil.finanzas||perfil.rol==="desarrollador")}
@@ -3344,11 +3360,13 @@ function cargarFinanzas(){if(finCh||!sb)return;
     const err=g.error||i.error;
     if(err)finErr=/gastos|ingresos|PGRST205|42P01/.test((err.message||"")+(err.code||""))?"Falta correr la migración 017 en Supabase para usar Finanzas.":"No se pudo leer Finanzas: "+err.message;
     else{gastos=g.data||[];ingresosF=i.data||[];finErr=""}
+    const pr=await sb.from("presupuestos").select("*").order("creado").limit(5000);presErr=pr.error?(/presupuestos|PGRST205|42P01/.test((pr.error.message||"")+(pr.error.code||""))?"Falta correr la migración 032 para usar el presupuesto.":pr.error.message):"";if(!pr.error)presupuestosF=pr.data||[];
     loadedF=true;renderKeep()};
   const upd=(arr,p,nuevo)=>{if(p.eventType==="DELETE")return arr.filter(x=>x.id!==(p.old&&p.old.id));const i=arr.findIndex(x=>x.id===p.new.id);if(i>=0){arr[i]=p.new;return arr}nuevo&&nuevo(p.new);return [p.new,...arr]};
   finCh=sb.channel("rt-finanzas")
     .on("postgres_changes",{event:"*",schema:"public",table:"gastos"},p=>{gastos=upd(gastos,p,g=>{if(p.eventType==="INSERT"&&puedeFin()&&g.solicitante!==(perfil&&perfil.id))toast(`Nueva solicitud de gasto: ${g.concepto} · ${dinero(g.monto)}`)});renderKeep()})
     .on("postgres_changes",{event:"*",schema:"public",table:"ingresos"},p=>{ingresosF=upd(ingresosF,p);renderKeep()})
+    .on("postgres_changes",{event:"*",schema:"public",table:"presupuestos"},p=>{presupuestosF=upd(presupuestosF,p);renderKeep()})
     .subscribe(st=>{if(st==="SUBSCRIBED")load()})}
 function pillG(k){const e=ESTADO_G[k]||{n:k,c:"var(--muted)"};return `<span class="cpill" style="--c:${e.c}">${esc(e.n)}</span>`}
 function archFin(a){return `<button type="button" class="chip arch" data-farch="${esc(a.path)}" title="Abrir ${esc(a.nombre)}">${iconoArch(a)} ${esc(a.nombre)} <small>${tamDe(a.tam||0)}</small></button>`}
@@ -3411,7 +3429,7 @@ function detalleGasto(g){const d=g.data||{},fin=puedeFin(),yo=perfil&&g.solicita
 function renderFinanzas(){const V=$("vFinanzas");
   if(finErr){V.innerHTML=`<div class="readonly">${esc(finErr)}</div>`;return}
   if(!loadedF){V.innerHTML=`<div class="none">Cargando Finanzas…</div>`;return}
-  V.innerHTML=finView==="mes"?vistaMovimientos():finView==="activos"?vistaActivos():vistaSolicitudes()}
+  V.innerHTML=finView==="mes"?vistaMovimientos():finView==="presupuesto"?vistaPresupuesto():finView==="activos"?vistaActivos():vistaSolicitudes()}
 function vistaSolicitudes(){const yo=perfil&&perfil.id,ms=key(new Date()).slice(0,7);
   const base=soloMias?gastos.filter(g=>g.solicitante===yo):gastos;
   const cnt=k=>k==="activas"?base.filter(g=>g.estado==="pendiente"||g.estado==="aprobada").length:k==="todas"?base.length:base.filter(g=>g.estado===k).length;
@@ -3425,7 +3443,7 @@ function vistaSolicitudes(){const yo=perfil&&perfil.id,ms=key(new Date()).slice(
 /* ---------- Vista: ingresos y egresos del mes ---------- */
 function movimientosMes(){const m=key(monthStart()).slice(0,7);
   const egr=gastos.filter(g=>g.estado==="pagada"&&(g.fecha_pago||"").slice(0,7)===m).map(g=>({tipo:"egreso",id:g.id,fecha:g.fecha_pago,concepto:g.concepto,monto:Number((g.data||{}).pago&&(g.data.pago.monto)||g.monto),area:g.area,categoria:g.categoria,quien:nombreDe(g.solicitante)}));
-  const ing=ingresosF.filter(i=>(i.fecha||"").slice(0,7)===m).map(i=>({tipo:"ingreso",id:i.id,fecha:i.fecha,concepto:i.concepto,monto:Number(i.monto),area:i.area,categoria:i.categoria,quien:(i.data||{}).fuente||""}));
+  const ing=ingresosF.filter(i=>(i.fecha||"").slice(0,7)===m).map(i=>({tipo:"ingreso",id:i.id,fecha:i.fecha,concepto:i.concepto,monto:Number(i.monto),area:i.area,categoria:i.categoria,quien:(i.data||{}).fuente||"",stripe:!!(i.data||{}).stripe_id}));
   return [...ing,...egr].sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:a.tipo<b.tipo?-1:1)}
 function formIngreso(i){const v=i||{fecha:key(new Date()),concepto:"",monto:"",area:"general",categoria:"Donativos",data:{}};
   return `<form class="cnueva fform" id="ingresoForm" data-iid="${esc(i?i.id:"")}" autocomplete="off"><h3>${i?"Editar ingreso":"Registrar ingreso"}</h3>
@@ -3443,11 +3461,52 @@ function vistaMovimientos(){const mov=movimientosMes(),fin=puedeFin();
   const barras=(arr,tot,col)=>arr.length?arr.map(([c,v])=>`<div class="fbar"><span>${esc(c)}</span><div class="trk"><i style="width:${tot?Math.round(v/tot*100):0}%;background:${col}"></i></div><b>${dinero(v)}</b></div>`).join(""):`<p class="none" style="margin:0">Sin movimientos.</p>`;
   const ie=ingresoEdit&&ingresosF.find(x=>x.id===ingresoEdit);
   return `<div class="dhead"><div><h2 class="fh2">Ingresos y egresos de ${MESES_L[monthStart().getMonth()]}</h2><p class="fsub">Los egresos son las solicitudes con pago realizado en este mes. ${fin?"Registra aquí los ingresos.":"Solo Finanzas registra ingresos."}</p></div>
-      <div class="rbtns">${fin?`<button type="button" class="btn" data-inuevo="1">+ Registrar ingreso</button>`:""}<button type="button" class="btn ghost" data-fcsv="1">Descargar CSV</button></div></div>
+      <div class="rbtns">${fin?`<button type="button" class="btn ghost" data-stripesync="1" title="Trae de Stripe los depósitos que falten">⟳ Stripe</button><button type="button" class="btn" data-inuevo="1">+ Registrar ingreso</button>`:""}<button type="button" class="btn ghost" data-fcsv="1">Descargar CSV</button></div></div>
+    ${(()=>{const st=mov.filter(x=>x.stripe);return st.length?`<p class="fsub" style="margin:0">💳 Depósitos de Stripe este mes: <b>${dinero(st.reduce((a,x)=>a+x.monto,0))}</b> en ${st.length} depósito${st.length===1?"":"s"} (llegan solos).</p>`:""})()}
     ${nuevoIngreso||ie?formIngreso(ie||null):""}
     <div class="ctot fbal"><div class="ing"><b>${dinero(ti)}</b><span>ingresos</span></div><div class="egr"><b>${dinero(te)}</b><span>egresos</span></div><div class="${bal>=0?"ing":"egr"}"><b>${dinero(bal)}</b><span>balance del mes</span></div><div><b>${mov.length}</b><span>movimientos</span></div></div>
     <div class="dgrid"><div class="dpanel"><h3>Egresos por categoría</h3>${barras(porCat("egreso"),te,"var(--flame)")}</div><div class="dpanel"><h3>Ingresos por categoría</h3>${barras(porCat("ingreso"),ti,"#3F9E6A")}</div></div>
-    <div class="dpanel"><h3>Movimientos</h3>${mov.length?`<ul class="fmov">${mov.map(x=>`<li class="${x.tipo}"><time>${shortDate(x.fecha)}</time><div><strong>${esc(x.concepto)}</strong><small>${x.tipo==="ingreso"?"Ingreso":"Egreso"} · ${esc(x.categoria||"Otro")}${x.area&&AREAS[x.area]?" · "+AREAS[x.area].n:""}${x.quien?" · "+esc(x.quien):""}</small></div><b>${x.tipo==="ingreso"?"+":"−"}${dinero(x.monto)}</b>${x.tipo==="ingreso"&&fin?`<button type="button" class="icon" data-iedit="${esc(x.id)}" aria-label="Editar ingreso" title="Editar">✎</button>`:x.tipo==="egreso"?`<button type="button" class="icon" data-irgasto="${esc(x.id)}" aria-label="Ver solicitud" title="Ver solicitud">↗</button>`:""}</li>`).join("")}</ul>`:`<p class="none" style="margin:0">Aún no hay movimientos en este mes.</p>`}</div>`}
+    <div class="dpanel"><h3>Movimientos</h3>${mov.length?`<ul class="fmov">${mov.map(x=>`<li class="${x.tipo}"><time>${shortDate(x.fecha)}</time><div><strong>${esc(x.concepto)}${x.stripe?` <span class="cpill" style="--c:#635BFF">Stripe</span>`:""}</strong><small>${x.tipo==="ingreso"?"Ingreso":"Egreso"} · ${esc(x.categoria||"Otro")}${x.area&&AREAS[x.area]?" · "+AREAS[x.area].n:""}${x.quien?" · "+esc(x.quien):""}</small></div><b>${x.tipo==="ingreso"?"+":"−"}${dinero(x.monto)}</b>${x.tipo==="ingreso"&&fin?`<button type="button" class="icon" data-iedit="${esc(x.id)}" aria-label="Editar ingreso" title="Editar">✎</button>`:x.tipo==="egreso"?`<button type="button" class="icon" data-irgasto="${esc(x.id)}" aria-label="Ver solicitud" title="Ver solicitud">↗</button>`:""}</li>`).join("")}</ul>`:`<p class="none" style="margin:0">Aún no hay movimientos en este mes.</p>`}</div>`}
+/* ---------- Presupuesto mensual: lo que se planea gastar contra lo que entra y lo que se gasta ---------- */
+function presDelMes(m){return presupuestosF.filter(x=>x.desde<=m&&(!x.hasta||x.hasta>=m))}
+function formPres(x){const v=x||{concepto:"",categoria:"Otro",area:"general",monto:"",desde:key(monthStart()).slice(0,7),hasta:"",notas:""};
+  return `<form class="cnueva fform" id="presForm" data-pid="${esc(x?x.id:"")}" autocomplete="off"><h3>${x?"Editar renglón del presupuesto":"Agregar al presupuesto"}</h3>
+    <label class="c3">Concepto<input class="field" id="prConcepto" maxlength="160" required value="${esc(v.concepto)}" placeholder="Ej. Renta del estudio"></label>
+    <label class="c3">Monto mensual (MXN)<input class="field" id="prMonto" type="number" min="0" step="0.01" required value="${esc(v.monto)}"></label>
+    <label class="c2">Categoría<select class="field" id="prCat">${CATS_GASTO.map(c=>`<option ${c===v.categoria?"selected":""}>${c}</option>`).join("")}</select></label>
+    <label class="c2">Área<select class="field" id="prArea"><option value="general">General</option>${AREA_IDS.map(a=>`<option value="${a}" ${v.area===a?"selected":""}>${AREAS[a].n}</option>`).join("")}</select></label>
+    <label class="c2">Desde el mes<input class="field" id="prDesde" type="month" required value="${esc(v.desde)}"></label>
+    <label class="c3"><span>Hasta el mes <small>(vacío = todos los meses)</small></span><input class="field" id="prHasta" type="month" value="${esc(v.hasta||"")}"></label>
+    <label class="c3"><span>Notas <small>(opcional)</small></span><input class="field" id="prNotas" maxlength="1000" value="${esc(v.notas||"")}"></label>
+    <div class="row">${x?`<button type="button" class="btn ghost" data-presborrar="${esc(x.id)}">Borrar</button>`:""}<span class="dlnote"></span><button type="button" class="btn ghost" data-presedit="">Cancelar</button><button class="btn" type="submit">Guardar</button></div></form>`}
+function vistaPresupuesto(){const m=key(monthStart()).slice(0,7),fin=puedeFin()||esPM(),L=presDelMes(m),mov=movimientosMes();
+  const pres=L.reduce((a,x)=>a+Number(x.monto),0),ing=mov.filter(x=>x.tipo==="ingreso").reduce((a,x)=>a+x.monto,0),gas=mov.filter(x=>x.tipo==="egreso").reduce((a,x)=>a+x.monto,0);
+  const porPagar=gastos.filter(g=>g.estado==="aprobada").reduce((a,g)=>a+Number(g.monto),0),falta=Math.max(0,pres-ing),cub=pres?Math.min(100,Math.round(ing/pres*100)):0;
+  const cats=[...new Set([...L.map(x=>x.categoria||"Otro"),...mov.filter(x=>x.tipo==="egreso").map(x=>x.categoria||"Otro")])];
+  const fila=c=>{const p=L.filter(x=>(x.categoria||"Otro")===c).reduce((a,x)=>a+Number(x.monto),0),g=mov.filter(x=>x.tipo==="egreso"&&(x.categoria||"Otro")===c).reduce((a,x)=>a+x.monto,0),pc=p?Math.round(g/p*100):g?100:0;
+    return `<div class="presc"><div class="presh"><b>${esc(c)}</b><span>${dinero(g)} de ${dinero(p)}</span></div><div class="trk"><i style="width:${Math.min(100,pc)}%;background:${pc>100?"var(--flame)":pc>85?"var(--sol)":"#3F9E6A"}"></i></div><small>${p?(g>p?`Se pasó ${dinero(g-p)}`:`Quedan ${dinero(p-g)}`):"Sin presupuesto"}</small></div>`};
+  const pe=presEdit&&presEdit!=="nuevo"?presupuestosF.find(x=>x.id===presEdit):null;
+  return `${presErr?`<div class="readonly">${esc(presErr)}</div>`:""}<div class="dhead"><div><h2 class="fh2">Presupuesto de ${MESES_L[monthStart().getMonth()]}</h2><p class="fsub">Lo que planeamos gastar cada mes, contra lo que entra y lo que ya se pagó. ${fin?"Agrega o ajusta los renglones; cada uno se repite cada mes hasta el mes que indiques.":"Lo define Finanzas."}</p></div>${fin?`<button type="button" class="btn" data-presedit="nuevo">+ Agregar al presupuesto</button>`:""}</div>
+    ${presEdit==="nuevo"||pe?formPres(pe):""}
+    <div class="ctot fbal"><div><b>${dinero(pres)}</b><span>presupuesto de gastos</span></div><div class="ing"><b>${dinero(ing)}</b><span>ingresos del mes</span></div><div class="${falta?"egr":"ing"}"><b>${dinero(falta)}</b><span>${falta?"falta por cubrir":"presupuesto cubierto ✓"}</span></div><div class="egr"><b>${dinero(gas)}</b><span>gastado (pagado)${porPagar?` · ${dinero(porPagar)} aprobado por pagar`:""}</span></div></div>
+    <div class="dpanel"><h3>Ingresos contra presupuesto · ${cub}% cubierto</h3><div class="trk prestrk"><i style="width:${cub}%;background:${cub>=100?"#3F9E6A":"var(--sol)"}"></i></div></div>
+    <div class="dpanel"><h3>Gasto por categoría</h3>${cats.length?`<div class="presgrid">${cats.map(fila).join("")}</div>`:`<p class="none" style="margin:0">Todavía no hay presupuesto para este mes.</p>`}</div>
+    <div class="dpanel"><h3>Renglones del presupuesto · ${L.length}</h3>${L.length?`<ul class="fmov">${L.slice().sort((a,b)=>Number(b.monto)-Number(a.monto)).map(x=>`<li class="egreso"><time>${esc(x.categoria||"Otro")}</time><div><strong>${esc(x.concepto)}</strong><small>${x.area&&AREAS[x.area]?AREAS[x.area].n:"General"} · desde ${esc(x.desde)}${x.hasta?" hasta "+esc(x.hasta):" · cada mes"}${x.notas?" · "+esc(x.notas):""}</small></div><b>${dinero(x.monto)}</b>${fin?`<button type="button" class="icon" data-presedit="${esc(x.id)}" aria-label="Editar" title="Editar">✎</button>`:""}</li>`).join("")}</ul>`:`<p class="none" style="margin:0">${fin?"Agrega el primero con «+ Agregar al presupuesto».":"Finanzas todavía no define el presupuesto."}</p>`}</div>`}
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-presedit],[data-presborrar],[data-stripesync]");if(!b||!sb)return;const ds=b.dataset;
+  if(ds.presedit!==undefined){presEdit=ds.presedit||null;render();if(presEdit)setTimeout(()=>$("prConcepto")&&$("prConcepto").focus(),30);return}
+  if(ds.presborrar){if(!await confirmarAccion({titulo:"¿Borrar este renglón del presupuesto?",texto:"Deja de contar en todos los meses.",boton:"Sí, borrar"}))return;
+    const {error}=await sb.from("presupuestos").delete().eq("id",ds.presborrar);if(error){toast("No se pudo borrar: "+error.message);return}presupuestosF=presupuestosF.filter(x=>x.id!==ds.presborrar);presEdit=null;render();return}
+  if(ds.stripesync){b.disabled=true;b.textContent="⟳ Revisando…";const desde=key(new Date(monthStart().getFullYear(),0,1));
+    const {data,error}=await sb.functions.invoke("stripe",{body:{accion:"sincronizar",desde}});b.disabled=false;b.textContent="⟳ Stripe";
+    if(error||!data||data.error){toast("Stripe: "+((data&&data.error)||(error&&/not found|404/i.test(error.message)?"falta desplegar la función «stripe».":error&&error.message)||"no respondió"));return}
+    toast(data.nuevos?`Listo: ${data.nuevos} depósito${data.nuevos===1?"":"s"} nuevo${data.nuevos===1?"":"s"} de Stripe.`:`Stripe al día: ${data.revisados} depósitos revisados.`);return}});
+document.addEventListener("submit",async e=>{if(e.target.id!=="presForm")return;e.preventDefault();if(!sb)return;const f=e.target,id=f.dataset.pid;
+  const fila={concepto:$("prConcepto").value.trim().slice(0,160),monto:Number($("prMonto").value),categoria:$("prCat").value,area:$("prArea").value,desde:$("prDesde").value,hasta:$("prHasta").value||null,notas:$("prNotas").value.trim()};
+  if(!fila.concepto||!(fila.monto>=0)||!/^\d{4}-\d{2}$/.test(fila.desde)){toast("Revisa el concepto, el monto y el mes.");return}
+  if(fila.hasta&&fila.hasta<fila.desde){toast("«Hasta» no puede ser antes de «Desde».");return}
+  const q=id?sb.from("presupuestos").update(fila).eq("id",id).select().single():sb.from("presupuestos").insert(fila).select().single();
+  const {data,error}=await q;if(error){toast("No se pudo guardar: "+(/presupuestos/.test(error.message)?"falta correr la migración 032.":error.message));return}
+  const i=presupuestosF.findIndex(x=>x.id===data.id);if(i>=0)presupuestosF[i]=data;else presupuestosF.push(data);presEdit=null;render();toast("Presupuesto guardado.")});
 function csvFinanzas(){const mov=movimientosMes(),q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
   const filas=[["Fecha","Tipo","Concepto","Categoría","Área","Quién","Monto"],...mov.map(x=>[x.fecha,x.tipo==="ingreso"?"Ingreso":"Egreso",x.concepto,x.categoria||"",x.area&&AREAS[x.area]?AREAS[x.area].n:"General",x.quien||"",(x.tipo==="ingreso"?1:-1)*x.monto])];
   const blob=new Blob(["﻿"+filas.map(r=>r.map(q).join(",")).join("\r\n")],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
@@ -3491,7 +3550,7 @@ document.addEventListener("submit",async e=>{const f=e.target;
     d.historial=historial(g,"pagada",`${dinero(monto)} · ${$("pMetodo").value}${$("pRef").value.trim()?" · "+$("pRef").value.trim():""}`);
     pagoForm=null;btn.disabled=false;if(filtroG==="activas"||filtroG==="aprobada"||filtroG==="pendiente")filtroG="todas";gastoSel=g.id;guardarGasto(g.id,{estado:"pagada",fecha_pago:$("pFecha").value,data:d},"Pago registrado: ya cuenta como egreso del mes.");return}
   if(f.id==="ingresoForm"){e.preventDefault();if(!sb)return;const iid=f.dataset.iid;
-    const fila={fecha:$("iFecha").value,concepto:$("iConcepto").value.trim().slice(0,200),monto:Number($("iMonto").value),area:$("iArea").value,categoria:$("iCat").value,data:{fuente:$("iFuente").value.trim(),referencia:$("iRef").value.trim()}};
+    const fila={fecha:$("iFecha").value,concepto:$("iConcepto").value.trim().slice(0,200),monto:Number($("iMonto").value),area:$("iArea").value,categoria:$("iCat").value,data:{...((iid&&(ingresosF.find(x=>x.id===iid)||{}).data)||{}),fuente:$("iFuente").value.trim(),referencia:$("iRef").value.trim()}};
     const q=iid?sb.from("ingresos").update(fila).eq("id",iid).select().single():sb.from("ingresos").insert(fila).select().single();
     const {data,error}=await q;if(error){toast("No se pudo guardar: "+error.message);return}
     if(iid){const i=ingresosF.findIndex(x=>x.id===iid);if(i>=0)ingresosF[i]=data}else if(data&&!ingresosF.some(x=>x.id===data.id))ingresosF.unshift(data);
@@ -3667,7 +3726,7 @@ function renderPerson(){const p=perfiles.find(x=>x.id===personaId);
   const self=!!perfil&&p.id===perfil.id,puede=self; // cada quien edita solo su propio perfil
   if(esPM()&&!self&&cuentas===null&&!cuentasErr&&!cuentasCargando)cargarCuentas();
   const c=cuentas&&cuentas.get(p.id),email=self?perfil.email||"":c?c.email:"";
-  $("personCard").innerHTML=cartaPersona(p,self,puede,email);
+  $("personCard").innerHTML=cartaPersona(p,self,puede,email)+(self?panelNotif():"");if(self)revisarNotif();
   const ws=weekStart(),actual=key(ws)===key(mondayOf(new Date())),wkNow=key(mondayOf(new Date()));
   const pend=pendientesDe(p.id),done=logRange(key(ws),key(addDays(ws,6))).filter(x=>asignadoA({responsable_id:x.rid,responsable:x.responsable},p.id));
   const r=monthRange(monthStart()),lg=logrosRange(r.s,r.e).filter(l=>asignadoA(l,p.id));
@@ -4944,6 +5003,43 @@ function eventosDeProyectos(){return proyectos.filter(p=>p.charter&&p.charter.es
   return {id:"proy:"+p.id,proyecto:p.id,titulo:"★ "+(p.nombre||"Proyecto"),tipo:"proyecto",fecha:C.eventoInicio,fin,hora:"",horaFin:"",repetir:"",hasta:"",area:"general",excepciones:[],lugar:C.eventoLugar||"",notas:[C.eventoLugar,C.eventoHorario].filter(Boolean).join(" · ")}})}
 function abrirProyecto(id){curProj=id;curStep=0;rememberPj();areaView.formacion="proyectos";if(location.hash==="#formacion")render();else location.hash="formacion";window.scrollTo(0,0)}
 
+/* ---------- Notificaciones al celular (Web Push): 1 hora antes de las actividades y resumen del día ----------
+   Cada quien las activa en su perfil, en cada celular o computadora (push_suscripciones). Las preferencias van en
+   perfiles.notif. Las manda la función «crm» (acción push, cron cada 15 min). sw.js las muestra. */
+const VAPID_PUB="BJdwa7SgOYeUfIaJdo3G-hd3wzJfHaVWvjuM7cwKazszWNZLd45f2kQiKJHfNUPu4QhU_IpGHFz-43gfwLd5eM8";
+let notifEste=null;  // null = revisando, {sub, perm}
+const pushPosible=()=>"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;
+const esIOS=()=>/iPhone|iPad|iPod/.test(navigator.userAgent),instalada=()=>window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js").catch(()=>{});
+async function revisarNotif(){if(!pushPosible()){notifEste={sub:null,perm:"no"};return}
+  try{const reg=await navigator.serviceWorker.getRegistration("/");const sub=reg?await reg.pushManager.getSubscription():null;
+    const nuevo={sub:!!sub,perm:Notification.permission};if(!notifEste||notifEste.sub!==nuevo.sub||notifEste.perm!==nuevo.perm){notifEste=nuevo;const c=$("notifPanel");if(c)c.outerHTML=panelNotif()}}catch(e){notifEste={sub:false,perm:Notification.permission}}}
+function panelNotif(){const n=(perfil&&perfil.notif)||{},ok=notifEste&&notifEste.sub;
+  const aviso=!pushPosible()?(esIOS()&&!instalada()?"En iPhone primero agrega la Bitácora a tu pantalla de inicio (botón Compartir → «Agregar a inicio») y ábrela desde ese ícono; ahí podrás activarlas.":"Este navegador no permite notificaciones."):notifEste&&notifEste.perm==="denied"?"Bloqueaste las notificaciones para la Bitácora. Actívalas en los ajustes del navegador o del celular y vuelve a intentarlo.":"";
+  return `<section class="caja notifp" id="notifPanel"><h3>🔔 Notificaciones al celular</h3>
+    <p class="fsub" style="margin:0">Llegan aunque tengas la Bitácora cerrada. Actívalas en cada celular o computadora donde las quieras.</p>
+    <label class="crmchk"><input type="checkbox" data-notif="una_hora" ${n.una_hora?"checked":""}> 1 hora antes de mis actividades del calendario</label>
+    <label class="crmchk"><input type="checkbox" data-notif="resumen" ${n.resumen?"checked":""}> Resumen del día a las 7:30 (actividades y pendientes)</label>
+    ${aviso?`<p class="readonly" style="margin:0">${esc(aviso)}</p>`:`<div class="rbtns">${ok?`<span class="cpill" style="--c:#1DB954">✓ Activas en este dispositivo</span><button type="button" class="btn ghost sm" data-notifprueba="1">Enviarme una prueba</button><button type="button" class="btn ghost sm" data-notifoff="1">Desactivar aquí</button>`:`<button type="button" class="btn sm" data-notifon="1">${notifEste===null?"Revisando…":"Activar en este dispositivo"}</button>`}</div>`}</section>`}
+function b64ABytes(b){const p="=".repeat((4-b.length%4)%4),s=atob((b+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(s,c=>c.charCodeAt(0))}
+async function guardarNotif(cambios){if(!sb||!perfil)return;const notif={...(perfil.notif||{}),...cambios};
+  const {error}=await sb.from("perfiles").update({notif}).eq("id",perfil.id);if(error){toast("No se pudo guardar: "+(/notif/.test(error.message)?"falta correr la migración 032.":error.message));return false}
+  perfil.notif=notif;const q=perfiles.find(x=>x.id===perfil.id);if(q)q.notif=notif;return true}
+document.addEventListener("change",async e=>{const t=e.target;if(!t.dataset||!t.dataset.notif)return;if(await guardarNotif({[t.dataset.notif]:t.checked}))toast(t.checked?"Listo.":"Desactivado.")});
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-notifon],[data-notifoff],[data-notifprueba]");if(!b||!sb||!perfil)return;const ds=b.dataset;b.disabled=true;
+  try{
+    if(ds.notifon){const perm=await Notification.requestPermission();if(perm!=="granted"){toast("Sin permiso no te pueden llegar. Puedes darlo después.");notifEste={sub:false,perm};render();return}
+      const reg=await navigator.serviceWorker.register("/sw.js");await navigator.serviceWorker.ready;
+      let sub=await reg.pushManager.getSubscription();if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ABytes(VAPID_PUB)});
+      const j=sub.toJSON(),{error}=await sb.from("push_suscripciones").upsert({endpoint:j.endpoint,p256dh:j.keys.p256dh,auth:j.keys.auth,usuario:perfil.id,agente:navigator.userAgent.slice(0,300)},{onConflict:"endpoint"});
+      if(error){toast("No se pudo activar: "+(/push_suscripciones/.test(error.message)?"falta correr la migración 032.":error.message));return}
+      const n=perfil.notif||{};if(n.una_hora===undefined&&n.resumen===undefined)await guardarNotif({una_hora:true,resumen:true});
+      notifEste={sub:true,perm:"granted"};render();toast("🔔 Notificaciones activadas en este dispositivo.")}
+    if(ds.notifoff){const reg=await navigator.serviceWorker.getRegistration("/"),sub=reg&&await reg.pushManager.getSubscription();
+      if(sub){await sb.from("push_suscripciones").delete().eq("endpoint",sub.endpoint);await sub.unsubscribe()}notifEste={sub:false,perm:Notification.permission};render();toast("Ya no llegarán a este dispositivo.")}
+    if(ds.notifprueba){const {data,error}=await sb.functions.invoke("crm",{body:{accion:"push_prueba"}});
+      toast(error||!data||data.error?"No se pudo: "+((data&&data.error)||(error&&error.message)):data.enviados?"Te mandé una notificación de prueba.":"No encontré este dispositivo; desactívalo y vuelve a activarlo.")}
+  }catch(err){console.error(err);toast("No se pudo: "+(err&&err.message||err))}finally{b.disabled=false}});
 readHash();render();
 
 /* ---------- Conexión con Supabase ---------- */

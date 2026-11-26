@@ -161,6 +161,12 @@ Corre `supabase/migraciones/028_donaciones_finanzas_y_adjuntos.sql`. Una donaci�
 ### 31. Formación → Proyectos
 Corre `supabase/migraciones/031_proyectos_formacion.sql`. Crea las tablas de proyectos y equipos guardados y carga los proyectos del piloto (Eleva tu música, Plataforma de formación y Cursos masivos de formación) y el «Equipo base», solo si todavía no existen.
 
+### 32. Finanzas (aviso de gastos, presupuesto, Stripe) y notificaciones al celular
+1. Corre `supabase/migraciones/032_finanzas_presupuesto_stripe_avisos.sql`.
+2. Vuelve a desplegar la función `crm` con el `supabase/functions/crm/index.ts` nuevo (aviso de gastos y notificaciones).
+3. En **Edge Functions → Secrets** agrega los tres renglones de `supabase/.secretos-vapid.txt` (`VAPID_PUBLIC`, `VAPID_PRIVATE`, `VAPID_SUBJECT`).
+4. Stripe: despliega la función `stripe` (Verify JWT apagado) y sigue los pasos de `docs/MANUAL.md` §9 sexies para `STRIPE_SECRET_KEY` y `STRIPE_WEBHOOK_SECRET`.
+
 ### Correo para invitaciones
 El correo integrado de Supabase solo manda unos 2 correos por hora. Para invitar a varias personas, configura un SMTP propio (por ejemplo, un buzón de Hostinger) en **Authentication → Emails → SMTP Settings** y sube el límite en **Authentication → Rate Limits**.
 

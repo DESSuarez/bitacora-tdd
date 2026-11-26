@@ -264,6 +264,15 @@ Pestaña **Proyectos** en Formación, entre Logros y Entradas (`areaView.formaci
 - **Eventos en el calendario:** un proyecto marcado «Este proyecto es un evento» aparece solo, sin copiarse a `eventos`: `eventosDeProyectos()` se suma a `todosEventos()` como tipo `proyecto` (★, Flame, calendario general) y al tocarlo abre el proyecto (`abrirProyecto`). También sale en la pestaña Mes de Formación (días con ★ y la línea del evento). La vista SQL `eventos_proyectos` queda para consultas.
 - **Acceso:** como las demás áreas, quien no está en Formación ve «No estás en Formación» y puede pedir acceso; la base no lo deja guardar.
 
+## 9 sexies. Finanzas: aviso de gastos, presupuesto y Stripe · Notificaciones al celular (migración 032)
+
+- **Aviso de gastos:** al crear una solicitud de gasto, un trigger de `gastos` llama a la función `crm` (`aviso_gasto`) y se manda un correo a cada persona con 💰 Finanzas (menos a quien la pidió), con concepto, monto, área, categoría, fecha y a quién pagar. No se repite (`avisos_enviados`, tipo `gasto:<id>`).
+- **Presupuesto** (Finanzas → pestaña Presupuesto, `vistaPresupuesto`): tabla `presupuestos` (concepto, categoría, área, monto mensual, desde y hasta qué mes). La editan Finanzas, la PM y el desarrollador; todos la ven. Cada mes muestra el presupuesto de gastos, los ingresos, lo que falta por cubrir, lo pagado y lo aprobado por pagar, el % cubierto y el gasto contra presupuesto por categoría (verde, amarillo arriba del 85 %, rojo si se pasó).
+- **Stripe** (función `stripe`, Verify JWT apagado): cada depósito (*payout*) pagado se registra como ingreso de Finanzas, categoría «Stripe», con `data.stripe_id` (índice único: nunca dos veces). Llega solo por el webhook `payout.paid` (y se quita si llega `payout.failed` o `payout.canceled`); el botón **⟳ Stripe** en Ingresos y egresos trae los que falten desde el 1 de enero. Los movimientos llevan la etiqueta Stripe y el mes muestra el total de depósitos. Al editar un ingreso ya no se pierden sus datos extra.
+  - **Conectar:** en Stripe → Developers → API keys crea una *restricted key* con permiso de lectura en Payouts → secreto `STRIPE_SECRET_KEY`. En Developers → Webhooks agrega el endpoint `https://zhzqvetehynndfjbrzti.supabase.co/functions/v1/stripe` con los eventos `payout.paid`, `payout.failed` y `payout.canceled`, y copia su *signing secret* (`whsec_…`) → secreto `STRIPE_WEBHOOK_SECRET`.
+- **Notificaciones al celular** (Web Push): en su propio perfil cada quien activa «🔔 Notificaciones al celular» en cada dispositivo (`push_suscripciones`) y elige «1 hora antes de mis actividades» y «Resumen del día a las 7:30» (`perfiles.notif`). El cron `bitacora-push` (cada 15 min) llama a `crm` (`push`): avisa cuando faltan 45–60 minutos para cada actividad del calendario que esa persona ve, y manda el resumen (actividades de hoy y pendientes para hoy o atrasados) una vez al día. `app/sw.js` muestra la notificación y abre la app; `app/manifest.webmanifest` permite instalarla. En iPhone primero hay que **agregar la Bitácora a la pantalla de inicio** (iOS 16.4 o más). Llaves: `VAPID_PUBLIC` (también en `index.html`), `VAPID_PRIVATE` y `VAPID_SUBJECT` como secretos de la función `crm` (están en `supabase/.secretos-vapid.txt`, fuera de git).
+- **Proyectos → RACI:** los nombres del equipo quedan fijos arriba y el paquete fijo a la izquierda al desplazarse por la tabla.
+
 ## 10. Migraciones
 
 | # | Qué hace |
@@ -277,6 +286,7 @@ Pestaña **Proyectos** en Formación, entre Logros y Entradas (`areaView.formaci
 | 019 | Activos |
 | 020 | Ligas limpias `/cancion/<ministerio>` |
 | 021 | Paso DistroKid (checklist de 24 pasos) |
+| **032** | Aviso de gastos a Finanzas (trigger `gastos_aviso` → `crm`), `presupuestos`, índice único de depósitos de Stripe en `ingresos`, `perfiles.notif`, `push_suscripciones` y cron `bitacora-push` |
 | **031** | Formación → Proyectos: `proyectos`, `equipos`, vista `eventos_proyectos` y datos del piloto (Eleva tu música, Plataforma de formación, Cursos masivos de formación, «Equipo base»; solo si no existen) |
 | **030** | «¿Cómo te enteraste?»: `crm_asistencias.medio`, `medio_otro` y `referido`; `crm_referidos` unifica a quien invita (sin importar mayúsculas, acentos ni pequeñas diferencias, con pg_trgm) y muestra la forma mejor escrita (`nombre_puntaje`); `registro_invitan(q)` para sugerir nombres; `registro_evento`, `registro_rapido` y `crm_puerta` reciben `medio` y `quien` |
 | **029** | Registro rápido: `registro_buscar(q)` (nombre + inicial, máx. 6) y `registro_rapido(p, dato, ev, f)` (confirma con teléfono o correo) |
@@ -307,6 +317,11 @@ Pestaña **Proyectos** en Formación, entre Logros y Entradas (`areaView.formaci
 
 Formato: fecha · qué cambió · dónde.
 
+- **2026-11-26**
+  - **Finanzas:** correo a Finanzas por cada solicitud de gasto nueva; pestaña Presupuesto (mensual, contra ingresos y egresos); depósitos de Stripe como ingresos (función `stripe`, botón ⟳ Stripe). Migración 032.
+  - **Notificaciones al celular:** 1 hora antes de las actividades y resumen del día, activables en el perfil (`sw.js`, `manifest.webmanifest`, función `crm` acción `push`).
+  - **Proyectos → RACI:** nombres del equipo fijos al desplazarse (lo pidió Ceci).
+  - **Personas → Resumen:** los nombres largos ya no se cortan letra por letra; el estado va debajo del nombre.
 - **2026-11-23**
   - **Formularios de la app alineados:** «(opcional)» y las notas pequeñas van en la misma línea que la etiqueta (35 campos: Sugerencias, Finanzas, Activos, Personas, Canciones, Newsletter…) y en las grillas de formulario los campos se alinean abajo de su etiqueta.
   - **Sin zoom y sin rebote** en la app y en todos los formularios públicos: `maximum-scale=1, user-scalable=no` en el viewport, bloqueo de pellizco (iOS), Ctrl/⌘ + rueda y Ctrl/⌘ + «+/−/0», y `overscroll-behavior` para que el scroll termine en el borde de arriba y de abajo (también en ventanas y tablas con desplazamiento).

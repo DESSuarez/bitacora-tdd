@@ -22,6 +22,7 @@
 // WA_PLANTILLA (recordatorio_evento) y WA_IDIOMA (es_MX).
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 import nodemailer from "npm:nodemailer@6.9.14";
+import webpush from "npm:web-push@3.6.7";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -235,7 +236,100 @@ Deno.serve(async (req) => {
 
   const accion = body.accion || "diario";
   const { data: evRows } = await admin.from("eventos").select("id,data");
+  const evRowsTodos = (evRows || []) as Ev[];
+  async function quienCualquiera() {
+    const jwt = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
+    const { data: { user } } = await admin.auth.getUser(jwt);
+    return user ? { id: user.id } : null;
+  }
   const evs = ((evRows || []) as Ev[]).filter((e) => e.data && conRegistro(e.data));
+
+  // ---------- Aviso a Finanzas: solicitud de gasto nueva (la llama un trigger de «gastos», migración 032) ----------
+  if (accion === "aviso_gasto") {
+    const { data: g } = await admin.from("gastos").select("*").eq("id", body.id).maybeSingle();
+    if (!g) return json({ error: "No encontré la solicitud." }, 404);
+    if (Date.now() - new Date(g.creado).getTime() > 30 * 60e3) return json({ ok: true, omitido: "solicitud vieja" });
+    if (!smtp) return json({ error: "Faltan los secretos SMTP." }, 500);
+    const [{ data: perfiles }, { data: usuarios }] = await Promise.all([admin.from("perfiles").select("id,nombre,finanzas"), admin.auth.admin.listUsers({ perPage: 1000 })]);
+    const correos = new Map((usuarios?.users || []).map((u) => [u.id, u.email || ""]));
+    const quienPide = (perfiles || []).find((p) => p.id === g.solicitante);
+    const fin = (perfiles || []).filter((p) => p.finanzas && p.id !== g.solicitante);
+    const MXN = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" }), d = g.data || {};
+    const AREAS_N: Record<string, string> = { formacion: "Formación", musica: "Música", audiovisual: "Audiovisual", operativo: "Operativo", legal: "Legal", marketing: "Marketing", general: "General" };
+    const fila = (l: string, v: string) => v ? `<tr><td style="padding:6px 12px 6px 0;color:#5E6766;font-size:13px;white-space:nowrap;vertical-align:top">${l}</td><td style="padding:6px 0;font-size:14.5px">${esc(v)}</td></tr>` : "";
+    let enviados = 0; const errores: string[] = [];
+    for (const f of fin) {
+      const email = correos.get(f.id); if (!email) continue;
+      const { error } = await admin.from("avisos_enviados").insert({ dia: hoyMx(), destino: email, tipo: "gasto:" + g.id });
+      if (error) continue;
+      const cuerpo = `<p style="margin:0 0 12px">Hola, ${esc(primerNombre(f.nombre))}:</p><p style="margin:0 0 10px"><b>${esc(quienPide?.nombre || "Alguien del equipo")}</b> pidió un gasto:</p>
+<table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:4px 0 8px">${fila("Concepto", g.concepto)}${fila("Monto", MXN.format(Number(g.monto)))}${fila("Área", AREAS_N[g.area] || g.area || "")}${fila("Categoría", g.categoria || "")}${fila("Para cuándo", g.fecha_requerida ? larga(g.fecha_requerida) : "")}${fila("Pagar a", d.beneficiario || "")}${fila("Notas", d.notas || "")}</table>`;
+      try {
+        await enviar(email, `Solicitud de gasto: ${g.concepto} · ${MXN.format(Number(g.monto))}`, plantilla({ tipo: "Finanzas", titulo: "Nueva solicitud de gasto", cuerpo, boton: "Revisar y aprobar", liga: `${APP}/#finanzas` }));
+        enviados++;
+      } catch (e) { errores.push(`${email}: ${(e as Error).message}`); await admin.from("avisos_enviados").delete().match({ dia: hoyMx(), destino: email, tipo: "gasto:" + g.id }); }
+    }
+    return json({ ok: true, enviados, errores });
+  }
+
+  // ---------- Notificaciones al celular (Web Push) ----------
+  const VAPID = { pub: env("VAPID_PUBLIC"), priv: env("VAPID_PRIVATE"), sub: env("VAPID_SUBJECT", "mailto:bitacora@tiempodedios.mx") };
+  const pushListo = () => !!(VAPID.pub && VAPID.priv);
+  async function mandarPush(usuario: string, aviso: { title: string; body: string; url?: string; tag?: string }) {
+    if (!pushListo()) throw new Error("Faltan los secretos VAPID_PUBLIC y VAPID_PRIVATE.");
+    webpush.setVapidDetails(VAPID.sub, VAPID.pub, VAPID.priv);
+    const { data: subs } = await admin.from("push_suscripciones").select("*").eq("usuario", usuario);
+    let ok = 0;
+    for (const s of subs || []) {
+      try { await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, JSON.stringify({ ...aviso, url: aviso.url || APP })); ok++; }
+      catch (e) { const st = (e as { statusCode?: number }).statusCode; if (st === 404 || st === 410) await admin.from("push_suscripciones").delete().eq("id", s.id); }
+    }
+    return ok;
+  }
+  if (accion === "push_prueba") {
+    const yo = await quienCualquiera(); if (!yo) return json({ error: "Tu sesión expiró." }, 401);
+    try { const n = await mandarPush(yo.id, { title: "🔔 Notificaciones activadas", body: "Así te llegarán los avisos de la Bitácora.", tag: "prueba" }); return json({ ok: true, enviados: n }); }
+    catch (e) { return json({ error: (e as Error).message }, 500); }
+  }
+  if (accion === "push") {
+    if (!pushListo()) return json({ ok: true, omitido: "sin VAPID" });
+    const { data: subs } = await admin.from("push_suscripciones").select("usuario");
+    const usuarios = [...new Set((subs || []).map((x) => x.usuario))];
+    if (!usuarios.length) return json({ ok: true, enviados: 0 });
+    const { data: perfs } = await admin.from("perfiles").select("id,nombre,rol,area,areas,notif").in("id", usuarios);
+    const hoy = hoyMx(), ahora = new Date();
+    const hm = new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", minute: "2-digit", hour12: false }).format(ahora);
+    const minHoy = Number(hm.slice(0, 2)) * 60 + Number(hm.slice(3, 5));
+    const todos = (evRowsTodos || []).filter((e) => e.data && e.data.fecha);
+    const { data: tareas } = await admin.from("tareas").select("id,area,data").limit(10000);
+    let enviados = 0;
+    for (const p of perfs || []) {
+      const n = p.notif || {}, pm = ["pm", "desarrollador"].includes(p.rol), mis = new Set([p.area, ...(p.areas || [])].filter(Boolean));
+      const visibles = todos.filter((e) => pm || (e.data.area || "general") === "general" || mis.has(e.data.area));
+      const deHoy = visibles.filter((e) => ocurre(e.data, hoy) || (e.data.fin && e.data.fecha <= hoy && e.data.fin >= hoy && !e.data.repetir));
+      // 1 hora antes de cada actividad con hora (corre cada 15 min: avisa cuando faltan entre 45 y 60 minutos)
+      if (n.una_hora) for (const e of deHoy) {
+        if (!e.data.hora || e.data.fecha < hoy && !e.data.repetir && e.data.fin) continue;
+        const [H, M] = String(e.data.hora).split(":").map(Number), falta = H * 60 + M - minHoy;
+        if (falta <= 45 || falta > 60) continue;
+        const { error } = await admin.from("avisos_enviados").insert({ dia: hoy, destino: p.id, tipo: `push1h:${e.id}` });
+        if (error) continue;
+        try { enviados += await mandarPush(p.id, { title: `En 1 hora: ${e.data.titulo || "Actividad"}`, body: `${hora12(e.data.hora)}${e.data.lugar ? " · " + e.data.lugar : ""}`, url: `${APP}/#dashboard`, tag: `1h-${e.id}` }); } catch { /* sin VAPID */ }
+      }
+      // Resumen del día a las 7:30 (o en la primera corrida después)
+      if (n.resumen && minHoy >= 450 && minHoy < 600) {
+        const { error } = await admin.from("avisos_enviados").insert({ dia: hoy, destino: p.id, tipo: "pushdia" });
+        if (!error) {
+          const evs = deHoy.slice().sort((a, b) => (a.data.hora || "99").localeCompare(b.data.hora || "99"));
+          const pend = (tareas || []).map((t) => t.data || {}).filter((t) => t.responsable_id === p.id && !t.hecha && t.semana && (t.vence || sumar(t.semana, 4)) <= hoy);
+          const partes = [evs.length ? `${evs.length} actividad${evs.length > 1 ? "es" : ""}: ${evs.slice(0, 3).map((e) => (e.data.hora ? hora12(e.data.hora) + " " : "") + (e.data.titulo || "")).join(" · ")}${evs.length > 3 ? "…" : ""}` : "Sin actividades en el calendario.",
+            pend.length ? `${pend.length} pendiente${pend.length > 1 ? "s" : ""} para hoy o atrasado${pend.length > 1 ? "s" : ""}.` : ""].filter(Boolean);
+          try { enviados += await mandarPush(p.id, { title: `Buenos días, ${primerNombre(p.nombre)} ☀️`, body: partes.join(" "), url: `${APP}/#persona/${p.id}`, tag: "resumen" }); } catch { /* sin VAPID */ }
+        }
+      }
+    }
+    return json({ ok: true, enviados });
+  }
 
   if (accion === "estado") {
     if (!(await quien())) return json({ error: "Sin permiso." }, 403);

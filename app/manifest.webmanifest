@@ -1,0 +1,14 @@
+{
+  "name": "Bitácora Tiempo de Dios",
+  "short_name": "Bitácora",
+  "start_url": "/#dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#1B1C1A",
+  "theme_color": "#1B1C1A",
+  "lang": "es-MX",
+  "icons": [
+    { "src": "/icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

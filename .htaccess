@@ -1,6 +1,8 @@
 # Hostinger clona el repositorio completo en la carpeta del subdominio.
 # Esto hace que el subdominio sirva solo lo que está en app/
 # y que no se puedan abrir los demás archivos (schema.sql, CLAUDE.md, .git, etc.).
+# Notificaciones al celular: manifiesto de la app instalable
+AddType application/manifest+json .webmanifest
 RewriteEngine On
 # Ligas limpias para registrar canciones: /cancion/<ministerio> abre el formulario (app/cancion/index.html)
 RewriteRule ^cancion/([a-z0-9-]+)/?$ app/cancion/index.html [L]
