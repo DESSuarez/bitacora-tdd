@@ -3455,6 +3455,11 @@ function formIngreso(i){const v=i||{fecha:key(new Date()),concepto:"",monto:"",a
     <label class="c3"><span>De quién <small>(opcional)</small></span><input class="field" id="iFuente" maxlength="120" value="${esc((v.data||{}).fuente||"")}" placeholder="Donante, cliente, evento…"></label>
     <label class="c3"><span>Referencia <small>(opcional)</small></span><input class="field" id="iRef" maxlength="120" value="${esc((v.data||{}).referencia||"")}"></label>
     <div class="row">${i?`<button type="button" class="btn ghost" data-iborrar="${esc(i.id)}">Borrar ingreso</button>`:""}<span class="dlnote"></span><button type="button" class="btn ghost" data-inuevo="0">Cancelar</button><button class="btn" type="submit">Guardar</button></div></form>`}
+/* Depósitos de Stripe del año, por mes: tocar un mes lleva a sus movimientos */
+function stripeAnio(){const y=monthStart().getFullYear(),ma=key(monthStart()).slice(0,7),o={};
+  ingresosF.filter(i=>(i.data||{}).stripe_id&&(i.fecha||"").slice(0,4)===String(y)).forEach(i=>{const m=i.fecha.slice(0,7);(o[m]=o[m]||{n:0,t:0});o[m].n++;o[m].t+=Number(i.monto)});
+  const ms=Object.keys(o).sort();if(!ms.length)return "";const tot=ms.reduce((a,m)=>a+o[m].t,0),n=ms.reduce((a,m)=>a+o[m].n,0);
+  return `<div class="dpanel"><h3>💳 Depósitos de Stripe en ${y} · ${dinero(tot)} en ${n}</h3><div class="efiltros" style="margin:0">${ms.map(m=>`<button type="button" class="efil" data-finmes="${m}" aria-pressed="${m===ma}">${MESES_L[Number(m.slice(5))-1]} · ${dinero(o[m].t)}<span>${o[m].n}</span></button>`).join("")}</div><p class="fsub" style="margin:8px 0 0">Llegan solos cada vez que Stripe deposita al banco. Toca un mes para ver sus movimientos.</p></div>`}
 function vistaMovimientos(){const mov=movimientosMes(),fin=puedeFin();
   const ti=mov.filter(x=>x.tipo==="ingreso").reduce((s,x)=>s+x.monto,0),te=mov.filter(x=>x.tipo==="egreso").reduce((s,x)=>s+x.monto,0),bal=ti-te;
   const porCat=t=>{const o={};mov.filter(x=>x.tipo===t).forEach(x=>o[x.categoria||"Otro"]=(o[x.categoria||"Otro"]||0)+x.monto);return Object.entries(o).sort((a,b)=>b[1]-a[1])};
@@ -3462,7 +3467,7 @@ function vistaMovimientos(){const mov=movimientosMes(),fin=puedeFin();
   const ie=ingresoEdit&&ingresosF.find(x=>x.id===ingresoEdit);
   return `<div class="dhead"><div><h2 class="fh2">Ingresos y egresos de ${MESES_L[monthStart().getMonth()]}</h2><p class="fsub">Los egresos son las solicitudes con pago realizado en este mes. ${fin?"Registra aquí los ingresos.":"Solo Finanzas registra ingresos."}</p></div>
       <div class="rbtns">${fin?`<button type="button" class="btn ghost" data-stripesync="1" title="Trae de Stripe los depósitos que falten">⟳ Stripe</button><button type="button" class="btn" data-inuevo="1">+ Registrar ingreso</button>`:""}<button type="button" class="btn ghost" data-fcsv="1">Descargar CSV</button></div></div>
-    ${(()=>{const st=mov.filter(x=>x.stripe);return st.length?`<p class="fsub" style="margin:0">💳 Depósitos de Stripe este mes: <b>${dinero(st.reduce((a,x)=>a+x.monto,0))}</b> en ${st.length} depósito${st.length===1?"":"s"} (llegan solos).</p>`:""})()}
+    ${stripeAnio()}
     ${nuevoIngreso||ie?formIngreso(ie||null):""}
     <div class="ctot fbal"><div class="ing"><b>${dinero(ti)}</b><span>ingresos</span></div><div class="egr"><b>${dinero(te)}</b><span>egresos</span></div><div class="${bal>=0?"ing":"egr"}"><b>${dinero(bal)}</b><span>balance del mes</span></div><div><b>${mov.length}</b><span>movimientos</span></div></div>
     <div class="dgrid"><div class="dpanel"><h3>Egresos por categoría</h3>${barras(porCat("egreso"),te,"var(--flame)")}</div><div class="dpanel"><h3>Ingresos por categoría</h3>${barras(porCat("ingreso"),ti,"#3F9E6A")}</div></div>
@@ -3492,14 +3497,16 @@ function vistaPresupuesto(){const m=key(monthStart()).slice(0,7),fin=puedeFin()|
     <div class="dpanel"><h3>Ingresos contra presupuesto · ${cub}% cubierto</h3><div class="trk prestrk"><i style="width:${cub}%;background:${cub>=100?"#3F9E6A":"var(--sol)"}"></i></div></div>
     <div class="dpanel"><h3>Gasto por categoría</h3>${cats.length?`<div class="presgrid">${cats.map(fila).join("")}</div>`:`<p class="none" style="margin:0">Todavía no hay presupuesto para este mes.</p>`}</div>
     <div class="dpanel"><h3>Renglones del presupuesto · ${L.length}</h3>${L.length?`<ul class="fmov">${L.slice().sort((a,b)=>Number(b.monto)-Number(a.monto)).map(x=>`<li class="egreso"><time>${esc(x.categoria||"Otro")}</time><div><strong>${esc(x.concepto)}</strong><small>${x.area&&AREAS[x.area]?AREAS[x.area].n:"General"} · desde ${esc(x.desde)}${x.hasta?" hasta "+esc(x.hasta):" · cada mes"}${x.notas?" · "+esc(x.notas):""}</small></div><b>${dinero(x.monto)}</b>${fin?`<button type="button" class="icon" data-presedit="${esc(x.id)}" aria-label="Editar" title="Editar">✎</button>`:""}</li>`).join("")}</ul>`:`<p class="none" style="margin:0">${fin?"Agrega el primero con «+ Agregar al presupuesto».":"Finanzas todavía no define el presupuesto."}</p>`}</div>`}
-document.addEventListener("click",async e=>{const b=e.target.closest("[data-presedit],[data-presborrar],[data-stripesync]");if(!b||!sb)return;const ds=b.dataset;
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-presedit],[data-presborrar],[data-stripesync],[data-finmes]");if(!b||!sb)return;const ds=b.dataset;
+  if(ds.finmes){anchor=fromKey(ds.finmes+"-01");render();return}
   if(ds.presedit!==undefined){presEdit=ds.presedit||null;render();if(presEdit)setTimeout(()=>$("prConcepto")&&$("prConcepto").focus(),30);return}
   if(ds.presborrar){if(!await confirmarAccion({titulo:"¿Borrar este renglón del presupuesto?",texto:"Deja de contar en todos los meses.",boton:"Sí, borrar"}))return;
     const {error}=await sb.from("presupuestos").delete().eq("id",ds.presborrar);if(error){toast("No se pudo borrar: "+error.message);return}presupuestosF=presupuestosF.filter(x=>x.id!==ds.presborrar);presEdit=null;render();return}
   if(ds.stripesync){b.disabled=true;b.textContent="⟳ Revisando…";const desde=key(new Date(monthStart().getFullYear(),0,1));
     const {data,error}=await sb.functions.invoke("stripe",{body:{accion:"sincronizar",desde}});b.disabled=false;b.textContent="⟳ Stripe";
     if(error||!data||data.error){toast("Stripe: "+((data&&data.error)||(error&&/not found|404/i.test(error.message)?"falta desplegar la función «stripe».":error&&error.message)||"no respondió"));return}
-    toast(data.nuevos?`Listo: ${data.nuevos} depósito${data.nuevos===1?"":"s"} nuevo${data.nuevos===1?"":"s"} de Stripe.`:`Stripe al día: ${data.revisados} depósitos revisados.`);return}});
+    const meses=[...new Set((data.depositos||[]).map(d=>MESES_L[Number(d.fecha.slice(5,7))-1]))];
+    toast((data.nuevos?`Listo: ${data.nuevos} depósito${data.nuevos===1?"":"s"} nuevo${data.nuevos===1?"":"s"} de Stripe`:`Stripe al día: ${data.revisados} depósito${data.revisados===1?"":"s"} ya registrado${data.revisados===1?"":"s"}`)+(meses.length?` (${meses.join(", ")}).`:"."));render();return}});
 document.addEventListener("submit",async e=>{if(e.target.id!=="presForm")return;e.preventDefault();if(!sb)return;const f=e.target,id=f.dataset.pid;
   const fila={concepto:$("prConcepto").value.trim().slice(0,160),monto:Number($("prMonto").value),categoria:$("prCat").value,area:$("prArea").value,desde:$("prDesde").value,hasta:$("prHasta").value||null,notas:$("prNotas").value.trim()};
   if(!fila.concepto||!(fila.monto>=0)||!/^\d{4}-\d{2}$/.test(fila.desde)){toast("Revisa el concepto, el monto y el mes.");return}

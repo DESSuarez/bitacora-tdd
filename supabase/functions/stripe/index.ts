@@ -86,15 +86,20 @@ Deno.serve(async (req) => {
   const desde = /^\d{4}-\d{2}-\d{2}$/.test(String(body.desde || "")) ? String(body.desde) : `${new Date().getFullYear()}-01-01`;
   const gte = Math.floor(new Date(desde + "T00:00:00-06:00").getTime() / 1000);
   let nuevos = 0, revisados = 0, despues = "";
+  const depositos: { id: string; fecha: string; monto: number; nuevo: boolean }[] = [];
   for (let i = 0; i < 20; i++) {
     const q = new URLSearchParams({ limit: "100", status: "paid", "arrival_date[gte]": String(gte) });
     if (despues) q.set("starting_after", despues);
     const r = await fetch(`https://api.stripe.com/v1/payouts?${q}`, { headers: { Authorization: `Bearer ${KEY}` } });
     const j = await r.json();
     if (!r.ok) return json({ error: j?.error?.message || "Stripe no respondió." }, 400);
-    for (const p of (j.data || []) as Payout[]) { revisados++; try { if (await registrar(p)) nuevos++; } catch (e) { return json({ error: (e as Error).message }, 500); } }
+    for (const p of (j.data || []) as Payout[]) {
+      revisados++;
+      try { const n = await registrar(p); if (n) nuevos++; depositos.push({ id: p.id, fecha: fechaMx(p.arrival_date), monto: p.amount / 100, nuevo: n }); }
+      catch (e) { return json({ error: (e as Error).message }, 500); }
+    }
     if (!j.has_more || !j.data?.length) break;
     despues = j.data[j.data.length - 1].id;
   }
-  return json({ ok: true, nuevos, revisados, desde });
+  return json({ ok: true, nuevos, revisados, desde, depositos });
 });
