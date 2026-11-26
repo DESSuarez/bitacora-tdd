@@ -5,6 +5,8 @@
 // · {accion:"sincronizar", desde?:"YYYY-MM-DD"} (Finanzas, PM o desarrollador): trae los depósitos pagados desde esa fecha
 //   (por omisión, 1 de enero del año) y registra los que falten. Sirve para el arranque y por si se perdió un aviso.
 // · {accion:"estado"}: si está conectada.
+// Cada depósito guarda data.cobros: los cobros que lo forman (fecha, tipo, nombre, correo, concepto, monto, comisión),
+//   para ver qué clientes pagaron en el mes. Sincronizar completa los depósitos viejos que aún no los tienen.
 // Cada ingreso lleva data.stripe_id (índice único, migración 032): nunca se registra dos veces el mismo depósito.
 //
 // Secretos: STRIPE_SECRET_KEY (de preferencia una llave restringida con permiso de solo lectura en Payouts) y
@@ -22,6 +24,7 @@ const TZ = "America/Mexico_City";
 const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { ...cors, "Content-Type": "application/json" } });
 const fechaMx = (seg: number) => new Intl.DateTimeFormat("en-CA", { timeZone: TZ }).format(new Date(seg * 1000));
 
+type Cobro = { fecha: string; tipo: string; nombre: string; correo: string; concepto?: string; monto: number; comision: number };
 type Payout = { id: string; amount: number; currency: string; arrival_date: number; status: string; description?: string | null; statement_descriptor?: string | null };
 
 // Verifica la firma de Stripe: v1 = HMAC-SHA256(secreto, "t.cuerpo"), con 5 minutos de tolerancia
@@ -40,9 +43,55 @@ Deno.serve(async (req) => {
   const admin = createClient(env("SUPABASE_URL"), env("SUPABASE_SERVICE_ROLE_KEY"), { auth: { persistSession: false, autoRefreshToken: false } });
   const crudo = await req.text();
 
+  // Cobros que forman un depósito (clientes que pagaron): balance_transactions del payout con el cargo expandido.
+  // Pide a la llave permiso de lectura en Balance, Charges y Customers; si no lo tiene, el depósito se registra sin clientes.
+  let avisoCobros = "", completados = 0;
+  async function cobrosDe(payoutId: string): Promise<Cobro[] | null> {
+    if (!KEY) return null;
+    const out: Cobro[] = [];
+    let despues = "";
+    for (let i = 0; i < 20; i++) {
+      const q = new URLSearchParams({ payout: payoutId, limit: "100" });
+      q.append("expand[]", "data.source");
+      q.append("expand[]", "data.source.customer");
+      if (despues) q.set("starting_after", despues);
+      const r = await fetch(`https://api.stripe.com/v1/balance_transactions?${q}`, { headers: { Authorization: `Bearer ${KEY}` } });
+      const j = await r.json();
+      if (!r.ok) { avisoCobros = j?.error?.message || "Stripe no dio los cobros."; return null; }
+      for (const t of (j.data || []) as Record<string, any>[]) {
+        if (t.type === "payout") continue;
+        const src = (t.source && typeof t.source === "object" ? t.source : {}) as Record<string, any>;
+        const cu = (src.customer && typeof src.customer === "object" ? src.customer : {}) as Record<string, any>;
+        const bd = (src.billing_details || {}) as Record<string, any>;
+        out.push({
+          fecha: fechaMx(t.created), tipo: t.type,
+          nombre: String(bd.name || cu.name || src.shipping?.name || "").slice(0, 80),
+          correo: String(bd.email || src.receipt_email || cu.email || "").slice(0, 80),
+          concepto: String(src.description || t.description || "").slice(0, 80),
+          monto: t.amount / 100, comision: t.fee / 100,
+        });
+      }
+      if (!j.has_more || !j.data?.length) break;
+      despues = j.data[j.data.length - 1].id;
+    }
+    // La columna data acepta hasta ~50 KB: si son muchísimos cobros, primero se quita el concepto y luego se recorta
+    let lista = out;
+    if (JSON.stringify(lista).length > 40000) lista = lista.map(({ concepto: _c, ...x }) => x as Cobro);
+    while (JSON.stringify(lista).length > 40000) lista = lista.slice(0, Math.floor(lista.length * 0.9));
+    return lista;
+  }
+
   async function registrar(p: Payout) {
-    const { data: ya } = await admin.from("ingresos").select("id").eq("data->>stripe_id", p.id).maybeSingle();
-    if (ya) return false;
+    const { data: ya } = await admin.from("ingresos").select("id,data").eq("data->>stripe_id", p.id).maybeSingle();
+    if (ya) {
+      // Ya registrado: si aún no tiene sus clientes, se completan
+      if (!ya.data?.cobros) {
+        const cobros = await cobrosDe(p.id);
+        if (cobros) { await admin.from("ingresos").update({ data: { ...(ya.data || {}), cobros } }).eq("id", ya.id); completados++; }
+      }
+      return false;
+    }
+    const cobros = await cobrosDe(p.id);
     const moneda = (p.currency || "mxn").toUpperCase();
     const { error } = await admin.from("ingresos").insert({
       fecha: fechaMx(p.arrival_date),
@@ -50,7 +99,7 @@ Deno.serve(async (req) => {
       monto: p.amount / 100,
       area: "general",
       categoria: "Stripe",
-      data: { fuente: "Stripe", referencia: p.id, stripe_id: p.id, origen: "stripe", moneda, ...(moneda !== "MXN" ? { nota: `Monto en ${moneda}` } : {}) },
+      data: { fuente: "Stripe", referencia: p.id, stripe_id: p.id, origen: "stripe", moneda, ...(moneda !== "MXN" ? { nota: `Monto en ${moneda}` } : {}), ...(cobros ? { cobros } : {}) },
       registrado_por: null,
     });
     if (error && !/duplicate|23505/.test(error.message + (error.code || ""))) throw new Error(error.message);
@@ -101,5 +150,5 @@ Deno.serve(async (req) => {
     if (!j.has_more || !j.data?.length) break;
     despues = j.data[j.data.length - 1].id;
   }
-  return json({ ok: true, nuevos, revisados, desde, depositos });
+  return json({ ok: true, nuevos, revisados, desde, depositos, completados, avisoCobros });
 });

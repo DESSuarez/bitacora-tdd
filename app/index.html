@@ -868,6 +868,9 @@ button.cmore:hover{color:var(--fg)}
 .fbar{display:grid;grid-template-columns:120px 1fr auto;gap:10px;align-items:center;font-size:13.5px;font-weight:700}
 .fbar .trk{height:8px;border-radius:99px;background:var(--surface);overflow:hidden}.fbar .trk i{display:block;height:100%;border-radius:99px}
 .fbar b{font-family:var(--mono);font-weight:500;font-size:12.5px}
+.fperrow{display:flex;justify-content:flex-end;margin:-6px 0 14px}.fper{display:flex;align-items:center;gap:8px;font-weight:800;font-size:13px}.fper select{width:auto;min-width:170px}
+.fcob{margin-top:6px;font-size:12.5px}.fcob summary{cursor:pointer;color:var(--muted);font-weight:700}.fcob ul{list-style:none;margin:6px 0 0;padding:0}.fcob li{display:grid!important;grid-template-columns:56px 1fr auto!important;gap:10px!important;padding:4px 0!important;border-bottom:1px dashed var(--line)!important}.fcob li span:first-child{font-family:var(--mono);color:var(--muted)}.fcob small{display:inline!important}
+.tblwrap{overflow-x:auto}.ftab{width:100%;border-collapse:collapse;font-size:13.5px}.ftab th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}.ftab td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}.ftab td small{display:block;color:var(--muted);font-size:11.5px}.ftab td:nth-child(n+3){font-family:var(--mono);white-space:nowrap}.ftab a{color:inherit}
 .fmov{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .fmov li{display:grid;grid-template-columns:64px 1fr auto auto;gap:12px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line)}
 .fmov li:last-child{border-bottom:0}
@@ -3349,7 +3352,7 @@ const ESTADO_G=Object.fromEntries(ESTADOS_G.map(([k,n,c])=>[k,{n,c}]));
 const CATS_GASTO=["Materiales","Equipo","Producción","Transporte","Alimentos","Hospedaje","Honorarios","Servicios","Publicidad","Eventos","Otro"];
 const CATS_INGRESO=["Donativos","Aportaciones","Venta","Patrocinio","Regalías","Reembolso","Stripe","Otro"];
 const METODOS=["Transferencia","Efectivo","Tarjeta","Reembolso"];
-let presupuestosF=[],presErr="",presEdit=null,finView="solicitudes",gastos=[],ingresosF=[],loadedF=false,finErr="",finCh=null,filtroG="activas",soloMias=false,gastoSel=null,nuevoGasto=false,pagoForm=null,nuevoIngreso=false,ingresoEdit=null;
+let finAnio=false,presupuestosF=[],presErr="",presEdit=null,finView="solicitudes",gastos=[],ingresosF=[],loadedF=false,finErr="",finCh=null,filtroG="activas",soloMias=false,gastoSel=null,nuevoGasto=false,pagoForm=null,nuevoIngreso=false,ingresoEdit=null;
 const MXN=new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN"});
 function dinero(n){return MXN.format(Number(n)||0)}
 function puedeFin(){return !!perfil&&(!!perfil.finanzas||perfil.rol==="desarrollador")}
@@ -3441,9 +3444,9 @@ function vistaSolicitudes(){const yo=perfil&&perfil.id,ms=key(new Date()).slice(
     <div class="efiltros">${[["activas","Activas"],["todas","Todas"],...ESTADOS_G.map(([k,n])=>[k,n])].map(([k,n])=>`<button type="button" class="efil" data-gfiltro="${k}" aria-pressed="${filtroG===k}">${n}<span>${cnt(k)}</span></button>`).join("")}<button type="button" class="efil" data-gmias="1" aria-pressed="${soloMias}">Solo las mías</button></div>
     <ul class="glist">${lista.length?lista.map(gastoCard).join(""):`<li class="empty"><strong>${gastos.length?"No hay solicitudes con este filtro":"Aún no hay solicitudes de gasto"}</strong><p>${gastos.length?"Prueba con «Todas».":"Cuando alguien del equipo necesite comprar o pagar algo, lo pide aquí con «+ Nueva solicitud». Finanzas la aprueba, la paga y queda en el registro del mes."}</p></li>`}</ul>`}
 /* ---------- Vista: ingresos y egresos del mes ---------- */
-function movimientosMes(){const m=key(monthStart()).slice(0,7);
-  const egr=gastos.filter(g=>g.estado==="pagada"&&(g.fecha_pago||"").slice(0,7)===m).map(g=>({tipo:"egreso",id:g.id,fecha:g.fecha_pago,concepto:g.concepto,monto:Number((g.data||{}).pago&&(g.data.pago.monto)||g.monto),area:g.area,categoria:g.categoria,quien:nombreDe(g.solicitante)}));
-  const ing=ingresosF.filter(i=>(i.fecha||"").slice(0,7)===m).map(i=>({tipo:"ingreso",id:i.id,fecha:i.fecha,concepto:i.concepto,monto:Number(i.monto),area:i.area,categoria:i.categoria,quien:(i.data||{}).fuente||"",stripe:!!(i.data||{}).stripe_id}));
+function movimientosMes(){const m=finAnio?String(monthStart().getFullYear()):key(monthStart()).slice(0,7),en=f=>(f||"").slice(0,m.length)===m;
+  const egr=gastos.filter(g=>g.estado==="pagada"&&en(g.fecha_pago)).map(g=>({tipo:"egreso",id:g.id,fecha:g.fecha_pago,concepto:g.concepto,monto:Number((g.data||{}).pago&&(g.data.pago.monto)||g.monto),area:g.area,categoria:g.categoria,quien:nombreDe(g.solicitante)}));
+  const ing=ingresosF.filter(i=>en(i.fecha)).map(i=>({tipo:"ingreso",id:i.id,fecha:i.fecha,concepto:i.concepto,monto:Number(i.monto),area:i.area,categoria:i.categoria,quien:(i.data||{}).fuente||"",stripe:!!(i.data||{}).stripe_id,cobros:(i.data||{}).cobros||null}));
   return [...ing,...egr].sort((a,b)=>a.fecha<b.fecha?1:a.fecha>b.fecha?-1:a.tipo<b.tipo?-1:1)}
 function formIngreso(i){const v=i||{fecha:key(new Date()),concepto:"",monto:"",area:"general",categoria:"Donativos",data:{}};
   return `<form class="cnueva fform" id="ingresoForm" data-iid="${esc(i?i.id:"")}" autocomplete="off"><h3>${i?"Editar ingreso":"Registrar ingreso"}</h3>
@@ -3459,19 +3462,42 @@ function formIngreso(i){const v=i||{fecha:key(new Date()),concepto:"",monto:"",a
 function stripeAnio(){const y=monthStart().getFullYear(),ma=key(monthStart()).slice(0,7),o={};
   ingresosF.filter(i=>(i.data||{}).stripe_id&&(i.fecha||"").slice(0,4)===String(y)).forEach(i=>{const m=i.fecha.slice(0,7);(o[m]=o[m]||{n:0,t:0});o[m].n++;o[m].t+=Number(i.monto)});
   const ms=Object.keys(o).sort();if(!ms.length)return "";const tot=ms.reduce((a,m)=>a+o[m].t,0),n=ms.reduce((a,m)=>a+o[m].n,0);
-  return `<div class="dpanel"><h3>💳 Depósitos de Stripe en ${y} · ${dinero(tot)} en ${n}</h3><div class="efiltros" style="margin:0">${ms.map(m=>`<button type="button" class="efil" data-finmes="${m}" aria-pressed="${m===ma}">${MESES_L[Number(m.slice(5))-1]} · ${dinero(o[m].t)}<span>${o[m].n}</span></button>`).join("")}</div><p class="fsub" style="margin:8px 0 0">Llegan solos cada vez que Stripe deposita al banco. Toca un mes para ver sus movimientos.</p></div>`}
+  return `<div class="dpanel"><h3>💳 Depósitos de Stripe en ${y} · ${dinero(tot)} en ${n}</h3><div class="efiltros" style="margin:0">${ms.map(m=>`<button type="button" class="efil" data-finmes="${m}" aria-pressed="${!finAnio&&m===ma}">${MESES_L[Number(m.slice(5))-1]} · ${dinero(o[m].t)}<span>${o[m].n}</span></button>`).join("")}</div><p class="fsub" style="margin:8px 0 0">Llegan solos cada vez que Stripe deposita al banco. Toca un mes para ver sus movimientos.</p></div>`}
+/* Selector del periodo: un mes del año o el año completo */
+function selPeriodo(){const y=monthStart().getFullYear(),ma=key(monthStart()).slice(0,7);
+  return `<label class="fper">Ver<select class="field" id="finPeriodo"><option value="anio" ${finAnio?"selected":""}>Todo ${y}</option>${MESES_L.map((n,i)=>{const v=`${y}-${String(i+1).padStart(2,"0")}`;return `<option value="${v}" ${!finAnio&&v===ma?"selected":""}>${n[0].toUpperCase()+n.slice(1)} ${y}</option>`}).join("")}</select></label>`}
+const periodoTxt=()=>finAnio?String(monthStart().getFullYear()):MESES_L[monthStart().getMonth()];
+/* Clientes de Stripe del periodo: los cobros guardados en cada depósito (data.cobros), agrupados por correo o nombre */
+function clientesStripe(mov){const o={};
+  mov.filter(x=>x.stripe&&x.cobros).forEach(x=>x.cobros.forEach(c=>{if(c.tipo!=="charge"&&c.tipo!=="payment")return;
+    const k=(c.correo||c.nombre||"sin datos").toLowerCase(),r=o[k]=o[k]||{nombre:"",correo:c.correo||"",pagos:0,total:0,comision:0,ultimo:"",conceptos:new Set()};
+    if(c.nombre&&!r.nombre)r.nombre=c.nombre;r.pagos++;r.total+=Number(c.monto)||0;r.comision+=Number(c.comision)||0;if(c.fecha>r.ultimo)r.ultimo=c.fecha;if(c.concepto)r.conceptos.add(c.concepto)}));
+  return Object.values(o).sort((a,b)=>b.total-a.total)}
+function panelClientes(mov){const st=mov.filter(x=>x.stripe);if(!st.length)return "";const cl=clientesStripe(mov),sinC=st.filter(x=>!x.cobros).length;
+  return `<div class="dpanel"><div class="dhead" style="margin:0 0 10px"><h3 style="margin:0">Clientes que pagaron por Stripe · ${esc(periodoTxt())}${cl.length?` · ${cl.length}`:""}</h3>${cl.length?`<button type="button" class="btn ghost" data-csvcli="1">CSV de clientes</button>`:""}</div>
+    ${cl.length?`<div class="tblwrap"><table class="ftab"><thead><tr><th>Cliente</th><th>Correo</th><th>Pagos</th><th>Total</th><th>Comisión</th><th>Último</th></tr></thead><tbody>${cl.map(c=>`<tr><td><b>${esc(c.nombre||"Sin nombre")}</b>${c.conceptos.size?`<small>${esc([...c.conceptos].slice(0,3).join(" · "))}</small>`:""}</td><td>${c.correo?`<a href="mailto:${esc(c.correo)}">${esc(c.correo)}</a>`:"—"}</td><td>${c.pagos}</td><td>${dinero(c.total)}</td><td>${dinero(c.comision)}</td><td>${shortDate(c.ultimo)}</td></tr>`).join("")}</tbody></table></div>`:""}
+    ${sinC?`<p class="fsub" style="margin:${cl.length?"10px":"0"} 0 0">${sinC} depósito${sinC===1?"":"s"} todavía sin el detalle de clientes: dale <b>⟳ Stripe</b> para traerlo.</p>`:""}</div>`}
+function cobrosHTML(x){if(!x.cobros||!x.cobros.length)return "";
+  return `<details class="fcob"><summary>${x.cobros.length} movimiento${x.cobros.length===1?"":"s"} en este depósito</summary><ul>${x.cobros.map(c=>`<li><span>${shortDate(c.fecha)}</span><span>${esc(c.nombre||c.correo||(c.tipo==="refund"?"Reembolso":c.tipo==="stripe_fee"?"Comisión de Stripe":"Sin nombre"))}${c.correo&&c.nombre?` <small>${esc(c.correo)}</small>`:""}</span><b>${dinero(c.monto)}</b></li>`).join("")}</ul></details>`}
+function csvClientes(){const cl=clientesStripe(movimientosMes()),q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+  const filas=[["Cliente","Correo","Pagos","Total","Comisión","Último pago","Conceptos"],...cl.map(c=>[c.nombre,c.correo,c.pagos,c.total.toFixed(2),c.comision.toFixed(2),c.ultimo,[...c.conceptos].join(" · ")])];
+  const blob=new Blob(["\ufeff"+filas.map(r=>r.map(q).join(",")).join("\r\n")],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=`TdD-clientes-stripe-${finAnio?monthStart().getFullYear():key(monthStart()).slice(0,7)}.csv`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);toast("CSV descargado.")}
+document.addEventListener("change",e=>{if(e.target.id!=="finPeriodo")return;const v=e.target.value;if(v==="anio")finAnio=true;else{finAnio=false;anchor=fromKey(v+"-01")}render()});
 function vistaMovimientos(){const mov=movimientosMes(),fin=puedeFin();
   const ti=mov.filter(x=>x.tipo==="ingreso").reduce((s,x)=>s+x.monto,0),te=mov.filter(x=>x.tipo==="egreso").reduce((s,x)=>s+x.monto,0),bal=ti-te;
   const porCat=t=>{const o={};mov.filter(x=>x.tipo===t).forEach(x=>o[x.categoria||"Otro"]=(o[x.categoria||"Otro"]||0)+x.monto);return Object.entries(o).sort((a,b)=>b[1]-a[1])};
   const barras=(arr,tot,col)=>arr.length?arr.map(([c,v])=>`<div class="fbar"><span>${esc(c)}</span><div class="trk"><i style="width:${tot?Math.round(v/tot*100):0}%;background:${col}"></i></div><b>${dinero(v)}</b></div>`).join(""):`<p class="none" style="margin:0">Sin movimientos.</p>`;
   const ie=ingresoEdit&&ingresosF.find(x=>x.id===ingresoEdit);
-  return `<div class="dhead"><div><h2 class="fh2">Ingresos y egresos de ${MESES_L[monthStart().getMonth()]}</h2><p class="fsub">Los egresos son las solicitudes con pago realizado en este mes. ${fin?"Registra aquí los ingresos.":"Solo Finanzas registra ingresos."}</p></div>
+  return `<div class="dhead"><div><h2 class="fh2">Ingresos y egresos de ${periodoTxt()}</h2><p class="fsub">Los egresos son las solicitudes con pago realizado en ${finAnio?"este año":"este mes"}. ${fin?"Registra aquí los ingresos.":"Solo Finanzas registra ingresos."}</p></div>
       <div class="rbtns">${fin?`<button type="button" class="btn ghost" data-stripesync="1" title="Trae de Stripe los depósitos que falten">⟳ Stripe</button><button type="button" class="btn" data-inuevo="1">+ Registrar ingreso</button>`:""}<button type="button" class="btn ghost" data-fcsv="1">Descargar CSV</button></div></div>
+    <div class="fperrow">${selPeriodo()}</div>
     ${stripeAnio()}
     ${nuevoIngreso||ie?formIngreso(ie||null):""}
-    <div class="ctot fbal"><div class="ing"><b>${dinero(ti)}</b><span>ingresos</span></div><div class="egr"><b>${dinero(te)}</b><span>egresos</span></div><div class="${bal>=0?"ing":"egr"}"><b>${dinero(bal)}</b><span>balance del mes</span></div><div><b>${mov.length}</b><span>movimientos</span></div></div>
+    <div class="ctot fbal"><div class="ing"><b>${dinero(ti)}</b><span>ingresos</span></div><div class="egr"><b>${dinero(te)}</b><span>egresos</span></div><div class="${bal>=0?"ing":"egr"}"><b>${dinero(bal)}</b><span>balance ${finAnio?"del año":"del mes"}</span></div><div><b>${mov.length}</b><span>movimientos</span></div></div>
+    ${fin?panelClientes(mov):""}
     <div class="dgrid"><div class="dpanel"><h3>Egresos por categoría</h3>${barras(porCat("egreso"),te,"var(--flame)")}</div><div class="dpanel"><h3>Ingresos por categoría</h3>${barras(porCat("ingreso"),ti,"#3F9E6A")}</div></div>
-    <div class="dpanel"><h3>Movimientos</h3>${mov.length?`<ul class="fmov">${mov.map(x=>`<li class="${x.tipo}"><time>${shortDate(x.fecha)}</time><div><strong>${esc(x.concepto)}${x.stripe?` <span class="cpill" style="--c:#635BFF">Stripe</span>`:""}</strong><small>${x.tipo==="ingreso"?"Ingreso":"Egreso"} · ${esc(x.categoria||"Otro")}${x.area&&AREAS[x.area]?" · "+AREAS[x.area].n:""}${x.quien?" · "+esc(x.quien):""}</small></div><b>${x.tipo==="ingreso"?"+":"−"}${dinero(x.monto)}</b>${x.tipo==="ingreso"&&fin?`<button type="button" class="icon" data-iedit="${esc(x.id)}" aria-label="Editar ingreso" title="Editar">✎</button>`:x.tipo==="egreso"?`<button type="button" class="icon" data-irgasto="${esc(x.id)}" aria-label="Ver solicitud" title="Ver solicitud">↗</button>`:""}</li>`).join("")}</ul>`:`<p class="none" style="margin:0">Aún no hay movimientos en este mes.</p>`}</div>`}
+    <div class="dpanel"><h3>Movimientos</h3>${mov.length?`<ul class="fmov">${mov.map(x=>`<li class="${x.tipo}"><time>${shortDate(x.fecha)}</time><div><strong>${esc(x.concepto)}${x.stripe?` <span class="cpill" style="--c:#635BFF">Stripe</span>`:""}</strong><small>${x.tipo==="ingreso"?"Ingreso":"Egreso"} · ${esc(x.categoria||"Otro")}${x.area&&AREAS[x.area]?" · "+AREAS[x.area].n:""}${x.quien?" · "+esc(x.quien):""}</small>${fin?cobrosHTML(x):""}</div><b>${x.tipo==="ingreso"?"+":"−"}${dinero(x.monto)}</b>${x.tipo==="ingreso"&&fin?`<button type="button" class="icon" data-iedit="${esc(x.id)}" aria-label="Editar ingreso" title="Editar">✎</button>`:x.tipo==="egreso"?`<button type="button" class="icon" data-irgasto="${esc(x.id)}" aria-label="Ver solicitud" title="Ver solicitud">↗</button>`:""}</li>`).join("")}</ul>`:`<p class="none" style="margin:0">Aún no hay movimientos en ${finAnio?"este año":"este mes"}.</p>`}</div>`}
 /* ---------- Presupuesto mensual: lo que se planea gastar contra lo que entra y lo que se gasta ---------- */
 function presDelMes(m){return presupuestosF.filter(x=>x.desde<=m&&(!x.hasta||x.hasta>=m))}
 function formPres(x){const v=x||{concepto:"",categoria:"Otro",area:"general",monto:"",desde:key(monthStart()).slice(0,7),hasta:"",notas:""};
@@ -3498,7 +3524,7 @@ function vistaPresupuesto(){const m=key(monthStart()).slice(0,7),fin=puedeFin()|
     <div class="dpanel"><h3>Gasto por categoría</h3>${cats.length?`<div class="presgrid">${cats.map(fila).join("")}</div>`:`<p class="none" style="margin:0">Todavía no hay presupuesto para este mes.</p>`}</div>
     <div class="dpanel"><h3>Renglones del presupuesto · ${L.length}</h3>${L.length?`<ul class="fmov">${L.slice().sort((a,b)=>Number(b.monto)-Number(a.monto)).map(x=>`<li class="egreso"><time>${esc(x.categoria||"Otro")}</time><div><strong>${esc(x.concepto)}</strong><small>${x.area&&AREAS[x.area]?AREAS[x.area].n:"General"} · desde ${esc(x.desde)}${x.hasta?" hasta "+esc(x.hasta):" · cada mes"}${x.notas?" · "+esc(x.notas):""}</small></div><b>${dinero(x.monto)}</b>${fin?`<button type="button" class="icon" data-presedit="${esc(x.id)}" aria-label="Editar" title="Editar">✎</button>`:""}</li>`).join("")}</ul>`:`<p class="none" style="margin:0">${fin?"Agrega el primero con «+ Agregar al presupuesto».":"Finanzas todavía no define el presupuesto."}</p>`}</div>`}
 document.addEventListener("click",async e=>{const b=e.target.closest("[data-presedit],[data-presborrar],[data-stripesync],[data-finmes]");if(!b||!sb)return;const ds=b.dataset;
-  if(ds.finmes){anchor=fromKey(ds.finmes+"-01");render();return}
+  if(ds.finmes){anchor=fromKey(ds.finmes+"-01");finAnio=false;render();return}
   if(ds.presedit!==undefined){presEdit=ds.presedit||null;render();if(presEdit)setTimeout(()=>$("prConcepto")&&$("prConcepto").focus(),30);return}
   if(ds.presborrar){if(!await confirmarAccion({titulo:"¿Borrar este renglón del presupuesto?",texto:"Deja de contar en todos los meses.",boton:"Sí, borrar"}))return;
     const {error}=await sb.from("presupuestos").delete().eq("id",ds.presborrar);if(error){toast("No se pudo borrar: "+error.message);return}presupuestosF=presupuestosF.filter(x=>x.id!==ds.presborrar);presEdit=null;render();return}
@@ -3506,7 +3532,7 @@ document.addEventListener("click",async e=>{const b=e.target.closest("[data-pres
     const {data,error}=await sb.functions.invoke("stripe",{body:{accion:"sincronizar",desde}});b.disabled=false;b.textContent="⟳ Stripe";
     if(error||!data||data.error){toast("Stripe: "+((data&&data.error)||(error&&/not found|404/i.test(error.message)?"falta desplegar la función «stripe».":error&&error.message)||"no respondió"));return}
     const meses=[...new Set((data.depositos||[]).map(d=>MESES_L[Number(d.fecha.slice(5,7))-1]))];
-    toast((data.nuevos?`Listo: ${data.nuevos} depósito${data.nuevos===1?"":"s"} nuevo${data.nuevos===1?"":"s"} de Stripe`:`Stripe al día: ${data.revisados} depósito${data.revisados===1?"":"s"} ya registrado${data.revisados===1?"":"s"}`)+(meses.length?` (${meses.join(", ")}).`:"."));render();return}});
+    toast((data.nuevos?`Listo: ${data.nuevos} depósito${data.nuevos===1?"":"s"} nuevo${data.nuevos===1?"":"s"} de Stripe`:`Stripe al día: ${data.revisados} depósito${data.revisados===1?"":"s"} ya registrado${data.revisados===1?"":"s"}`)+(meses.length?` (${meses.join(", ")}).`:".")+(data.completados?` Clientes agregados en ${data.completados} depósito${data.completados===1?"":"s"}.`:"")+(data.avisoCobros?" Para ver los clientes, dale a la llave de Stripe permiso de lectura en Balance, Charges y Customers.":""));render();return}});
 document.addEventListener("submit",async e=>{if(e.target.id!=="presForm")return;e.preventDefault();if(!sb)return;const f=e.target,id=f.dataset.pid;
   const fila={concepto:$("prConcepto").value.trim().slice(0,160),monto:Number($("prMonto").value),categoria:$("prCat").value,area:$("prArea").value,desde:$("prDesde").value,hasta:$("prHasta").value||null,notas:$("prNotas").value.trim()};
   if(!fila.concepto||!(fila.monto>=0)||!/^\d{4}-\d{2}$/.test(fila.desde)){toast("Revisa el concepto, el monto y el mes.");return}
@@ -3542,7 +3568,8 @@ document.addEventListener("click",async e=>{const b=e.target.closest("button");i
     const {error}=await sb.from("ingresos").delete().eq("id",i.id);if(error){toast("No se pudo borrar: "+error.message);return}
     ingresosF=ingresosF.filter(x=>x.id!==i.id);ingresoEdit=null;render();toast("Ingreso borrado.");return}
   if(ds.irgasto){finView="solicitudes";filtroG="todas";gastoSel=ds.irgasto;render();return}
-  if(ds.fcsv){csvFinanzas();return}});
+  if(ds.fcsv){csvFinanzas();return}
+  if(ds.csvcli){csvClientes();return}});
 document.addEventListener("submit",async e=>{const f=e.target;
   if(f.id==="gastoForm"){e.preventDefault();if(!sb||!perfil)return;const btn=f.querySelector("[type=submit]");btn.disabled=true;
     const id=crypto.randomUUID(),arch=await subirFin(id,$("gArch").files,"solicitud");
